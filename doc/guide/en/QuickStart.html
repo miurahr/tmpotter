@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>bitext2tmx QuickStart</title>
+    <meta name="generator"
+    content="HTML Tidy for MkLinux (vers 1 September 2005), see www.w3.org" />
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <!--
+      Copyright (C) 2006 by Mikel L. Forcada and Raymond Martin. This material
+      may be distributed only subject to the terms and conditions set forth in
+      the Open Publication License, v1.0 or later (the latest version is presently
+      available at http://www.opencontent.org/openpub/.
+
+      Last modified Sun Feb 17, 2008 by Raymond Martin
+      Revision: 1.2
+      Email: laseray -> users.sourceforge.net
+    -->
+  </head>
+  <body>
+
+    <div class="header">
+      <table border="0" cellpadding="2" width="100%" summary="header">
+        <tr>
+          <td class="c1" valign="middle" width="25%">
+            <img src="bitext2tmx.png" alt="bitext2tmx Logo" border="0" />
+          </td>
+          <td class="c1" valign="middle" width="75%">
+            <!-- <a href="index_ca.html">[Català]</a> <a href=
+            "index_de.html">[Deutsch]</a> <a href=
+            "index_es.html">[Español]</a> <a href=
+            "index_fr.html">[Français]</a> -->
+            <a href="http://sourceforge.net">
+              <img src="http://sourceforge.net/sflogo.php?group_id=143781&amp;type=2"
+                alt="SourceForge.net Logo" border="0" height="37" width="125"
+                align="right" />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <hr />
+
+    <div class="content">
+      <h1 class="c1">bitext2tmx: QuickStart</h1>
+
+      <h2>Purpose</h2>
+
+      <p>
+        <a href="http://bitext2tmx.sf.net">
+          <em>bitext2tmx</em>
+        </a>
+
+        is a program to segment and align corresponding translated sentences
+        (of an orignal version and its translation) and generate a translation
+        memory from the results for use in computer-assisted translation (CAT).
+        The corresponding sentences used are currently read in from two plain
+        text files or a
+
+        <a href="http://www.lisa.org/tmx">Translation Memory eXchange (TMX)</a>
+
+        document format (version 1.0M0 and later). The alignments produced are
+        saved out as a translation memory in TMX format.
+      </p>
+
+
+      <!--s-->
+      <p>
+        Note: the instructions given here are valid for bitext2tmx version
+        0.9. They will be updated when a new version is released.
+      </p>
+
+      <h2>System Requirements</h2>
+
+      <p>
+        bitext2tmx has been developed as a Java application to be used on any
+        Java-supported platform. Therefore, a Java Runtime Environment (JRE),
+        version 1.4 or higher, is required on the system where it is to be used.
+        A JRE may be obtained from
+
+        <a href="http://java.com">http://java.com</a> and other sources (e.g., 
+        <a href="http://www-128.ibm.com/developerworks/java/jdk/index.html">
+          http://www-128.ibm.com/developerworks/java/jdk/index.html</a>).
+
+        Documentation on Java installation and use is also available at the same
+        locations.
+        <br />
+      </p>
+
+      <h2>Installation</h2>
+
+      <p>
+        In most cases, it will suffice to unpack a bitext2tmx package in a
+        folder of your choice. Packages are currently available in Zip(.zip),
+        7-Zip(.7z), tar-gzipped(tar.gz), or tar-bzip2(tar.bz2) formats. Go to
+        the
+
+        <a href="http://www.sourceforge.net/projects/bitext2tmx">bitext2tmx project</a>
+
+        to download a package.
+      </p>
+
+      <h2>Text Preparation</h2>
+
+      <p>
+        bitext2tmx only works with plain-text files (Unicode UTF-8 or
+        ISO-8859-1 character encodings); therefore, you should save your
+        two texts as plain text in either encoding before you align them
+        with bitext2tmx.
+      </p>
+
+      <p>
+        For instance, if you use OpenOffice.org Writer, go to <em>File</em>,
+        <em>Save As</em>, select "Text, Encoded" from the file types list and
+        check on the "Edit Filter Settings" box. Click <em>Save</em> and select
+        the appropriate encoding when asked (use Unicode UTF-8 or ISO-8859-1).
+      </p>
+
+      <h2>Basic Usage</h2>
+
+      <p>
+        Note: bitext2tmx may look different on a particular system than the
+        images given in this section.
+      </p>
+
+      <ol>
+        <li>
+          <p>
+            Go to the folder where you have unpacked bitext2tmx and double
+            click on
+
+            <code>bitext2tmx.jar</code>
+
+            or run it with
+
+            <code>java -jar bitext2tmx.jar</code>
+
+            from the command line.
+          </p>
+        </li>
+        <li>
+          <p>
+            Go to <em>Tools, Configuration</em> and activate the options
+            you want (Split by Line Break, etc., Language for menus, etc.),
+            as shown in the image:
+          </p>
+          <p>
+            <img alt="Detail of the Tools, Options menu"
+            src="bitext2tmx-options.png" class="c1" />
+          </p>
+        </li>
+        <li>
+          <p>
+            Go to <em>File</em>, <em>Open</em>. Select the source and target
+            texts (you can browse the filesystem), the source and target languages
+            from the menus, and the encoding of texts (the encoding you used to
+            save them). Click on Accept.
+          </p>
+          <p>
+            <img alt="Bitext2tmx open dialog" src="bitext2tmx-open.png"
+            class="c2" />
+          </p>
+        </li>
+        <li>
+          <p>
+            After bitext2tmx completes the initial loading and processing of
+            the files, you will see the text in two columns, the left for the
+            original source text and the right for the translated target text, as
+            in this image
+          </p>
+          <p>
+            <img alt="Screenshot of bitext2tmx 0.9"
+            src="https://sourceforge.net/dbimage.php?id=80389" class="c3" />
+          </p>
+        </li>
+        <li>
+          <p>
+            The beginning of each segment is shown in a row. The full text of
+            the current segment is shown below the column in a separate text
+            area.
+          </p>
+        </li>
+        <li>
+          <p>
+            Most likely this alignment will have to be corrected so that the
+            source segments are aligned to the corresponding target segments:
+            use the keys that are under either column to <em>Join</em> two
+            segments into one, <em>Split</em> the current segment at the cursor
+            position into two segments, <em>Delete</em> a segment (used for blank
+            lines), and so on. You can also correct a segment during alignment.
+            It is always possible to <em>Undo</em> a previous action.
+          </p>
+        </li>
+      </ol>
+
+      <p>
+        The current version (0.9) of bitext2tmx does not allow you to store a
+        partially completed alignment job (this will be solved in the next
+        version). If you want to start all over again, click on <em>Abort</em>.
+      </p>
+
+      <h2>Save Aligment as TMX</h2>
+
+      <p>
+        When the alignment is satisfactory, click on <em>Save</em>. Name the
+        file and look for the folder where you want to store your alignment as
+        a TMX translation memory and click on <em>Save</em> again. The resulting
+        translation memory may be used with OmegaT or other computer-assisted
+        translation tool that supports TMX.
+      </p>
+
+      <h2>Problems</h2>
+
+      <p>
+        Should you have trouble with the program, do not hesitate to write to
+        <br />
+
+        bitext2tmx project members: Mikel L. Forcada ( 
+        <code>mlf</code> at <code>ua</code> dot <code>es</code>)
+
+        or <a href="mailto:laseray@users.sourceforge.net">Raymond Martin</a>.
+      </p>
+
+      <h2>Licence</h2>
+
+      <p>
+        Copyright © 2006-2008 by
+
+        <a href="mailto:mlforcada@users.sourceforge.net">Mikel L. Forcada</a>
+
+        and
+
+        <a href="mailto:laseray@users.sourceforge.net">Raymond Martin</a>.
+
+        This material may be distributed only subject to the terms and
+        conditions set forth in the Open Publication License, v1.0 or
+        later (the latest version is presently available at
+
+        <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>).
+      </p>
+    </div>
+
+    <div class="c2" id="modified">
+      <table summary="Bottom Info">
+        <tr>
+          <td align="center" width="60%">
+            <span class="c1">Last modified February 17, 2008 by
+              <a class="footer" href="mailto:laseray@users.sourceforge.net">Raymond Martin</a>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <hr />
+
+    <div class="footer">
+      <table border="0" cellpadding="2" width="100%" summary="footer">
+        <tr>
+          <td class="c1" valign="middle" width="25%">
+            <img src="bitext2tmx.png" alt="bitext2tmx Logo" border="0" />
+          </td>
+          <td class="c1" valign="middle" width="75%">
+            <!-- <a href="index_ca.html">[Català]</a> <a href=
+            "index_de.html">[Deutsch]</a> <a href=
+            "index_es.html">[Español]</a> <a href=
+            "index_fr.html">[Français]</a> -->
+            <a href="http://sourceforge.net">
+              <img src="http://sourceforge.net/sflogo.php?group_id=143781&amp;type=2"
+                alt="SourceForge.net Logo" border="0" height="37" width="125"
+                align="right" />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

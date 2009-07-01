@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+#######################################################################
+#
+#  bitext2tmx - Bitext Aligner/Editor to TMX (ant build script)
+#
+#  Copyright (C) 2006-2009 Raymond: Martin et al.
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+#######################################################################
+-->
+
+<project name="bitext2tmx" default="run" basedir=".">
+  <description>Builds, tests, and runs bitext2tmx</description>
+
+  <tstamp>
+    <format property="build.date" pattern="yyMMdd" />
+  </tstamp>
+
+  <property name="devel"          value="false" />
+  <property name="build"          value="${build.date}" />
+  <property name="version.maj"    value="1" />
+  <property name="version.min"    value=".0.M1" />
+  <property name="version"        value="${version.maj}${version.min}" />
+  <property name="version.build"  value="${version}-${build}" />
+  <property name="applicationjar" value="bitext2tmx-${version}.jar" />
+
+  <target name="init" depends="manifest" description="Set up directory structure and environment">
+    <mkdir dir="build"/>
+    <!-- <mkdir dir="dist"/> -->
+  </target>
+
+  <target name="manifest" description="Create manifest">
+    <manifest file="MANIFEST.MF">
+      <attribute name="Built-By"       value="${user.name}" />
+      <attribute name="Version"        value="${version}" />
+      <attribute name="Build"          value="${build}" />
+      <attribute name="ApplicationJar" value="${applicationjar}" />
+      <attribute name="Devel"          value="${devel}" />
+      <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
+      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar localizations/ icons/" />
+      <attribute name="License" value="GNU Public License version 2 or later"/>
+    </manifest>
+  </target>
+
+  <target name="compile" depends="init" description="Compile classes">
+    <javac source="1.5" target="1.5" srcdir="src/bitext2tmx" nowarn="true"
+           deprecation="true" destdir="build">
+      <classpath>
+        <fileset dir="lib" includes="**/*.jar"/>
+      </classpath>
+    </javac>
+    <copy todir="build">
+      <fileset dir="src" excludes="**/*.java, **/*.bak, **/*.old"/>
+    </copy>
+  </target>
+
+  <target name="jar" depends="compile" description="Build jar">
+    <jar jarfile="${applicationjar}" manifest="MANIFEST.MF">
+      <fileset dir="build" />
+    </jar>
+    <delete file="MANIFEST.MF" verbose="false" />
+  </target>
+
+  <target name="run" depends="jar,compile" description="Run this mother">
+    <java jar="./bitext2tmx${version}${build}.jar"
+          fork="true"
+          spawn="true"
+          maxmemory="256">
+      <arg value="-noserver" />
+    </java>
+  </target>
+
+  <target name="clean" description="Clean up after build process">
+    <delete dir="build" verbose="false"/>
+    <delete file="bitext2tmx-${version}.jar" verbose="true"/>
+    <!-- <delete dir="dist" verbose="false"/> -->
+  </target>
+
+</project>

@@ -1,0 +1,46 @@
+
+body
+{
+  background: #feffff;
+  color:      #505050;
+  //font:       Verdana,Tahoma,Arial,sans-serif;
+  //font:       Verdana,Tahoma,Arial,sans-serif;
+  margin:     0 10px; 
+  padding:    0;
+}
+
+img
+{ 
+  //padding:    0px 0px 0px 25px;
+  margin:     0px;
+  border:     0;
+  //text-align: center;
+}
+
+p, a, li, dt, dd, table 
+{
+  //font-family: "Times New Roman", "Times", "Sans Serif"
+}
+
+h1
+{
+  //font-family: "Arial", "Helvetica", "Serif"; 
+  margin-top: 0px;
+  margin-bottom: 5px
+}
+
+h2
+{
+  //font-family: "Arial", "Helvetica", "Serif";
+  margin-top: 15px;
+  margin-bottom: 0px
+}
+
+h3, h4
+{
+  //font-family: "Arial", "Helvetica", "Serif";
+  margin-top: 15px;
+  margin-bottom: 0px
+}
+
+
