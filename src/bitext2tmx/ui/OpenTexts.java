@@ -85,7 +85,7 @@ final public class OpenTexts extends JDialog implements ActionListener
   final public String getSource() { return( _strOriginal ); }
   final public String getTarget() { return( _strTranslation ); }
 
-  final public int getType()  { return( _type ); }
+  final public int getTypes()  { return( _type ); }
 
   final private JComboBox  _cbxOriginalLang    = new JComboBox();
   final private JComboBox  _cbxTranslationLang = new JComboBox();

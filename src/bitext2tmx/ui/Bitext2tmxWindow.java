@@ -681,7 +681,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       //_vwAlignments.clear();
       _vwAlignments.buildDisplay();
 
-      if( dlg.getType() == 0 )
+      if( dlg.getTypes() == 0 )
       {
         //getSelectedItem()
         cod_meta  = (String)dlg.getTargetLangEncComboBox().getSelectedItem();
