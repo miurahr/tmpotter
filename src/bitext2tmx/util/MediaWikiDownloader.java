@@ -77,30 +77,10 @@ import java.util.Map;
 /**
  * Import pages from MediaWiki
  * 
- * @author Kim Bruning
- * @author Alex Buloichik (alex73mail@gmail.com)
- * @author Didier Briel
- * @author Rashid Umarov
  * @author Hiroshi Miura
  */
 public class MediaWikiDownloader {
     protected static final String CHARSET_MARK = "charset=";
-
-    /**
-     * ~inverse of String.split() refactor note: In future releases, this might
-     * best be moved to a different file
-     */
-    public static String joinString(String separator, String[] items) {
-        if (items.length < 1)
-            return "";
-        StringBuilder joined = new StringBuilder();
-        for (int i = 0; i < items.length; i++) {
-            joined.append(items[i]);
-            if (i != items.length - 1)
-                joined.append(separator);
-        }
-        return joined.toString();
-    }
 
     /**
      * Gets mediawiki wiki-code data from remote server. The get strategy is
@@ -113,7 +93,7 @@ public class MediaWikiDownloader {
      *            string representation of path to the project-dir where the
      *            file should be saved.
      */
-    public static void doWikiGet(String remote_url, String projectdir) {
+    public static void download(String remote_url, String projectdir) {
         try {
             String joined = null; // contains edited url
             String name = null; // contains a useful page name which we can use
@@ -127,7 +107,7 @@ public class MediaWikiDownloader {
                 // s=URLEncoder.encode(s, "UTF-8"); // breaks previously
                 // correctly encoded page names
                 splitted[splitted.length - 1] = s;
-                joined = joinString("index.php?title=", splitted);
+                joined = Utilities.joinString("index.php?title=", splitted);
                 joined = joined + "&action=raw";
             } else {
                 // assume script is behind some sort
@@ -138,70 +118,17 @@ public class MediaWikiDownloader {
                 s = s.replaceAll(" ", "_");
                 // s=URLEncoder.encode(s, "UTF-8");
                 splitted[splitted.length - 1] = s;
-                joined = joinString("/", splitted);
+                joined = Utilities.joinString("/", splitted);
                 joined = joined + "?action=raw";
             }
-            String page = getURL(joined);
-            saveUTF8(projectdir, name + ".UTF8", page);
+            String page = getTextFromURL(joined);
+            Utilities.saveUTF8(projectdir, name + ".UTF8", page);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
-    /**
-     * Print UTF-8 text to stdout (useful for debugging)
-     * 
-     * @param output
-     *            The UTF-8 format string to be printed.
-     */
-    public static void printUTF8(String output) {
-        try {
-            BufferedWriter out = UTF8WriterBuilder(System.out);
-            out.write(output);
-
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Creates new BufferedWriter configured for UTF-8 output and connects it to
-     * an OutputStream
-     * 
-     * @param out
-     *            Outputstream to connect to.
-     */
-    public static BufferedWriter UTF8WriterBuilder(OutputStream out) throws Exception {
-        return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-    }
-
-    /**
-     * Save UTF-8 format data to file.
-     * 
-     * @param dir
-     *            directory to write to.
-     * @param filename
-     *            filename of file to write.
-     * @param output
-     *            UTF-8 format text to write
-     */
-    public static void saveUTF8(String dir, String filename, String output) {
-        try {
-            // Page name can contain invalid characters, see [1878113]
-            // Contributed by Anatoly Techtonik
-            filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
-            File path = new File(dir, filename);
-            FileOutputStream f = new FileOutputStream(path);
-            BufferedWriter out = UTF8WriterBuilder(f);
-            out.write(output);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     /**
      * Obtain UTF-8 format text from remote URL.
      * 
@@ -255,7 +182,7 @@ public class MediaWikiDownloader {
                 }
                 s.append(p.getKey());
                 s.append('=');
-                s.append(URLEncoder.encode(p.getValue(), OConsts.UTF8));
+                s.append(URLEncoder.encode(p.getValue(), "UTF-8"));
             }
             url = s.toString();
         }
@@ -268,21 +195,6 @@ public class MediaWikiDownloader {
                     conn.setRequestProperty(en.getKey(), en.getValue());
                 }
             }
-
-            // Added to pass through authenticated proxy
-            String encodedUser = (Preferences.getPreference(Preferences.PROXY_USER_NAME));
-            if (!StringUtil.isEmpty(encodedUser)) { // There is a proxy user
-                String encodedPassword = (Preferences.getPreference(Preferences.PROXY_PASSWORD));
-                try {
-                    String pass = new String(Base64.decode(encodedUser));
-                    pass += ":" + new String(Base64.decode(encodedPassword));
-                    encodedPassword = Base64.encodeBytes(pass.getBytes());
-                    conn.setRequestProperty("Proxy-Authorization", "Basic " + encodedPassword);
-                } catch (IOException ex) {
-                    Log.logErrorRB("LOG_DECODING_ERROR");
-                    Log.log(ex);
-                }
-             }
 
             conn.setDoOutput(true);
 
@@ -312,9 +224,9 @@ public class MediaWikiDownloader {
             if (pout.size() > 0) {
                 pout.write('&');
             }
-            pout.write(p.getKey().getBytes(OConsts.UTF8));
+            pout.write(p.getKey().getBytes("UTF-8"));
             pout.write('=');
-            pout.write(URLEncoder.encode(p.getValue(), OConsts.UTF8).getBytes(OConsts.UTF8));
+            pout.write(URLEncoder.encode(p.getValue(), "UTF-8").getBytes("UTF-8"));
         }
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -327,20 +239,6 @@ public class MediaWikiDownloader {
                     conn.setRequestProperty(en.getKey(), en.getValue());
                 }
             }
-
-            // Added to pass through authenticated proxy
-            String encodedUser = (Preferences.getPreference(Preferences.PROXY_USER_NAME));
-            if (!StringUtil.isEmpty(encodedUser)) { // There is a proxy user
-                String encodedPassword = (Preferences.getPreference(Preferences.PROXY_PASSWORD));
-                try {
-                    String pass = new String(decode(encodedUser));
-                    pass += ":" + new String(Base64.decode(encodedPassword));
-                    encodedPassword = Base64.encodeBytes(pass.getBytes());
-                    conn.setRequestProperty("Proxy-Authorization", "Basic " + encodedPassword);
-                } catch (IOException ex) {
-                    // FIXME
-                }
-             }
 
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -368,7 +266,7 @@ public class MediaWikiDownloader {
         ByteArrayOutputStream res = new ByteArrayOutputStream();
         InputStream in = conn.getInputStream();
         try {
-            LFileCopy.copy(in, res);
+            streamcopy(in, res);
         } finally {
             in.close();
         }
@@ -388,4 +286,14 @@ public class MediaWikiDownloader {
             message = conn.getResponseMessage();
         }
     }
+   
+    
+    public static void streamcopy(InputStream src, OutputStream dest) throws IOException {
+        byte[] b = new byte[512];
+        int readBytes;
+        while ((readBytes = src.read(b)) > 0) {
+            dest.write(b, 0, readBytes);
+        }
+    }
+
 }

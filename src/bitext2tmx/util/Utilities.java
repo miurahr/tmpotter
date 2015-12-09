@@ -29,12 +29,14 @@ package bitext2tmx.util;
 
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -50,6 +52,7 @@ import java.util.regex.*;
 import javax.swing.ImageIcon;
 
 import static bitext2tmx.util.Constants.*;
+
 
 
 /**
@@ -189,6 +192,75 @@ public class Utilities
 
     return( new String( result ) );
   }
+  
+   /**
+     * ~inverse of String.split() refactor note: In future releases, this might
+     * best be moved to a different file
+     */
+    public static String joinString(String separator, String[] items) {
+        if (items.length < 1)
+            return "";
+        StringBuilder joined = new StringBuilder();
+        for (int i = 0; i < items.length; i++) {
+            joined.append(items[i]);
+            if (i != items.length - 1)
+                joined.append(separator);
+        }
+        return joined.toString();
+    }
+
+    /**
+     * Print UTF-8 text to stdout (useful for debugging)
+     * 
+     * @param output
+     *            The UTF-8 format string to be printed.
+     */
+    public static void printUTF8(String output) {
+        try {
+            BufferedWriter out = UTF8WriterBuilder(System.out);
+            out.write(output);
+
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates new BufferedWriter configured for UTF-8 output and connects it to
+     * an OutputStream
+     * 
+     * @param out
+     *            Outputstream to connect to.
+     */
+    public static BufferedWriter UTF8WriterBuilder(OutputStream out) throws Exception {
+        return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+    }
+
+    /**
+     * Save UTF-8 format data to file.
+     * 
+     * @param dir
+     *            directory to write to.
+     * @param filename
+     *            filename of file to write.
+     * @param output
+     *            UTF-8 format text to write
+     */
+    public static void saveUTF8(String dir, String filename, String output) {
+        try {
+            // Page name can contain invalid characters, see [1878113]
+            // Contributed by Anatoly Techtonik
+            filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
+            File path = new File(dir, filename);
+            FileOutputStream f = new FileOutputStream(path);
+            BufferedWriter out = UTF8WriterBuilder(f);
+            out.write(output);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }//  Utilities{}
 
