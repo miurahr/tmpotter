@@ -113,6 +113,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private JMenuItem  _mniLocaleEnglish;  //  en
   private JMenuItem  _mniLocaleSpanish;  //  es
   private JMenuItem  _mniLocaleFrench;   //  fr
+  private JMenuItem  _mniLocaleJapanese; //  ja
 
   //  Look and Feel submenu
   private JMenu      _mnuLaf;
@@ -543,6 +544,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       "French", "MNI.LANGUAGE.FR" );
     _mniLocaleFrench.setToolTipText( l10n( "MNI.LANGUAGE.FR.TOOLTIP" ) );
 
+    _mniLocaleJapanese = makeMenuComponent( MenuComponentType.ITEM, null, null,
+      "Japanese", "MNI.LANGUAGE.JA" );
+    _mniLocaleJapanese.setToolTipText( l10n( "MNI.LANGUAGE.JA.TOOLTIP" ) );
+
     _mnuHelp = makeMenuComponent( MenuComponentType.MENU, null, null,
       "Help", "MNU.HELP" );
 
@@ -570,6 +575,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mnuLocale.add( _mniLocaleEnglish );
     _mnuLocale.add( _mniLocaleSpanish );
     _mnuLocale.add( _mniLocaleFrench );
+    _mnuLocale.add( _mniLocaleJapanese );
 
     _mnuSettings.add( _mncbSettingsLinebreak );
     _mnuSettings.add( _mniSettingsRegexp );
@@ -2669,11 +2675,13 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniLocaleEnglish.setSelected( false );
     _mniLocaleSpanish.setSelected( false );
     _mniLocaleFrench.setSelected( false );
+    _mniLocaleJapanese.setSelected( false );
 
     _mniLocaleCatalan.setEnabled( false );
     _mniLocaleEnglish.setEnabled( true );
     _mniLocaleSpanish.setEnabled( true );
     _mniLocaleFrench.setEnabled( true );
+    _mniLocaleJapanese.setEnabled( true );
 
     Localization.setLocale( new Locale( "ca" ) );
     updateLocalization();
@@ -2686,11 +2694,13 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniLocaleEnglish.setSelected( true );
     _mniLocaleSpanish.setSelected( false );
     _mniLocaleFrench.setSelected( false );
+    _mniLocaleJapanese.setSelected( false );
 
     _mniLocaleCatalan.setEnabled( true );
     _mniLocaleEnglish.setEnabled( false );
     _mniLocaleSpanish.setEnabled( true );
     _mniLocaleFrench.setEnabled( true );
+    _mniLocaleJapanese.setEnabled( true );
 
     Localization.setLocale( new Locale( "en" ) );
     updateLocalization();
@@ -2703,11 +2713,13 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniLocaleEnglish.setSelected( false );
     _mniLocaleSpanish.setSelected( false );
     _mniLocaleFrench.setSelected( true );
+    _mniLocaleJapanese.setSelected( false );
 
     _mniLocaleCatalan.setEnabled( true );
     _mniLocaleEnglish.setEnabled( true );
     _mniLocaleSpanish.setEnabled( true );
     _mniLocaleFrench.setEnabled( false );
+    _mniLocaleJapanese.setEnabled( true );
 
     Localization.setLocale( new Locale( "fr" ) );
     updateLocalization();
@@ -2720,17 +2732,37 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniLocaleEnglish.setSelected( false );
     _mniLocaleSpanish.setSelected( true );
     _mniLocaleFrench.setSelected( false );
+    _mniLocaleJapanese.setSelected( false );
 
     _mniLocaleCatalan.setEnabled( true );
     _mniLocaleEnglish.setEnabled( true );
     _mniLocaleSpanish.setEnabled( false );
     _mniLocaleFrench.setEnabled( true );
+    _mniLocaleJapanese.setEnabled( true );
 
     Localization.setLocale( new Locale( "es", "ES" ) );
     updateLocalization();
     updateUI();
   }
 
+    private void onJapanese()
+  {
+    _mniLocaleCatalan.setSelected( false );
+    _mniLocaleEnglish.setSelected( false );
+    _mniLocaleSpanish.setSelected( false );
+    _mniLocaleFrench.setSelected( false );
+    _mniLocaleJapanese.setSelected( true );
+
+    _mniLocaleCatalan.setEnabled( true );
+    _mniLocaleEnglish.setEnabled( true );
+    _mniLocaleSpanish.setEnabled( true );
+    _mniLocaleFrench.setEnabled( true );
+    _mniLocaleJapanese.setEnabled( false );
+
+    Localization.setLocale( new Locale( "ja", "JP" ) );
+    updateLocalization();
+    updateUI();
+  }
 
   /**
    *  Modificar_Idioma. Cuando se recoge la selecci�n del idioma por parte del
