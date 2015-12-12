@@ -6,10 +6,11 @@
 #  bitext2tmx - Bitext Aligner/Editor to TMX (ant build script)
 #
 #  Copyright (C) 2006-2009 Raymond: Martin et al.
+#                2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -24,62 +25,136 @@
 #######################################################################
 -->
 
-<project name="bitext2tmx" default="run" basedir=".">
+<project name="bitext2tmx" default="default" basedir=".">
   <description>Builds, tests, and runs bitext2tmx</description>
+  <import file="nbproject/build-impl.xml"/>
+
+  <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar:                  JAR building
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="JavaApplication1-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
 
   <tstamp>
     <format property="build.date" pattern="yyMMdd" />
   </tstamp>
 
-  <import file="nbproject/build-impl.xml"/>
-
   <property name="devel"          value="false" />
-  <property name="build"          value="${build.date}" />
   <property name="version.maj"    value="1" />
   <property name="version.min"    value=".1.M1" />
   <property name="version"        value="${version.maj}${version.min}" />
   <property name="version.build"  value="${version}-${build}" />
   <property name="applicationjar" value="bitext2tmx.jar" />
 
-  <target name="init" depends="manifest" description="Set up directory structure and environment">
-    <mkdir dir="build"/>
-    <mkdir dir="dist"/>
-  </target>
-
   <target name="manifest" description="Create manifest">
     <manifest file="MANIFEST.MF">
       <attribute name="Built-By"       value="${user.name}" />
       <attribute name="Version"        value="${version}" />
-      <attribute name="Build"          value="${build}" />
+      <attribute name="Build"          value="${build.date}" />
       <attribute name="ApplicationJar" value="${applicationjar}" />
       <attribute name="Devel"          value="${devel}" />
       <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
-      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar localizations/ icons/" />
+      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar icons/" />
       <attribute name="License" value="GNU Public License version 3 or later"/>
     </manifest>
   </target>
 
-  <target name="compile" depends="init" description="Compile classes">
-    <javac source="1.7" target="1.7" srcdir="src/bitext2tmx" nowarn="true"
-           deprecation="true" destdir="build">
-      <classpath>
-        <fileset dir="lib" includes="**/*.jar"/>
-      </classpath>
-    </javac>
-    <copy todir="build">
-      <fileset dir="src" excludes="**/*.java, **/*.bak, **/*.old"/>
+  <target name="-post-init" depends="manifest" />
+
+  <target name="-pre-jar" depends="compile" description="prepare to build jar">
+    <mkdir dir="dist/lib"/>
+    <copy todir="dist/lib">
+      <fileset dir="lib" includes="**/*.jar"/>
+    </copy>
+    <mkdir dir="dist/icons"/>
+    <copy todir="dist/icons">
+        <fileset dir="icons"/>
     </copy>
   </target>
 
-  <target name="jar" depends="compile" description="Build jar">
-    <jar jarfile="dist/${applicationjar}" manifest="MANIFEST.MF">
-      <fileset dir="build" />
-    </jar>
-    <delete file="MANIFEST.MF" verbose="false" />
+  <!-- Copies all files to dist -->
+  <target name="release">
+    <mkdir dir="dist"/>
+    <copy todir="dist">
+        <fileset dir="release" includes="*" excludes="readme.txt"/>
+    </copy>
+    <!--
+    <copy todir="dist">
+        <fileset dir="release/linux-specific"/>
+        <fileset dir="release/win32-specific" includes="bitext2tmx.bat"/>
+    </copy>
+    <copy todir="dist"
+          file="release/readme.txt">
+    </copy>
+    -->
+    <mkdir dir="dist/doc"/>
+    <copy todir="dist/doc">
+        <fileset dir="doc"/>
+    </copy>
+    <mkdir dir="dist/lib"/>
+    <copy todir="dist/lib">
+      <fileset dir="lib" includes="**/*.txt" excludes="**/*.7z" />
+    </copy>
   </target>
 
-  <target name="run" depends="jar,compile" description="Run this mother">
-    <java jar="dist/bitext2tmx${version}${build}.jar"
+  <!-- override run target -->
+  <target name="run" depends="jar" description="Run this mother">
+    <java jar="dist/bitext2tmx.jar"
           fork="true"
           spawn="true"
           maxmemory="256">
@@ -87,10 +162,7 @@
     </java>
   </target>
 
-  <target name="clean" description="Clean up after build process">
-    <delete dir="build" verbose="false"/>
-    <delete file="dist/bitext2tmx.jar" verbose="true"/>
-    <!-- <delete dir="dist" verbose="false"/> -->
+  <target name="-post-clean">
+    <delete file="MANIFEST.MF" />
   </target>
-
 </project>
