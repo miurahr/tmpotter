@@ -201,7 +201,7 @@ final public class Manual extends JDialog
     }
   }
 
-  final private String getAbsolutePath( final String file )
+  private String getAbsolutePath( final String file )
   {
     try
     {  //  MAN_PATH = doc/help

@@ -126,7 +126,7 @@ final public class About extends JDialog
     gbc.gridy = 3;
     getContentPane().add( _lbl4, gbc );
 
-    _lblIcon.setIcon( getIcon( "b2t-icon-medium.png", this ) );
+    _lblIcon.setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-medium.png" ) );
     _pnlButtons.add( _lblIcon, BorderLayout.WEST );
 
     gbc.gridy     = 5;

@@ -109,7 +109,7 @@
       <attribute name="ApplicationJar" value="${applicationjar}" />
       <attribute name="Devel"          value="${devel}" />
       <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
-      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar icons/" />
+      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar" />
       <attribute name="License" value="GNU Public License version 3 or later"/>
     </manifest>
   </target>
@@ -120,10 +120,6 @@
     <mkdir dir="dist/lib"/>
     <copy todir="dist/lib">
       <fileset dir="lib" includes="**/*.jar"/>
-    </copy>
-    <mkdir dir="dist/icons"/>
-    <copy todir="dist/icons">
-        <fileset dir="icons"/>
     </copy>
   </target>
 
@@ -150,16 +146,6 @@
     <copy todir="dist/lib">
       <fileset dir="lib" includes="**/*.txt" excludes="**/*.7z" />
     </copy>
-  </target>
-
-  <!-- override run target -->
-  <target name="run" depends="jar" description="Run this mother">
-    <java jar="dist/bitext2tmx.jar"
-          fork="true"
-          spawn="true"
-          maxmemory="256">
-      <arg value="-noserver" />
-    </java>
   </target>
 
   <target name="-post-clean">

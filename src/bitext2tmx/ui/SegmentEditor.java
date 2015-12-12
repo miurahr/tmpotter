@@ -27,31 +27,15 @@
 package bitext2tmx.ui;
 
 import java.awt.event.*;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 
-import com.vlsolutions.swing.docking.*;
-
-import static bitext2tmx.util.Localization.getString;
-import static bitext2tmx.util.Utilities.*;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -75,7 +59,7 @@ final class SegmentEditor extends DockablePanel
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( getIcon( "b2t-icon-small.png", this ) );
+    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png" ) );
 
     _tpn.addKeyListener( new KeyAdapter()
       { final public void keyReleased( final KeyEvent e )

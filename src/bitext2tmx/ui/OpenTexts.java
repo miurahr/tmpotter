@@ -290,7 +290,7 @@ final public class OpenTexts extends JDialog implements ActionListener
    * @param e :contiene la acci�n del evento.
    */
 
-  final private void onOriginal()
+  private void onOriginal()
   {
     final JFileChooser fc = new JFileChooser();
     fc.setCurrentDirectory( _fPath );
@@ -367,7 +367,7 @@ final public class OpenTexts extends JDialog implements ActionListener
     }
   }
 
-  final private void onTranslation()
+  private void onTranslation()
   {
     final JFileChooser fc = new JFileChooser();
     fc.setCurrentDirectory( _fPath );
@@ -434,7 +434,7 @@ final public class OpenTexts extends JDialog implements ActionListener
      }
   }
 
-  final private void onOK()
+  private void onOK()
   {
     boolean bErrorOrig = true;
 
@@ -478,9 +478,9 @@ final public class OpenTexts extends JDialog implements ActionListener
     }
   }
 
-  final private void onCancel() { onClose(); }
+  private void onCancel() { onClose(); }
 
-  final private void onClose()
+  private void onClose()
   {
     _bClosed = true;
     setVisible( false );

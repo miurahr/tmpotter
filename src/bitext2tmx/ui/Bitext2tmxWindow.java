@@ -294,18 +294,18 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private ImageIcon getDesktopIcon( final String iconName )
   {
     if( isMacOSX() )
-      return( Utilities.getIcon( "desktop/osx/" + iconName, this ) );
+      return( getIcon( "desktop/osx/" + iconName ) );
 
-    return( Utilities.getIcon( "desktop/" + iconName, this ) );
+    return( getIcon( "desktop/" + iconName) );
   }
 
   private ImageIcon getIcon( final String iconName )
-  { return( Utilities.getIcon( iconName, this ) ); }
+  { return Bitext2TmxIcons.getIcon( iconName ); }
 
   /**  Set root window icon */
   private void setWindowIcon()
   {
-    try{ setIconImage( getIcon( "b2t-icon-small.png" ).getImage() ); }
+    try{ setIconImage( Bitext2TmxIcons.getIcon( "b2t-icon-small.png" ).getImage() ); }
     catch( final Exception e )
     { System.out.println( "Error loading icon: " + e ); }
   }

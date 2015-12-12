@@ -51,7 +51,6 @@ import java.util.regex.*;
 
 import javax.swing.ImageIcon;
 
-import static bitext2tmx.util.Constants.*;
 import bitext2tmx.util.Platform.OsType;
 
 
@@ -67,12 +66,6 @@ public class Utilities
   private final static String WINDOWS_CONFIG_DIR = "\\Bitext2tmx\\";
   private final static String UNIX_CONFIG_DIR = "/.bitext2tmx/";
   private final static String OSX_CONFIG_DIR = "/Library/Preferences/Bitext2tmx/";
-
-  final static public ImageIcon getIcon( final String iconName, final Object obj )
-  {
-    return( new ImageIcon( obj.getClass().
-      getResource( "/../icons/" + iconName ) ) );
-  }
 
   /**
    *  Return names of all font families available

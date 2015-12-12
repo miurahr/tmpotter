@@ -83,7 +83,7 @@ final class AlignmentsView extends DockablePanel
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( getIcon( "b2t-icon-small.png", this ) );
+    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png") );
 
     setLayout( new BorderLayout() );
   }

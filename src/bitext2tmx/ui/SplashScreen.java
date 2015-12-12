@@ -24,15 +24,12 @@
 
 package bitext2tmx.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
-
-import bitext2tmx.util.Utilities;
 
 
 public class SplashScreen extends JWindow
@@ -42,7 +39,7 @@ public class SplashScreen extends JWindow
     ImageIcon image = null;
     JLabel    label;
 
-    try{ label = new JLabel( Utilities.getIcon( "b2t-splash.png", this ) ); }
+    try{ label = new JLabel( Bitext2TmxIcons.getIcon( "b2t-splash.png") ); }
     catch( Exception ex )
     { label = new JLabel( "Error: unable to load image!" ); }
 

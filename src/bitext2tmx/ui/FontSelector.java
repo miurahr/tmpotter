@@ -37,7 +37,6 @@ import java.awt.event.WindowEvent;
 
 import java.awt.Font;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -369,7 +368,7 @@ final public class FontSelector extends JDialog
     }
   }
 
-  final private void setFonts( final Font font )
+  private void setFonts( final Font font )
   {
     setFont( font );
 
@@ -403,22 +402,22 @@ final public class FontSelector extends JDialog
 
   final public void setTextPreviewFont( final Font font ) {}
 
-  final private void fontComboBoxActionPerformed( final ActionEvent evt )
+  private void fontComboBoxActionPerformed( final ActionEvent evt )
   { _previewTextArea.setFont( getSelectedFont() ); }
 
-  final private void sizeSpinnerStateChanged( final ChangeEvent evt )
+  private void sizeSpinnerStateChanged( final ChangeEvent evt )
   { _previewTextArea.setFont( getSelectedFont() ); }
 
-  final private void FontStyleComboBoxEvent( final ActionEvent evt )
+  private void FontStyleComboBoxEvent( final ActionEvent evt )
   {
     setFontStyle(); 
     _previewTextArea.setFont( getSelectedFont() );
   }
 
-  final private void FontDisplayAreaComboBoxEvent( final ActionEvent evt )
+  private void FontDisplayAreaComboBoxEvent( final ActionEvent evt )
   { setFontDisplayArea(); }
 
-  final private void OnApplyButton( final ActionEvent action )
+  private void OnApplyButton( final ActionEvent action )
   {
     //  Should set font area variable to use to set fonts
     switch( _cboxFontDisplayArea.getSelectedIndex() )
@@ -452,10 +451,10 @@ final public class FontSelector extends JDialog
     }
   }
 
-  final private void CloseButtonEvent( final ActionEvent evt )
+  private void CloseButtonEvent( final ActionEvent evt )
   { DialogClose(); }
 
-  final private void DialogClose()
+  private void DialogClose()
   {
     setVisible( false );
     dispose();
