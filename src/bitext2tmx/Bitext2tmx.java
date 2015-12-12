@@ -5,6 +5,7 @@
 #
 #  Copyright (C) 2005-2006 Susana Santos Antón
 #            (C) 2006-2009 Raymond: Martin et al
+#            (C) 2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

@@ -31,17 +31,19 @@
     <format property="build.date" pattern="yyMMdd" />
   </tstamp>
 
+  <import file="nbproject/build-impl.xml"/>
+
   <property name="devel"          value="false" />
   <property name="build"          value="${build.date}" />
   <property name="version.maj"    value="1" />
-  <property name="version.min"    value=".0.M1" />
+  <property name="version.min"    value=".1.M1" />
   <property name="version"        value="${version.maj}${version.min}" />
   <property name="version.build"  value="${version}-${build}" />
-  <property name="applicationjar" value="bitext2tmx-${version}.jar" />
+  <property name="applicationjar" value="bitext2tmx.jar" />
 
   <target name="init" depends="manifest" description="Set up directory structure and environment">
     <mkdir dir="build"/>
-    <!-- <mkdir dir="dist"/> -->
+    <mkdir dir="dist"/>
   </target>
 
   <target name="manifest" description="Create manifest">
@@ -53,7 +55,7 @@
       <attribute name="Devel"          value="${devel}" />
       <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
       <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar localizations/ icons/" />
-      <attribute name="License" value="GNU Public License version 2 or later"/>
+      <attribute name="License" value="GNU Public License version 3 or later"/>
     </manifest>
   </target>
 
@@ -70,14 +72,14 @@
   </target>
 
   <target name="jar" depends="compile" description="Build jar">
-    <jar jarfile="${applicationjar}" manifest="MANIFEST.MF">
+    <jar jarfile="dist/${applicationjar}" manifest="MANIFEST.MF">
       <fileset dir="build" />
     </jar>
     <delete file="MANIFEST.MF" verbose="false" />
   </target>
 
   <target name="run" depends="jar,compile" description="Run this mother">
-    <java jar="./bitext2tmx${version}${build}.jar"
+    <java jar="dist/bitext2tmx${version}${build}.jar"
           fork="true"
           spawn="true"
           maxmemory="256">
@@ -87,7 +89,7 @@
 
   <target name="clean" description="Clean up after build process">
     <delete dir="build" verbose="false"/>
-    <delete file="bitext2tmx-${version}.jar" verbose="true"/>
+    <delete file="dist/bitext2tmx.jar" verbose="true"/>
     <!-- <delete dir="dist" verbose="false"/> -->
   </target>
 

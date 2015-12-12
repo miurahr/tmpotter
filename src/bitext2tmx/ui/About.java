@@ -78,7 +78,7 @@ final public class About extends JDialog
   //  ToDo: l10n, constants
   final private String  _strProduct     = APPNAME;
   final private String  _strDescription = "Bitext Aligner/Converter to TMX";
-  final private String  _strCopyright   = "Copyright (C) 2005-2009";
+  final private String  _strCopyright   = "Copyright (C) 2005-2009,2015";
   final private String  _strAuthors     = "Susana Santos Antón, Raymond: Martin, et al.";
 
   public About( Bitext2tmxWindow wndB2T )

@@ -28,60 +28,20 @@ import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-
 /**
  *  Localization: localization functionality
  */
 final public class Localization
 {
-  //  Resource bundle property file prefix
-  //  Path(base name) to these files is determined from the classpath
-  //  set for the VM. This is set externally at the moment.
-  //  Could be set programmatically. -RM
-  final private static String _strPropertyPrefix = "bitext2tmx-rb";
-
-  private static Locale _locCurrent = Locale.getDefault();
-
   //  Init the bundle
-  private static ResourceBundle _rbDefault =
-    getResourceBundle( Locale.getDefault() );
+  private static ResourceBundle _bundle = ResourceBundle.getBundle("bitext2tmx/Bundle");
 
-  //  Resource Bundle for a locale
-  //  Only used at startup or everytime lang changes?
-  //  Does setDefault superceded this ?
-  final public static ResourceBundle getResourceBundle( final Locale loc )
-  { return( ResourceBundle.getBundle( _strPropertyPrefix, loc ) ); }
-
-  final public static void updateLocalization()
-  {
-    //System.out.println( "refreshLocalization" );
-    //_rbDefault = getResourceBundle( Locale.getDefault() );
-    _rbDefault = getResourceBundle( _locCurrent );
+  /**
+   * Returns resource bundle.
+   */
+  public static ResourceBundle getResourceBundle() {
+        return _bundle;
   }
-
-
-  //  Set the default locale
-  //  Call globally to change language/locale?
-  //  Should result in re-initialization of UI
-  final public static void setLocale( final Locale loc )
-  {
-    //System.out.println( "setLocale" );
-    Locale.setDefault( loc );
-
-    _locCurrent = loc;
-  }
-
-  final public static Locale getLocale()
-  {
-    //System.out.println( "setLocale" );
-    return( _locCurrent );
-  }
-
-  final public static void printLocale()
-  { System.out.println( _rbDefault.getLocale().getDisplayName() ); }
-
-  /**  Language ID, the current one - for later use */
-  private static String _strLanguageId = null;
 
   /**
    *  Private constructor
@@ -90,35 +50,13 @@ final public class Localization
   private Localization() {}
 
   /**
-   *  getCurrentLanguageId: Current language ID accessor
-   *  @param  void
-   *  @return String
-   */
-  final public static String getCurrentLanguageId()
-  { return( _strLanguageId ); }
-
-  /**
-   *  setCurrentLanguageId: Current language ID mutator
-   *
-   *  @param  String
-   *  @return void
-   */
-  final public static void setCurrentLanguageId( final String strLanguageId )
-    throws LocalizationException
-  {
-    if( strLanguageId != null ) _strLanguageId = strLanguageId;
-    else
-      throw new LocalizationException( "Language ID cannot be null" );
-  }
-
-  /**
    *  l10n: return localized string for given key
    *
    *  @param  String
    *  @return String
    */
   final public static String l10n( final String strKey )
-  { return( _rbDefault.getString( strKey ) ); }
+  { return( _bundle.getString( strKey ) ); }
 
 
   final static public class LocalizationException extends Exception

@@ -5,6 +5,7 @@
 #
 #  Copyright (C) 2005-2006 Susana Santos Antón
 #            (C) 2006-2009 Raymond: Martin et al
+#            (C) 2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -106,14 +107,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private JMenuItem  _mniSettingsFonts;
   private JMenuItem  _mniSettingsRegexp;
   private JMenuItem  _mncbSettingsLinebreak;
-
-  //  Language menu
-  private JMenu      _mnuLocale;         //  Order by ISO-639 codes, not name
-  private JMenuItem  _mniLocaleCatalan;  //  ca
-  private JMenuItem  _mniLocaleEnglish;  //  en
-  private JMenuItem  _mniLocaleSpanish;  //  es
-  private JMenuItem  _mniLocaleFrench;   //  fr
-  private JMenuItem  _mniLocaleJapanese; //  ja
 
   //  Look and Feel submenu
   private JMenu      _mnuLaf;
@@ -525,29 +518,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       getIcon( "fonts.png" ), "Configure Fonts...", "MNI.SETTINGS.FONTS" );
     _mniSettingsFonts.setToolTipText( l10n( "MNI.SETTINGS.FONTS.TOOLTIP" ) );
 
-    _mnuLocale = makeMenuComponent( MenuComponentType.MENU, null, null,
-      "Language", "MNU.LANGUAGE" );
-
-    _mniLocaleCatalan = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "Catalan", "MNI.LANGUAGE.CA" );
-    _mniLocaleCatalan.setToolTipText( l10n( "MNI.LANGUAGE.CA.TOOLTIP" ) );
-
-    _mniLocaleEnglish = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "English", "MNI.LANGUAGE.EN" );
-    _mniLocaleEnglish.setToolTipText( l10n( "MNI.LANGUAGE.EN.TOOLTIP" ) );
-
-    _mniLocaleSpanish = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "Spanish", "MNI.LANGUAGE.ES" );
-    _mniLocaleSpanish.setToolTipText( l10n( "MNI.LANGUAGE.ES.TOOLTIP" ) );
-
-    _mniLocaleFrench = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "French", "MNI.LANGUAGE.FR" );
-    _mniLocaleFrench.setToolTipText( l10n( "MNI.LANGUAGE.FR.TOOLTIP" ) );
-
-    _mniLocaleJapanese = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "Japanese", "MNI.LANGUAGE.JA" );
-    _mniLocaleJapanese.setToolTipText( l10n( "MNI.LANGUAGE.JA.TOOLTIP" ) );
-
     _mnuHelp = makeMenuComponent( MenuComponentType.MENU, null, null,
       "Help", "MNU.HELP" );
 
@@ -571,16 +541,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       _mnuFile.add( _mniFileQuit );
     }
 
-    _mnuLocale.add( _mniLocaleCatalan );
-    _mnuLocale.add( _mniLocaleEnglish );
-    _mnuLocale.add( _mniLocaleSpanish );
-    _mnuLocale.add( _mniLocaleFrench );
-    _mnuLocale.add( _mniLocaleJapanese );
-
     _mnuSettings.add( _mncbSettingsLinebreak );
     _mnuSettings.add( _mniSettingsRegexp );
     _mnuSettings.add( _mniSettingsFonts );
-    _mnuSettings.add( _mnuLocale );
 
     if( !isMacOSX() )
     {
@@ -671,7 +634,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     //dlg.dlgPath = _fUserHome;
     dlg.setPath( _fUserHome );
     dlg.setModal( true );
-    dlg.setLocale( this.getLocale() );
     dlg.setVisible( true );
 
     if( !dlg.isClosed() )
@@ -2669,101 +2631,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     //dlgConfig.dispose();
   }
 
-  private void onCatalan()
-  {
-    _mniLocaleCatalan.setSelected( true );
-    _mniLocaleEnglish.setSelected( false );
-    _mniLocaleSpanish.setSelected( false );
-    _mniLocaleFrench.setSelected( false );
-    _mniLocaleJapanese.setSelected( false );
-
-    _mniLocaleCatalan.setEnabled( false );
-    _mniLocaleEnglish.setEnabled( true );
-    _mniLocaleSpanish.setEnabled( true );
-    _mniLocaleFrench.setEnabled( true );
-    _mniLocaleJapanese.setEnabled( true );
-
-    Localization.setLocale( new Locale( "ca" ) );
-    updateLocalization();
-    updateUI();
-  }
-
-  private void onEnglish()
-  {
-    _mniLocaleCatalan.setSelected( false );
-    _mniLocaleEnglish.setSelected( true );
-    _mniLocaleSpanish.setSelected( false );
-    _mniLocaleFrench.setSelected( false );
-    _mniLocaleJapanese.setSelected( false );
-
-    _mniLocaleCatalan.setEnabled( true );
-    _mniLocaleEnglish.setEnabled( false );
-    _mniLocaleSpanish.setEnabled( true );
-    _mniLocaleFrench.setEnabled( true );
-    _mniLocaleJapanese.setEnabled( true );
-
-    Localization.setLocale( new Locale( "en" ) );
-    updateLocalization();
-    updateUI();
-  }
-
-  private void onFrench()
-  {
-    _mniLocaleCatalan.setSelected( false );
-    _mniLocaleEnglish.setSelected( false );
-    _mniLocaleSpanish.setSelected( false );
-    _mniLocaleFrench.setSelected( true );
-    _mniLocaleJapanese.setSelected( false );
-
-    _mniLocaleCatalan.setEnabled( true );
-    _mniLocaleEnglish.setEnabled( true );
-    _mniLocaleSpanish.setEnabled( true );
-    _mniLocaleFrench.setEnabled( false );
-    _mniLocaleJapanese.setEnabled( true );
-
-    Localization.setLocale( new Locale( "fr" ) );
-    updateLocalization();
-    updateUI();
-  }
-
-  private void onSpanish()
-  {
-    _mniLocaleCatalan.setSelected( false );
-    _mniLocaleEnglish.setSelected( false );
-    _mniLocaleSpanish.setSelected( true );
-    _mniLocaleFrench.setSelected( false );
-    _mniLocaleJapanese.setSelected( false );
-
-    _mniLocaleCatalan.setEnabled( true );
-    _mniLocaleEnglish.setEnabled( true );
-    _mniLocaleSpanish.setEnabled( false );
-    _mniLocaleFrench.setEnabled( true );
-    _mniLocaleJapanese.setEnabled( true );
-
-    Localization.setLocale( new Locale( "es", "ES" ) );
-    updateLocalization();
-    updateUI();
-  }
-
-    private void onJapanese()
-  {
-    _mniLocaleCatalan.setSelected( false );
-    _mniLocaleEnglish.setSelected( false );
-    _mniLocaleSpanish.setSelected( false );
-    _mniLocaleFrench.setSelected( false );
-    _mniLocaleJapanese.setSelected( true );
-
-    _mniLocaleCatalan.setEnabled( true );
-    _mniLocaleEnglish.setEnabled( true );
-    _mniLocaleSpanish.setEnabled( true );
-    _mniLocaleFrench.setEnabled( true );
-    _mniLocaleJapanese.setEnabled( false );
-
-    Localization.setLocale( new Locale( "ja", "JP" ) );
-    updateLocalization();
-    updateUI();
-  }
-
   /**
    *  Modificar_Idioma. Cuando se recoge la selecci�n del idioma por parte del
    *  usuario, se escribe en el fichero de configuraci�n y se actualiza la
@@ -2847,16 +2714,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniSettingsRegexp.setText( l10n( "MNI.SETTINGS.REGEX" ) );
 
     _mniFileSaveAs.setText( l10n( "MNI.FILE.SAVEAS" ) );
-
-    _mnuLocale         .setText( l10n( "MNU.LANGUAGE" ) );
-    _mniLocaleCatalan  .setText( l10n( "MNI.LANGUAGE.CA" ) );
-    _mniLocaleCatalan  .setToolTipText( l10n( "MNI.LANGUAGE.CA.TOOLTIP" ) );
-    _mniLocaleEnglish  .setText( l10n( "MNI.LANGUAGE.EN" ) );
-    _mniLocaleEnglish  .setToolTipText( l10n( "MNI.LANGUAGE.EN.TOOLTIP" ) );
-    _mniLocaleSpanish  .setText( l10n( "MNI.LANGUAGE.ES" ) );
-    _mniLocaleSpanish  .setToolTipText( l10n( "MNI.LANGUAGE.ES.TOOLTIP" ) );
-    _mniLocaleFrench   .setText( l10n( "MNI.LANGUAGE.FR" ) );
-    _mniLocaleFrench   .setToolTipText( l10n( "MNI.LANGUAGE.FR.TOOLTIP" ) );
 
     _mncbSettingsLinebreak.setText( l10n( "MNI.SETTINGS.LINEBREAK" ) );
     _mncbSettingsLinebreak.setToolTipText( l10n(  "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
@@ -3402,7 +3259,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       //  ...
 
       //  And supply a fallback default
-      final String strFontName  = "Dialog";
+      final String strFontName  = "Serif";
       final String strFontStyle = "Plain";
       final int iFontSize       = 11;
 
@@ -3437,13 +3294,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mniSettingsFonts       .setFont( font );
     _mniSettingsRegexp      .setFont( font );
     _mncbSettingsLinebreak  .setFont( font );
-
-    //  Language sub-menu
-    _mnuLocale         .setFont( font );
-    _mniLocaleCatalan  .setFont( font );  //  ca
-    _mniLocaleEnglish  .setFont( font );  //  en
-    _mniLocaleSpanish  .setFont( font );  //  es
-    _mniLocaleFrench   .setFont( font );  //  fr
 
     if( !isMacOSX() )
     {
@@ -3753,11 +3603,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
       else if( actor == _mniSettingsRegexp ) onConfigure();
       else if( actor == _mniSettingsFonts )  displayFontSelector();
-
-      else if( actor == _mniLocaleCatalan )  onCatalan();
-      else if( actor == _mniLocaleEnglish )  onEnglish();
-      else if( actor == _mniLocaleSpanish )  onSpanish();
-      else if( actor == _mniLocaleFrench )   onFrench();
 
       //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
       else if( actor == _mniLafGtk )
