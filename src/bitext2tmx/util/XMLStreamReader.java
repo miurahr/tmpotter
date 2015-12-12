@@ -1,26 +1,27 @@
 /**************************************************************************
- OmegaT - Computer Assisted Translation (CAT) tool 
-          with fuzzy matching, translation memory, keyword search, 
-          glossaries, and translation leveraging into updated projects.
-
- Copyright (C) 2000-2006 Keith Godfrey and Maxym Mykhalchuk
-               Home page: http://www.omegat.org/
-               Support center: http://groups.yahoo.com/group/OmegaT/
-
- This file is part of OmegaT.
-
- OmegaT is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- OmegaT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  bitext2tmx - Bitext Aligner/TMX Editor
+ *
+ *  Copyright (C) 2015 Hiroshi Miura
+ *
+ *  This file is copied from OmegaT project
+ * 
+ *  2000-2006 Keith Godfrey and Maxym Mykhalchuk
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  **************************************************************************/
 
 package bitext2tmx.util;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static bitext2tmx.util.Localization.l10n;
+import static bitext2tmx.util.Localization.getString;
 
 /**
  * A reader for XML stream.
@@ -92,8 +93,8 @@ public class XMLStreamReader {
         // make sure XML file is proper
         XMLBlock blk = getNextBlock();
         if (blk == null) {
-            throw new IOException(l10n("XSR_ERROR_NONVALID_XML") + "\n"
-                    + l10n("XSR_ERROR_UNABLE_INIT_READ_XML"));
+            throw new IOException(getString("XSR_ERROR_NONVALID_XML") + "\n"
+                    + getString("XSR_ERROR_UNABLE_INIT_READ_XML"));
         }
         if (blk.getTagName().equals("xml")) {
             String ver = blk.getAttribute("version");
@@ -101,15 +102,15 @@ public class XMLStreamReader {
             if (ver == null || ver.equals("")) {
                 // no version declared - assume it's readable
             } else if (!ver.equals("1.0")) {
-                throw new IOException(l10n("XSR_ERROR_NONVALID_XML")
+                throw new IOException(getString("XSR_ERROR_NONVALID_XML")
                         + "\n"
-                        + Utilities.format(l10n("XSR_ERROR_UNSUPPORTED_XML_VERSION"), ver));
+                        + Utilities.format(getString("XSR_ERROR_UNSUPPORTED_XML_VERSION"), ver));
             }
             m_headBlock = blk;
         } else {
             // not a valid XML file
-            throw new IOException(l10n("XSR_ERROR_NONVALID_XML") + "\n"
-                    + l10n("XSR_ERROR_NONVALID_XML"));
+            throw new IOException(getString("XSR_ERROR_NONVALID_XML") + "\n"
+                    + getString("XSR_ERROR_NONVALID_XML"));
         }
     }
 
@@ -451,7 +452,7 @@ public class XMLStreamReader {
 
                 default:
                     err = true;
-                    msg = Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    msg = Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                             String.valueOf(Character.toChars(cp)), state);
                 }
                 break;
@@ -462,7 +463,7 @@ public class XMLStreamReader {
                     state = state_comment;
                 } else {
                     err = true;
-                    msg = l10n("XSR_ERROR_CONFUSED");
+                    msg = getString("XSR_ERROR_CONFUSED");
                 }
                 break;
 
@@ -531,7 +532,7 @@ public class XMLStreamReader {
 
                 default:
                     err = true;
-                    msg = Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    msg = Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                             String.valueOf(Character.toChars(cp)), state);
                 }
                 break;
@@ -615,9 +616,9 @@ public class XMLStreamReader {
             if (err) {
                 // TODO construct error message with correct state data
                 // for now, just throw a parse error
-                String str = l10n("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
+                String str = getString("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
                 if (blk.isComment()) {
-                    str += l10n("XSR_ERROR_COMMENT_TAG");
+                    str += getString("XSR_ERROR_COMMENT_TAG");
                 }
                 if (blk.numAttributes() > 0) {
                     str += blk.getAttribute(0).name;
@@ -633,14 +634,14 @@ public class XMLStreamReader {
     private void throwErrorInGetNextTag(XMLBlock blk, String msg) throws TranslationException {
         // TODO construct error message with correct state data
         // for now, just throw a parse error
-        String data = l10n("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
+        String data = getString("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
         if (blk.isStandalone())
-            data += l10n("XSR_ERROR_EMPTY_TAG");
+            data += getString("XSR_ERROR_EMPTY_TAG");
         else if (blk.isClose())
-            data += l10n("XSR_ERROR_CLOSE_TAG");
+            data += getString("XSR_ERROR_CLOSE_TAG");
         if (blk.numAttributes() > 0)
-            data += l10n("XSR_ERROR_LOADED") + blk.numAttributes()
-                    + l10n("XSR_ERROR_ATTRIBUTES");
+            data += getString("XSR_ERROR_LOADED") + blk.numAttributes()
+                    + getString("XSR_ERROR_ATTRIBUTES");
         throw new TranslationException(msg + data);
     }
 
@@ -698,9 +699,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -733,9 +733,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -753,9 +752,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -772,9 +770,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -804,9 +801,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -815,7 +811,7 @@ public class XMLStreamReader {
                 if (cp != '>') {
                     // parse error - got '?' followed by something
                     // unexpected
-                    throwErrorInGetNextTag(blk, l10n("XSR_ERROR_FLOATING_QUESTION_MARK"));
+                    throwErrorInGetNextTag(blk, getString("XSR_ERROR_FLOATING_QUESTION_MARK"));
                 } else
                     state = state_finish;
                 break;
@@ -834,9 +830,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -851,9 +846,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -914,9 +908,8 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(
-                            blk,
-                            Utilities.format(l10n("XSR_ERROR_UNEXPECTED_CHAR"),
+                    throwErrorInGetNextTag(blk,
+                            Utilities.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
                                     String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
@@ -1066,7 +1059,7 @@ public class XMLStreamReader {
             blk = getNextBlock();
             if (blk == null) {
                 // stream ended without finding match
-                throw new TranslationException(l10n("XSR_ERROR_END_OF_STREAM"));
+                throw new TranslationException(getString("XSR_ERROR_END_OF_STREAM"));
             }
 
             if (blk.isTag() && blk.getTagName().equals(block.getTagName())) {
@@ -1132,7 +1125,7 @@ public class XMLStreamReader {
         while (cp != ';') {
             val.appendCodePoint(cp);
             if (cp == 0) {
-                throw new TranslationException(l10n("XSR_ERROR_UNTERMINATED_ESCAPE_CHAR"));
+                throw new TranslationException(getString("XSR_ERROR_UNTERMINATED_ESCAPE_CHAR"));
             }
             cp = getNextCharCache();
             if (ctr++ > 13) {
@@ -1168,23 +1161,19 @@ public class XMLStreamReader {
             try {
                 cp = Integer.valueOf(valString, 16);
             } catch (NumberFormatException ex) {
-                throw new TranslationException(Utilities.format(
-                            l10n("XSR_ERROR_BAD_BINARY_CHAR"), val), ex);
+                throw new TranslationException(Utilities.format(getString("XSR_ERROR_BAD_BINARY_CHAR"), val), ex);
             }
             if (!Utilities.isValidXMLChar(cp)) {
-                throw new TranslationException(Utilities.format(
-                        l10n("XSR_ERROR_BAD_BINARY_CHAR"), val));
+                throw new TranslationException(Utilities.format(getString("XSR_ERROR_BAD_BINARY_CHAR"), val));
             }
         } else {
             try {
                 cp = Integer.valueOf(valString, 10);
             } catch (NumberFormatException ex) {
-                throw new TranslationException(Utilities.format(
-                        l10n("XSR_ERROR_BAD_DECIMAL_CHAR"), val), ex);
+                throw new TranslationException(Utilities.format(getString("XSR_ERROR_BAD_DECIMAL_CHAR"), val), ex);
             }
             if (!Utilities.isValidXMLChar(cp)) {
-                throw new TranslationException(Utilities.format(
-                        l10n("XSR_ERROR_BAD_DECIMAL_CHAR"), val));
+                throw new TranslationException(Utilities.format(getString("XSR_ERROR_BAD_DECIMAL_CHAR"), val));
             }
         }
 

@@ -50,7 +50,7 @@ import javax.swing.text.StyleConstants;
 
 import com.vlsolutions.swing.docking.*;
 
-import static bitext2tmx.util.Localization.l10n;
+import static bitext2tmx.util.Localization.getString;
 import static bitext2tmx.util.Utilities.*;
 
 

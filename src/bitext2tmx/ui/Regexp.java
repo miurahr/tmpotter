@@ -74,15 +74,15 @@ final public class Regexp extends JDialog implements ActionListener
 
     TableColumn column = _tbl.getColumnModel().getColumn( 0 );
     column.setPreferredWidth( 100 );
-    column.setHeaderValue( l10n( "DLG.CONFIG.COL.HDR.VAL" ) );
+    column.setHeaderValue( getString( "DLG.CONFIG.COL.HDR.VAL" ) );
 
     _btnOK.setBounds( new Rectangle( 78, 238, 96, 24 ) );
-    _btnOK.setText( l10n( "BTN.OK" ) ); 
+    _btnOK.setText( getString( "BTN.OK" ) ); 
     _btnOK.addActionListener( this );
 
     _btnCancel.setBounds( new Rectangle( 216, 238, 96, 24 ) );
     _btnCancel.setSelected( false );
-    _btnCancel.setText( l10n( "BTN.CANCEL" ) );
+    _btnCancel.setText( getString( "BTN.CANCEL" ) );
     _btnCancel.addActionListener( this );
 
     _pnl1.setBorder( BorderFactory.createLineBorder( Color.black ) );
@@ -103,7 +103,7 @@ final public class Regexp extends JDialog implements ActionListener
     getContentPane().add( _pnl );
 
     setModal( false );
-    setTitle( l10n( "DLG.CONFIG.TITLE" ) );
+    setTitle( getString( "DLG.CONFIG.TITLE" ) );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setBounds( ( screenSize.width - 500 ) / 2,

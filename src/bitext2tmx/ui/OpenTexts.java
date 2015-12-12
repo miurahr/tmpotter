@@ -132,34 +132,34 @@ final public class OpenTexts extends JDialog implements ActionListener
 
     _pnl.setLayout( null );
 
-    _lblOriginal.setText( l10n( "LBL.SOURCE.FILE" ) );
+    _lblOriginal.setText( getString( "LBL.SOURCE.FILE" ) );
     _lblOriginal.setBounds( new Rectangle( 5, 10, 200, 15 ) );
 
     _tfdOriginal.setText( "" );
     _tfdOriginal.setBounds( new Rectangle( 5, 30, 300, 22 ) );
 
     //_btnOriginal.setText( l10n( "BTN.BROWSE" ) );
-    setLocalizedText( _btnOriginal, l10n( "BTN.BROWSE.ORIGINAL" ) );
+    setLocalizedText( _btnOriginal, getString( "BTN.BROWSE.ORIGINAL" ) );
     _btnOriginal.addActionListener( this );
     _btnOriginal.setBounds( new Rectangle( 310, 30, 100, 22 ) );
 
     //_btnTranslation.setText( l10n( "BTN.BROWSE" ) );
-    setLocalizedText( _btnTranslation, l10n( "BTN.BROWSE.TRANSLATION" ) );
+    setLocalizedText( _btnTranslation, getString( "BTN.BROWSE.TRANSLATION" ) );
     _btnTranslation.addActionListener( this );
     _btnTranslation.setEnabled( false );
     _btnTranslation.setBounds( new Rectangle( 310, 75, 100, 22 ) );
 
-    _lblTranslation.setText( l10n( "LBL.TARGET.FILE" ) );
+    _lblTranslation.setText( getString( "LBL.TARGET.FILE" ) );
     _lblTranslation.setBounds( new Rectangle( 5, 55, 200, 15 ) );
 
     _tfdTranslation.setText( "" );
     _tfdTranslation.setBounds( new Rectangle( 5, 75, 300, 22 ) );
 
-    setLocalizedText( _btnOK, l10n( "BTN.OK" ) );
+    setLocalizedText( _btnOK, getString( "BTN.OK" ) );
     _btnOK.addActionListener( this );
     _btnOK.setBounds( new Rectangle( 205, 115, 100, 22 ) );
 
-    setLocalizedText( _btnCancel, l10n( "BTN.CANCEL" ) );
+    setLocalizedText( _btnCancel, getString( "BTN.CANCEL" ) );
     _btnCancel.addActionListener( this );
     _btnCancel.setBounds( new Rectangle( 310, 115, 100, 22 ) );
 
@@ -168,44 +168,44 @@ final public class OpenTexts extends JDialog implements ActionListener
 
     setModal( true );
     setResizable( false );
-    setTitle( l10n( "DLG.OPEN.TITLE" ) );
+    setTitle( getString( "DLG.OPEN.TITLE" ) );
     getContentPane().setLayout( null );
 
-    _cbxOriginalLang.setToolTipText( l10n( "CB.LANG.SOURCE.TOOLTIP" ) );
+    _cbxOriginalLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
     _cbxOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
     _cbxOriginalLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
 
     _cbxOriginalEncoding.removeItemAt( 2 );
-    _cbxOriginalEncoding.addItem( l10n( "ENCODING.DEFAULT" ) );
-    _cbxOriginalEncoding.setToolTipText( l10n( "CB.ENCODING.TOOLTIP" ) );
+    _cbxOriginalEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
+    _cbxOriginalEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
     _cbxOriginalEncoding.setSelectedIndex( 0 );
     _cbxOriginalEncoding.setBounds( new Rectangle( 530, 30, 100, 22 ) );
 
-    _lblOriginalLang.setText( l10n( "LBL.SOURCE.LANG" ) );
+    _lblOriginalLang.setText( getString( "LBL.SOURCE.LANG" ) );
     _lblOriginalLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
 
-    _lblOriginalEncoding.setText( l10n( "LBL.ENCODING" ) );
+    _lblOriginalEncoding.setText( getString( "LBL.ENCODING" ) );
     _lblOriginalEncoding.setBounds( new Rectangle( 530, 10, 100, 16 ) );
 
-    _cbxTranslationLang.setToolTipText( l10n( "CB.LANG.TARGET.TOOLTIP" ) );
+    _cbxTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
     _cbxTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
     _cbxTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
     _cbxTranslationLang.setEnabled( false );
 
     _cbxTranslationEncoding.removeItemAt( 2 );
-    _cbxTranslationEncoding.addItem( l10n( "ENCODING.DEFAULT" ) );
-    _cbxTranslationEncoding.setToolTipText( l10n( "CB.ENCODING.TOOLTIP" ) );
+    _cbxTranslationEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
+    _cbxTranslationEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
     _cbxTranslationEncoding.setSelectedIndex( 0 );
     _cbxTranslationEncoding.setBounds( new Rectangle( 530, 75, 100, 22 ) );
     _cbxTranslationEncoding.setEnabled( false );
 
     _lblTranslation.setEnabled( false );
 
-    _lblTranslationLang.setText( l10n( "LBL.TARGET.LANG" ) );
+    _lblTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
     _lblTranslationLang.setBounds( new Rectangle( 420, 55, 100, 16 ) );
     _lblTranslationLang.setEnabled( false );
 
-    _lblTranslationEncoding.setText( l10n( "LBL.ENCODING" ) );
+    _lblTranslationEncoding.setText( getString( "LBL.ENCODING" ) );
     _lblTranslationEncoding.setBounds( new Rectangle( 530, 55, 100, 16 ) );
 
     _pnl.setBounds( new Rectangle( -1, 0, 640, 180 ) );
@@ -341,8 +341,8 @@ final public class OpenTexts extends JDialog implements ActionListener
         }
         else
         {
-          JOptionPane.showMessageDialog( _pnl, l10n( "MSG_ERROR_FILE_NOTFOUND" ),
-            l10n( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+          JOptionPane.showMessageDialog( _pnl, getString( "MSG_ERROR_FILE_NOTFOUND" ),
+            getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
 
           _tfdOriginal.setText( "" );
         }
@@ -407,8 +407,8 @@ final public class OpenTexts extends JDialog implements ActionListener
         }
         else
         {
-          JOptionPane.showMessageDialog( _pnl, l10n( "MSG_ERROR_FILE_NOTFOUND" ),
-            l10n( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+          JOptionPane.showMessageDialog( _pnl, getString( "MSG_ERROR_FILE_NOTFOUND" ),
+            getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
 
           _tfdTranslation.setText( "" );
         }
@@ -470,8 +470,8 @@ final public class OpenTexts extends JDialog implements ActionListener
     }
     catch( final IOException ex )
     {
-      JOptionPane.showMessageDialog( _pnl, l10n( "MSG_ERROR_FILE_NOTFOUND" ),
-        l10n( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog( _pnl, getString( "MSG_ERROR_FILE_NOTFOUND" ),
+        getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
 
       if( bErrorOrig ) _tfdOriginal.setText( "" );
       else _tfdTranslation.setText( "" );

@@ -276,18 +276,18 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     UIManager.put( "DragControler.detachCursor", getDesktopIcon( "shade.png" ).getImage() );
 
 
-    UIManager.put( "DockViewTitleBar.closeButtonText",    l10n( "VW.TITLEBAR.BTNCLOSE" ) );
-    UIManager.put( "DockViewTitleBar.minimizeButtonText", l10n( "VW.TITLEBAR.BTNMINIMIZE" ) );
-    UIManager.put( "DockViewTitleBar.maximizeButtonText", l10n( "VW.TITLEBAR.BTNMAXIMIZE" ) );
-    UIManager.put( "DockViewTitleBar.restoreButtonText",  l10n( "VW.TITLEBAR.BTNRESTORE" ) );
-    UIManager.put( "DockViewTitleBar.floatButtonText",    l10n( "VW.TITLEBAR.BTNFLOAT" ) );
-    UIManager.put( "DockViewTitleBar.attachButtonText",   l10n( "VW.TITLEBAR.BTNATTACH" ) );
+    UIManager.put( "DockViewTitleBar.closeButtonText",    getString( "VW.TITLEBAR.BTNCLOSE" ) );
+    UIManager.put( "DockViewTitleBar.minimizeButtonText", getString( "VW.TITLEBAR.BTNMINIMIZE" ) );
+    UIManager.put( "DockViewTitleBar.maximizeButtonText", getString( "VW.TITLEBAR.BTNMAXIMIZE" ) );
+    UIManager.put( "DockViewTitleBar.restoreButtonText",  getString( "VW.TITLEBAR.BTNRESTORE" ) );
+    UIManager.put( "DockViewTitleBar.floatButtonText",    getString( "VW.TITLEBAR.BTNFLOAT" ) );
+    UIManager.put( "DockViewTitleBar.attachButtonText",   getString( "VW.TITLEBAR.BTNATTACH" ) );
 
-    UIManager.put( "DockTabbedPane.closeButtonText",    l10n( "TAB.BTNCLOSE" ) );
-    UIManager.put( "DockTabbedPane.minimizeButtonText", l10n( "TAB.BTNMINIMIZE" ) );
-    UIManager.put( "DockTabbedPane.restoreButtonText",  l10n( "TAB.BTNRESTORE" ) );
-    UIManager.put( "DockTabbedPane.maximizeButtonText", l10n( "TAB.BTNMAXIMIZE" ) );
-    UIManager.put( "DockTabbedPane.floatButtonText",    l10n( "TAB.BTNFLOAT" ) );
+    UIManager.put( "DockTabbedPane.closeButtonText",    getString( "TAB.BTNCLOSE" ) );
+    UIManager.put( "DockTabbedPane.minimizeButtonText", getString( "TAB.BTNMINIMIZE" ) );
+    UIManager.put( "DockTabbedPane.restoreButtonText",  getString( "TAB.BTNRESTORE" ) );
+    UIManager.put( "DockTabbedPane.maximizeButtonText", getString( "TAB.BTNMAXIMIZE" ) );
+    UIManager.put( "DockTabbedPane.floatButtonText",    getString( "TAB.BTNFLOAT" ) );
 
   }
 
@@ -338,10 +338,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     DockKey keyRightSegment   = _edRightSegment  .getDockKey();
     DockKey keySegmentButtons = _vwControls      .getDockKey();
 
-    keyLeftSegment.setName( l10n( "VW.ORIGINAL.NAME" ) );
-    keyLeftSegment.setTooltip( l10n( "VW.ORIGINAL.TOOLTIP" ) );
-    keyRightSegment.setName( l10n( "VW.TRANSLATION.NAME" ) );
-    keyRightSegment.setTooltip( l10n( "VW.TRANSLATION.TOOLTIP" ) );
+    keyLeftSegment.setName( getString( "VW.ORIGINAL.NAME" ) );
+    keyLeftSegment.setTooltip( getString( "VW.ORIGINAL.TOOLTIP" ) );
+    keyRightSegment.setName( getString( "VW.TRANSLATION.NAME" ) );
+    keyRightSegment.setTooltip( getString( "VW.TRANSLATION.TOOLTIP" ) );
 
     keyAlignmentTable  .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
     keyLeftSegment     .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
@@ -464,7 +464,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     mni.addActionListener( this );
 
     //  Localized text
-    if( strKey != null ) setLocalizedText( mni, l10n( strKey ) );
+    if( strKey != null ) setLocalizedText( mni, getString( strKey ) );
     //if( strKey != null ) mni.setText( l10n( strKey ) );
 
     return( (T)mni );
@@ -509,14 +509,14 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
     _mncbSettingsLinebreak = makeMenuComponent( MenuComponentType.CHECKBOX, null, null,
       "Linebreaks", "MNI.SETTINGS.LINEBREAK" );
-    _mncbSettingsLinebreak.setToolTipText( l10n( "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
+    _mncbSettingsLinebreak.setToolTipText( getString( "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
     _mncbSettingsLinebreak.addChangeListener( new javax.swing.event.ChangeListener()
       { final public void stateChanged( final ChangeEvent e )
         { onLinebreakToggle();  } } );
 
     _mniSettingsFonts = makeMenuComponent( MenuComponentType.ITEM, null,
       getIcon( "fonts.png" ), "Configure Fonts...", "MNI.SETTINGS.FONTS" );
-    _mniSettingsFonts.setToolTipText( l10n( "MNI.SETTINGS.FONTS.TOOLTIP" ) );
+    _mniSettingsFonts.setToolTipText( getString( "MNI.SETTINGS.FONTS.TOOLTIP" ) );
 
     _mnuHelp = makeMenuComponent( MenuComponentType.MENU, null, null,
       "Help", "MNU.HELP" );
@@ -881,7 +881,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       final FileInputStream fis = new FileInputStream( fPathOriginal );
       final InputStreamReader isr;
 
-      if( cod_fuente.equals( l10n( "ENCODING.DEFAULT" ) ) )
+      if( cod_fuente.equals( getString( "ENCODING.DEFAULT" ) ) )
         isr = new InputStreamReader( fis );
       else if(cod_fuente.equals( "UTF-8" ) )
         isr = new InputStreamReader( fis, "UTF-8" );
@@ -1047,7 +1047,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       final InputStreamReader isr;
       final BufferedReader br;
 
-      if( strEncoding.equals(  l10n( "ENCODING.DEFAULT" ) ) )
+      if( strEncoding.equals(  getString( "ENCODING.DEFAULT" ) ) )
         isr = new InputStreamReader( fis );
       else
         isr = new InputStreamReader( fis, strEncoding );
@@ -1112,8 +1112,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     }
     catch( final java.io.IOException ex )
     {
-      JOptionPane.showMessageDialog( this, l10n( "MSG.ERROR" ),
-        l10n( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog( this, getString( "MSG.ERROR" ),
+        getString( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
 
       this.dispose();
     }
@@ -1348,10 +1348,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     TableColumn col;
 
     col = _vwAlignments.getColumnModel().getColumn( 1 );
-    col.setHeaderValue( l10n( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
+    col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
 
     col = _vwAlignments.getColumnModel().getColumn( 2 );
-    col.setHeaderValue( l10n( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
+    col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
 
     _vwAlignments.setColumnHeaderView();
 
@@ -1524,7 +1524,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         {
           fc.setLocation( 230, 300 );
           fc.setCurrentDirectory( _fUserHome );
-          fc.setDialogTitle( l10n( "DLG.SAVEAS" ) );
+          fc.setDialogTitle( getString( "DLG.SAVEAS" ) );
 
           fc.setMultiSelectionEnabled( false );
           fc.setSelectedFile( fNombre );
@@ -1556,10 +1556,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           if( fNombre.exists() )
           {
             // "Guardar"/"Save"  & "Cancelar"/"Cancel"
-            final Object[] options = { l10n( "BTN.SAVE" ),
-              l10n( "BTN.CANCEL" ) };
+            final Object[] options = { getString( "BTN.SAVE" ),
+              getString( "BTN.CANCEL" ) };
 
-            n = JOptionPane.showOptionDialog( this, l10n( "MSG.FILE.EXISTS" ), l10n( "MSG.WARNING" ),
+            n = JOptionPane.showOptionDialog( this, getString( "MSG.FILE.EXISTS" ), getString( "MSG.WARNING" ),
                  JOptionPane.OK_CANCEL_OPTION,   JOptionPane.QUESTION_MESSAGE,
                    null, options, options[0] );
 
@@ -1683,8 +1683,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     }
     catch( final java.io.IOException ex )
     {
-      JOptionPane.showMessageDialog( this, l10n( "MSG.ERROR.FILE.WRITE" ),
-        l10n( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog( this, getString( "MSG.ERROR.FILE.WRITE" ),
+        getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
 
       this.dispose();
     }
@@ -2661,16 +2661,16 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       TableColumn col = _vwAlignments.getColumnModel().getColumn( 1 );
 
       if( _fPathOriginal == null )
-        col.setHeaderValue( l10n( "TBL.HDR.COL.SOURCE" ) );
+        col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) );
       else
-        col.setHeaderValue( l10n( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
+        col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
 
       col = _vwAlignments.getColumnModel().getColumn( 2 );
 
       if( _fPathTranslation == null )
-        col.setHeaderValue( l10n( "TBL.HDR.COL.TARGET" ) );
+        col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) );
       else
-        col.setHeaderValue( l10n( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
+        col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
 
       _vwAlignments.setColumnHeaderView();
 
@@ -2695,28 +2695,28 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    */
   private void updateUIText()
   {
-    setTitle( l10n( "WND.APP.TITLE" ) );
+    setTitle( getString( "WND.APP.TITLE" ) );
     _vwControls.updateText();
 
-    _mnuFile       .setText( l10n( "MNU.FILE" ) );
-    _mniFileQuit   .setText( l10n( "MNI.FILE.EXIT" ) );
+    _mnuFile       .setText( getString( "MNU.FILE" ) );
+    _mniFileQuit   .setText( getString( "MNI.FILE.EXIT" ) );
 
-    _mnuHelp       .setText( l10n( "MNU.HELP" ) );
-    _mniHelpAbout  .setText( l10n( "MNI.HELP.ABOUT" ) );
-    _mniHelpManual  .setText( l10n( "MNI.HELP.MANUAL" ) );
+    _mnuHelp       .setText( getString( "MNU.HELP" ) );
+    _mniHelpAbout  .setText( getString( "MNI.HELP.ABOUT" ) );
+    _mniHelpManual  .setText( getString( "MNI.HELP.MANUAL" ) );
 
-    _mniFileOpen   .setActionCommand( l10n( "MNI.FILE.OPEN" ) );
-    _mniFileOpen   .setText( l10n( "MNI.FILE.OPEN" ) );
+    _mniFileOpen   .setActionCommand( getString( "MNI.FILE.OPEN" ) );
+    _mniFileOpen   .setText( getString( "MNI.FILE.OPEN" ) );
 
-    _mniFileClose.setText( l10n( "MNI.FILE.ABORT" ) );
+    _mniFileClose.setText( getString( "MNI.FILE.ABORT" ) );
 
-    _mnuSettings      .setText( l10n( "MNU.SETTINGS" ) );
-    _mniSettingsRegexp.setText( l10n( "MNI.SETTINGS.REGEX" ) );
+    _mnuSettings      .setText( getString( "MNU.SETTINGS" ) );
+    _mniSettingsRegexp.setText( getString( "MNI.SETTINGS.REGEX" ) );
 
-    _mniFileSaveAs.setText( l10n( "MNI.FILE.SAVEAS" ) );
+    _mniFileSaveAs.setText( getString( "MNI.FILE.SAVEAS" ) );
 
-    _mncbSettingsLinebreak.setText( l10n( "MNI.SETTINGS.LINEBREAK" ) );
-    _mncbSettingsLinebreak.setToolTipText( l10n(  "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
+    _mncbSettingsLinebreak.setText( getString( "MNI.SETTINGS.LINEBREAK" ) );
+    _mncbSettingsLinebreak.setToolTipText( getString(  "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
   }
 
   //  ToDo: does nothing?
@@ -2770,8 +2770,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       else cont++;
     }
 
-    JOptionPane.showMessageDialog( this, l10n( "MSG.ERASED" ) + " " +
-      lineasLimpiar + " " + l10n( "MSG.BLANK.ROWS" ) );
+    JOptionPane.showMessageDialog( this, getString( "MSG.ERASED" ) + " " +
+      lineasLimpiar + " " + getString( "MSG.BLANK.ROWS" ) );
 
 
     // "Se han borrado n
@@ -3096,8 +3096,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     catch( final java.lang.OutOfMemoryError ex )
     {
       //JOptionPane.showMessageDialog( _pnl, l10n( "MSG.MEMORY.INSUFFICIENT" ),
-      JOptionPane.showMessageDialog( this, l10n( "MSG.MEMORY.INSUFFICIENT" ),
-        l10n( "MSG.ERROR"), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog( this, getString( "MSG.MEMORY.INSUFFICIENT" ),
+        getString( "MSG.ERROR"), JOptionPane.ERROR_MESSAGE );
 
       return( false );
     }
@@ -3614,7 +3614,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           SwingUtilities.updateComponentTreeUI( this );
         }
         catch( final Exception e )
-        { System.out.println( l10n( "OTP.LNF.INIT.ERROR" ) ); }
+        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
       }
 
       else if( actor == _mniLafLiquid )
@@ -3627,7 +3627,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           SwingUtilities.updateComponentTreeUI( this );
         }
         catch( final Exception e )
-        { System.out.println( l10n( "OTP.LNF.INIT.ERROR" ) ); }
+        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
       }
 
       //  All platforms
@@ -3640,7 +3640,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           SwingUtilities.updateComponentTreeUI( this );
         }
         catch( final Exception e )
-        { System.out.println( l10n( "OTP.LNF.INIT.ERROR" ) ); }
+        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
       }
 
       //  Java 1.6 update 10+
@@ -3653,7 +3653,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           SwingUtilities.updateComponentTreeUI( this );
         }
         catch( final Exception e )
-        { System.out.println( l10n( "OTP.LNF.INIT.ERROR" ) ); }
+        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
       }
 
       else if( actor == _mniLafSystem )
@@ -3665,7 +3665,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           SwingUtilities.updateComponentTreeUI( this );
         }
         catch( final Exception e )
-        { System.out.println( l10n( "OTP.LNF.INIT.ERROR" ) ); }
+        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
       }
 
       else if( actor == _mniHelpManual )  displayManual();

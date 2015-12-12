@@ -124,7 +124,7 @@ final public class FontSelector extends JDialog
 
     getContentPane().setLayout( new GridBagLayout() );
 
-    setTitle( l10n( "DLG.FONTS.TITLE" ) );
+    setTitle( getString( "DLG.FONTS.TITLE" ) );
 
     setModal( false );
 
@@ -143,7 +143,7 @@ final public class FontSelector extends JDialog
 
     //  Top row 0 - Font Label & Combobox
 
-    _fontLabel.setText( l10n( "DLG.FONTS.LBL.SOURCE.FONT" ) );
+    _fontLabel.setText( getString( "DLG.FONTS.LBL.SOURCE.FONT" ) );
 
     gridBagConstraints.gridx  = 0;
     gridBagConstraints.gridy  = 0;
@@ -172,7 +172,7 @@ final public class FontSelector extends JDialog
 
 
     //  Row 2 - Font Style
-    _lblFontStyle.setText( l10n( "DLG.FONTS.LBL.STYLE" ) ); 
+    _lblFontStyle.setText( getString( "DLG.FONTS.LBL.STYLE" ) ); 
 
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
@@ -198,7 +198,7 @@ final public class FontSelector extends JDialog
 
 
     //  Row 3 - Size Label & Spinner
-    _sizeLabel.setText( l10n( "DLG.FONTS.LBL.FONTSIZE" ) );
+    _sizeLabel.setText( getString( "DLG.FONTS.LBL.FONTSIZE" ) );
 
     gridBagConstraints.gridx  = 0;
     gridBagConstraints.gridy  = 2;
@@ -223,7 +223,7 @@ final public class FontSelector extends JDialog
 
     //  Row 3 - Font Display Area
     _lblFontDisplayArea = new JLabel();
-    _lblFontDisplayArea.setText( l10n( "DLG.FONTS.LBL.DISPLAY.AREA" ) );
+    _lblFontDisplayArea.setText( getString( "DLG.FONTS.LBL.DISPLAY.AREA" ) );
 
     gridBagConstraints.gridx   = 0;
     gridBagConstraints.gridy   = 3;
@@ -248,7 +248,7 @@ final public class FontSelector extends JDialog
 
 
     //  Preview Text Area
-    _bdrTextPreview = new TitledBorder( null, l10n( "DLG.FONTS.SAMPLE.TEXT" ),
+    _bdrTextPreview = new TitledBorder( null, getString( "DLG.FONTS.SAMPLE.TEXT" ),
       TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
         _fontLabel.getFont() );
 
@@ -256,7 +256,7 @@ final public class FontSelector extends JDialog
     _previewTextArea.setBackground( new Color( 255, 255, 255 ) );
     _previewTextArea.setEditable( false );
     _previewTextArea.setLineWrap( true );
-    _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT" ) );
+    _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
     _previewTextArea.setWrapStyleWord( true );
     _previewTextArea.setBorder( _bdrTextPreview );
 
@@ -275,14 +275,14 @@ final public class FontSelector extends JDialog
     //  Botom row - Button Panel OK & Cancel
     _buttonPanel.setLayout(new FlowLayout( FlowLayout.RIGHT ) );
 
-    setLocalizedText( _btnApply, l10n( "BTN.APPLY" ) );
+    setLocalizedText( _btnApply, getString( "BTN.APPLY" ) );
     _btnApply.addActionListener( new ActionListener()
       { public void actionPerformed( final ActionEvent action )
         { OnApplyButton( action ); } } );
 
     _buttonPanel.add( _btnApply );
 
-    setLocalizedText( _btnClose, l10n( "BTN.CLOSE" ) );
+    setLocalizedText( _btnClose, getString( "BTN.CLOSE" ) );
     _btnClose.addActionListener( new ActionListener()
       { public void actionPerformed( final ActionEvent evt )
         { CloseButtonEvent( evt ); } } );
@@ -350,22 +350,22 @@ final public class FontSelector extends JDialog
     switch( _cboxFontDisplayArea.getSelectedIndex() )
     {
       case 0:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT.TABLE" ) );
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TABLE" ) );
         break;
       case 1:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT.TABLE.HDR" ));
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TABLE.HDR" ));
         break;
       case 2:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT.SOURCE.EDITOR" ) );
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.SOURCE.EDITOR" ) );
         break;
       case 3:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT.TARGET.EDITOR" ) );
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TARGET.EDITOR" ) );
         break;
       case 4:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT.OTHER" ) );
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.OTHER" ) );
         break;
       default:
-        _previewTextArea.setText( l10n( "DLG.FONTS.SAMPLE.TEXT" ) );
+        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
     }
   }
 
@@ -492,21 +492,21 @@ final public class FontSelector extends JDialog
 
   final private String[] _astrFontStyles =
   {
-    l10n( "FONT.STYLE.PLAIN" ),
-    l10n( "FONT.STYLE.ITALIC" ),
-    l10n( "FONT.STYLE.BOLD" ),
-    l10n( "FONT.STYLE.BOLD.ITALIC" )
+    getString( "FONT.STYLE.PLAIN" ),
+    getString( "FONT.STYLE.ITALIC" ),
+    getString( "FONT.STYLE.BOLD" ),
+    getString( "FONT.STYLE.BOLD.ITALIC" )
   };
 
 
   final private String[] _astrFontWindowAreas =
   {
-    l10n( "DLG.FONTS.WND.AREA.TABLE" ),
-    l10n( "DLG.FONTS.WND.AREA.TABLE.HDR" ),
-    l10n( "DLG.FONTS.WND.AREA.SOURCE.EDITOR" ),
-    l10n( "DLG.FONTS.WND.AREA.TARGET.EDITOR" ),
-    l10n( "DLG.FONTS.WND.AREA.OTHER" ),
-    l10n( "DLG.FONTS.WND.AREA.ALL" ) 
+    getString( "DLG.FONTS.WND.AREA.TABLE" ),
+    getString( "DLG.FONTS.WND.AREA.TABLE.HDR" ),
+    getString( "DLG.FONTS.WND.AREA.SOURCE.EDITOR" ),
+    getString( "DLG.FONTS.WND.AREA.TARGET.EDITOR" ),
+    getString( "DLG.FONTS.WND.AREA.OTHER" ),
+    getString( "DLG.FONTS.WND.AREA.ALL" ) 
   };
 
 }//  DlgFonts{}

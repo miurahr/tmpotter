@@ -100,7 +100,7 @@ final public class Manual extends JDialog
     jEditorPaneAyuda.setText( "" );
 
     setModal( true );
-    setTitle( l10n( "DLG.HELP.TITLE" ) );
+    setTitle( getString( "DLG.HELP.TITLE" ) );
 
     getContentPane().add( panel1 );
     panel1.add( jScrollPaneAyuda, BorderLayout.CENTER );
@@ -193,8 +193,8 @@ final public class Manual extends JDialog
     catch( final java.io.IOException ex )
     {
       JOptionPane.showMessageDialog( panel1,
-        l10n( "MSG.ERROR.HELP.NOTFOUND" ),
-        l10n( "MSG.ERROR" ),
+        getString( "MSG.ERROR.HELP.NOTFOUND" ),
+        getString( "MSG.ERROR" ),
         JOptionPane.ERROR_MESSAGE );
 
       dispose();

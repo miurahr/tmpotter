@@ -55,7 +55,7 @@ final public class Localization
    *  @param  String
    *  @return String
    */
-  final public static String l10n( final String strKey )
+  final public static String getString( final String strKey )
   { return( _bundle.getString( strKey ) ); }
 
 

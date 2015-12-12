@@ -41,7 +41,7 @@ import static bitext2tmx.util.Localization.*;
 public class Constants
 {
   //public static final String NAME = Localization.get( "WND_APP_TITLE" );
-  public static final String NAME = l10n( "WND.APP.TITLE" );
+  public static final String NAME = getString( "WND.APP.TITLE" );
   public static final String VERSION     = " 1.1.M1";
   public static final String BUILD       = " (build 20151210)";
   public static final String VERSIONNAME = NAME + VERSION;

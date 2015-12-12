@@ -79,7 +79,7 @@ final public class About extends JDialog
   final private String  _strProduct     = APPNAME;
   final private String  _strDescription = "Bitext Aligner/Converter to TMX";
   final private String  _strCopyright   = "Copyright (C) 2005-2009,2015";
-  final private String  _strAuthors     = "Susana Santos Antón, Raymond: Martin, et al.";
+  final private String  _strAuthors     = "Hiroshi Miura, Susana Santos Antón, Raymond: Martin, et al.";
 
   public About( Bitext2tmxWindow wndB2T )
   {
@@ -92,7 +92,7 @@ final public class About extends JDialog
 
   private void initialize()
   {
-    setTitle( l10n( "DLG.ABOUT.TITLE" ) );
+    setTitle( getString( "DLG.ABOUT.TITLE" ) );
     setModal( true );
     setResizable( false );
 
@@ -135,7 +135,7 @@ final public class About extends JDialog
 
     getContentPane().add( _lblIcon, gbc );
 
-    setLocalizedText( _btnClose, l10n( "BTN.CLOSE" ) );
+    setLocalizedText( _btnClose, getString( "BTN.CLOSE" ) );
     _btnClose.addActionListener( new ActionListener()
       { public void actionPerformed( final ActionEvent evt ) { onClose(); } } );
 
