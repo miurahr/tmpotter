@@ -109,10 +109,11 @@ final public class OpenTexts extends JDialog implements ActionListener
 
   public File _fUserPath = new File( System.getProperty( "user.dir" ) );
 
-  private int kIDIOMA = 2;
+  //private int kIDIOMA = 2;
 
   final private JComboBox _cbxOriginalEncoding    = new JComboBox( BConstants.straEncodings );
   final private JComboBox _cbxTranslationEncoding = new JComboBox( BConstants.straEncodings );
+  final private int numEncodings = BConstants.straEncodings.length;
 
   final private String [] IdiomasCa = {"Alemany","Angl�s","�rab","Catal��","Txec","Core��",
       "Dan�s","Espanyol","Finland�s","Franc�s","Holand�s","Hongar�s",
@@ -185,7 +186,7 @@ final public class OpenTexts extends JDialog implements ActionListener
     _cbxOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
     _cbxOriginalLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
 
-    _cbxOriginalEncoding.removeItemAt( 2 );
+    _cbxOriginalEncoding.removeItemAt( numEncodings - 1 );
     _cbxOriginalEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
     _cbxOriginalEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
     _cbxOriginalEncoding.setSelectedIndex( 0 );
@@ -202,7 +203,7 @@ final public class OpenTexts extends JDialog implements ActionListener
     _cbxTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
     _cbxTranslationLang.setEnabled( false );
 
-    _cbxTranslationEncoding.removeItemAt( 2 );
+    _cbxTranslationEncoding.removeItemAt( numEncodings - 1 );
     _cbxTranslationEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
     _cbxTranslationEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
     _cbxTranslationEncoding.setSelectedIndex( 0 );
