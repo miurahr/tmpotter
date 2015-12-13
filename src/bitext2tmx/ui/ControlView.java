@@ -4,10 +4,11 @@
 #  bitext2tmx - Bitext Aligner/TMX Editor
 #
 #  Copyright (C) 2006-2009  Raymond: Martin
+#                2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -25,26 +26,29 @@
 
 package bitext2tmx.ui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
-import static org.openide.awt.Mnemonics.*;
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import static bitext2tmx.util.Localization.getString;
-import java.io.FileNotFoundException;
 
 
 /**
  *   Alignment Table view for parallel texts
  *
  */
-final class ControlsView extends DockablePanel implements ActionListener
+final class ControlView extends DockablePanel implements ActionListener
 {
+  private static final long serialVersionUID = -667049976214485655L;
+
   final private Bitext2tmxWindow _wndB2T;
 
   final private JButton  _btnOriginalDelete    = new JButton();
@@ -64,7 +68,7 @@ final class ControlsView extends DockablePanel implements ActionListener
   final private JPanel pnlButtonsLeft   = new JPanel();
   final private JPanel pnlButtonsRight  = new JPanel();
 
-  public ControlsView( final Bitext2tmxWindow wndB2T )
+  public ControlView( final Bitext2tmxWindow wndB2T )
   {
     super( "SegmentButtonsView" );
 

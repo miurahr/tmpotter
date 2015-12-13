@@ -50,8 +50,9 @@ public class BConstants
             .getString(__UPDATE_KEY);
   private static final String REVISION = ResourceBundle.getBundle("bitext2tmx/Version")
             .getString(__REVISION_KEY);
-  private static final String LICENSE     = "Released as Free Software under GPL v3 and later";
-
+  public static final String COPYRIGHT   = "Copyright (C) 2005-2009,2015";
+  public static final String LICENSE     = "Released as Free Software under GPL v3 and later";
+  public static final String AUTHORS     = "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
   public static final String BUILDCLASSPATH = "build" + File.separator+ "classes";
 
   public static final int READ_AHEAD_LIMIT = 65536;
@@ -62,6 +63,14 @@ public class BConstants
   public static final String APPLICATION_JAR = "bitext2mx.jar";
   public static final String DEBUG_CLASSPATH = File.separator + "classes";
 
+  // Encodings.java
+  public static final String ENCODINGS_UTF8        = "UTF-8";
+  public static final String ENCODINGS_ISO8859_1   = "ISO-8859-1";
+  public static final String ENCODINGS_CP932       = "CP932";
+  public static final String ENCODINGS_DEFAULT     = "Default";
+  public static final String [] straEncodings = {
+      ENCODINGS_UTF8, ENCODINGS_ISO8859_1, ENCODINGS_CP932, ENCODINGS_DEFAULT
+  };
 
   public static String getDisplayNameAndVersion() {
     if (UPDATE != null && !UPDATE.equals("0")) {

@@ -23,23 +23,35 @@
 #######################################################################
 */
 
-
 package bitext2tmx.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Frame;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
-import java.awt.Dimension;
+import java.awt.event.WindowEvent;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Locale;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import static org.openide.awt.Mnemonics.*;
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import static bitext2tmx.util.Localization.*;
+import bitext2tmx.util.BConstants;
+import static bitext2tmx.util.Localization.getString;
 
 
 final public class OpenTexts extends JDialog implements ActionListener
@@ -99,10 +111,8 @@ final public class OpenTexts extends JDialog implements ActionListener
 
   private int kIDIOMA = 2;
 
-  final private String [] _straEncodings = { "UTF-8", "ISO-8859-1", "Default" };
-
-  final private JComboBox _cbxOriginalEncoding    = new JComboBox( _straEncodings );
-  final private JComboBox _cbxTranslationEncoding = new JComboBox( _straEncodings );
+  final private JComboBox _cbxOriginalEncoding    = new JComboBox( BConstants.straEncodings );
+  final private JComboBox _cbxTranslationEncoding = new JComboBox( BConstants.straEncodings );
 
   final private String [] IdiomasCa = {"Alemany","Angl�s","�rab","Catal��","Txec","Core��",
       "Dan�s","Espanyol","Finland�s","Franc�s","Holand�s","Hongar�s",

@@ -26,7 +26,10 @@
 
 package bitext2tmx.ui;
 
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -35,8 +38,6 @@ import java.awt.Insets;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import java.io.FileNotFoundException;
-
 
 /**
  *   Segment editor
@@ -44,6 +45,8 @@ import java.io.FileNotFoundException;
  */
 final class SegmentEditor extends DockablePanel
 {
+  private static final long serialVersionUID = -7089166388951739347L;
+
   final private JTextPane _tpn =  new JTextPane();
 
   final private Bitext2tmxWindow _wndB2T;
