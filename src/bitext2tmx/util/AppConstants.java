@@ -92,6 +92,9 @@ public class AppConstants {
    */
   public static final Pattern LANG_AND_COUNTRY = Pattern
           .compile("([A-Za-z]{1,8})(?:(?:-|_)(?:[A-Za-z]{4}(?:-|_))?([A-Za-z0-9]{1,8}))?");
+  
+  public static final Pattern SPACY_REGEX = Pattern
+          .compile("((\\s|\\\\n|\\\\t|\\\\s)(\\+|\\*)?)+");
 
   /**
    * Make app name and version string for human.
