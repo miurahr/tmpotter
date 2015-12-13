@@ -9,7 +9,7 @@
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -28,25 +28,20 @@
 package bitext2tmx;
 
 
-import bitext2tmx.ui.Bitext2TmxIcons;
-import java.lang.ClassNotFoundException;
-import java.lang.IllegalAccessException;
-import java.lang.InstantiationException;
-
 import java.util.Date;
 import java.util.Locale;
 
-import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.SwingUtilities;
 
+import bitext2tmx.ui.Bitext2TmxIcons;
 import bitext2tmx.ui.Bitext2tmxWindow;
 import bitext2tmx.ui.SplashScreen;
 import bitext2tmx.util.AquaAdapter;
 
-import static bitext2tmx.util.Constants.*;
 import static bitext2tmx.util.Utilities.*;
+import bitext2tmx.util.BConstants;
 
 
 /**
@@ -70,10 +65,10 @@ final public class Bitext2tmx
 
   final private void echoStartMsg()
   {
-    System.out.println( "\n" +
+    System.out.println("\n" +
       ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" +
       "\n" + ";;  " +
-      APPNAME +
+      BConstants.getApplicationDisplayName() +
       ", Locale: " + Locale.getDefault() +
       ", " + new Date() +
       "\n" );
@@ -101,13 +96,8 @@ final public class Bitext2tmx
       System.setProperty("swing.aatext", "true");
     }
     //  ToDo: log proper exception messages
-    catch( final ClassNotFoundException cnfe )
-    {  }
-    catch( final IllegalAccessException iae )
-    {  }
-    catch( final InstantiationException ie )
-    {  }
-    catch( final UnsupportedLookAndFeelException ulafe )
+    catch( final ClassNotFoundException | IllegalAccessException | 
+            InstantiationException | UnsupportedLookAndFeelException cnfe )
     {  }
   }
 

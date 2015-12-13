@@ -71,7 +71,8 @@ import bitext2tmx.util.Utilities;
 import static org.openide.awt.Mnemonics.*;
 
 import static bitext2tmx.util.AquaAdapter.*;
-import static bitext2tmx.util.Constants.*;
+import bitext2tmx.util.BConstants;
+import static bitext2tmx.util.BConstants.*;
 import static bitext2tmx.util.Localization.*;
 import static bitext2tmx.util.Utilities.*;
 
@@ -420,13 +421,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     //this.setSize( new Dimension( 640, 480 ) );
     this.setMinimumSize( new Dimension( 640, 480 ) );
 
-    //setTitle( l10n( "WND_APP_TITLE" ) );
-    //  ToDo: move/use updateWindowTitle() instead; change constant?
-    setTitle( VERSIONNAME );
-
-    //  Startup -> null. Will read from preferences saved
-    //  values/use defaults
-    //setFonts( null );
+    setTitle( BConstants.getDisplayNameAndVersion() );
 
     getContentPane().add( _pnlStatusBar, BorderLayout.SOUTH );
   }
