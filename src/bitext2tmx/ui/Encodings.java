@@ -26,47 +26,44 @@
 
 package bitext2tmx.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.Dimension;
-import java.awt.event.*;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import static org.openide.awt.Mnemonics.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import static bitext2tmx.util.Localization.*;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
+import bitext2tmx.util.BConstants;
+import static bitext2tmx.util.Localization.getString;
 
 
 /**
+* Ask encodings
 *
-*
+* @author
 */
 final public class Encodings extends JDialog implements ActionListener
 {
   private static final long serialVersionUID = 9103389076759237131L;
 
-  final JPanel   _pnl         = new JPanel();
-  final JButton  _btnOK       = new JButton();
-  final JLabel   _lblEncoding = new JLabel();
-
-  //  -> String constants
-  final String [] _straEncodings = { "UTF-8", "ISO-8859-1" };
-  final private JComboBox _cbxEncoding = new JComboBox( _straEncodings );
-  final public JComboBox getEncodingComboBox() { return( _cbxEncoding ); }
-
-  // package access!
-  //  ToDo - remove, not to use anymore
-  public int kIDIOMA = 0;
-  final ArrayList IdiomaDlg = new ArrayList();
   boolean _bClosed;
 
   final public boolean isClosed() { return( _bClosed ); }
 
-  public Encodings( final Frame frame, final String title, final boolean modal )
+  public Encodings( final Frame frame, final boolean modal )
   {
-    super( frame, title, modal );
+    super( frame, modal );
 
     initialize();
   }
@@ -74,16 +71,14 @@ final public class Encodings extends JDialog implements ActionListener
   public Encodings()
   {
     //  No resize! -RM
-    this( null, "", false );
+    this( null, false );
   }
 
-  final private void initialize()
+  private void initialize()
   {
     _pnl.setLayout( null );
 
-    //_btnOK.setText( l10n( "BTN.OK" ) );
     setLocalizedText( _btnOK, getString( "BTN.OK" ) );
-    //_btnOK.setMnemonic( 'A' );
     _btnOK.addActionListener( this );
     _btnOK.setBounds( new Rectangle( 72, 85, 115, 29 ) );
 
@@ -106,7 +101,7 @@ final public class Encodings extends JDialog implements ActionListener
     getContentPane().add( _pnl, BorderLayout.CENTER );
 
     _pnl.add( _lblEncoding, null );
-    _pnl.add( _cbxEncoding, null );
+    _pnl.add(_cbxEncoding, null );
     _pnl.add( _btnOK, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -136,6 +131,12 @@ final public class Encodings extends JDialog implements ActionListener
     }
   }
 
+  // Variables declaration
+  final private JPanel    _pnl         = new JPanel();
+  final private JButton   _btnOK       = new JButton();
+  final private JLabel    _lblEncoding = new JLabel();
+  final private JComboBox _cbxEncoding = new JComboBox( BConstants.straEncodings );
+  // End of variables declaration
 }//  Encodings{}
 
 

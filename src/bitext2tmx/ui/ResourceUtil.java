@@ -31,6 +31,8 @@ public class ResourceUtil {
    * 
    * @param resourceName
    *            resource name
+   * @return Image
+   *            An image retrieved by resource name
    * @throws FileNotFoundException 
    */
     public static Image getImage(final String resourceName) throws FileNotFoundException {

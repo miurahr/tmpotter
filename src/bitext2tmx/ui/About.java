@@ -4,6 +4,7 @@
 #  bitext2tmx - Bitext Aligner/TMX Editor
 #
 #  Copyright (C) 2005-2009  Raymond: Martin
+#            (C) 2015 Hiroshi Miura
 #
 #  Includes code: Copyright (C) 2002-2006 Keith Godfrey et al.
 #
@@ -27,9 +28,10 @@
 
 package bitext2tmx.ui;
 
-import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -41,45 +43,33 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import static org.openide.awt.Mnemonics.*;
+
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import bitext2tmx.util.BConstants;
-import static bitext2tmx.util.Localization.*;
+import static bitext2tmx.util.Localization.getString;
 
 
 /**
  *  About Dialog
- *
+ *  @author Hiroshi Miura
  */
 final public class About extends JDialog
 {
-  final private static long serialVersionUID = -7978170933387914555L;
-
-  final private Bitext2tmxWindow  _wndB2T;
-
-  final private JLabel   _lbl1       = new JLabel();
-  final private JLabel   _lbl2       = new JLabel();
-  final private JLabel   _lbl3       = new JLabel();
-  final private JLabel   _lbl4       = new JLabel();
-  final private JLabel   _lblIcon    = new JLabel();
-  final private JButton  _btnClose   = new JButton();
-  final private JPanel   _pnlButtons = new JPanel();
-
-  final private String  _strProduct     = BConstants.getDisplayNameAndVersion();
-  final private String  _strDescription = BConstants.getApplicationDescription();
-  final private String  _strCopyright   = "Copyright (C) 2005-2009,2015";
-  final private String  _strAuthors     = "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
+  final private static long esrialVersionUID = -7978170933387914555L;
 
   public About( Bitext2tmxWindow wndB2T )
   {
-    super( wndB2T, true );
-
-    _wndB2T = wndB2T;
-
-    initialize();
+    this( wndB2T, true );
   }
 
-  private void initialize()
+  public About(Bitext2tmxWindow wndB2T, Boolean modal) {
+    super(wndB2T, modal);
+    initComponents();
+  }
+
+  @SuppressWarnings("unchecked")
+  private void initComponents()
   {
     setTitle( getString( "DLG.ABOUT.TITLE" ) );
     setModal( true );
@@ -88,10 +78,10 @@ final public class About extends JDialog
     addWindowListener( new WindowAdapter()
       { public void windowClosing( final WindowEvent evt ) { onClose(); } } );
 
-    _lbl1.setText( _strProduct );
-    _lbl2.setText( _strDescription );
-    _lbl3.setText( _strCopyright );
-    _lbl4.setText( _strAuthors );
+    _lbl1.setText( BConstants.getDisplayNameAndVersion() );
+    _lbl2.setText( BConstants.getApplicationDescription() );
+    _lbl3.setText( BConstants.COPYRIGHT );
+    _lbl4.setText( BConstants.AUTHORS );
 
     final GridBagConstraints gbc = new GridBagConstraints();
 
@@ -142,6 +132,14 @@ final public class About extends JDialog
     dispose();
   }
 
+  // Variables declaration
+  final private JLabel   _lbl1       = new JLabel();
+  final private JLabel   _lbl2       = new JLabel();
+  final private JLabel   _lbl3       = new JLabel();
+  final private JLabel   _lbl4       = new JLabel();
+  final private JLabel   _lblIcon    = new JLabel();
+  final private JButton  _btnClose   = new JButton();
+  final private JPanel   _pnlButtons = new JPanel();
+  // End of variables declaration
+
 }//  About{}
-
-

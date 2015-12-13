@@ -34,6 +34,8 @@ import javax.swing.JWindow;
 
 public class SplashScreen extends JWindow
 {
+  private static final long serialVersionUID = -4413662234404469942L;
+
   public SplashScreen() 
   {
     ImageIcon image = null;

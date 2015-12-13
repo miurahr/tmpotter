@@ -5,12 +5,13 @@
 #
 #  Copyright (C) 2005-2006  Susana Santos Anton
 #            (C) 2005-2009 Raymond: Martin et al.
+#                2015 Hiroshi Miura
 #
 #  Includes code: Copyright (C) 2002-2005 Keith Godfrey et al.
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -53,9 +54,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 
-import static org.openide.awt.Mnemonics.*;
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import static bitext2tmx.util.Localization.*;
+import static bitext2tmx.util.Localization.getString;
 
 
 /**
@@ -64,6 +65,8 @@ import static bitext2tmx.util.Localization.*;
  */
 final public class FontSelector extends JDialog
 {
+  private static final long serialVersionUID = -6397001323725358841L;
+
   public FontSelector( final Bitext2tmxWindow wndB2T, final Font[] afnt )
   {
     super( wndB2T, true );
@@ -94,7 +97,7 @@ final public class FontSelector extends JDialog
 
     _fontComboBox.setSelectedItem( _fntDialog.getName() );
 
-    _sizeSpinner.setValue( new Integer( _fntDialog.getSize() ) );
+    _sizeSpinner.setValue( _fntDialog.getSize() );
 
     setFonts( _fntDialog );
   }

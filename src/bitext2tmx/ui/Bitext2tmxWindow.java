@@ -37,10 +37,8 @@ import java.awt.GraphicsEnvironment;
 
 import java.io.*;
 import java.util.*;
-import java.util.Locale;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.event.*;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -60,19 +58,14 @@ import com.vlsolutions.swing.docking.*;
 import com.vlsolutions.swing.docking.event.*;
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
-import bitext2tmx.engine.BitextModel;
-import bitext2tmx.engine.Segment;
-import bitext2tmx.engine.SegmentChanges;
-
-import bitext2tmx.util.AquaAdapter;
-import bitext2tmx.util.Localization;
-import bitext2tmx.util.Utilities;
-
 import static org.openide.awt.Mnemonics.*;
 
-import static bitext2tmx.util.AquaAdapter.*;
+import bitext2tmx.engine.Segment;
+import bitext2tmx.engine.SegmentChanges;
+import bitext2tmx.util.AquaAdapter;
 import bitext2tmx.util.BConstants;
-import static bitext2tmx.util.BConstants.*;
+
+import static bitext2tmx.util.AquaAdapter.*;
 import static bitext2tmx.util.Localization.*;
 import static bitext2tmx.util.Utilities.*;
 
@@ -90,7 +83,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   final private AlignmentsView  _vwAlignments   = new AlignmentsView( this );
   final private SegmentEditor   _edLeftSegment  = new SegmentEditor( this );
   final private SegmentEditor   _edRightSegment = new SegmentEditor( this );
-  final private ControlsView    _vwControls     = new ControlsView( this );
+  final private ControlView    _vwControls     = new ControlView( this );
 
   //  Menubar
   final private JMenuBar  _mbar = new JMenuBar();
