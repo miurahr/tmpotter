@@ -26,36 +26,17 @@
 package bitext2tmx.ui;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-
-import com.vlsolutions.swing.docking.*;
 
 import static org.openide.awt.Mnemonics.*;
 
-import static bitext2tmx.util.Localization.l10n;
-import static bitext2tmx.util.Utilities.*;
+import static bitext2tmx.util.Localization.getString;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -95,46 +76,45 @@ final class ControlsView extends DockablePanel implements ActionListener
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( getIcon( "b2t-icon-small.png", this ) );
-
+    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png") );
     setLayout( new BorderLayout() );
 
-    setLocalizedText( _btnRemoveBlankRows, l10n( "BTN.DELETE.BLANK.ROWS" ) );
-    _btnRemoveBlankRows.setToolTipText( l10n( "BTN.DELETE.BLANK.ROWS.TOOLTIP" ) );
+    setLocalizedText(_btnRemoveBlankRows, getString( "BTN.DELETE.BLANK.ROWS" ) );
+    _btnRemoveBlankRows.setToolTipText(getString( "BTN.DELETE.BLANK.ROWS.TOOLTIP" ) );
     _btnRemoveBlankRows.addActionListener( this );
     _btnRemoveBlankRows.setEnabled( false );
 
-    setLocalizedText( _btnTUSplit, l10n( "BTN.SPLIT.TU" ) );
-    _btnTUSplit.setToolTipText( l10n( "BTN.SPLIT.TU.TOOLTIP" ) );
+    setLocalizedText(_btnTUSplit, getString( "BTN.SPLIT.TU" ) );
+    _btnTUSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
     _btnTUSplit.addActionListener( this );
     _btnTUSplit.setEnabled( false );
 
-    setLocalizedText( _btnTranslationJoin, l10n( "BTN.JOIN.TRANSLATION" ) );
+    setLocalizedText(_btnTranslationJoin, getString( "BTN.JOIN.TRANSLATION" ) );
     _btnTranslationJoin.addActionListener( this );
-    _btnTranslationJoin.setActionCommand( l10n( "BTN.JOIN.TRANSLATION" ) );
+    _btnTranslationJoin.setActionCommand(getString( "BTN.JOIN.TRANSLATION" ) );
 
-    setLocalizedText( _btnOriginalJoin, l10n( "BTN.JOIN.ORIGINAL" ) );
+    setLocalizedText(_btnOriginalJoin, getString( "BTN.JOIN.ORIGINAL" ) );
     _btnOriginalJoin.addActionListener( this );
-    _btnOriginalJoin.setActionCommand( l10n( "BTN.JOIN.ORIGINAL" ) );
+    _btnOriginalJoin.setActionCommand(getString( "BTN.JOIN.ORIGINAL" ) );
 
-    setLocalizedText( _btnTranslationDelete, l10n( "BTN.DELETE.TRANSLATION" ) );
+    setLocalizedText(_btnTranslationDelete, getString( "BTN.DELETE.TRANSLATION" ) );
     _btnTranslationDelete.addActionListener( this );
-    _btnTranslationDelete.setActionCommand( l10n( "BTN.DELETE.TRANSLATION" ) );
+    _btnTranslationDelete.setActionCommand(getString( "BTN.DELETE.TRANSLATION" ) );
 
-    setLocalizedText( _btnOriginalDelete, l10n( "BTN.DELETE.ORIGINAL" ) );
+    setLocalizedText(_btnOriginalDelete, getString( "BTN.DELETE.ORIGINAL" ) );
     _btnOriginalDelete.addActionListener( this );
-    _btnOriginalDelete.setActionCommand( l10n( "BTN.DELETE.ORIGINAL" ) );
+    _btnOriginalDelete.setActionCommand(getString( "BTN.DELETE.ORIGINAL" ) );
 
-    setLocalizedText( _btnTranslationSplit, l10n( "BTN.SPLIT.TRANSLATION" ) );
+    setLocalizedText(_btnTranslationSplit, getString( "BTN.SPLIT.TRANSLATION" ) );
     _btnTranslationSplit.addActionListener( this );
-    _btnTranslationSplit.setActionCommand( l10n( "BTN.SPLIT.TRANSLATION" ) );
+    _btnTranslationSplit.setActionCommand(getString( "BTN.SPLIT.TRANSLATION" ) );
 
-    setLocalizedText( _btnOriginalSplit, l10n( "BTN.SPLIT.ORIGINAL" ) );
+    setLocalizedText(_btnOriginalSplit, getString( "BTN.SPLIT.ORIGINAL" ) );
     _btnOriginalSplit.addActionListener( this );
-    _btnOriginalSplit.setActionCommand( l10n( "BTN.SPLIT.ORIGINAL" ) );
+    _btnOriginalSplit.setActionCommand(getString( "BTN.SPLIT.ORIGINAL" ) );
 
-    _btnUndo.setText( l10n( "BTN.UNDO" ) );
-    setLocalizedText( _btnUndo, l10n( "BTN.UNDO" ) );
+    _btnUndo.setText(getString( "BTN.UNDO" ) );
+    setLocalizedText(_btnUndo, getString( "BTN.UNDO" ) );
     _btnUndo.addActionListener( this );
     _btnUndo.setEnabled( false );
 
@@ -197,26 +177,26 @@ final class ControlsView extends DockablePanel implements ActionListener
 
   final public void updateText()
   {
-    _btnUndo.setText( l10n( "BTN.UNDO" ) );
+    _btnUndo.setText(getString( "BTN.UNDO" ) );
 
-    _btnRemoveBlankRows.setText( l10n( "BTN.DELETE.BLANK.ROWS" ) );
-    _btnRemoveBlankRows.setToolTipText( l10n( "BTN.DELETE.BLANK.ROWS.TOOLTIP" ) );
-    _btnTUSplit.setText( l10n( "BTN.SPLIT.TU" ) );
-    _btnTUSplit.setToolTipText( l10n( "BTN.SPLIT.TU.TOOLTIP" ) );
+    _btnRemoveBlankRows.setText(getString( "BTN.DELETE.BLANK.ROWS" ) );
+    _btnRemoveBlankRows.setToolTipText(getString( "BTN.DELETE.BLANK.ROWS.TOOLTIP" ) );
+    _btnTUSplit.setText(getString( "BTN.SPLIT.TU" ) );
+    _btnTUSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
 
-    _btnOriginalJoin    .setActionCommand( l10n( "BTN.JOIN" ) );
-    _btnOriginalJoin    .setText( l10n( "BTN.JOIN" ) );
-    _btnOriginalDelete  .setActionCommand( l10n( "BTN.DELETE" ) );
-    _btnOriginalDelete  .setText( l10n( "BTN.DELETE" ) );
-    _btnOriginalSplit   .setActionCommand( l10n( "BTN.SPLIT" ) );
-    _btnOriginalSplit   .setText( l10n( "BTN.SPLIT" ) );
+    _btnOriginalJoin    .setActionCommand(getString( "BTN.JOIN" ) );
+    _btnOriginalJoin    .setText(getString( "BTN.JOIN" ) );
+    _btnOriginalDelete  .setActionCommand(getString( "BTN.DELETE" ) );
+    _btnOriginalDelete  .setText(getString( "BTN.DELETE" ) );
+    _btnOriginalSplit   .setActionCommand(getString( "BTN.SPLIT" ) );
+    _btnOriginalSplit   .setText(getString( "BTN.SPLIT" ) );
 
-    _btnTranslationJoin    .setActionCommand( l10n( "BTN.JOIN" ) );
-    _btnTranslationJoin    .setText( l10n( "BTN.JOIN" ) );
-    _btnTranslationDelete  .setText( l10n( "BTN.DELETE" ) );
-    _btnTranslationDelete  .setActionCommand( l10n( "BTN.DELETE" ) );
-    _btnTranslationSplit   .setText( l10n( "BTN.SPLIT" ) );
-    _btnTranslationSplit   .setActionCommand( l10n( "BTN.SPLIT" ) );
+    _btnTranslationJoin    .setActionCommand(getString( "BTN.JOIN" ) );
+    _btnTranslationJoin    .setText(getString( "BTN.JOIN" ) );
+    _btnTranslationDelete  .setText(getString( "BTN.DELETE" ) );
+    _btnTranslationDelete  .setActionCommand(getString( "BTN.DELETE" ) );
+    _btnTranslationSplit   .setText(getString( "BTN.SPLIT" ) );
+    _btnTranslationSplit   .setActionCommand(getString( "BTN.SPLIT" ) );
   }
 
   final private void onUndo()            { _wndB2T.onUndo(); }

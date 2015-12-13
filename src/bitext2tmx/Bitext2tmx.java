@@ -5,6 +5,7 @@
 #
 #  Copyright (C) 2005-2006 Susana Santos Antón
 #            (C) 2006-2009 Raymond: Martin et al
+#            (C) 2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,17 +27,14 @@
 
 package bitext2tmx;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
+import bitext2tmx.ui.Bitext2TmxIcons;
 import java.lang.ClassNotFoundException;
 import java.lang.IllegalAccessException;
 import java.lang.InstantiationException;
 
 import java.util.Date;
 import java.util.Locale;
-import java.util.prefs.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
@@ -46,7 +44,6 @@ import javax.swing.SwingUtilities;
 import bitext2tmx.ui.Bitext2tmxWindow;
 import bitext2tmx.ui.SplashScreen;
 import bitext2tmx.util.AquaAdapter;
-import bitext2tmx.util.Utilities;
 
 import static bitext2tmx.util.Constants.*;
 import static bitext2tmx.util.Utilities.*;
@@ -59,8 +56,8 @@ final public class Bitext2tmx
 {
   public Bitext2tmx()
   {
-    displaySplash();
     setLnF();
+    displaySplash();
     echoStartMsg();
 
     final Bitext2tmxWindow _wndB2T = new Bitext2tmxWindow();
@@ -95,11 +92,13 @@ final public class Bitext2tmx
           setProperty( "com.apple.mrj.application.apple.menu.about.name",
              "bitext2tmx" );
         //  ToDo: create (OS X) dock icon
-        AquaAdapter.setDockIconImage( getIcon( "b2t-icon-large.png" ).getImage() );
+        AquaAdapter.setDockIconImage( Bitext2TmxIcons.getIcon( "b2t-icon-large.png" ).getImage() );
       }
-
+      // Workaround for JDK bug 6389282
+      // it should be called before setLookAndFeel() for GTK LookandFeel
       UIManager.getInstalledLookAndFeels();
       UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+      System.setProperty("swing.aatext", "true");
     }
     //  ToDo: log proper exception messages
     catch( final ClassNotFoundException cnfe )
@@ -111,9 +110,6 @@ final public class Bitext2tmx
     catch( final UnsupportedLookAndFeelException ulafe )
     {  }
   }
-
-  private ImageIcon getIcon( final String iconName )
-  { return( Utilities.getIcon( iconName, this ) ); }
 
   final private void displaySplash()
   {

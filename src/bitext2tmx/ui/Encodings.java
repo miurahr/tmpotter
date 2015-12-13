@@ -82,7 +82,7 @@ final public class Encodings extends JDialog implements ActionListener
     _pnl.setLayout( null );
 
     //_btnOK.setText( l10n( "BTN.OK" ) );
-    setLocalizedText( _btnOK, l10n( "BTN.OK" ) );
+    setLocalizedText( _btnOK, getString( "BTN.OK" ) );
     //_btnOK.setMnemonic( 'A' );
     _btnOK.addActionListener( this );
     _btnOK.setBounds( new Rectangle( 72, 85, 115, 29 ) );
@@ -92,7 +92,7 @@ final public class Encodings extends JDialog implements ActionListener
 
     _lblEncoding.setOpaque( false );
     _lblEncoding.setBounds( new Rectangle( 53, 15, 176, 27 ) );
-    _lblEncoding.setText( l10n( "LBL.ENCODING" ) );
+    _lblEncoding.setText( getString( "LBL.ENCODING" ) );
 
     _pnl.setEnabled( true );
 
@@ -101,7 +101,7 @@ final public class Encodings extends JDialog implements ActionListener
 
     setModal( true );
     setResizable( false );
-    setTitle( l10n( "DLG.ENCODING.TITLE" ) );
+    setTitle( getString( "DLG.ENCODING.TITLE" ) );
 
     getContentPane().add( _pnl, BorderLayout.CENTER );
 

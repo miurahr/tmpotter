@@ -56,7 +56,7 @@ import com.vlsolutions.swing.docking.*;
 import bitext2tmx.engine.BitextModel;
 import bitext2tmx.engine.Segment;
 
-import static bitext2tmx.util.Localization.l10n;
+import static bitext2tmx.util.Localization.getString;
 import static bitext2tmx.util.Utilities.*;
 
 
@@ -78,12 +78,12 @@ final class AlignmentsView extends DockablePanel
 
     _wndB2T = wndB2T;
 
-    getDockKey().setName( l10n( "VW.ALIGNMENTS.TITLE" ) );
-    getDockKey().setTooltip( l10n( "VW.ALIGNMENTS.TOOLTIP" ) );
+    getDockKey().setName(getString( "VW.ALIGNMENTS.TITLE" ) );
+    getDockKey().setTooltip(getString( "VW.ALIGNMENTS.TOOLTIP" ) );
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( getIcon( "b2t-icon-small.png", this ) );
+    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png") );
 
     setLayout( new BorderLayout() );
   }
