@@ -30,7 +30,6 @@ package bitext2tmx.ui;
 import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -38,23 +37,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.border.EmptyBorder;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-
-import bitext2tmx.ui.Bitext2tmxWindow;
-
 import static org.openide.awt.Mnemonics.*;
 
-import static bitext2tmx.util.Constants.*;
+import bitext2tmx.util.BConstants;
 import static bitext2tmx.util.Localization.*;
-import static bitext2tmx.util.Utilities.*;
 
 
 /**
@@ -75,11 +65,10 @@ final public class About extends JDialog
   final private JButton  _btnClose   = new JButton();
   final private JPanel   _pnlButtons = new JPanel();
 
-  //  ToDo: l10n, constants
-  final private String  _strProduct     = APPNAME;
-  final private String  _strDescription = "Bitext Aligner/Converter to TMX";
+  final private String  _strProduct     = BConstants.getDisplayNameAndVersion();
+  final private String  _strDescription = BConstants.getApplicationDescription();
   final private String  _strCopyright   = "Copyright (C) 2005-2009,2015";
-  final private String  _strAuthors     = "Hiroshi Miura, Susana Santos Antón, Raymond: Martin, et al.";
+  final private String  _strAuthors     = "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
 
   public About( Bitext2tmxWindow wndB2T )
   {

@@ -23,6 +23,15 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 #######################################################################
+# Some portion are derived from OmegaT build scripts
+#
+# Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
+#               2008-2010 Didier Briel, Alex Buloichik
+#               2012 Didier Briel
+#               2013 Didier Briel, Aaron Madlon-Kay
+#               2014 Didier Briel
+#               2015 Aaron Madlon-Kay, Didier Briel
+#######################################################################
 -->
 
 <project name="bitext2tmx" default="default" basedir=".">
@@ -90,16 +99,25 @@
 
     -->
 
-  <tstamp>
-    <format property="build.date" pattern="yyMMdd" />
-  </tstamp>
+  <target name="-pre-init">
+    <fileset dir="lib" id="all-jars-fileset">
+      <include name="**/*.jar"/>
+    </fileset>
+    <pathconvert pathsep=" " property="all-jars-path" refid="all-jars-fileset">
+      <chainedmapper>
+          <flattenmapper/>
+          <globmapper from="*" to="lib/*"/>
+      </chainedmapper>
+    </pathconvert>
 
-  <property name="devel"          value="false" />
-  <property name="version.maj"    value="1" />
-  <property name="version.min"    value=".1.M1" />
-  <property name="version"        value="${version.maj}${version.min}" />
-  <property name="version.build"  value="${version}-${build}" />
-  <property name="applicationjar" value="bitext2tmx.jar" />
+    <tstamp>
+      <format property="build.date" pattern="yyMMdd" />
+    </tstamp>
+
+    <property file="src/bitext2tmx/Version.properties"/>
+    <property name="devel"          value="false" />
+    <property name="applicationjar" value="bitext2tmx.jar" />
+  </target>
 
   <target name="manifest" description="Create manifest">
     <manifest file="MANIFEST.MF">
@@ -109,8 +127,8 @@
       <attribute name="ApplicationJar" value="${applicationjar}" />
       <attribute name="Devel"          value="${devel}" />
       <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
-      <attribute name="Class-Path"     value="lib/vldocking-3.0.0.jar lib/liquidlnf.jar lib/mnemonics.jar" />
-      <attribute name="License" value="GNU Public License version 3 or later"/>
+      <attribute name="Class-Path"     value="${all-jars-path}" />
+      <attribute name="License" value="GNU General Public License version 3 or later"/>
     </manifest>
   </target>
 
@@ -148,7 +166,62 @@
     </copy>
   </target>
 
+  <!-- Set the repo.revision property from the first valid source in this order:
+     1. src/bitext2tmx/Version.properties
+     2. This git SHA1
+  -->
+  <target name="get-revision" depends="get-source-revision,get-git-revision">
+    <!-- Fallback in case value was not set from source or git -->
+    <property name="repo.revision" value="unknown"/>
+    <echo message="Detected revision: ${repo.revision}"/>
+  </target>
+
+  <target name="get-source-revision">
+    <condition property="repo.revision" value="${revision}">
+      <and>
+        <isset property="revision"/>
+        <not>
+          <equals arg1="${revision}" arg2="dev"/>
+        </not>
+      </and>
+    </condition>
+  </target>
+
+  <available file=".git" type="dir" property="git.available"/>
+  <target name="get-git-revision" if="git.available">
+    <exec executable="git" outputproperty="git.sha1" failifexecutionfails="false">
+      <arg value="rev-parse"/>
+      <arg value="--short"/>
+      <arg value="HEAD"/>
+    </exec>
+    <condition property="repo.revision" value="${git.sha1}">
+      <and>
+        <isset property="git.sha1"/>
+        <length string="${git.sha1}" trim="yes" length="0" when="greater"/>
+      </and>
+    </condition>
+  </target>
+
+    <!-- Builds a source distribution -->
+    <target name="src" depends="init,get-revision" description="Build source distribution">
+      <mkdir dir="dist2"/>
+      <!-- Create temporary Version.properties with current revision -->
+      <tempfile property="temp.version.props" destdir="dist2" deleteonexit="true"/>
+      <copy file="src/bitext2tmx/Version.properties" tofile="${temp.version.props}"/>
+      <propertyfile file="${temp.version.props}">
+        <entry key="revision" value="${repo.revision}"/>
+      </propertyfile>
+      <!-- Build zip -->
+      <zip destfile="dist2/bitext2tmx_${version}_${revision}_Source.zip">
+        <fileset dir="."
+            includes="doc/** lib/** nbproject/** release/** src/** test/** build.xml"
+            excludes="**/nbproject/private/** **/build/** **/dist/** src/bitext2tmx/Version.properties" />
+        <zipfileset file="${temp.version.props}" fullpath="src/bitext2tmx/Version.properties"/>
+      </zip>
+    </target>
+
   <target name="-post-clean">
     <delete file="MANIFEST.MF" />
+    <delete dir="dist2" />
   </target>
 </project>

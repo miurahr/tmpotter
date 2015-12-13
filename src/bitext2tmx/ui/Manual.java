@@ -34,7 +34,7 @@ import java.util.*;
 import javax.swing.border.*;
 
 
-import static bitext2tmx.util.Constants.*;
+import static bitext2tmx.util.BConstants.*;
 import static bitext2tmx.util.Localization.*;
 
 
@@ -275,7 +275,7 @@ final public class Manual extends JDialog
     String strPath;
 
     //  running from a Jar ?
-    strPath = tryClasspathElement( strClassPath, APPLICATIONJAR );
+    strPath = tryClasspathElement( strClassPath, APPLICATION_JAR );
 
     //  again missed, we're not running from Jar, most probably debug mode
     if( strPath == null )
