@@ -455,7 +455,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     if( strKey != null ) setLocalizedText( mni, getString( strKey ) );
     //if( strKey != null ) mni.setText( l10n( strKey ) );
 
-    return( (T)mni );
+    @SuppressWarnings("unchecked")
+    T res = (T)mni;
+    return( res );
   }
 
   private void addMenuSeparator( final JMenu menu ) { menu.addSeparator(); }

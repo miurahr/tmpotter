@@ -33,11 +33,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -56,7 +56,7 @@ import static bitext2tmx.util.Localization.getString;
  */
 final public class About extends JDialog
 {
-  final private static long esrialVersionUID = -7978170933387914555L;
+  final private static long serialVersionUID = -7978170933387914555L;
 
   public About( Bitext2tmxWindow wndB2T )
   {
@@ -76,7 +76,8 @@ final public class About extends JDialog
     setResizable( false );
 
     addWindowListener( new WindowAdapter()
-      { public void windowClosing( final WindowEvent evt ) { onClose(); } } );
+      {@Override public void windowClosing( final WindowEvent evt )
+                             { onClose(); } } );
 
     _lbl1.setText( BConstants.getDisplayNameAndVersion() );
     _lbl2.setText( BConstants.getApplicationDescription() );
@@ -116,17 +117,18 @@ final public class About extends JDialog
 
     setLocalizedText( _btnClose, getString( "BTN.CLOSE" ) );
     _btnClose.addActionListener( new ActionListener()
-      { public void actionPerformed( final ActionEvent evt ) { onClose(); } } );
+      {@Override public void actionPerformed( final ActionEvent evt )
+                             { onClose(); } } );
 
     gbc.anchor    = GridBagConstraints.CENTER;
     getContentPane().add( _btnClose, gbc );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      setBounds( ( screenSize.width - 400 ) / 2,
+        setBounds( ( screenSize.width - 400 ) / 2,
         ( screenSize.height - 200 ) / 2, 400, 200 );
   }
 
-  final private void onClose()
+  private void onClose()
   {
     setVisible( false );
     dispose();

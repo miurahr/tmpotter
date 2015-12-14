@@ -25,15 +25,14 @@
 
 package bitext2tmx.util;
 
-import java.awt.Frame;
 import java.awt.Image;
-import java.lang.reflect.*;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
 
-import static bitext2tmx.util.Utilities.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import static bitext2tmx.util.Utilities.isMacOSX;
 
 
 final public class AquaAdapter implements InvocationHandler
