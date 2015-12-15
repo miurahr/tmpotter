@@ -30,34 +30,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Insets;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
-import javax.swing.event.*;
-
-import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.*;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.SwingUtilities;
-
-import com.vlsolutions.swing.docking.*;
 
 import bitext2tmx.engine.BitextModel;
 import bitext2tmx.engine.Segment;
 
 import static bitext2tmx.util.Localization.getString;
-import static bitext2tmx.util.Utilities.*;
 
 
 /**
@@ -66,6 +49,8 @@ import static bitext2tmx.util.Utilities.*;
  */
 final class AlignmentsView extends DockablePanel
 {
+  private static final long serialVersionUID = -9170260140474066213L;
+
   final private Bitext2tmxWindow _wndB2T;
 
   BitextModel          _model;

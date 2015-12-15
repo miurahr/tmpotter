@@ -27,6 +27,7 @@
 
 package bitext2tmx.ui;
 
+import bitext2tmx.core.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ActionEvent;
@@ -49,25 +50,28 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.*;
 
 import com.vlsolutions.swing.docking.*;
-import com.vlsolutions.swing.docking.event.*;
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
 import static org.openide.awt.Mnemonics.*;
 
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
+import bitext2tmx.filters.TMXHandler;
+import bitext2tmx.filters.IFilter;
 import bitext2tmx.util.AquaAdapter;
 import bitext2tmx.util.BConstants;
 
 import static bitext2tmx.util.AquaAdapter.*;
 import static bitext2tmx.util.Localization.*;
+import bitext2tmx.util.RuntimePreferences;
 import static bitext2tmx.util.Utilities.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -119,9 +123,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private JPanel  _pnlStatusBar;
   private JLabel  _lblStatusBar;
 
+  private Document  _alstOriginal;
+  private Document  _alstTranslation;
+
   final private ArrayList  _alstBitext      = new ArrayList();
-  final private ArrayList  _alstOriginal    = new ArrayList();
-  final private ArrayList  _alstTranslation = new ArrayList();
+
   final private ArrayList<SegmentChanges>  _alstChanges =
     new ArrayList<SegmentChanges>();
   final private ArrayList  _alstLang        = new ArrayList();
@@ -141,25 +147,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private String  _strLangTranslation = "en";
   private String  _strOriginal;
   private String  _strTranslation;
-  //  ToDo:  check usage, cleanup, etc.
-  //private String  _pathDestino;
-  //private String  _strNewBitext;
-  //private String  bitexto;
-  //final private String _KREGEX = "\\.\\s|\\..\\s|\\;\\s|\\:\\s|\\?\\s|\\!\\s";
 
   private File  _fUserHome   = new File( System.getProperty( "user.home" ) );
   private File  _fPathOriginal;
   private File  _fPathTranslation;
-  //final private File _fUserDir = new File( System.getProperty( "user.dir" ) );
 
-  //  ToDo:  check usage, cleanup, etc.
-  //private boolean  fichCreado  = false;
-  //private int      _iExitButton   = 2;
-  //private String   cod_fuente;
-  //private String   cod_meta;
-  //private String   _strListNumber = null;
-
-  //private int     kIDIOMA = 2;
   private String  _ult_recorridoinv;
 
   private Font  _fntUserInterface;
@@ -502,7 +494,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _mncbSettingsLinebreak.setToolTipText( getString( "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
     _mncbSettingsLinebreak.addChangeListener( new javax.swing.event.ChangeListener()
       { final public void stateChanged( final ChangeEvent e )
-        { onLinebreakToggle();  } } );
+        { 
+          RuntimePreferences.setSegmentByLineBreak(_mncbSettingsLinebreak.isSelected());
+          onLinebreakToggle();
+        }
+      } );
 
     _mniSettingsFonts = makeMenuComponent( MenuComponentType.ITEM, null,
       getIcon( "fonts.png" ), "Configure Fonts...", "MNI.SETTINGS.FONTS" );
@@ -613,12 +609,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    */
   private void onOpen()
   {
-    //int cont = 0;
-    String cod_fuente;
-    String cod_meta;
-
-    while( !_alstOriginal.isEmpty() )    _alstOriginal.remove( 0 );
-    while( !_alstTranslation.isEmpty() ) _alstTranslation.remove( 0 );
+    String originalEncoding;
+    String translateEncoding;
 
     final OpenTexts dlg = new OpenTexts();
     //dlg.dlgPath = _fUserHome;
@@ -629,7 +621,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     if( !dlg.isClosed() )
     {
       _fUserHome = dlg.getPath();
-      cod_fuente = (String)dlg.getSourceLangEncComboBox().getSelectedItem();
+      originalEncoding = (String)dlg.getSourceLangEncComboBox().getSelectedItem();
       //System.out.println( "Source endcoing" + cod_fuente );
       _fPathOriginal   = dlg.getSourcePath();
       _strOriginal     = dlg.getSource();
@@ -642,16 +634,23 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       if( dlg.getTypes() == 0 )
       {
         //getSelectedItem()
-        cod_meta  = (String)dlg.getTargetLangEncComboBox().getSelectedItem();
+        translateEncoding  = (String)dlg.getTargetLangEncComboBox().getSelectedItem();
         _fPathTranslation   = dlg.getTargetPath();
         _strTranslation     = dlg.getTarget();
         _strLangTranslation = dlg.getTargetLocale();
 
-        // ? toggle?
-        //readDocument( true );
-        //readDocument( false );
-        readDocument( true, cod_fuente );
-        readDocument( false, cod_meta );
+        _alstOriginal = new Document(_strOriginal);
+        _alstTranslation = new Document(_strTranslation);
+
+        try {
+          _alstOriginal.readDocument(originalEncoding);
+          _alstTranslation.readDocument(translateEncoding);
+        } catch (Exception ex) {
+          JOptionPane.showMessageDialog( this, getString( "MSG.ERROR" ),
+             getString( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
+          this.dispose();
+        }
+
         boolean res = align();
 
         if( res )
@@ -673,7 +672,12 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       }
       else
       {
-        readTMX( _fPathOriginal, cod_fuente );
+        IFilter handler = new TMXHandler();
+        try {
+          handler.load(_fPathOriginal, originalEncoding );
+        } catch (Exception ex) {
+          Logger.getLogger(Bitext2tmxWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         _fPathTranslation = _fPathOriginal;
       }
 
@@ -722,633 +726,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     dlg.setVisible( true );
   }
 
-
- /**
-  *  Read in TMX
-  *
-  *  Esta funci�n lee un tmx y lo muestra.
-  *  @param _fPathOriginal : el nombre y la ruta del tmx,
-  *  @param cod_fuente : la codificaci�n que ha elegido el usuario
-  *  para que sea abierto
-  */
-  private void readTMX( final File fPathOriginal )
-  {
-    String linea = "";
-    int cont   = 0;
-    int indice = 0; 
-    int aux    = 0;
-    boolean pI      = false;
-    boolean salir   = false;
-    boolean idioma1 = false;
-
-    try
-    {
-      FileInputStream   fis = new FileInputStream( fPathOriginal );
-      InputStreamReader isr = new InputStreamReader( fis, "ISO-8859-1" );
-      BufferedReader    br  = new BufferedReader( isr );
-
-      while( !salir && ( linea = br.readLine() ) != null )
-        if( linea.contains( "<?xml version=\"1.0\" encoding=" ) )
-          salir = true;
-
-      _strTMXEnc = linea.substring( linea.indexOf( "encoding=" ) + 10,
-        linea.indexOf( "\"?>" ) );
-      br.close();
-      isr.close();
-      fis.close();
-      fis = new FileInputStream( fPathOriginal );
-
-      if( _strTMXEnc.equals( "ISO-8859-1" ) )
-        isr = new InputStreamReader( fis, "ISO-8859-1" );
-      else isr = new InputStreamReader( fis, "UTF-8" );
-
-      br = new BufferedReader( isr );
-
-      while( ( linea = br.readLine() ) != null )
-      {
-        linea = linea.trim();
-        _alstBitext.add( cont, linea );
-        cont++;
-
-        //Si no tengo los idiomas
-        if( !idioma1 )
-        {
-          if( linea.indexOf( "<tu tuid" ) != -1)   aux = 0;
-          else if( linea.indexOf( "</tu>" ) != -1 )
-          {
-            if( aux == 2 ) idioma1 = true;
-            else           aux = 0;
-          }
-          else if( linea.indexOf( "<tuv" ) != -1 )
-          {
-            if( aux == 0 )
-            {
-              indice = linea.indexOf( "lang=" );
-              _strLangOriginal = linea.substring( indice + 6, indice + 8 );
-              aux++;
-            }
-            else
-            {
-              indice = linea.indexOf( "lang=" );
-              _strLangTranslation = linea.substring( indice + 6, indice + 8 );
-              aux++;
-            }
-          }
-        }
-      }
-
-      idioma1 = false;
-      cont = 0;
-      aux  = 0;
-
-      while( cont<_alstBitext.size() )
-      {
-        linea = (String)_alstBitext.get( cont );
-
-        while( linea.indexOf( "  " ) > - 1 )
-        {
-          linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-            linea.substring( linea.indexOf( "  " ) + 1 );
-        }
-
-        if( linea.indexOf( "<tuv" ) != -1 )
-        {
-          if( linea.indexOf( _strLangOriginal ) != -1 )  pI = true;
-          else if( linea.indexOf( _strLangTranslation ) != -1 )  pI = false;
-        }
-        else if( linea.indexOf( "<seg>" ) != -1 )
-        {
-          linea = removeTag( linea, "seg" );
-
-          while( linea.indexOf( "  " ) > - 1 )
-          {
-            linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-              linea.substring( linea.indexOf( "  " ) + 1 );
-          }
-
-          if( pI )
-          {
-            _alstOriginal.add(aux,linea);
-            _alstTranslation.add(aux,"");
-            idioma1 = true;
-            aux++;
-          }
-          else
-          {
-            if( !idioma1 )
-            {
-              _alstOriginal.add( aux,"" );
-              _alstTranslation.add( aux, linea );
-              aux++;
-            }
-            else _alstTranslation.set( _alstTranslation.size() - 1, linea );
-          }
-        }
-
-        cont++;
-      }
-
-      br.close();
-    }
-    catch( final IOException ex ) { System.out.println( ex.getMessage() ); }
-
-  }
-
-
-  //  FixMe: only reads TMX 1.1-1.2
-  //  ToDo: need to read TMX 1.1-1.4
- /**
-  *  Read in TMX
-  *  Esta función lee un tmx y lo muestra.
-  *  @param fpathFuente : el nombre y la ruta del tmx,
-  *  @param cod_fuente : la codificación que ha elegido el usuario
-  *  para que sea abierto
-  */
-  private void readTMX( final File fPathOriginal, final String cod_fuente )
-  {
-    try
-    {
-      final FileInputStream fis = new FileInputStream( fPathOriginal );
-      final InputStreamReader isr;
-
-      if( cod_fuente.equals( getString( "ENCODING.DEFAULT" ) ) )
-        isr = new InputStreamReader( fis );
-      else if(cod_fuente.equals( "UTF-8" ) )
-        isr = new InputStreamReader( fis, "UTF-8" );
-      else
-        isr = new InputStreamReader(fis, "ISO-8859-1");
-
-      final BufferedReader br = new BufferedReader( isr );
-      String linea;
-      int cont   = 0;
-      int indice = 0;
-      int aux    = 0;
-      boolean pI      = false;
-      boolean idioma1 = false;
-
-      while( ( linea = br.readLine() ) != null ) 
-      {
-        linea = linea.trim();
-        _alstBitext.add( cont, linea );
-        cont++;
-
-        //Si no tengo los idiomas
-        if( !idioma1 )
-        {
-          if( linea.indexOf( "<tu tuid" ) != -1 ) aux = 0;
-          else if( linea.indexOf( "</tu>" ) != -1 )
-          {
-            if( aux == 2 ) idioma1 = true;
-            else aux = 0;
-          }
-          else if( linea.indexOf( "<tuv" ) != -1)
-          {
-            if( aux == 0 )
-            {
-              indice = linea.indexOf( "lang=" );
-              _strLangOriginal = linea.substring( indice + 6, indice + 8 );
-              aux++;
-            }
-            else
-            {
-              indice = linea.indexOf( "lang=" );
-              _strLangTranslation = linea.substring( indice + 6, indice + 8 );
-              aux++;
-            }
-          }
-        }
-      }
-
-      idioma1 = false;
-      cont = 0;
-      aux  = 0;
-
-      while( cont < _alstBitext.size() )
-      {
-        linea = (String)_alstBitext.get( cont );
-
-        while( linea.indexOf( "  " ) > -1 )
-        {
-          linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-            linea.substring( linea.indexOf( "  " ) + 1 );
-        }
-
-        if (linea.indexOf("<tuv") != -1)
-        {
-          if( linea.indexOf( _strLangOriginal ) != -1 )     pI = true;
-          else if( linea.indexOf( _strLangTranslation ) != -1) pI = false;
-        }
-        else if( linea.indexOf( "<seg>" ) != -1 )
-        {
-          linea = removeTag( linea, "seg" );
-
-          while( linea.indexOf( "  " ) > -1 )
-          {
-            linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-              linea.substring( linea.indexOf( "  " ) + 1 );
-          }
-
-          if( pI )
-          {
-            _alstOriginal.add( aux, linea );
-            _alstTranslation.add( aux, "" );
-            idioma1 = true;
-            aux++;
-          }
-          else
-          {
-            if( !idioma1 )
-            {
-              _alstOriginal.add( aux, "" );
-              _alstTranslation.add( aux, linea );
-              aux++;
-            }
-            else _alstTranslation.set( _alstTranslation.size()-1, linea );
-          }
-        }
-
-        cont++;
-      }
-
-      br.close();
-    }
-    catch( final java.io.IOException ex ) { System.out.println( ex ); }
-
-  }
-
-
-  /**
-   *  Remove tag
-   *  Esta funci�n elimina las etiquetas de abertura y cierre en la cadena.
-   *  @param linea : la cadena que hay que retocar,
-   *  @param etiqueta : que queremos quitar
-   *  @return cad devuelve la cadena sin la etiqueta
-   */
-  private String removeTag( final String linea, final String etiqueta )
-  {
-    String cad = "";
-    final String etiquetaCerrada = "</" + etiqueta + ">";
-
-    //  FixMe: There is an issue with this being called repeatedly when
-    //  a bad tag is located. this would be okay for a few tags, but a TMX
-    //  with many tags will have this jump up many times, basically halting
-    //  operation until the user presses OK for each one. Need an easy way
-    //  out of this, rather than having to halt/crash the program. A cancel
-    //  button and related functionality to jump out of the action in process!
-    if( linea.indexOf( etiquetaCerrada ) == -1 )
-      JOptionPane.showMessageDialog( null,
-        "El TMX no está bien formado, falta una etiqueta de cierre de segmento" );
-    else
-      cad = linea.substring( etiqueta.length() + 2, linea.indexOf( etiquetaCerrada ) );
-
-    return( cad );
-  }
-
-
-  /**
-   *  Reads in document to string with the original or translation text
-   *  so it can be segmented
-   *
-   *  Trocear Crea una cadena con el texto fuente o meta, seg�n
-   *  par�metro, para despu�s partirla y tener segmentos.
-   *
-   *  @param kfuente :texto fuente o meta
-   */
-  private void readDocument( final boolean kfuente, final String strEncoding )
-  {
-    final StringBuilder documento = new StringBuilder();
-    String doc = "";
-    boolean limpiar = true;
-    String linea = "";
-
-    //System.out.println( "Trocear source: " + cod_fuente );
-    //System.out.println( "Trocear target: " + cod_meta );
-    //System.out.println( "strEncoding: " + strEncoding );
-
-    try
-    {
-      final FileInputStream fis;
-
-      // Dividing the source text in phrases
-      // Vamos a partir en frases el texto fuente
-      if( kfuente ) fis = new FileInputStream( _strOriginal );
-      else fis = new FileInputStream( _strTranslation );
-
-      final InputStreamReader isr;
-      final BufferedReader br;
-
-      if( strEncoding.equals(  getString( "ENCODING.DEFAULT" ) ) )
-        isr = new InputStreamReader( fis );
-      else
-        isr = new InputStreamReader( fis, strEncoding );
-
-/*
-      if( _strCodeOriginal.equals(  l10n( "ENCODING_DEFAULT" ) ) )
-        isr = new InputStreamReader( fis );
-
-      //  -> String constants
-      else if( _strCodeOriginal.equals( "UTF-8" ) )
-        isr = new InputStreamReader( fis, "UTF-8" );
-
-      //  -> String constants
-      else
-        isr = new InputStreamReader( fis, "ISO-8859-1" );
-*/
-
-      br = new BufferedReader( isr );
-
-      while( ( linea = br.readLine() ) != null )
-      {
-        linea = linea.trim();
-
-        if( !linea.equals( "" ) )
-        {
-          linea = linea + "\n";
-          documento.append( linea );
-        }
-        else
-          if( !documento.equals( "" ) )
-          {
-            //  ToDo: test this out - what is the point here?
-            //documento = documento.append( "\n" );
-            documento.append( "\n" );
-          }
-      }
-
-      doc = documento.toString();
-
-      if( _mncbSettingsLinebreak.isSelected() )
-        segmentWithBreak( doc, kfuente );
-      else segmentWithoutBreak( doc, kfuente );
-
-      while( _alstOriginal.size() > _alstTranslation.size() )
-        _alstTranslation.add( _alstTranslation.size(), "" );
-
-      while( _alstTranslation.size() > _alstOriginal.size() )
-        _alstOriginal.add( _alstOriginal.size(), "" );
-
-      while( limpiar )
-      {
-        if( ( ( _alstOriginal.get( _alstOriginal.size() - 1 ) == null ) || ( _alstOriginal
-            .get( _alstOriginal.size() - 1 ).equals( "" ) ) )
-            && ( ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null ) || ( _alstTranslation
-                .get( _alstTranslation.size() - 1 ).equals( "" ) ) ) )
-        {
-          _alstOriginal.remove( _alstOriginal.size() - 1 );
-          _alstTranslation.remove( _alstTranslation.size() - 1 );
-        }
-        else limpiar = false;
-      }
-    }
-    catch( final java.io.IOException ex )
-    {
-      JOptionPane.showMessageDialog( this, getString( "MSG.ERROR" ),
-        getString( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
-
-      this.dispose();
-    }
-  }
-
-
-  /**
-   *
-   *  Segments texts according to the programmed rules considering
-   *  that a newline is not a segmentation boundary (two newlines
-   *  are however)
-   *
-   *  @param documento
-   *        :string containing the whole text
-   *  @param kFuente
-   *        :indicates whether it is the source or the target text
-   *
-   *  Esta funci�n trocea con las reglas programadas, considerando que un salto
-   *  de l�nea no es una regla por la que partir. (Dos s� lo ser�an)
-   *
-   *  @param documento :cadena con el texto completo
-   *  @param kFuente :indica si es el fichero fuente o el meta
-   */
-  private void segmentWithoutBreak( final String documento, final boolean kFuente )
-  {
-    String result = "";
-    char car      = ' ';
-    char carAnt   = ' ';
-    int cont = 0;
-    boolean kpunto = false;
-    boolean kcar   = false;
-
-    for( int i = 0; i < documento.length(); i++ )
-    {
-      car = documento.charAt( i );
-
-      //  This code is repeated in various places -> new method -RM
-      if( car == '\n' || car == '\t' ) result = result + ' ';
-      else result = result + car;
-
-      if( car == ' ' )
-      {
-        if( carAnt == '.' || carAnt == ';' || carAnt == ':' || carAnt == '?' ||
-          carAnt == '!' )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente ) _alstOriginal.add( cont, result.trim() );
-            else _alstTranslation.add( cont, result.trim() );
-          }
-
-          cont++;
-          car = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar  = false;
-        }
-        else if( carAnt == '"' && kpunto )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente )  _alstOriginal.add( cont, result );
-            else _alstTranslation.add( cont, result );
-          }
-
-          cont++;
-          car = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar = false;
-        }
-        else if( kpunto && kcar )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente ) _alstOriginal.add( cont, result );
-            else _alstTranslation.add( cont, result );
-          }
-
-          cont++;
-          car = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar = false;
-        }
-      }
-      else if( car == '\n' && ( carAnt == '\n' || carAnt == '.' ) )
-      {
-        if( !result.equals( "" ) )
-        {
-          if( kFuente ) _alstOriginal.add( cont, result.trim() );
-          else _alstTranslation.add( cont, result.trim() );
-        }
-
-        cont++;
-        car = ' ';
-        carAnt = ' ';
-        result = "";
-        kpunto = false;
-        kcar = false;
-      }
-      else if( car == '.' ) kpunto = true;
-      /*
-       * else if(car >= '0' && car <= '9' && kpunto){ kpunto = false; }
-       */
-      else kcar = true;
-
-      carAnt = car;
-    }
-
-    if( !result.equals( "" ) )
-    {
-      if( kFuente ) _alstOriginal.add( cont, result );
-      else          _alstTranslation.add( cont, result );
-    }
-  }
-
-  private void segmentWithBreak( final String documento, final boolean kFuente )
-  {
-    String result = "";
-    char car      = ' ';
-    char carAnt   = ' ';
-    int cont = 0;
-    boolean kpunto = false;
-    boolean kcar   = false;
-
-    for( int i = 0; i < documento.length(); i++ )
-    {
-      car = documento.charAt( i );
-
-      if( car == '\n' || car == '\t' ) result = result + ' ';
-      else result = result + car;
-
-      if( car == '\n' )
-      {
-        if( !result.equals( "" ) )
-        {
-          if( kFuente ) _alstOriginal.add( cont, result.trim() );
-          else          _alstTranslation.add( cont, result.trim() );
-        }
-
-        cont++;
-        car    = ' ';
-        carAnt = ' ';
-        result = "";
-        kpunto = false;
-        kcar   = false;
-      }
-      else if( car == ' ' )
-      {
-        if( carAnt == '.' || carAnt == ';' || carAnt == ':' || carAnt == '?' ||
-          carAnt == '!' )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente ) _alstOriginal.add( cont, result.trim() );
-            else          _alstTranslation.add( cont, result.trim() );
-          }
-
-          cont++;
-          car = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar = false;
-        }
-        else if( carAnt == '"' && kpunto )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente ) _alstOriginal.add( cont, result.trim() );
-            else          _alstTranslation.add( cont, result.trim() );
-          }
-
-          cont++;
-          car = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar = false;
-        }
-        else if( kpunto && kcar )
-        {
-          if( !result.equals( "" ) )
-          {
-            if( kFuente ) _alstOriginal.add( cont, result.trim() );
-            else          _alstTranslation.add( cont, result.trim() );
-          }
-
-          cont++;
-          car    = ' ';
-          carAnt = ' ';
-          result = "";
-          kpunto = false;
-          kcar   = false;
-        }
-      }
-      else if( car == '.' ) kpunto = true;
-      else kcar = true;
-
-      carAnt = car;
-    }
-
-    if( !result.equals( "" ) )
-    {
-      if( kFuente ) _alstOriginal.add( cont, result.trim() );
-      else          _alstTranslation.add( cont, result.trim() );
-    }
-  }
-
-
-  /**
-   *
-   *  Extracts from the TMX those lines having information which is
-   *  useful for alignment, and puts them in the corresponding ArrayList's
-   *  The left part in _alstOriginal corresponds to source text lines and 
-   *  the right part in _alstTranslation corresponds to the target text lines.
-   *  Initialize the table with one line for each left and right line
-   *
-   *  Esta funci�n extrae del Tmx las l�neas que contienen
-   *  informaci�n util para el alineamiento, y las mete en los ArrayList
-   *  correspondientes. Parte izq. en _alstOriginal corresponde a las l�neas
-   *  del texto fuente, y parte dcha. en _alstTranslation corresponde a las
-   *  l�neas del texto meta.
-   *  Inicializa la tabla con una fila por cada l�nea izq y dcha.
-   */
-  private void initializeAlignmentsView()
-  {
-    TableColumn col;
-
-    col = _vwAlignments.getColumnModel().getColumn( 1 );
-    col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
-
-    col = _vwAlignments.getColumnModel().getColumn( 2 );
-    col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
-
-    _vwAlignments.setColumnHeaderView();
-
-    updateAlignmentsView();
-    _topArrays = _alstOriginal.size() - 1;
-    _iIdentLabel = 0;
-  }
 
 
   /**
@@ -3029,8 +2406,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
       int f1 = 1;
       int f2 = 1;
-      final ArrayList Fuente = new ArrayList();
-      final ArrayList Meta   = new ArrayList();
+      final ArrayList<String> Fuente = new ArrayList<>();
+      final ArrayList<String> Meta   = new ArrayList<>();
 
       Fuente.add( _alstOriginal.get( 0 ) );
       Meta.add( _alstTranslation.get( 0 ) );
@@ -3661,6 +3038,38 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       else if( actor == _mniHelpManual )  displayManual();
       else if( actor == _mniHelpAbout )   displayAbout();
     }
+  }
+  
+  /**
+   *
+   *  Extracts from the TMX those lines having information which is
+   *  useful for alignment, and puts them in the corresponding ArrayList's
+   *  The left part in _alstOriginal corresponds to source text lines and 
+   *  the right part in _alstTranslation corresponds to the target text lines.
+   *  Initialize the table with one line for each left and right line
+   *
+   *  Esta funci�n extrae del Tmx las l�neas que contienen
+   *  informaci�n util para el alineamiento, y las mete en los ArrayList
+   *  correspondientes. Parte izq. en _alstOriginal corresponde a las l�neas
+   *  del texto fuente, y parte dcha. en _alstTranslation corresponde a las
+   *  l�neas del texto meta.
+   *  Inicializa la tabla con una fila por cada l�nea izq y dcha.
+   */
+  private void initializeAlignmentsView()
+  {
+    TableColumn col;
+
+    col = _vwAlignments.getColumnModel().getColumn( 1 );
+    col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
+
+    col = _vwAlignments.getColumnModel().getColumn( 2 );
+    col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
+
+    _vwAlignments.setColumnHeaderView();
+
+    updateAlignmentsView();
+    _topArrays = _alstOriginal.size() - 1;
+    _iIdentLabel = 0;
   }
 
 }// Bitext2tmxWindow{}

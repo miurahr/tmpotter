@@ -51,8 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bitext2tmx.util.TranslationException;
-
 /**
  * Class to load and save preferences.
  *
