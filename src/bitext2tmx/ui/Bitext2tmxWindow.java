@@ -28,6 +28,7 @@
 package bitext2tmx.ui;
 
 import bitext2tmx.core.Document;
+import bitext2tmx.core.TMXWriter;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ActionEvent;
@@ -57,7 +58,7 @@ import javax.swing.table.*;
 import com.vlsolutions.swing.docking.*;
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
-import static org.openide.awt.Mnemonics.*;
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
@@ -126,11 +127,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private Document  _alstOriginal;
   private Document  _alstTranslation;
 
-  final private ArrayList  _alstBitext      = new ArrayList();
+  final private ArrayList  _alstBitext;
 
-  final private ArrayList<SegmentChanges>  _alstChanges =
-    new ArrayList<SegmentChanges>();
-  final private ArrayList  _alstLang        = new ArrayList();
+  final private ArrayList<SegmentChanges>  _alstChanges;
+  final private ArrayList  _alstLang;
 
   // ToDo: Check usage, Why 47?
   final private int  _KTAMTEXTAREA = 47;
@@ -138,11 +138,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private int  _topArrays;    //  =  0;
   private int  _posTextArea;  //  =  0;
   private int  _iChanges     = -1;
-  private int  _iChangesLB;   //   =  0;
   private int  _iIdentLabel;  //  =  0;
   private int  _identAnt;     //  =  0;
 
-  private String  _strExpReg          = "";
   private String  _strLangOriginal    = "en";
   private String  _strLangTranslation = "en";
   private String  _strOriginal;
@@ -160,20 +158,17 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private Font  _fntSourceEditor;
   private Font  _fntTargetEditor;
 
-  private int   _shortcutKey;
-  private char  _advancer;
-
   private String _strTMXEnc;
 
   public Bitext2tmxWindow()
   {
+    this._alstBitext = new ArrayList();
+    this._alstChanges = new ArrayList<>();
+    this._alstLang = new ArrayList();
+    
     initDockingUI();
     makeUI();
-    //  ToDo: some things like these, etc.
-    //updateWindowTitle();
-    //loadDisplayPrefs() ?
     setWindowIcon();
-    //initScreenLayout();
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
     try
@@ -183,15 +178,15 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     }
     catch( final NoClassDefFoundError e )
     {
-     //  ToDo: log errors
-     //log( e );
-     //  Temporarily
      System.out.println( e );
     }
 
     setDefaultCloseOperation( javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE );
     addWindowListener( new WindowAdapter()
-      { final public void windowClosing( final WindowEvent e ) { quit(); } } );
+      {@Override
+       final public void windowClosing( final WindowEvent e ) {
+         quit(); 
+       } } );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     final Dimension frameSize = this.getSize();
@@ -205,6 +200,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     setFonts( null );
 
   }
+  private static final Logger LOG = Logger.getLogger(Bitext2tmxWindow.class.getName());
 
 
   private void initDockingUI()
@@ -306,10 +302,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _pnlStatusBar.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
     _pnlStatusBar.add( _lblStatusBar );
 
-    //  ToDo: add user configuration setting for desktop style, later...
-    //DockingPreferences.setShadowDesktopStyle();
-    //DockingPreferences.setFlatDesktopStyle();
-
     _Desktop = new DockingDesktop();
     getContentPane().add( _Desktop, BorderLayout.CENTER );
 
@@ -344,70 +336,18 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     keyRightSegment    .setCloseEnabled( false );
     keySegmentButtons  .setCloseEnabled( false );
 
-    //  ToDo: check these settings
-    //keyAlignmentTable  .setResizeWeight( 0.5f );
-    //keyLeftSegment     .setResizeWeight( 0.25f );
-    //keyRightSegment    .setResizeWeight( 0.25f );
     keySegmentButtons  .setResizeWeight( 0.1f );
-
-    //  ToDo: check these settings
-    //_Desktop.setDockableHeight( _vwAlignments, 0.25 );
-    //_Desktop.setDockableHeight( _vwControls, 0.25 );
-    //_Desktop.setDockableHeight( _edLeftSegment, 0.50 );
 
     _Desktop.addDockable( _vwAlignments );
 
     _Desktop.split( _vwAlignments, _edLeftSegment, DockingConstants.SPLIT_BOTTOM );
-    //_Desktop.split( _edLeftSegment, _edRightSegment, DockingConstants.SPLIT_RIGHT );
     _Desktop.split( _edLeftSegment, _vwControls, DockingConstants.SPLIT_BOTTOM );
     _Desktop.split( _edLeftSegment, _edRightSegment, DockingConstants.SPLIT_RIGHT );
 
-    //  ToDo: enable read/write of desktop configuration - code from OmegaT+ here
-/*
-    try
-    {
-      final File fWorkspace = new File( getConfigDirSlash() + CONF_FILE_WKSP );
-      final BufferedInputStream in;
-
-      if( fWorkspace.exists() )
-        in = new BufferedInputStream( new FileInputStream( fWorkspace ) );
-      else
-        in = new BufferedInputStream( getClass().
-          getResourceAsStream( "/net/sf/bitext2tmx/ui/gui/resources/OmegaT+.wksp" ) );
-
-      _Desktop.readXML( in );
-
-      in.close();
-    }
-    catch( final IOException ioe )
-    {
-      //  ToDo: Log message, localize -RM
-      System.out.
-        println( "Error reading workspace configuration: IOException" );
-    }
-    catch( final SAXException se )
-    {
-      //  ToDo: Log message, localize -RM
-      System.out.
-        println( "Error reading workspace configuration: SAXException" );
-    }
-    catch( final ParserConfigurationException pce )
-    {
-      //  ToDo: Log message, localize
-      System.out.
-        println( "Error reading workspace configuration: ParserConfigurationException" );
-    }
-*/
-
-    //  ToDo: set up proper display preferences for loading GUI
-    //  reuse code from OmegaT+ first
-    //  Use standard 4:3 TV aspect ratio, if possible
     this.setSize( new Dimension( 800, 600 ) );
-    //this.setSize( new Dimension( 640, 480 ) );
     this.setMinimumSize( new Dimension( 640, 480 ) );
 
     setTitle( BConstants.getDisplayNameAndVersion() );
-
     getContentPane().add( _pnlStatusBar, BorderLayout.SOUTH );
   }
 
@@ -437,7 +377,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     //  Default text, when no localization available, testing
     mni.setText( strText );
 
-    //if( !isMacOSX() && accelerator != null ) mni.setAccelerator( accelerator );
     if( ksShortcut != null )  mni.setAccelerator( ksShortcut );
     if( !isMacOSX() && icon != null ) mni.setIcon( icon );
 
@@ -445,14 +384,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
     //  Localized text
     if( strKey != null ) setLocalizedText( mni, getString( strKey ) );
-    //if( strKey != null ) mni.setText( l10n( strKey ) );
 
     @SuppressWarnings("unchecked")
     T res = (T)mni;
     return( res );
   }
-
-  private void addMenuSeparator( final JMenu menu ) { menu.addSeparator(); }
 
   private void makeMenus()
   {
@@ -613,7 +549,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     String translateEncoding;
 
     final OpenTexts dlg = new OpenTexts();
-    //dlg.dlgPath = _fUserHome;
     dlg.setPath( _fUserHome );
     dlg.setModal( true );
     dlg.setVisible( true );
@@ -622,13 +557,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     {
       _fUserHome = dlg.getPath();
       originalEncoding = (String)dlg.getSourceLangEncComboBox().getSelectedItem();
-      //System.out.println( "Source endcoing" + cod_fuente );
       _fPathOriginal   = dlg.getSourcePath();
       _strOriginal     = dlg.getSource();
       _strLangOriginal = dlg.getSourceLocale();
-
-      // prep the alignment view
-      //_vwAlignments.clear();
       _vwAlignments.buildDisplay();
 
       if( dlg.getTypes() == 0 )
@@ -727,158 +658,30 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   }
 
 
-
   /**
-   *  Esta funcion recompone el Tmx a partir de las posibles modificaciones
-   *  efectuadas y lo deja en el directorio correspondiente segun los cambios
-   *  realizados.
+   *  Necessary capabilities to store the bitext
+   *
    */
-  private void writeBitext( final File fNombre )
+  private void saveBitext()
   {
-    int cont = 0;
-    final FileOutputStream fw;
-    final OutputStreamWriter osw;
-    final BufferedWriter bw;
-    final PrintWriter pw;
-    int max = 0;
-
-    try
+    for( int cont = 0; cont < ( _alstOriginal.size() - 1 ); cont++ )
     {
-      fw = new FileOutputStream( fNombre );
-      //osw = new OutputStreamWriter(fw,cod_TMX);_strTMXEnc
-      osw = new OutputStreamWriter( fw, _strTMXEnc );
-      bw = new BufferedWriter( osw );
-      pw = new PrintWriter( bw );
-
-      max = largersizeSegments();
-      //pw.println("<?xml version=\"1.0\" encoding=\"" + cod_TMX + "\"?>"); //poner el encoding
-      pw.println( "<?xml version=\"1.0\" encoding=\"" + _strTMXEnc + "\"?>" ); //poner
-      pw.println( "<tmx version=\"1.4\">" );
-      //pw.println( "  <header creationtool=\"Bitext2tmx\" " +
-                  //"creationtoolversion=\"1.0\" segtype=\"sentence\" o-tmf=\"Bitext2tmx\" " +
-                  //"adminlang=\"en\" srclang=\"" +
-                  //_strLangOriginal.toLowerCase() + "\" " +
-                  //"datatype=\"PlainText\"  o-encoding=\"" + _strTMXEnc + "\">" );
-
-      //pw.println(  );
-      //pw.println(  );
-      pw.println( "  <header" );
-      pw.println( "    creationtool=\"Bitext2tmx\"" );
-      pw.println( "    creationtoolversion=\"1.0\"" );
-      pw.println( "    segtype=\"sentence\"" );
-      pw.println( "    o-tmf=\"Bitext2tmx\""  );
-      pw.println( "    adminlang=\"en\"" );
-      pw.println( "    srclang=\"" + _strLangOriginal.toLowerCase() + "\"" );
-      pw.println( "    datatype=\"PlainText\"" );
-      pw.println( "    o-encoding=\"" + _strTMXEnc + "\"" );
-      pw.println( "  >" );
-
-      pw.println( "  </header>" );
-      pw.println( "  <body>" );
-
-      while( cont <= max )
+      if( _alstOriginal.get( cont ).equals( "" ) && _alstTranslation.get( cont ).equals( "" ) )
       {
-        if( !( _alstOriginal.get( cont ).equals( "" ) ) &&
-            !( _alstTranslation.get( cont ).equals( "" ) ) )
-        {
-          pw.println( "  <tu tuid=\"" + ( cont ) + "\" datatype=\"Text\">" );
-
-          if( max >= cont )
-          {
-            if( !( _alstOriginal.get( cont ).equals( "" ) ) )
-            {
-              pw.println( "    <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
-              //pw.println("      <seg>" + _alstOriginal.get( cont ) + "</seg>" );
-              pw.println( "      <seg>" +
-               getValidXMLText( (String)_alstOriginal.get( cont ) ) +
-                "</seg>" );
-              pw.println( "    </tuv>");
-            }
-            else
-            {
-              pw.println( "    <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
-              pw.println( "      <seg>  </seg>");
-              pw.println( "    </tuv>");
-            }
-          }
-
-          if( max >= cont )
-          {
-            if( !( _alstTranslation.get( cont ).equals( "" ) ) )
-            {
-              pw.println( "    <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
-              //pw.println("      <seg>" + _alstTranslation.get( cont ) + "</seg>");
-              pw.println( "      <seg>" +
-                getValidXMLText( (String)_alstTranslation.get( cont ) ) +
-                 "</seg>" );
-              pw.println( "    </tuv>");
-            }
-            else
-            {
-              pw.println("    <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
-              pw.println("      <seg>  </seg>");
-              pw.println("    </tuv>");
-            }
-          }
-
-          pw.println( "  </tu>" );
-        }
-        //Para que no hayan unidades de traducci?n con elementos vac?os.
-        cont++;
+        _alstOriginal.remove( cont );
+        _alstTranslation.remove( cont );
       }
-
-      pw.println( "  </body>" );
-      pw.println( "</tmx>" );
-      pw.close();
     }
-    catch( final IOException ex )
-    {
-      JOptionPane.
-        showMessageDialog( this, (String)_alstLang.get( 21 ),
-          (String)_alstLang.get( 18 ), JOptionPane.ERROR_MESSAGE );
-
-      this.dispose();
-    }
-  }
-
-
-
-  /**
-   *  Esta funci�n recompone el Tmx a partir de las posibles modificaciones
-   *  efectuadas y lo deja en el directorio correspondiente seg�n los cambios
-   *  realizados
-   *
-   *  Rebuilds the TMX from the modifications possibly made to it and leaves
-   *  it in the corresponding directory according to the changes performed
-   *
-   *  @param kNombre
-   *    :indica si el usuario ha utilizado guardar o guardar como.
-   *    :shows whether the user has used "save" or "save as"
-   */
-  private void writeBitext()
-  {
-    int cont = 0;
-    int n    = 0;
-    boolean guardar = false;
-    boolean salir   = false;
-    int returnVal   = 0;
-
-    final FileOutputStream   fw;
-    final OutputStreamWriter osw;
-    final BufferedWriter     bw;
-    final PrintWriter        pw;
-
-    int max = 0;
-    File fNombre;
-
-    try
-    {
+    
+    try {
       final String nombre = _fPathOriginal.getName().
-        substring( 0, ( _fPathOriginal.getName().length() - 4 ) );
-
-      fNombre = new File( nombre.concat( _strLangTranslation + ".tmx" ) );
-
-      //  Resource bundles/Loc4J needed -RM
+          substring( 0, ( _fPathOriginal.getName().length() - 4 ) );
+      
+      boolean guardar = false;
+      boolean salir   = false;
+      File _fUserHome = new File(RuntimePreferences.getUserHome());    
+      File fNombre = new File( nombre.concat( _strLangTranslation + ".tmx" ) );
+      
       while( !guardar && !salir )
       {
         final JFileChooser fc = new JFileChooser();
@@ -896,8 +699,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           fc.setMultiSelectionEnabled( false );
           fc.setSelectedFile( fNombre );
           fc.setFileSelectionMode( JFileChooser.FILES_ONLY );
-          returnVal = fc.showSaveDialog( this );
           _fUserHome = fc.getCurrentDirectory();
+
+          int returnVal;
+          returnVal = fc.showSaveDialog( this );
 
           if( returnVal == JFileChooser.APPROVE_OPTION )
           {
@@ -911,11 +716,12 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           }
           else
           {
-            kNombre_Usuario = true;  //  para romper bucle
-            salir = true;            //  to break the loop
+            kNombre_Usuario = true;
+            salir = true;
           }
         }
 
+        int n;
         if( kNombre_Usuario && !salir )
         {
           //  Comprobar si ya existe el fichero
@@ -952,137 +758,17 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         {
         final String encoding = dlgEnc.getComboBoxEncoding();
         dlgEnc.dispose();
-
-        fw  = new FileOutputStream( fNombre );
-        osw = new OutputStreamWriter( fw, encoding );
-        bw  = new BufferedWriter( osw );
-        pw  = new PrintWriter( bw );
-
-        max = largersizeSegments();
-
-        //  Yuck! Move this hardcode string stuff out of the code -RM
-        //  Recommendation: keep in a "template" type file?
-        pw.println( "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n" );
-         // poner
-        // el
-        // encoding
-        pw.println( "<tmx version=\"1.4\">" );
-        pw.println( "  <header\n" +
-                    "    creationtool=\"Bitext2tmx\"\n" +
-                    "    creationtoolversion=\"1.0.M0\"\n" +
-                    "    segtype=\"sentence\"\n" +
-                    "    o-tmf=\"Bitext2tmx\"\n" +
-                    "    adminlang=\"en\"\n"     +
-                    "    srclang=\"" + _strLangOriginal.toLowerCase() + "\"\n" +
-                    "    datatype=\"PlainText\"\n" +
-                    "    o-encoding=\"" + encoding + "\"\n" +
-                    "  >" );
-        pw.println( "  </header>" );
-        pw.println( "  <body>" );
-
-        while( cont <= max )
-        {
-          if( !( _alstOriginal.get( cont ).equals( "" ) ) &&
-            !( _alstTranslation.get( cont ).equals( "" ) ) )
-          {
-            pw.println( "    <tu tuid=\"" + ( cont ) + "\" datatype=\"Text\">" );
-
-            if( max >= cont )
-            {
-              if( !( _alstOriginal.get( cont ).equals( "" ) ) )
-              {
-                //pw.println( "  <tuv lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
-                pw.println( "      <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() +  "\">" );
-                //pw.println( "        <seg>" + _alstOriginal.get( cont ) + "</seg>" );
-                //  Ensure that the text is valid for use in XML
-                pw.println( "        <seg>" +
-                  getValidXMLText( (String)_alstOriginal.get( cont ) ) +
-                  "</seg>" );
-                pw.println( "      </tuv>" );
-              }
-              else
-              {
-                //pw.println( "  <tuv lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
-                pw.println( "      <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
-                pw.println( "        <seg>  </seg>" );
-                pw.println( "      </tuv>" );
-              }
-            }
-
-            if( max >= cont )
-            {
-              if( !( _alstTranslation.get( cont ).equals( "" ) ) )
-              {
-                //pw.println( "  <tuv lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
-                pw.println( "      <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
-                //pw.println( "        <seg>" + _alstTranslation.get( cont ) + "</seg>" );
-                //  Ensure that the text is valid for use in XML
-                pw.println( "        <seg>" +
-                  getValidXMLText( (String)_alstTranslation.get( cont ) ) );
-                pw.println( "      </tuv>" );
-              }
-              else
-              {
-                //pw.println( "  <tuv lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
-                pw.println( "      <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">");
-                pw.println( "        <seg>  </seg>" );
-                pw.println( "      </tuv>" );
-              }
-            }
-
-            pw.println( "    </tu>" );
-          }
-
-          //  Para que no hayan unidades de traducci�n con elementos vac�os.
-          //  To avoid having translation units having empty elements
-          cont++;
         }
-
-        pw.println( "  </body>" );
-        pw.println( "</tmx>" );
-        pw.close();
-        //clear();
-        //BotonesFalse();
-        //_btnUndo.setEnabled( false );
-
       }
-      }
-    }
-    catch( final java.io.IOException ex )
-    {
-      JOptionPane.showMessageDialog( this, getString( "MSG.ERROR.FILE.WRITE" ),
-        getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-
+      
+      TMXWriter writer=new TMXWriter();      
+      writer.writeBitext(fNombre);
+    } catch ( IOException ex) {
+      JOptionPane.
+        showMessageDialog( this, (String)_alstLang.get( 21 ),
+          (String)_alstLang.get( 18 ), JOptionPane.ERROR_MESSAGE );
       this.dispose();
     }
-  }
-
-
-  /**
-   *  Necessary capabilities to store the bitext
-   *
-   *  Esta funci�n tiene la funcionalidad para guardar el bitexto
-   */
-  private void saveBitext()
-  {
-    for( int cont = 0; cont < ( _alstOriginal.size() - 1 ); cont++ )
-    {
-      if( _alstOriginal.get( cont ).equals( "" ) && _alstTranslation.get( cont ).equals( "" ) )
-      {
-        _alstOriginal.remove( cont );
-        _alstTranslation.remove( cont );
-      }
-    }
-
-    //  New stuff does not work yet
-    //  ToDo: determine use of new stuff and fix as necessary
-    // new
-    //  select encoding dialog -  currently not implemented
-    //File fNombre = DlgNombreYCodif();
-    //new
-    //if( fNombre != null )
-
-    writeBitext();
   }
 
 
@@ -1111,7 +797,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     while( !_alstChanges.isEmpty() ) _alstChanges.remove( cont-- );
 
     _iChanges    = -1;
-    _iChangesLB  = 0;
     _iIdentLabel = 0;
     _identAnt      = 0;
     _fPathTranslation   = null;
@@ -1183,8 +868,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       "", _iIdentLabel );
     _alstChanges.add( _iChanges, Changes );
 
-    if( textAreaIzq ) Changes.setFrase( _alstOriginal.get( _iIdentLabel ).toString() );
-    else Changes.setFrase( _alstTranslation.get( _iIdentLabel ).toString() );
+    if( textAreaIzq ) Changes.setFrase(_alstOriginal.get( _iIdentLabel ) );
+    else Changes.setFrase(_alstTranslation.get( _iIdentLabel ) );
 
     modifyAlignments( textAreaIzq, 1, 0 );
   }
@@ -1206,11 +891,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   {
     if( textAreaIzq )
     {
-      if( _posTextArea >= _alstOriginal.get( _iIdentLabel ).toString().length() )
+      if( _posTextArea >= _alstOriginal.get( _iIdentLabel ).length() )
         _posTextArea = 0;
     }
     else
-      if( _posTextArea >= _alstTranslation.get( _iIdentLabel ).toString().length() )
+      if( _posTextArea >= _alstTranslation.get( _iIdentLabel ).length() )
         _posTextArea = 0;
 
     final SegmentChanges Changes = new SegmentChanges( 2, _posTextArea, textAreaIzq, "",
@@ -1218,9 +903,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     _alstChanges.add( _iChanges, Changes );
 
     if( textAreaIzq ) Changes.setFrase( _alstOriginal.get( _iIdentLabel ).toString() );
-    else Changes.setFrase( _alstTranslation.get( _iIdentLabel ).toString() );
+    else Changes.setFrase(_alstTranslation.get( _iIdentLabel ) );
 
-    modifyAlignments( textAreaIzq, 2, Changes.getPos() );
+    modifyAlignments( textAreaIzq, 2, Changes.getPosition() );
   }
 
 
@@ -1257,23 +942,23 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       {
         cad = _alstOriginal.get( _iIdentLabel ).toString();
         cad = cad.concat( " " );
-        cad = cad.concat( _alstOriginal.get( _iIdentLabel + 1 ).toString() );
+        cad = cad.concat(_alstOriginal.get( _iIdentLabel + 1 ) );
         _alstOriginal.set( _iIdentLabel, cad.trim() );
 
         for( ; cont < _topArrays; cont++ )
-          _alstOriginal.set( cont, _alstOriginal.get( cont + 1 ).toString() );
+          _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
 
         _alstOriginal.set( _alstOriginal.size() - 1, "" );
       }
       else
       {
-        cad = _alstTranslation.get( _iIdentLabel ).toString();
+        cad = _alstTranslation.get( _iIdentLabel );
         cad = cad.concat( " " );
-        cad = cad.concat( _alstTranslation.get( _iIdentLabel + 1 ).toString() );
+        cad = cad.concat(_alstTranslation.get( _iIdentLabel + 1 ) );
         _alstTranslation.set( _iIdentLabel, cad.trim() );
 
         for( ; cont < _topArrays; cont++ )
-          _alstTranslation.set( cont, _alstTranslation.get( cont + 1 ).toString() );
+          _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
 
         _alstTranslation.set( _alstTranslation.size() - 1, "" );
       }
@@ -1288,14 +973,14 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         if( izq )
         {
           for( ; cont < _topArrays; cont++ )
-            _alstOriginal.set( cont, _alstOriginal.get( cont + 1 ).toString() );
+            _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
 
           _alstOriginal.set( _alstOriginal.size() - 1, "" );
         }
         else
         {
           for( ; cont < _topArrays; cont++ )
-            _alstTranslation.set( cont, _alstTranslation.get( cont + 1 ).toString() );
+            _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
 
           _alstTranslation.set( _alstTranslation.size() - 1, "" );
         }
@@ -1310,17 +995,17 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
           if( _alstOriginal.get( _alstOriginal.size() - 1 ) != null &&
             !_alstOriginal.get( _alstOriginal.size() - 1 ).equals( "" ) )
-            _alstOriginal.add( _alstOriginal.size(), _alstOriginal.get( _alstOriginal.size() - 1 ).toString() );
+            _alstOriginal.add(_alstOriginal.size(), _alstOriginal.get( _alstOriginal.size() - 1 ) );
           else
             _alstOriginal.set( _alstOriginal.size() - 1, _alstOriginal.
               get( _alstOriginal.size() - 2 ).toString() );
 
           for( ; cont > ( _iIdentLabel + 1 ); cont-- )
-            _alstOriginal.set( cont, _alstOriginal.get( cont - 1 ).toString() );
+            _alstOriginal.set(cont, _alstOriginal.get( cont - 1 ) );
 
           if( _iIdentLabel < _topArrays )
           {
-            cad = _alstOriginal.get( _iIdentLabel ).toString();
+            cad = _alstOriginal.get( _iIdentLabel );
 
             if( posicion == 0 ) _alstOriginal.set( cont - 1, "" );
             else _alstOriginal.set( cont - 1, cad.substring( 0, posicion ).trim() );
@@ -1329,7 +1014,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           }
           else
           {
-            cad = _alstOriginal.get( _iIdentLabel ).toString();
+            cad = _alstOriginal.get( _iIdentLabel );
 
             if( posicion == 0 ) _alstOriginal.set( _alstOriginal.size() - 2, "" );
             else _alstOriginal.set( _alstOriginal.size() - 2, cad.substring( 0, posicion ).trim() );
@@ -1435,7 +1120,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   }
 
 
-  /**
+    /**
    *  Funci�n tamMax. Esta funci�n devuelve el tama�o del array mayor.
    *
    *  @return INT: tama�o del mayor array
@@ -1453,7 +1138,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
     return( max );
   }
-
+  
   /**
    *  Funci�n IgualarArrays. Esta funci�n a�ade filas al array del menor tama�o y
    *  borra si las filas est�n en blanco.
@@ -1567,7 +1252,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     SegmentChanges ultChanges = _alstChanges.get( _iChanges );
 
     _iIdentLabel = ultChanges.getIdent_linea();
-    boolean izq = ultChanges.getFuente();
+    boolean izq = ultChanges.getSource();
 
     if( izq )
     {
@@ -1641,8 +1326,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     ultChanges = _alstChanges.get( _iChanges );
     _iIdentLabel = ultChanges.getIdent_linea();
     int operacion  = ultChanges.getTipo();
-    int posicion   = ultChanges.getPos();
-    boolean izq    = ultChanges.getFuente();
+    int posicion   = ultChanges.getPosition();
+    boolean izq    = ultChanges.getSource();
     _identAnt = _iIdentLabel;
 
     switch( operacion )
@@ -1656,7 +1341,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
         if( izq )
         {
-          cad = _alstOriginal.get( _iIdentLabel ).toString();
+          cad = _alstOriginal.get( _iIdentLabel );
 
           if( !cad.equals( "" ) ) cad = cad.trim();
 
@@ -1664,14 +1349,14 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         }
         else
         {
-          cad = _alstTranslation.get( _iIdentLabel ).toString();
+          cad = _alstTranslation.get( _iIdentLabel );
 
           if( !cad.equals( "" ) ) cad = cad.trim();
 
           posicion = cad.indexOf( cadaux ) + cadaux.length();
         }
 
-        modifyAlignments( ultChanges.getFuente(), 2, posicion );
+        modifyAlignments( ultChanges.getSource(), 2, posicion );
 
         break;
       }
@@ -1701,7 +1386,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
           while( cont < _topArrays )
           {
-            _alstOriginal.set( cont, _alstOriginal.get( cont + 1 ).toString() );
+            _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
            cont++;
           }
 
@@ -1714,7 +1399,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
           while( cont < _topArrays )
           {
-            _alstTranslation.set( cont, _alstTranslation.get( cont + 1 ).toString() );
+            _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
             cont++;
           }
 
@@ -1732,7 +1417,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         // Se eliminaron lineas enteras en blanco que hay que recuperar
         // Blank lines were deleted and have to be restored
         tam = ultChanges.getTam();
-        int[] filasEliminadas = new int [tam];
+        int[] filasEliminadas;
 
         filasEliminadas = ultChanges.getNumEliminada();
 
@@ -1763,13 +1448,12 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           else
           {
             _alstTranslation.set( cont2, _alstTranslation.get( cont2 - tam ).toString() );
-            _alstOriginal.set( cont2, _alstOriginal.get( cont2 - tam ).toString() );
+            _alstOriginal.set(cont2, _alstOriginal.get( cont2 - tam ) );
           }
 
           cont2--;
         }
 
-        _iChangesLB--;
         updateAlignmentsView();
 
         break;
@@ -1984,20 +1668,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     return( cad );
   }
 
-
-  private void onConfigure()
-  {
-    //  Regex stuff is not fully implemented/broken
-    final Regexp dlgRegexp = new Regexp();
-
-    //dlgConfig.setModal( true );
-    dlgRegexp.setVisible( true );
-
-    _strExpReg = dlgRegexp.getRegexp();
-    //_KExpReg = dlgConfig.expReg;
-    //dlgConfig.dispose();
-  }
-
   /**
    *  Modificar_Idioma. Cuando se recoge la selecci�n del idioma por parte del
    *  usuario, se escribe en el fichero de configuraci�n y se actualiza la
@@ -2145,7 +1815,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     // filas en blanco"
     if( lineasLimpiar > 0 )
     {
-      _iChangesLB++;
       _iChanges++;
 
       SegmentChanges Changes = new SegmentChanges( 3, 0, false, "", 0 );
@@ -2168,10 +1837,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
     izq = _vwAlignments.getSelectedColumn();
 
-    _alstOriginal.add( _alstOriginal.size(), 
-      _alstOriginal.get( _alstOriginal.size() - 1 ).toString() );
-    _alstTranslation.add( _alstTranslation.size(), 
-      _alstTranslation.get( _alstTranslation.size() - 1 ).toString() );
+    _alstOriginal.add(_alstOriginal.size(), 
+            _alstOriginal.get( _alstOriginal.size() - 1 ) );
+    _alstTranslation.add(_alstTranslation.size(), 
+            _alstTranslation.get( _alstTranslation.size() - 1 ) );
 
     if( izq == 1 )
     {
@@ -2406,11 +2075,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
       int f1 = 1;
       int f2 = 1;
-      final ArrayList<String> Fuente = new ArrayList<>();
-      final ArrayList<String> Meta   = new ArrayList<>();
+      final ArrayList<String> Source = new ArrayList<>();
+      final ArrayList<String> Target   = new ArrayList<>();
 
-      Fuente.add( _alstOriginal.get( 0 ) );
-      Meta.add( _alstTranslation.get( 0 ) );
+      Source.add( _alstOriginal.get( 0 ) );
+      Target.add( _alstTranslation.get( 0 ) );
 
       for( i = _ult_recorridoinv.length() - 1; i >= 0; i-- )
       {
@@ -2418,8 +2087,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         {
           case 'x':
           {
-            Fuente.add( _alstOriginal.get( f1 ) );
-            Meta.add( _alstTranslation.get( f2 ) );
+            Source.add( _alstOriginal.get( f1 ) );
+            Target.add( _alstTranslation.get( f2 ) );
             f1++;
             f2++;
 
@@ -2427,16 +2096,16 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
           }
           case 's':
           {
-            Fuente.add( _alstOriginal.get( f1 ) );
-            Meta.add( "" );
+            Source.add( _alstOriginal.get( f1 ) );
+            Target.add( "" );
             f1++;
 
             break;
           }
           case 'e':
           {
-            Fuente.add( "" );
-            Meta.add( _alstTranslation.get( f2 ) );
+            Source.add( "" );
+            Target.add( _alstTranslation.get( f2 ) );
             f2++;
 
             break;
@@ -2447,11 +2116,11 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       while( !_alstOriginal.isEmpty() )    _alstOriginal.remove( 0 );
       while( !_alstTranslation.isEmpty() ) _alstTranslation.remove( 0 );
 
-      for( cont = 0; cont < Fuente.size(); cont++ )
-        _alstOriginal.add( Fuente.get( cont ) );
+      for( cont = 0; cont < Source.size(); cont++ )
+        _alstOriginal.add(Source.get( cont ) );
 
-      for( cont = 0; cont < Meta.size(); cont++ )
-        _alstTranslation.add( Meta.get( cont ) );
+      for( cont = 0; cont < Target.size(); cont++ )
+        _alstTranslation.add(Target.get( cont ) );
 
       return( true );
     }
@@ -2557,7 +2226,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    *  Delegates actual setting of fonts to specific methods
    *
    *  @param  Font
-   *  @return void
    *
    *  Passing in null causes default values to be used
    *  - used at startup or for reset  
@@ -2584,7 +2252,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Fonts accessor
    *
-   *  @param  void
    *  @return Font[]
    */
   final public Font[] getFonts()
@@ -2605,8 +2272,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  User interface font mutator
    *
-   *  @param  Font
-   *  @return void
+   *  @param  font
    */
   final public void setUserInterfaceFont( final Font font )
   {
@@ -2642,8 +2308,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    *  User interface components font mutator
    *  Acts as delegate for setUserInterfaceFont()
    *
-   *  @param  Font
-   *  @return void
+   *  @param  font
    */
   final public void setUserInterfaceFonts( final Font font )
   {
@@ -2683,7 +2348,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  User interface font accessor
    *
-   *  @param  void
    *  @return Font
    */
   final public Font getUserInterfaceFont() { return( _fntUserInterface ); }
@@ -2693,7 +2357,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    *  Table header font mutator
    *
    *  @param  Font
-   *  @return void
    */
   final public void setTableHeaderFont( final Font font )
   {
@@ -2729,7 +2392,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Table header font accessor
    *
-   *  @param  void
    *  @return Font
    */
   final public Font getTableHeaderFont() { return( _fntTableHeader ); }
@@ -2822,8 +2484,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Original editor font accessor
    *
-   *  @param  void
-   *  @return Font
+   *  @return font
    */
   final public Font getSourceEditorFont() { return( _fntSourceEditor ); }
 
@@ -2831,8 +2492,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Translation editor font mutator
    *
-   *  @param  Font
-   *  @return void
+   *  @param  font
    */
   final public void setTargetEditorFont( final Font font )
   {
@@ -2867,7 +2527,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Translation editor font accessor
    *
-   *  @param  void
    *  @return Font
    */
   final public Font getTargetEditorFont() { return( _fntTargetEditor ); }
@@ -2875,7 +2534,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Font family names accessor
    *
-   *  @param  void
    *  @return String[]
    */
   final public String[] getFontFamilyNames()
@@ -2889,7 +2547,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Font style string accessor
    *
-   *  @param  Font
+   *  @param  font
    *  @return String
    */
   final public String getFontStyleString( final Font font )
@@ -2909,7 +2567,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   /**
    *  Font style accessor
    *
-   *  @param  String
+   *  @param  strFontStyle
    *  @return int
    */
   final public int getFontStyle( final String strFontStyle )
@@ -2939,23 +2597,30 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   }
 
   //  WindowListener Overrides
+  @Override
   final public void windowActivated( final WindowEvent evt ) {}
+  @Override
   final public void windowClosed( final WindowEvent evt )    {}
 
+  @Override
   final public void windowClosing( final WindowEvent evt )
   { if( evt.getSource() == this ) quit(); }
 
+  @Override
   final public void windowDeactivated( final WindowEvent evt ) {}
+  @Override
   final public void windowDeiconified( final WindowEvent evt ) {}
+  @Override
   final public void windowIconified( final WindowEvent evt )   {}
+  @Override
   final public void windowOpened( final WindowEvent evt )      {}
 
   /**
    *  class action listener implementation
    *
-   *  @param  ActionEvent
-   *  @return void
+   *  @param  action
    */
+  @Override
   final public void actionPerformed( final ActionEvent action )
   {
     final Object actor = action.getSource();
@@ -2967,8 +2632,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       else if( actor == _mniFileSaveAs )     saveBitext();
       else if( actor == _mniFileClose )      onClose();
       else if( actor == _mniFileQuit )       quit();
-
-      else if( actor == _mniSettingsRegexp ) onConfigure();
       else if( actor == _mniSettingsFonts )  displayFontSelector();
 
       //  Only Linux, Solaris (UNIX?) with Gtk 2.2+

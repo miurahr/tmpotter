@@ -14,56 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package bitext2tmx.filters;
+package bitext2tmx.core;
 
+import static bitext2tmx.util.Localization.getString;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static bitext2tmx.util.Localization.getString;
 import java.util.ArrayList;
-
 
 /**
  *
- * @author Hiroshi Miura
+ * @author miurahr
  */
-public class TMXHandler implements IFilter {
-
-  public TMXHandler() {
-    this._alstTranslation = new ArrayList<>();
-    this._alstOriginal = new ArrayList<>();
-    this._alstBitext = new ArrayList<>();
-  }
-  
-  @Override
-  public void load( File fPath, File voidPath )
-  {
-    readTMX( fPath );
-  }
-  
-  public void load( File fPath, String sourceEncode )
-  {
-    readTMX( fPath, sourceEncode );
-  }
-  
-  @Override
-  public boolean isCombinedFileFormat()
-  {
-    return true;
-  }
-  
-  @Override
-  public String getFileFormatName()
-  {
-    return "TMX";
-  }       
-  
-  private final ArrayList<String>  _alstBitext;
-  private final ArrayList<String>  _alstOriginal;
-  private final ArrayList<String>  _alstTranslation;
+public class TMXReader {
   
   private String  _strTMXEnc;
   private String  _strLangOriginal    = "en";
@@ -335,5 +300,6 @@ public class TMXHandler implements IFilter {
     }
     return( cad );
   }
+
 
 }

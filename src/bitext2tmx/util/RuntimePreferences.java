@@ -18,10 +18,11 @@ package bitext2tmx.util;
 
 /**
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
 public class RuntimePreferences {
   private static boolean segmentByLineBreak;
+  private static String userHome = null;
   
   public static boolean isSegmentByLineBreak()
   {
@@ -33,4 +34,13 @@ public class RuntimePreferences {
     segmentByLineBreak = segmentRule;
   }
   
+  public static void setUserHome(String home)
+  {
+    userHome = home;
+  }
+  
+  public static String getUserHome()
+  {
+    return userHome;
+  }
 }

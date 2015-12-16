@@ -61,10 +61,10 @@ public class SegmentChanges
 
   //  m�todos
   public int     getTipo()         { return( tipo );  }
-  public int     getPos()          { return( pos );   }
+  public int     getPosition()          { return( pos );   }
   public String  getFrase()        { return( frase ); }
   public int     getIdent_linea()  { return( ident_linea );  }
-  public boolean getFuente()       { return( fuente ); }
+  public boolean getSource()       { return( fuente ); }
   public int[]   getNumEliminada() { return( numEliminada ); }
 
   public int getTam()

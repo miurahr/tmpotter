@@ -96,19 +96,6 @@ public class Document {
       else
         isr = new InputStreamReader( fis, strEncoding );
 
-/*
-      if( _strCodeOriginal.equals(  l10n( "ENCODING_DEFAULT" ) ) )
-        isr = new InputStreamReader( fis );
-
-      //  -> String constants
-      else if( _strCodeOriginal.equals( "UTF-8" ) )
-        isr = new InputStreamReader( fis, "UTF-8" );
-
-      //  -> String constants
-      else
-        isr = new InputStreamReader( fis, "ISO-8859-1" );
-*/
-
       br = new BufferedReader( isr );
 
       while( ( linea = br.readLine() ) != null )
@@ -123,8 +110,6 @@ public class Document {
         else
           if( !sb.equals( "" ) )
           {
-            //  ToDo: test this out - what is the point here?
-            //documento = documento.append( "\n" );
             sb.append( "\n" );
           }
       }
@@ -134,25 +119,6 @@ public class Document {
       if( RuntimePreferences.isSegmentByLineBreak() )
         segmentWithBreak( doc );
       else segmentWithoutBreak( doc );
-
-/*      while( _alstOriginal.size() > _alstTranslation.size() )
-        _alstTranslation.add( _alstTranslation.size(), "" );
-
-      while( _alstTranslation.size() > _alstOriginal.size() )
-        _alstOriginal.add( _alstOriginal.size(), "" );
-      while( limpiar )
-      {
-        if( ( ( _alstOriginal.get( _alstOriginal.size() - 1 ) == null ) || ( _alstOriginal
-            .get( _alstOriginal.size() - 1 ).equals( "" ) ) )
-            && ( ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null ) || ( _alstTranslation
-                .get( _alstTranslation.size() - 1 ).equals( "" ) ) ) )
-        {
-          _alstOriginal.remove( _alstOriginal.size() - 1 );
-          _alstTranslation.remove( _alstTranslation.size() - 1 );
-        }
-        else limpiar = false;
-      }
-  */
 
     }
     catch( final java.io.IOException ex )
