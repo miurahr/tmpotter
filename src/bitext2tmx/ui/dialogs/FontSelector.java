@@ -26,8 +26,9 @@
 #######################################################################
 */
 
-package bitext2tmx.ui;
+package bitext2tmx.ui.dialogs;
 
+import bitext2tmx.ui.MainWindow;
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -67,7 +68,7 @@ final public class FontSelector extends JDialog
 {
   private static final long serialVersionUID = -6397001323725358841L;
 
-  public FontSelector( final Bitext2tmxWindow wndB2T, final Font[] afnt )
+  public FontSelector( final MainWindow wndB2T, final Font[] afnt )
   {
     super( wndB2T, true );
 
@@ -464,7 +465,7 @@ final public class FontSelector extends JDialog
   }
 
 
-  private Bitext2tmxWindow _wndB2T;
+  private MainWindow _wndB2T;
 
   private JPanel           _buttonPanel;
   private JComboBox        _fontComboBox;

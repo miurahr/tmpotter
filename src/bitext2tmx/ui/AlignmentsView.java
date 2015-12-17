@@ -51,13 +51,13 @@ final class AlignmentsView extends DockablePanel
 {
   private static final long serialVersionUID = -9170260140474066213L;
 
-  final private Bitext2tmxWindow _wndB2T;
+  final private MainWindow _wndB2T;
 
   BitextModel          _model;
   JTable               _tbl;
   private JScrollPane  _scpn;
 
-  public AlignmentsView( final Bitext2tmxWindow wndB2T )
+  public AlignmentsView( final MainWindow wndB2T )
   {
     super( "AlignmentTableView" );
 

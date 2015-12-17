@@ -24,7 +24,7 @@
  *
  **************************************************************************/
 
-package bitext2tmx.util;
+package bitext2tmx.util.xml;
 
 /**
  * An attribute of XML tag.

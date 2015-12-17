@@ -35,10 +35,8 @@ public class Document {
   private static final long serialVersionUID = -4962008112386443862L;
 
   final private ArrayList<String>  documentSegments = new ArrayList<>();
-  final private String _strOriginal;
 
-  public Document(String strOriginal) {
-    _strOriginal = strOriginal;
+  public Document() {
   }
 
   public boolean isEmpty(){
@@ -68,6 +66,10 @@ public class Document {
   public void set(int index, String content){
     documentSegments.set(index, content);
   }
+  
+  public void readDocument( String original, String encoding){
+    readDocument(original, null, encoding);
+  }
 
   /**
    *  Reads in document to string with the original or translation text
@@ -75,7 +77,7 @@ public class Document {
    *
    * @param strEncoding
    */
-  public void readDocument( final String strEncoding )
+  public void readDocument( String _strOriginal, String language, String strEncoding )
   {
     final StringBuilder sb = new StringBuilder();
     String doc = "";

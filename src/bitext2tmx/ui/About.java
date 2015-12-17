@@ -58,12 +58,12 @@ final public class About extends JDialog
 {
   final private static long serialVersionUID = -7978170933387914555L;
 
-  public About( Bitext2tmxWindow wndB2T )
+  public About( MainWindow wndB2T )
   {
     this( wndB2T, true );
   }
 
-  public About(Bitext2tmxWindow wndB2T, Boolean modal) {
+  public About(MainWindow wndB2T, Boolean modal) {
     super(wndB2T, modal);
     initComponents();
   }

@@ -35,7 +35,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.SwingUtilities;
 
 import bitext2tmx.ui.Bitext2TmxIcons;
-import bitext2tmx.ui.Bitext2tmxWindow;
+import bitext2tmx.ui.MainWindow;
 import bitext2tmx.ui.SplashScreen;
 import bitext2tmx.util.AquaAdapter;
 
@@ -54,7 +54,7 @@ final public class Bitext2tmx
     displaySplash();
     echoStartMsg();
 
-    final Bitext2tmxWindow _wndB2T = new Bitext2tmxWindow();
+    final MainWindow _wndB2T = new MainWindow();
 
     SwingUtilities.invokeLater( new Runnable()
       { public void run() { _wndB2T.setVisible( true ); } } );

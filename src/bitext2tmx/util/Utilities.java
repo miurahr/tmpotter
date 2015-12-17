@@ -28,28 +28,12 @@
 package bitext2tmx.util;
 
 import java.awt.GraphicsEnvironment;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.BreakIterator;
 import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.*;
-
-import javax.swing.ImageIcon;
 
 import bitext2tmx.util.Platform.OsType;
 
@@ -548,7 +532,79 @@ public class Utilities
         }
         return null;
     }
+    
+    
+  public static float cost( final float[][] mat, final int i, final int j, final float[] v1, final float[] v2, final int d )
+  {
+    final float b2 = Math.abs( v1[i - 1] - v2[j - 1] );
 
+    return( min3( mat[i - 1][j] + v1[i - 1] / d, mat[i - 1][j - 1] + b2,
+        mat[i][j - 1] + v2[j - 1] / d ) );
+  }
+
+  public static float min3( float a, final float b, final float c )
+  {
+    if( b < a ) { a = b; }
+
+    if( c < a ) return( c );
+
+    return( a );
+  }
+
+  public static float max3( float a, final float b, final float c )
+  {
+    if( b > a ) { a = b; }
+
+    if( c > a ) return( c );
+
+    return( a );
+  }
+
+  public static int argmin3( float a, final float b, final float c )
+  {
+    int iArgMin3 = 0;
+
+    if( b < a )
+    {
+      a = b;
+      ++iArgMin3;  // +1
+    }
+
+    if( c < a ) return( 3 );
+
+    return( ++iArgMin3 );  // 1 or 2
+  }
+
+  public static int argmax3( float a, final float b, final float c )
+  {
+    int iArgMax3 = 0;
+
+    if( b > a )
+    {
+      a = b;
+      ++iArgMax3;  // +1
+    }
+
+    if( c > a ) return( 3 );
+
+    return( ++iArgMax3 );  // 1 or 2
+  }
+
+  public static boolean isAlignedOKES( final float[] v1, final float[] v2, final int i,    final int j )
+  {
+    return( Math.abs( v1[i - 1] - v2[j] ) < Math.abs( v1[i] - v2[j] ) );
+  }
+
+  public static boolean isAlignedOKSE( final float[] v1, final float[] v2, final int i, final int j )
+  {
+    return( Math.abs( v1[i] - v2[j - 1] ) < Math.abs( v1[i] - v2[j] ) );
+  }
+  
+  public static int largerSize(int a, int b)
+  {
+    return ( a < b )? b - 1 : a - 1;
+  }
+  
 }//  Utilities{}
 
 

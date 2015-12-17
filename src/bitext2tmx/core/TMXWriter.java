@@ -16,6 +16,7 @@
  */
 package bitext2tmx.core;
 
+import bitext2tmx.util.Utilities;
 import static bitext2tmx.util.Utilities.getValidXMLText;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,23 +24,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 /**
  *
  * @author miurahr
  */
 public class TMXWriter {
-  
+
   /**
-   *  Esta funcion recompone el Tmx a partir de las posibles modificaciones
-   *  efectuadas y lo deja en el directorio correspondiente segun los cambios
-   *  realizados.
+   *
    * @param fNombre
    * @param _alstOriginal
+   * @param langOriginal
+   * @param _alstTranslation
+   * @param langTranslation
+   * @param encoding
    * @throws java.io.IOException
    */
-  public void writeBitext( final File fNombre, ArrayList<String> _alstOriginal ) throws IOException
+  public static void writeBitext( final File fNombre,
+          Document _alstOriginal, String langOriginal,
+          Document _alstTranslation, String langTranslation,
+          String encoding) throws IOException
   {
     int cont = 0;
     final FileOutputStream fw;
@@ -48,6 +53,7 @@ public class TMXWriter {
     final PrintWriter pw;
     int max = 0;
 
+    String _strTMXEnc = encoding;
     try
     {
       fw = new FileOutputStream( fNombre );
@@ -56,7 +62,7 @@ public class TMXWriter {
       bw = new BufferedWriter( osw );
       pw = new PrintWriter( bw );
 
-      max = largersizeSegments();
+      max = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size());
       //pw.println("<?xml version=\"1.0\" encoding=\"" + cod_TMX + "\"?>"); //poner el encoding
       pw.println( "<?xml version=\"1.0\" encoding=\"" + _strTMXEnc + "\"?>" ); //poner
       pw.println( "<tmx version=\"1.4\">" );
@@ -74,7 +80,7 @@ public class TMXWriter {
       pw.println( "    segtype=\"sentence\"" );
       pw.println( "    o-tmf=\"Bitext2tmx\""  );
       pw.println( "    adminlang=\"en\"" );
-      pw.println( "    srclang=\"" + _strLangOriginal.toLowerCase() + "\"" );
+      pw.println( "    srclang=\"" + langOriginal.toLowerCase() + "\"" );
       pw.println( "    datatype=\"PlainText\"" );
       pw.println( "    o-encoding=\"" + _strTMXEnc + "\"" );
       pw.println( "  >" );
@@ -93,16 +99,16 @@ public class TMXWriter {
           {
             if( !( _alstOriginal.get( cont ).equals( "" ) ) )
             {
-              pw.println( "    <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
+              pw.println( "    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
               //pw.println("      <seg>" + _alstOriginal.get( cont ) + "</seg>" );
-              pw.println( "      <seg>" +
+              pw.println("      <seg>" +
                getValidXMLText( (String)_alstOriginal.get( cont ) ) +
                 "</seg>" );
               pw.println( "    </tuv>");
             }
             else
             {
-              pw.println( "    <tuv xml:lang=\"" + _strLangOriginal.toLowerCase() + "\">" );
+              pw.println( "    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
               pw.println( "      <seg>  </seg>");
               pw.println( "    </tuv>");
             }
@@ -112,16 +118,16 @@ public class TMXWriter {
           {
             if( !( _alstTranslation.get( cont ).equals( "" ) ) )
             {
-              pw.println( "    <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
+              pw.println( "    <tuv xml:lang=\"" + langTranslation.toLowerCase() + "\">" );
               //pw.println("      <seg>" + _alstTranslation.get( cont ) + "</seg>");
-              pw.println( "      <seg>" +
+              pw.println("      <seg>" +
                 getValidXMLText( (String)_alstTranslation.get( cont ) ) +
                  "</seg>" );
               pw.println( "    </tuv>");
             }
             else
             {
-              pw.println("    <tuv xml:lang=\"" + _strLangTranslation.toLowerCase() + "\">" );
+              pw.println("    <tuv xml:lang=\"" + langTranslation.toLowerCase() + "\">" );
               pw.println("      <seg>  </seg>");
               pw.println("    </tuv>");
             }

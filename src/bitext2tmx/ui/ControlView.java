@@ -49,7 +49,7 @@ final class ControlView extends DockablePanel implements ActionListener
 {
   private static final long serialVersionUID = -667049976214485655L;
 
-  final private Bitext2tmxWindow _wndB2T;
+  final private MainWindow _wndB2T;
 
   final private JButton  _btnOriginalDelete    = new JButton();
   final private JButton  _btnOriginalJoin      = new JButton();
@@ -68,7 +68,7 @@ final class ControlView extends DockablePanel implements ActionListener
   final private JPanel pnlButtonsLeft   = new JPanel();
   final private JPanel pnlButtonsRight  = new JPanel();
 
-  public ControlView( final Bitext2tmxWindow wndB2T )
+  public ControlView( final MainWindow wndB2T )
   {
     super( "SegmentButtonsView" );
 

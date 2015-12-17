@@ -23,7 +23,7 @@
 #######################################################################
 */
 
-package bitext2tmx.ui;
+package bitext2tmx.ui.dialogs;
 
 import java.awt.Frame;
 import java.awt.Dimension;

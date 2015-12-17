@@ -35,6 +35,8 @@
 
 package bitext2tmx.util;
 
+import bitext2tmx.util.xml.XMLStreamReader;
+import bitext2tmx.util.xml.XMLBlock;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

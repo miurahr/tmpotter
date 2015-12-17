@@ -292,5 +292,129 @@ public class UtilitiesTest extends TestCase {
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }
+
+  /**
+   * Test of cost method, of class Utilities.
+   */
+  public void testCost() {
+    System.out.println("cost");
+    float[][] mat = null;
+    int i = 0;
+    int j = 0;
+    float[] v1 = null;
+    float[] v2 = null;
+    int d = 0;
+    float expResult = 0.0F;
+    float result = Utilities.cost(mat, i, j, v1, v2, d);
+    assertEquals(expResult, result, 0.0);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of min3 method, of class Utilities.
+   */
+  public void testMin3() {
+    System.out.println("min3");
+    float a = 0.0F;
+    float b = 0.0F;
+    float c = 0.0F;
+    float expResult = 0.0F;
+    float result = Utilities.min3(a, b, c);
+    assertEquals(expResult, result, 0.0);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of max3 method, of class Utilities.
+   */
+  public void testMax3() {
+    System.out.println("max3");
+    float a = 0.0F;
+    float b = 0.0F;
+    float c = 0.0F;
+    float expResult = 0.0F;
+    float result = Utilities.max3(a, b, c);
+    assertEquals(expResult, result, 0.0);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of argmin3 method, of class Utilities.
+   */
+  public void testArgmin3() {
+    System.out.println("argmin3");
+    float a = 0.0F;
+    float b = 0.0F;
+    float c = 0.0F;
+    int expResult = 0;
+    int result = Utilities.argmin3(a, b, c);
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of argmax3 method, of class Utilities.
+   */
+  public void testArgmax3() {
+    System.out.println("argmax3");
+    float a = 0.0F;
+    float b = 0.0F;
+    float c = 0.0F;
+    int expResult = 0;
+    int result = Utilities.argmax3(a, b, c);
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of isAlignedOKES method, of class Utilities.
+   */
+  public void testIsAlignedOKES() {
+    System.out.println("isAlignedOKES");
+    float[] v1 = null;
+    float[] v2 = null;
+    int i = 0;
+    int j = 0;
+    boolean expResult = false;
+    boolean result = Utilities.isAlignedOKES(v1, v2, i, j);
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of isAlignedOKSE method, of class Utilities.
+   */
+  public void testIsAlignedOKSE() {
+    System.out.println("isAlignedOKSE");
+    float[] v1 = null;
+    float[] v2 = null;
+    int i = 0;
+    int j = 0;
+    boolean expResult = false;
+    boolean result = Utilities.isAlignedOKSE(v1, v2, i, j);
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of largerSize method, of class Utilities.
+   */
+  public void testLargerSize() {
+    System.out.println("largerSize");
+    int a = 0;
+    int b = 0;
+    int expResult = 0;
+    int result = Utilities.largerSize(a, b);
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
   
 }

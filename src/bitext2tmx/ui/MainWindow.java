@@ -27,6 +27,10 @@
 
 package bitext2tmx.ui;
 
+import bitext2tmx.ui.dialogs.FontSelector;
+import bitext2tmx.ui.dialogs.Encodings;
+import bitext2tmx.ui.help.Manual;
+import bitext2tmx.ui.dialogs.OpenTexts;
 import bitext2tmx.core.Document;
 import bitext2tmx.core.TMXWriter;
 import java.awt.*;
@@ -60,16 +64,17 @@ import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
+import bitext2tmx.core.Align;
+import bitext2tmx.core.TMXReader;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.filters.TMXHandler;
-import bitext2tmx.filters.IFilter;
 import bitext2tmx.util.AquaAdapter;
 import bitext2tmx.util.BConstants;
 
 import static bitext2tmx.util.AquaAdapter.*;
 import static bitext2tmx.util.Localization.*;
 import bitext2tmx.util.RuntimePreferences;
+import bitext2tmx.util.Utilities;
 import static bitext2tmx.util.Utilities.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,7 +83,7 @@ import java.util.logging.Logger;
 /**
 *
 */
-final public class Bitext2tmxWindow extends JFrame implements ActionListener,
+final public class MainWindow extends JFrame implements ActionListener,
   WindowListener
 {
   final private static long serialVersionUID = -540065960678391862L;
@@ -158,9 +163,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   private Font  _fntSourceEditor;
   private Font  _fntTargetEditor;
 
-  private String _strTMXEnc;
 
-  public Bitext2tmxWindow()
+  public MainWindow()
   {
     this._alstBitext = new ArrayList();
     this._alstChanges = new ArrayList<>();
@@ -200,7 +204,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     setFonts( null );
 
   }
-  private static final Logger LOG = Logger.getLogger(Bitext2tmxWindow.class.getName());
+  private static final Logger LOG = Logger.getLogger(MainWindow.class.getName());
 
 
   private void initDockingUI()
@@ -561,7 +565,9 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       _strOriginal     = dlg.getSource();
       _strLangOriginal = dlg.getSourceLocale();
       _vwAlignments.buildDisplay();
-
+      _alstOriginal = new Document();
+      _alstTranslation = new Document();
+        
       if( dlg.getTypes() == 0 )
       {
         //getSelectedItem()
@@ -570,19 +576,16 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         _strTranslation     = dlg.getTarget();
         _strLangTranslation = dlg.getTargetLocale();
 
-        _alstOriginal = new Document(_strOriginal);
-        _alstTranslation = new Document(_strTranslation);
-
         try {
-          _alstOriginal.readDocument(originalEncoding);
-          _alstTranslation.readDocument(translateEncoding);
+          _alstOriginal.readDocument(_strOriginal, originalEncoding);
+          _alstTranslation.readDocument(_strTranslation, translateEncoding);
         } catch (Exception ex) {
           JOptionPane.showMessageDialog( this, getString( "MSG.ERROR" ),
              getString( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
           this.dispose();
         }
-
-        boolean res = align();
+        
+        boolean res = Align.align(_alstOriginal, _alstTranslation);
 
         if( res )
         {
@@ -603,11 +606,12 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
       }
       else
       {
-        IFilter handler = new TMXHandler();
         try {
-          handler.load(_fPathOriginal, originalEncoding );
+          TMXReader.readTMX(_fPathOriginal, originalEncoding,
+                            _strLangOriginal, _strLangTranslation,
+                            _alstOriginal, _alstTranslation);
         } catch (Exception ex) {
-          Logger.getLogger(Bitext2tmxWindow.class.getName()).log(Level.SEVERE, null, ex);
+          Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
         _fPathTranslation = _fPathOriginal;
       }
@@ -664,6 +668,8 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
    */
   private void saveBitext()
   {
+    File userHome;
+    
     for( int cont = 0; cont < ( _alstOriginal.size() - 1 ); cont++ )
     {
       if( _alstOriginal.get( cont ).equals( "" ) && _alstTranslation.get( cont ).equals( "" ) )
@@ -676,10 +682,10 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     try {
       final String nombre = _fPathOriginal.getName().
           substring( 0, ( _fPathOriginal.getName().length() - 4 ) );
-      
       boolean guardar = false;
       boolean salir   = false;
-      File _fUserHome = new File(RuntimePreferences.getUserHome());    
+    
+      userHome = new File(RuntimePreferences.getUserHome());
       File fNombre = new File( nombre.concat( _strLangTranslation + ".tmx" ) );
       
       while( !guardar && !salir )
@@ -693,13 +699,13 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         while( !kNombre_Usuario )
         {
           fc.setLocation( 230, 300 );
-          fc.setCurrentDirectory( _fUserHome );
+          fc.setCurrentDirectory( userHome );
           fc.setDialogTitle( getString( "DLG.SAVEAS" ) );
 
           fc.setMultiSelectionEnabled( false );
           fc.setSelectedFile( fNombre );
           fc.setFileSelectionMode( JFileChooser.FILES_ONLY );
-          _fUserHome = fc.getCurrentDirectory();
+          userHome = fc.getCurrentDirectory();
 
           int returnVal;
           returnVal = fc.showSaveDialog( this );
@@ -746,6 +752,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
         }
       }
 
+      String encoding = "UTF-8";
       if( guardar )
       {
         //  Pedir el encoding
@@ -756,13 +763,16 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
         if( !dlgEnc.isClosed() )
         {
-        final String encoding = dlgEnc.getComboBoxEncoding();
+        encoding = dlgEnc.getComboBoxEncoding();
         dlgEnc.dispose();
         }
       }
       
-      TMXWriter writer=new TMXWriter();      
-      writer.writeBitext(fNombre);
+      TMXWriter.writeBitext(fNombre,
+              _alstOriginal, _strLangOriginal,
+              _alstTranslation, _strLangTranslation,
+              encoding);
+      
     } catch ( IOException ex) {
       JOptionPane.
         showMessageDialog( this, (String)_alstLang.get( 21 ),
@@ -1120,25 +1130,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
   }
 
 
-    /**
-   *  Funci�n tamMax. Esta funci�n devuelve el tama�o del array mayor.
-   *
-   *  @return INT: tama�o del mayor array
-   *
-   *  Funci�n tamMax. This function returns the size of the largest array
-   *
-   *  @return INT: Size of the largest array
-   */
-  private int largersizeSegments()
-  {
-    int max = _alstOriginal.size() - 1;
-
-    if( _alstTranslation.size() > _alstOriginal.size() )
-      max = _alstTranslation.size() - 1;
-
-    return( max );
-  }
-  
+ 
   /**
    *  Funci�n IgualarArrays. Esta funci�n a�ade filas al array del menor tama�o y
    *  borra si las filas est�n en blanco.
@@ -1791,7 +1783,7 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
     final int[] numEliminadas = new int [1000];  // default = 1000 - why?
     int cont2 = 0;
 
-    maxTamArrays = largersizeSegments();
+    maxTamArrays = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size());
 
     while( cont <= ( maxTamArrays - lineasLimpiar ) )
     {
@@ -1878,333 +1870,6 @@ final public class Bitext2tmxWindow extends JFrame implements ActionListener,
 
     _alstChanges.add( _iChanges, Changes );
     updateAlignmentsView();
-  }
-
-  //  ToDo: new alignment functionality from TagAligner lib
-  //  Note: When changing this, a major change, provide a separate
-  //  method to the new alternative for experiemental purposes.
-  //  Select the alignment method desired via a wrapper method possibly
-  //
-  private boolean align()
-  {
-    try
-    {
-      final int tamF   = _alstOriginal.size();
-      final int tamM   = _alstTranslation.size();
-      final float[] v1          = new float[tamF];
-      final float[] v2          = new float[tamM];
-      final float[][] votacion  = new float[tamF + 1][tamM + 1];
-      final float[][] temporal  = new float[tamF + 1][tamM + 1];
-      final float[][] resultado = new float[tamF + 1][tamM + 1];
-      float ganancia_x = 5;
-      float ganancia_s = 1;
-      float ganancia_e = 1;
-      int limite_d = 2;
-      int cont  = 0;
-      int cont2 = 0;
-      final float DBL_MAX = 999999999;
-
-      _ult_recorridoinv = "";
-
-      // Inicializar los vectores con el tama�o de cada segmento.
-      // Inicializar el vector resultado y votaciones a cero
-      //
-      // Initialize vectors with the size of each segment
-      // Initialize the result vector and votes to zero
-      for( cont = 0; cont < tamF; cont++ )
-        v1[cont] = _alstOriginal.get( cont ).toString().length();
-
-      for( cont = 0; cont < tamM; cont++ )
-        v2[cont] = _alstTranslation.get( cont ).toString().length();
-
-      for( cont = 0; cont <= tamF; cont++ )
-      //{
-        for( cont2 = 0; cont2 <= tamM; cont2++ )
-        {
-          votacion[tamF][tamM] = 0;
-          resultado[tamF][tamM] = 0;
-        }
-      //}
-
-      // Inicializar la primera columna y la primera fila de la matriz temporal
-      // a ceros.
-      // Initialize the first column and the first row of the temporary array
-      // with zeros
-      for( cont = 0; cont <= tamF; cont++ ) temporal[cont][0] = DBL_MAX;
-      for( cont = 0; cont <= tamM; cont++ ) temporal[0][cont] = DBL_MAX;
-
-      temporal[0][0] = 0;
-
-      for( int d = 1; d <= limite_d; d++ )
-        for( int i = 1; i <= tamF; i++ )
-          for( int j = 1; j <= tamM; j++ )
-            temporal[i][j] = cost( temporal, i, j, v1, v2, d );
-
-      // actualizaci�n de la matriz resultado
-      // updating the result array
-      votacion[tamF][tamM] += ganancia_x;
-      int i = tamF;
-      int j = tamM;
-
-      while( i > 1 && j > 1 )
-      {
-        switch( argmin3( temporal[i - 1][j - 1], temporal[i - 1][j],
-            temporal[i][j - 1] ) )
-        {
-          case 1:
-          {
-            votacion[i - 1][j - 1] += ganancia_x;
-            i--;
-            j--;
-            break;
-          }
-          case 2:
-          {
-            votacion[i - 1][j] += ganancia_s;
-            i--;
-            break;
-          }
-          case 3:
-          {
-            votacion[i][j - 1] += ganancia_e;
-            j--;
-            break;
-          }
-        }//  switch()
-      }//  while()
-
-      // c�lculo del camino con m�xima ganancia
-      // computing the maximum-gain path
-      for( i = 1; i <= tamF; i++ )
-        for( j = 1; j <= tamM; j++ )
-          resultado[i][j] = max3( resultado[i - 1][j - 1], resultado[i - 1][j],
-              resultado[i][j - 1] )
-              + votacion[i][j];
-
-      i = tamF;
-      j = tamM;
-
-      while( i > 1 && j > 1 )
-      {
-        switch( argmax3( resultado[i - 1][j - 1], resultado[i - 1][j],
-            resultado[i][j - 1] ) )
-        {
-          case 1:
-          {
-            _ult_recorridoinv += 'x';
-            j--;
-            i--;
-            break;
-          }
-          case 2:
-          {
-            _ult_recorridoinv += 's';
-            i--;
-            break;
-          }
-          case 3:
-          {
-            _ult_recorridoinv += 'e';
-            j--;
-            break;
-          }
-        }//  switch()
-      }//  while()
-
-      // simplificaci�n de _ult_recorridoinv
-      // simplification of _ult_recorridoinv
-      char estado = 'x';
-      String almacenamiento = "";
-      i = tamF - 1;
-      j = tamM - 1;
-
-      for( cont = 0; cont < _ult_recorridoinv.length(); cont++ )
-      {
-        switch( _ult_recorridoinv.charAt( cont ) )
-        {
-          case 's':
-          {
-            i--;
-
-            if( estado == 'e' && isAlignedOKSE( v1, v2, i, j ) )
-            {
-              char[] almchar = almacenamiento.toCharArray();
-              almchar[almacenamiento.length() - 1] = 'x';
-              almacenamiento = new String( almchar );
-              estado = 'x';
-            }
-            else
-            {
-              almacenamiento = almacenamiento + 's';
-              estado = 's';
-            }
-
-            break;
-          }
-          case 'e':
-          {
-            j--;
-
-            if( estado == 's' && isAlignedOKES( v1, v2, i, j ) )
-            {
-              char[] almchar = almacenamiento.toCharArray();
-              almchar[almacenamiento.length() - 1] = 'x';
-              almacenamiento = new String( almchar );
-              estado = 'x';
-            }
-            else
-            {
-              almacenamiento = almacenamiento + 'e';
-              estado = 'e';
-            }
-
-            break;
-          }
-          case 'x':
-          {
-            i--;
-            estado = 'x';
-            almacenamiento = almacenamiento + 'x';
-
-            break;
-          }
-        }//  switch()
-      }//  for()
-
-      _ult_recorridoinv = almacenamiento;
-
-      int f1 = 1;
-      int f2 = 1;
-      final ArrayList<String> Source = new ArrayList<>();
-      final ArrayList<String> Target   = new ArrayList<>();
-
-      Source.add( _alstOriginal.get( 0 ) );
-      Target.add( _alstTranslation.get( 0 ) );
-
-      for( i = _ult_recorridoinv.length() - 1; i >= 0; i-- )
-      {
-        switch( _ult_recorridoinv.charAt( i ) )
-        {
-          case 'x':
-          {
-            Source.add( _alstOriginal.get( f1 ) );
-            Target.add( _alstTranslation.get( f2 ) );
-            f1++;
-            f2++;
-
-            break;
-          }
-          case 's':
-          {
-            Source.add( _alstOriginal.get( f1 ) );
-            Target.add( "" );
-            f1++;
-
-            break;
-          }
-          case 'e':
-          {
-            Source.add( "" );
-            Target.add( _alstTranslation.get( f2 ) );
-            f2++;
-
-            break;
-          }
-        }//  switch()
-      }//  for()
-
-      while( !_alstOriginal.isEmpty() )    _alstOriginal.remove( 0 );
-      while( !_alstTranslation.isEmpty() ) _alstTranslation.remove( 0 );
-
-      for( cont = 0; cont < Source.size(); cont++ )
-        _alstOriginal.add(Source.get( cont ) );
-
-      for( cont = 0; cont < Target.size(); cont++ )
-        _alstTranslation.add(Target.get( cont ) );
-
-      return( true );
-    }
-
-    //  FixMe: this should never happen if the program is designed properly
-    //  It is very bad practice to have to catch OutOfMemoryError inside
-    //  an app like this. A little pre-calculation/estimate of required memory
-    //  from file sizes or related could subvert this altogether.
-    catch( final java.lang.OutOfMemoryError ex )
-    {
-      //JOptionPane.showMessageDialog( _pnl, l10n( "MSG.MEMORY.INSUFFICIENT" ),
-      JOptionPane.showMessageDialog( this, getString( "MSG.MEMORY.INSUFFICIENT" ),
-        getString( "MSG.ERROR"), JOptionPane.ERROR_MESSAGE );
-
-      return( false );
-    }
-  }
-
-  private float cost( final float[][] mat, final int i, final int j, final float[] v1, final float[] v2, final int d )
-  {
-    final float b2 = Math.abs( v1[i - 1] - v2[j - 1] );
-
-    return( min3( mat[i - 1][j] + v1[i - 1] / d, mat[i - 1][j - 1] + b2,
-        mat[i][j - 1] + v2[j - 1] / d ) );
-  }
-
-  private float min3( float a, final float b, final float c )
-  {
-    if( b < a ) { a = b; }
-
-    if( c < a ) return( c );
-
-    return( a );
-  }
-
-  private float max3( float a, final float b, final float c )
-  {
-    if( b > a ) { a = b; }
-
-    if( c > a ) return( c );
-
-    return( a );
-  }
-
-  private int argmin3( float a, final float b, final float c )
-  {
-    int iArgMin3 = 0;
-
-    if( b < a )
-    {
-      a = b;
-      ++iArgMin3;  // +1
-    }
-
-    if( c < a ) return( 3 );
-
-    return( ++iArgMin3 );  // 1 or 2
-  }
-
-  private int argmax3( float a, final float b, final float c )
-  {
-    int iArgMax3 = 0;
-
-    if( b > a )
-    {
-      a = b;
-      ++iArgMax3;  // +1
-    }
-
-    if( c > a ) return( 3 );
-
-    return( ++iArgMax3 );  // 1 or 2
-  }
-
-  private boolean isAlignedOKES( final float[] v1, final float[] v2, final int i,    final int j )
-  {
-    return( Math.abs( v1[i - 1] - v2[j] ) < Math.abs( v1[i] - v2[j] )
-      ? true : false );
-  }
-
-  private boolean isAlignedOKSE( final float[] v1, final float[] v2, final int i, final int j )
-  {
-    return( Math.abs( v1[i] - v2[j - 1] ) < Math.abs( v1[i] - v2[j] )
-      ? true : false );
   }
 
   private void displayManual()

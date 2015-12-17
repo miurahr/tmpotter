@@ -24,8 +24,9 @@
  *
  **************************************************************************/
 
-package bitext2tmx.util;
+package bitext2tmx.util.xml;
 
+import bitext2tmx.util.BConstants;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;

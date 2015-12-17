@@ -16,6 +16,7 @@
  */
 package bitext2tmx.ui;
 
+import bitext2tmx.util.ResourceUtil;
 import java.awt.Image;
 import java.io.FileNotFoundException;
 import java.util.HashMap;

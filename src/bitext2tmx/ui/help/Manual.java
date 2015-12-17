@@ -23,7 +23,7 @@
 #######################################################################
 */
 
-package bitext2tmx.ui;
+package bitext2tmx.ui.help;
 
 import java.awt.*;
 import javax.swing.*;

@@ -49,9 +49,9 @@ final class SegmentEditor extends DockablePanel
 
   final private JTextPane _tpn =  new JTextPane();
 
-  final private Bitext2tmxWindow _wndB2T;
+  final private MainWindow _wndB2T;
 
-  public SegmentEditor( final Bitext2tmxWindow wndB2T )
+  public SegmentEditor( final MainWindow wndB2T )
   {
     super( "SegmentEditor" );
 

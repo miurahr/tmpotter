@@ -60,5 +60,28 @@ public class RuntimePreferencesTest extends TestCase {
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }
+
+  /**
+   * Test of setUserHome method, of class RuntimePreferences.
+   */
+  public void testSetUserHome() {
+    System.out.println("setUserHome");
+    String home = "";
+    RuntimePreferences.setUserHome(home);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of getUserHome method, of class RuntimePreferences.
+   */
+  public void testGetUserHome() {
+    System.out.println("getUserHome");
+    String expResult = "";
+    String result = RuntimePreferences.getUserHome();
+    assertEquals(expResult, result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
   
 }

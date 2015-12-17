@@ -22,7 +22,7 @@ package bitext2tmx.util;
  */
 public class RuntimePreferences {
   private static boolean segmentByLineBreak;
-  private static String userHome = null;
+  private static String userHome = "/";
   
   public static boolean isSegmentByLineBreak()
   {

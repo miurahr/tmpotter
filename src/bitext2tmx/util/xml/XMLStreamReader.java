@@ -24,8 +24,13 @@
  *
  **************************************************************************/
 
-package bitext2tmx.util;
+package bitext2tmx.util.xml;
 
+import bitext2tmx.util.DefaultEntityFilter;
+import bitext2tmx.util.TranslationException;
+import bitext2tmx.util.Utilities;
+import bitext2tmx.util.xml.XMLReader;
+import bitext2tmx.util.xml.XMLBlock;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

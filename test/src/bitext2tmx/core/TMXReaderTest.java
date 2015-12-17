@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package bitext2tmx.core;
 
+import java.io.File;
 import junit.framework.TestCase;
 
 /**
  *
  * @author miurahr
  */
-public class DocumentTest extends TestCase {
+public class TMXReaderTest extends TestCase {
   
-  public DocumentTest(String testName) {
+  public TMXReaderTest(String testName) {
     super(testName);
   }
   
@@ -38,25 +40,17 @@ public class DocumentTest extends TestCase {
   }
 
   /**
-   * Test of setSourceString method, of class Document.
+   * Test of readTMX method, of class TMXReader.
    */
-  public void testSetSourceString() {
-    System.out.println("setSourceString");
-    String str = "";
-    Document instance = new Document();
-    instance.setSourceString(str);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of readDocument method, of class Document.
-   */
-  public void testReadDocument() {
-    System.out.println("readDocument");
-    String strEncoding = "";
-    Document instance = new Document();
-    instance.readDocument(strEncoding);
+  public void testReadTMX() {
+    System.out.println("readTMX");
+    File fPathOriginal = null;
+    String encodeing = "";
+    String langOriginal = "";
+    String langTranslation = "";
+    Document _alstOriginal = null;
+    Document _alstTranslation = null;
+    TMXReader.readTMX(fPathOriginal, encodeing, langOriginal, langTranslation, _alstOriginal, _alstTranslation);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }
