@@ -26,8 +26,10 @@
 */
 
 
-package bitext2tmx.ui;
+package bitext2tmx.ui.dialogs;
 
+import bitext2tmx.ui.Icons;
+import bitext2tmx.ui.MainWindow;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -46,7 +48,7 @@ import javax.swing.JPanel;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import bitext2tmx.util.BConstants;
+import bitext2tmx.util.AppConstants;
 import static bitext2tmx.util.Localization.getString;
 
 
@@ -58,13 +60,13 @@ final public class About extends JDialog
 {
   final private static long serialVersionUID = -7978170933387914555L;
 
-  public About( MainWindow wndB2T )
+  public About( MainWindow mWindow )
   {
-    this( wndB2T, true );
+    this(mWindow, true );
   }
 
-  public About(MainWindow wndB2T, Boolean modal) {
-    super(wndB2T, modal);
+  public About(MainWindow mWIndow, Boolean modal) {
+    super(mWIndow, modal);
     initComponents();
   }
 
@@ -79,10 +81,10 @@ final public class About extends JDialog
       {@Override public void windowClosing( final WindowEvent evt )
                              { onClose(); } } );
 
-    _lbl1.setText( BConstants.getDisplayNameAndVersion() );
-    _lbl2.setText( BConstants.getApplicationDescription() );
-    _lbl3.setText( BConstants.COPYRIGHT );
-    _lbl4.setText( BConstants.AUTHORS );
+    _lbl1.setText(AppConstants.getDisplayNameAndVersion() );
+    _lbl2.setText(AppConstants.getApplicationDescription() );
+    _lbl3.setText(AppConstants.COPYRIGHT );
+    _lbl4.setText(AppConstants.AUTHORS );
 
     final GridBagConstraints gbc = new GridBagConstraints();
 
@@ -106,7 +108,7 @@ final public class About extends JDialog
     gbc.gridy = 3;
     getContentPane().add( _lbl4, gbc );
 
-    _lblIcon.setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-medium.png" ) );
+    _lblIcon.setIcon( Icons.getIcon( "icon-medium.png" ) );
     _pnlButtons.add( _lblIcon, BorderLayout.WEST );
 
     gbc.gridy     = 5;

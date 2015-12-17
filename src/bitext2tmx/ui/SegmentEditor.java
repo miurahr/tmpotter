@@ -49,20 +49,20 @@ final class SegmentEditor extends DockablePanel
 
   final private JTextPane _tpn =  new JTextPane();
 
-  final private MainWindow _wndB2T;
+  final private MainWindow windowMain;
 
-  public SegmentEditor( final MainWindow wndB2T )
+  public SegmentEditor( final MainWindow windowMain )
   {
     super( "SegmentEditor" );
 
-    _wndB2T = wndB2T;
+    this.windowMain = windowMain;
 
     getDockKey().setName( "Segment Editor" );
     getDockKey().setTooltip( "Segment Editor" );
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png" ) );
+    //getDockKey().setIcon( Icons.getIcon( "icon-small.png" ) );
 
     _tpn.addKeyListener( new KeyAdapter()
       { final public void keyReleased( final KeyEvent e )
@@ -112,10 +112,10 @@ final class SegmentEditor extends DockablePanel
   final public int getSelectionStart() { return( _tpn.getSelectionStart() ); }
 
   final private void onKeyReleased()
-  { _wndB2T.setTextAreaPosition( _tpn.getSelectionStart() ); }
+  { windowMain.setTextAreaPosition( _tpn.getSelectionStart() ); }
 
   final private void onClicked()
-  { _wndB2T.setTextAreaPosition( _tpn.getSelectionStart() ); }
+  { windowMain.setTextAreaPosition( _tpn.getSelectionStart() ); }
 
 }// SegmentEditor{}
 

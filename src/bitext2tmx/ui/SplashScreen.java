@@ -41,7 +41,7 @@ public class SplashScreen extends JWindow
     ImageIcon image = null;
     JLabel    label;
 
-    try{ label = new JLabel( Bitext2TmxIcons.getIcon( "b2t-splash.png") ); }
+    try{ label = new JLabel( Icons.getIcon( "splash.png") ); }
     catch( Exception ex )
     { label = new JLabel( "Error: unable to load image!" ); }
 

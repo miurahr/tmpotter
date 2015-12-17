@@ -476,11 +476,11 @@ public class Utilities
             String cp = System.getProperty("java.class.path");
             
             // See if we are running from a JAR
-            String path = extractClasspathElement(cp, File.separator + BConstants.APPLICATION_JAR);
+            String path = extractClasspathElement(cp, File.separator + AppConstants.APPLICATION_JAR);
             
             if (path == null) {
                 // We're not running from a JAR; probably debug mode (in IDE, etc.)
-                path = extractClasspathElement(cp, BConstants.DEBUG_CLASSPATH);
+                path = extractClasspathElement(cp, AppConstants.DEBUG_CLASSPATH);
             }
             
             // WTF?!! Falling back to current directory

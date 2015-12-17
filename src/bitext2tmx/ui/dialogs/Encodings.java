@@ -44,7 +44,7 @@ import javax.swing.JPanel;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import bitext2tmx.util.BConstants;
+import bitext2tmx.util.AppConstants;
 import static bitext2tmx.util.Localization.getString;
 
 
@@ -135,7 +135,7 @@ final public class Encodings extends JDialog implements ActionListener
   final private JPanel    _pnl         = new JPanel();
   final private JButton   _btnOK       = new JButton();
   final private JLabel    _lblEncoding = new JLabel();
-  final private JComboBox _cbxEncoding = new JComboBox( BConstants.straEncodings );
+  final private JComboBox _cbxEncoding = new JComboBox( AppConstants.straEncodings );
   // End of variables declaration
 }//  Encodings{}
 

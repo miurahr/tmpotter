@@ -51,7 +51,7 @@ import javax.swing.JTextField;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import bitext2tmx.util.BConstants;
+import bitext2tmx.util.AppConstants;
 import static bitext2tmx.util.Localization.getString;
 
 
@@ -109,9 +109,9 @@ final public class OpenWiki extends JDialog implements ActionListener
 
   public File _fUserPath = new File( System.getProperty( "user.dir" ) );
 
-  final private JComboBox _cbxOriginalEncoding    = new JComboBox( BConstants.straEncodings );
-  final private JComboBox _cbxTranslationEncoding = new JComboBox( BConstants.straEncodings );
-  final private int numEncodings = BConstants.straEncodings.length;
+  final private JComboBox _cbxOriginalEncoding    = new JComboBox( AppConstants.straEncodings );
+  final private JComboBox _cbxTranslationEncoding = new JComboBox( AppConstants.straEncodings );
+  final private int numEncodings = AppConstants.straEncodings.length;
 
   final private String [] IdiomasCa = {"Alemany","Angl�s","�rab","Catal��","Txec","Core��",
       "Dan�s","Espanyol","Finland�s","Franc�s","Holand�s","Hongar�s",

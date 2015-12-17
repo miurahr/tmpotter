@@ -80,7 +80,7 @@ final class ControlView extends DockablePanel implements ActionListener
     getDockKey().setCloseEnabled( true );
     getDockKey().setAutoHideEnabled( true );
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( Bitext2TmxIcons.getIcon( "b2t-icon-small.png") );
+    //getDockKey().setIcon( Icons.getIcon( "icon-small.png") );
     setLayout( new BorderLayout() );
 
     setLocalizedText(_btnRemoveBlankRows, getString( "BTN.DELETE.BLANK.ROWS" ) );

@@ -22,7 +22,7 @@ import java.io.File;
  *
  * @author miurahr
  */
-public class TextHandler implements IFilter {
+public class TextHandler implements IImportFilter {
   @Override
   public boolean isCombinedFileFormat()
   {

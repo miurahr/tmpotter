@@ -27,6 +27,8 @@
 
 package bitext2tmx.ui;
 
+import bitext2tmx.util.gui.AquaAdapter;
+import bitext2tmx.ui.dialogs.About;
 import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.ui.dialogs.Encodings;
 import bitext2tmx.ui.help.Manual;
@@ -68,10 +70,9 @@ import bitext2tmx.core.Align;
 import bitext2tmx.core.TMXReader;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.util.AquaAdapter;
-import bitext2tmx.util.BConstants;
+import bitext2tmx.util.AppConstants;
 
-import static bitext2tmx.util.AquaAdapter.*;
+import static bitext2tmx.util.gui.AquaAdapter.*;
 import static bitext2tmx.util.Localization.*;
 import bitext2tmx.util.RuntimePreferences;
 import bitext2tmx.util.Utilities;
@@ -109,7 +110,6 @@ final public class MainWindow extends JFrame implements ActionListener,
   //  Settings menu
   private JMenu      _mnuSettings;
   private JMenuItem  _mniSettingsFonts;
-  private JMenuItem  _mniSettingsRegexp;
   private JMenuItem  _mncbSettingsLinebreak;
 
   //  Look and Feel submenu
@@ -286,12 +286,14 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   private ImageIcon getIcon( final String iconName )
-  { return Bitext2TmxIcons.getIcon( iconName ); }
+  { return Icons.getIcon( iconName ); }
 
   /**  Set root window icon */
   private void setWindowIcon()
   {
-    try{ setIconImage( Bitext2TmxIcons.getIcon( "b2t-icon-small.png" ).getImage() ); }
+    try{ 
+      //setIconImage( Icons.getIcon( "icon-small.png" ).getImage() ); 
+    }
     catch( final Exception e )
     { System.out.println( "Error loading icon: " + e ); }
   }
@@ -351,7 +353,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     this.setSize( new Dimension( 800, 600 ) );
     this.setMinimumSize( new Dimension( 640, 480 ) );
 
-    setTitle( BConstants.getDisplayNameAndVersion() );
+    setTitle(AppConstants.getDisplayNameAndVersion() );
     getContentPane().add( _pnlStatusBar, BorderLayout.SOUTH );
   }
 
@@ -423,12 +425,6 @@ final public class MainWindow extends JFrame implements ActionListener,
     _mnuSettings = makeMenuComponent( MenuComponentType.MENU, null, null,
       "Settings", "MNU.SETTINGS" );
 
-    _mniSettingsRegexp = makeMenuComponent( MenuComponentType.ITEM, null, null,
-      "Regular Expressions", "MNI.SETTINGS.REGEX" );
-
-    //_mniSettingsRegexp.setEnabled( false );
-    _mniSettingsRegexp.setEnabled( true );
-
     _mncbSettingsLinebreak = makeMenuComponent( MenuComponentType.CHECKBOX, null, null,
       "Linebreaks", "MNI.SETTINGS.LINEBREAK" );
     _mncbSettingsLinebreak.setToolTipText( getString( "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
@@ -448,7 +444,7 @@ final public class MainWindow extends JFrame implements ActionListener,
       "Help", "MNU.HELP" );
 
     _mniHelpAbout = makeMenuComponent( MenuComponentType.ITEM, null,
-      getIcon( "b2t-icon-small.png" ), "About", "MNI.HELP.ABOUT" );
+      getIcon( "icon-small.png" ), "About", "MNI.HELP.ABOUT" );
 
     _mniHelpManual = makeMenuComponent( MenuComponentType.ITEM, 
       KeyStroke.getKeyStroke( KeyEvent.VK_F1, 0 ),
@@ -468,7 +464,6 @@ final public class MainWindow extends JFrame implements ActionListener,
     }
 
     _mnuSettings.add( _mncbSettingsLinebreak );
-    _mnuSettings.add( _mniSettingsRegexp );
     _mnuSettings.add( _mniSettingsFonts );
 
     if( !isMacOSX() )
@@ -1740,7 +1735,6 @@ final public class MainWindow extends JFrame implements ActionListener,
     _mniFileClose.setText( getString( "MNI.FILE.ABORT" ) );
 
     _mnuSettings      .setText( getString( "MNU.SETTINGS" ) );
-    _mniSettingsRegexp.setText( getString( "MNI.SETTINGS.REGEX" ) );
 
     _mniFileSaveAs.setText( getString( "MNI.FILE.SAVEAS" ) );
 
@@ -1989,7 +1983,6 @@ final public class MainWindow extends JFrame implements ActionListener,
     //  Settings menu
     _mnuSettings            .setFont( font );
     _mniSettingsFonts       .setFont( font );
-    _mniSettingsRegexp      .setFont( font );
     _mncbSettingsLinebreak  .setFont( font );
 
     if( !isMacOSX() )

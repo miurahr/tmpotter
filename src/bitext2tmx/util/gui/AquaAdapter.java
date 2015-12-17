@@ -23,7 +23,7 @@
 */
 
 
-package bitext2tmx.util;
+package bitext2tmx.util.gui;
 
 import java.awt.Image;
 

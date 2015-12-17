@@ -36,7 +36,7 @@ import static bitext2tmx.util.Localization.*;
  *  Constants - class level (global scope)
  *
  */
-public class BConstants
+public class AppConstants
 {
   private static String __VERSION_KEY = "version";
   private static String __UPDATE_KEY = "update";

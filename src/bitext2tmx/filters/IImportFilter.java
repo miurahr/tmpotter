@@ -22,7 +22,7 @@ import java.io.File;
  *
  * @author Hiroshi Miura
  */
-public interface IFilter {
+public interface IImportFilter {
     
     /**
      * Human-readable name of the File Format this filter supports.

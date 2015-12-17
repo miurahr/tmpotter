@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -145,8 +147,9 @@ public class TMXWriter {
     }
     catch( final IOException ex )
     {
-      throw ex;
+      LOG.log(Level.WARNING, "IO error", ex);
     }
   }
+  private static final Logger LOG = Logger.getLogger(TMXWriter.class.getName());
 
 }

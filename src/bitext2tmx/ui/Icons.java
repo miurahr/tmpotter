@@ -27,17 +27,17 @@ import javax.swing.ImageIcon;
  *
  * @author Hiroshi Miura
  */
-public class Bitext2TmxIcons {
+public class Icons {
   
     final public static Map<String, Image> ICONS = new HashMap<String, Image>();
     final static String RESOURCES = "/bitext2tmx/ui/resources/";
     static {
       try {
-        ICONS.put("b2t-icon-small.png", ResourceUtil.getImage(RESOURCES + "b2t-icon-small.png"));
-        ICONS.put("b2t-icon-medium.png", ResourceUtil.getImage(RESOURCES + "b2t-icon-medium.png"));
-        ICONS.put("b2t-icon-large.png", ResourceUtil.getImage(RESOURCES + "b2t-icon-large.png"));
-        ICONS.put("b2t-splash.png", ResourceUtil.getImage(RESOURCES + "b2t-splash.png"));
-        ICONS.put("b2t-icon-broken.png", ResourceUtil.getImage(RESOURCES + "b2t-icon-broken.png"));
+        ICONS.put("icon-small.png", ResourceUtil.getImage(RESOURCES + "icon-small.png"));
+        ICONS.put("icon-medium.png", ResourceUtil.getImage(RESOURCES + "icon-medium.png"));
+        ICONS.put("icon-large.png", ResourceUtil.getImage(RESOURCES + "icon-large.png"));
+        ICONS.put("splash.png", ResourceUtil.getImage(RESOURCES + "splash.png"));
+        ICONS.put("icon-broken.png", ResourceUtil.getImage(RESOURCES + "icon-broken.png"));
       } catch (FileNotFoundException ex) {
         throw new RuntimeException(ex);
       }
@@ -50,7 +50,7 @@ public class Bitext2TmxIcons {
         try {
           image = ResourceUtil.getImage(RESOURCES + iconName );
         } catch (FileNotFoundException ex) {
-          image= ICONS.get("b2t-icon-broken.png");
+          image= ICONS.get("icon-broken.png");
         }
         return new ImageIcon(image);
       }
