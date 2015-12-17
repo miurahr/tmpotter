@@ -45,6 +45,8 @@ import java.awt.GraphicsEnvironment;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -72,13 +74,14 @@ import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
 import bitext2tmx.util.AppConstants;
 
-import static bitext2tmx.util.gui.AquaAdapter.*;
-import static bitext2tmx.util.Localization.*;
 import bitext2tmx.util.RuntimePreferences;
 import bitext2tmx.util.Utilities;
+
+import static bitext2tmx.util.StringUtil.formatText;
+import static bitext2tmx.util.StringUtil.restoreText;
+import static bitext2tmx.util.gui.AquaAdapter.*;
+import static bitext2tmx.util.Localization.*;
 import static bitext2tmx.util.Utilities.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -137,8 +140,6 @@ final public class MainWindow extends JFrame implements ActionListener,
   final private ArrayList<SegmentChanges>  _alstChanges;
   final private ArrayList  _alstLang;
 
-  // ToDo: Check usage, Why 47?
-  final private int  _KTAMTEXTAREA = 47;
 
   private int  _topArrays;    //  =  0;
   private int  _posTextArea;  //  =  0;
@@ -1249,7 +1250,7 @@ final public class MainWindow extends JFrame implements ActionListener,
       {
         // Reponer el borrado de �ltima l�nea
         // Revert the deleting of the last line
-        _alstOriginal.add( _iIdentLabel, ultChanges.getFrase().toString() );
+        _alstOriginal.add(_iIdentLabel, ultChanges.getFrase() );
 
         if( _alstOriginal.size() != _alstTranslation.size() )
           _alstTranslation.add( _alstTranslation.size(), "" );
@@ -1288,9 +1289,9 @@ final public class MainWindow extends JFrame implements ActionListener,
           get( _alstTranslation.size() - 1 ).toString() );
 
         for( cont = _alstTranslation.size() - 1; cont > _iIdentLabel; cont-- )
-          _alstTranslation.set( cont, _alstTranslation.get( cont - 1 ).toString() );
+          _alstTranslation.set(cont, _alstTranslation.get( cont - 1 ) );
 
-        _alstTranslation.set( _iIdentLabel, ultChanges.getFrase().toString() );
+        _alstTranslation.set(_iIdentLabel, ultChanges.getFrase() );
       }
     }
 
@@ -1484,9 +1485,9 @@ final public class MainWindow extends JFrame implements ActionListener,
       _alstTranslation.set( _identAnt, restoreText( _edRightSegment.getText() ) );
     }
 
-    _edLeftSegment.setText( formatText( _vwAlignments.
+    _edLeftSegment.setText(formatText( _vwAlignments.
       getValueAt( _vwAlignments.getSelectedRow(), 1 ).toString() ) );
-    _edRightSegment.setText( formatText( _vwAlignments.
+    _edRightSegment.setText(formatText( _vwAlignments.
       getValueAt( _vwAlignments.getSelectedRow(), 2 ).toString() ) );
 
     _iIdentLabel = _vwAlignments.getSelectedRow();
@@ -1553,7 +1554,7 @@ final public class MainWindow extends JFrame implements ActionListener,
             _alstTranslation.set( _identAnt,restoreText( _edRightSegment.getText() ) );
           }
 
-          _edLeftSegment.setText( formatText( _vwAlignments.getValueAt( fila - 1, 1 ).toString() ) );
+          _edLeftSegment.setText(formatText( _vwAlignments.getValueAt( fila - 1, 1 ).toString() ) );
           _edRightSegment.setText( formatText( _vwAlignments.getValueAt( fila - 1, 2 ).toString() ) );
         }
 
@@ -1576,84 +1577,6 @@ final public class MainWindow extends JFrame implements ActionListener,
 
   //  Accessed by SegmentEditor
   final public void setTextAreaPosition( int iPos ) { _posTextArea = iPos; }
-
-  /**
-   *  Funci�n RestaurarTexto. Esta funci�n elimina \n de la frase.
-   *
-   *  @param cad : la frase a la que se tienen que eliminar los \n
-   *  @return cad con la frase
-   */
-  private String restoreText( final String cad )
-  {
-    String newCad = "";
-    String palabra = "";
-
-    if( cad.length() > _KTAMTEXTAREA )
-    {
-      final StringTokenizer linea = new StringTokenizer( cad, "\n" );
-
-      while( linea.hasMoreTokens() )
-      {
-        palabra = linea.nextToken();
-        newCad = newCad + " " + palabra;
-      }
-
-      newCad = newCad.trim();
-
-      return( newCad );
-    }
-
-    return( cad );
-  }
-
-
-  /**
-   *  Funci�n FormatearTexto. Esta funci�n formatea el tama�o de la frase al
-   *  tama�o de _KTAMTEXTAREA que es una constante con el tama�o del componente
-   *  jTextArea.
-   *
-   *  @param cad : la cadena que hay que formatear
-   *  @return cad con la cadena formateada
-   */
-  private String formatText( final String cad )
-  {
-    String palabra = "";
-    String newCad  = "";
-    String frase  = "";
-
-    if( cad.length() > _KTAMTEXTAREA )
-    {
-      final StringTokenizer linea = new StringTokenizer( cad, " " );
-
-      while( linea.hasMoreTokens() )
-      {
-        palabra = linea.nextToken();
-
-        if( ( palabra.length() + frase.length() ) < _KTAMTEXTAREA )
-        {
-          //frase = frase + " ";
-          //frase = frase + palabra;
-          frase = frase + " " + palabra;
-        }
-        else
-        {
-          if( newCad.equals( "" ) ) newCad = frase;
-          else newCad = newCad + "\n" + frase;
-
-          frase = "";
-          frase = palabra;
-        }
-      }//  while()
-
-      frase = frase.trim();
-      newCad = newCad.trim();
-      newCad = newCad + "\n" + frase;
-
-      return( newCad );
-    }
-
-    return( cad );
-  }
 
   /**
    *  Modificar_Idioma. Cuando se recoge la selecci�n del idioma por parte del
