@@ -39,8 +39,8 @@ import bitext2tmx.ui.MainWindow;
 import bitext2tmx.ui.SplashScreen;
 import bitext2tmx.util.gui.AquaAdapter;
 
-import static bitext2tmx.util.Utilities.*;
 import bitext2tmx.util.AppConstants;
+import bitext2tmx.util.Platform;
 
 
 /**
@@ -78,7 +78,7 @@ final public class Main
   {
     try
     {
-      if( isMacOSX() )
+      if( Platform.isMacOSX() )
       {
         System.setProperty( "apple.awt.graphics.UseQuartz", "true" );
         System.setProperty( "apple.laf.useScreenMenuBar", "true" );

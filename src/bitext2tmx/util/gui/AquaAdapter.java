@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import static bitext2tmx.util.Utilities.isMacOSX;
+import bitext2tmx.util.Platform;
 
 
 final public class AquaAdapter implements InvocationHandler
@@ -67,7 +67,7 @@ final public class AquaAdapter implements InvocationHandler
   final public static void connect( final Object objReceiver, final String strHandler,
     final AquaEvent evtAqua )
   {
-    if( !isMacOSX() ) return;
+    if( !Platform.isMacOSX() ) return;
 
     if( objReceiver == null || strHandler == null || evtAqua == null )
       return;
@@ -162,7 +162,7 @@ final public class AquaAdapter implements InvocationHandler
 
   final public static void setDockIconImage( final Image image )
   {
-    if( !isMacOSX() || image == null ) return;
+    if( !Platform.isMacOSX() || image == null ) return;
 
     try
     {

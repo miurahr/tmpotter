@@ -43,34 +43,39 @@ import javax.swing.JTextPane;
  *   Segment editor
  *
  */
-final class SegmentEditor extends DockablePanel
-{
-  private static final long serialVersionUID = -7089166388951739347L;
-
-  final private JTextPane _tpn =  new JTextPane();
-
+@SuppressWarnings("serial")
+final class SegmentEditor extends DockablePanel {
+  final private JTextPane textPane =  new JTextPane();
   final private MainWindow windowMain;
 
   public SegmentEditor( final MainWindow windowMain )
   {
-    super( "SegmentEditor" );
+    super( "SegmentEditor", "SegmentEditor", false );
 
     this.windowMain = windowMain;
 
     getDockKey().setName( "Segment Editor" );
     getDockKey().setTooltip( "Segment Editor" );
-    getDockKey().setCloseEnabled( true );
-    getDockKey().setAutoHideEnabled( true );
+    getDockKey().setCloseEnabled(false);
+    getDockKey().setAutoHideEnabled(false);
+    getDockKey().setMaximizeEnabled(false);
+    getDockKey().setFloatEnabled(false);
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
     //getDockKey().setIcon( Icons.getIcon( "icon-small.png" ) );
 
-    _tpn.addKeyListener( new KeyAdapter()
-      { final public void keyReleased( final KeyEvent e )
-        { onKeyReleased(); } } );
+    textPane.addKeyListener( new KeyAdapter() {
+      @Override
+      final public void keyReleased( final KeyEvent e ) { 
+          onKeyReleased();
+      }
+    });
 
-    _tpn.addMouseListener( new MouseAdapter()
-      { final public void mouseClicked( final MouseEvent e )
-        { onClicked(); } } );
+    textPane.addMouseListener( new MouseAdapter() {
+      @Override
+      final public void mouseClicked( final MouseEvent e ) {
+        onClicked();
+      }
+    });
 
     setLayout( new GridBagLayout() );
 
@@ -87,35 +92,35 @@ final class SegmentEditor extends DockablePanel
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
 
-    final JScrollPane scpn = new JScrollPane( _tpn );
+    final JScrollPane scpn = new JScrollPane( textPane );
     add( scpn, gbc );
   }
 
-  final public String getText() { return( _tpn.getText() ); }
+  final public String getText() { return( textPane.getText() ); }
 
   final public void setText( final String strText )
   {
-    _tpn.setText( strText );
-    _tpn.setCaretPosition( 0 );
+    textPane.setText( strText );
+    textPane.setCaretPosition( 0 );
   }
 
   //final public void setFonts( final Font f ) { _tpn.setFont( f ); }
 
   final public void setEditorFont( final Font f )
   {
-    if( _tpn != null ) _tpn.setFont( f );
+    if( textPane != null ) textPane.setFont( f );
     else System.out.println( " _ed _tpn does not exist yet!" );
   }
 
-  final public void reset() { _tpn.setText( "" ); }
+  final public void reset() { textPane.setText( "" ); }
 
-  final public int getSelectionStart() { return( _tpn.getSelectionStart() ); }
+  final public int getSelectionStart() { return( textPane.getSelectionStart() ); }
 
-  final private void onKeyReleased()
-  { windowMain.setTextAreaPosition( _tpn.getSelectionStart() ); }
+  private void onKeyReleased()
+  { windowMain.setTextAreaPosition( textPane.getSelectionStart() ); }
 
-  final private void onClicked()
-  { windowMain.setTextAreaPosition( _tpn.getSelectionStart() ); }
+  private void onClicked()
+  { windowMain.setTextAreaPosition( textPane.getSelectionStart() ); }
 
 }// SegmentEditor{}
 

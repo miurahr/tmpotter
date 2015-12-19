@@ -74,10 +74,10 @@ public class AppConstants
 
   public static String getDisplayNameAndVersion() {
     if (UPDATE != null && !UPDATE.equals("0")) {
-      return Utilities.format(getString("app-version-template-pretty-update"),
+      return StringUtil.format(getString("app-version-template-pretty-update"),
                     getApplicationDisplayName(), VERSION, UPDATE);
     } else {
-      return Utilities.format(getString("app-version-template-pretty"),
+      return StringUtil.format(getString("app-version-template-pretty"),
                     getApplicationDisplayName(), VERSION);
     }
   }
@@ -92,10 +92,10 @@ public class AppConstants
     return getString("WND.APP.DESCRIPTION");
   }
   public static String getAppNameAndVersion() {
-    return Utilities.format(getString("app-version-template"), NAME, VERSION, UPDATE, REVISION);
+    return StringUtil.format(getString("app-version-template"), NAME, VERSION, UPDATE, REVISION);
   }
   public static String getVersion() {
-    return Utilities.format(getString("version-template"), VERSION, UPDATE, REVISION);
+    return StringUtil.format(getString("version-template"), VERSION, UPDATE, REVISION);
   }
 
 }//  Constants{}

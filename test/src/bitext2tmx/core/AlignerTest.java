@@ -22,9 +22,9 @@ import junit.framework.TestCase;
  *
  * @author miurahr
  */
-public class AlignTest extends TestCase {
+public class AlignerTest extends TestCase {
   
-  public AlignTest(String testName) {
+  public AlignerTest(String testName) {
     super(testName);
   }
   
@@ -43,13 +43,13 @@ public class AlignTest extends TestCase {
    */
   public void testAlign() {
     System.out.println("align");
-    Document orig = null;
-    Document trans = null;
-    boolean expResult = false;
-    boolean result = Align.align(orig, trans);
+    Document orig = new Document();
+    orig.add("");
+    Document trans = new Document();
+    trans.add("");
+    boolean expResult = true;
+    boolean result = Aligner.align(orig, trans);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
   
 }

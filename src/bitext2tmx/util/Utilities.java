@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.MessageFormat;
 
 import bitext2tmx.util.Platform.OsType;
 
@@ -44,7 +43,7 @@ import bitext2tmx.util.Platform.OsType;
 public class Utilities
 {
   /* Variables */
-  private static String m_configDir = null;
+  private static String configDirectory = null;
 
   /* Constants */
   private final static String WINDOWS_CONFIG_DIR = "\\Bitext2tmx\\";
@@ -53,6 +52,8 @@ public class Utilities
 
   /**
    *  Return names of all font families available
+   * 
+   * @return 
    */
   final public static String[] getFontNames()
   {
@@ -61,548 +62,265 @@ public class Utilities
     return( graphics.getAvailableFontFamilyNames() );
   }
 
-  /**
-   *  Converts a single char into a valid XML character
-   *
-   *  Output stream must convert stream to UTF-8 when saving to disk.
-   */
-  final public static String getValidXMLChar( final char c )
-  {
-    switch( c )
-    {
-      //case '\'': return "&apos;";
-      case '&': return "&amp;";
-      case '>': return "&gt;";
-      case '<': return "&lt;";
-      case '"': return "&quot;";
-      default : return String.valueOf( c );
-    }
-  }
 
   /**
-   *  Converts a plaintext string into valid XML string
-   *
-   *  Output stream must convert stream to UTF-8 when saving to disk.
+   * Print UTF-8 text to stdout (useful for debugging)
+   * 
+   * @param output
+   *            The UTF-8 format string to be printed.
    */
-  final public static String getValidXMLText( final String plaintext )
-  {
-    final StringBuilder out = new StringBuilder();
-    final String text = fixChars( plaintext );
+  public static void printUTF8(String output) {
+      try {
+          BufferedWriter out = UTF8WriterBuilder(System.out);
+          out.write(output);
 
-    for( int i=0; i<text.length(); i++ )
-      out.append( getValidXMLChar( text.charAt( i ) ) );
-
-    return( out.toString() );
-  }
-
-
-  /**  On Linux OS? */
-  final public static boolean isLinux()
-  {
-    final String strOS;
-
-    try{ strOS = System.getProperty( "os.name" ); }
-    catch( final SecurityException e ) { return( false ); }
-
-    return( strOS.equals( "Linux" ) );
-  }
-
-  /**  On Mac OS X? */
-  final public static boolean isMacOSX()
-  {
-    final String strOS;
-
-    try{ strOS = System.getProperty( "os.name" ); }
-    catch( final SecurityException e ) { return( false ); }
-
-    return( strOS.equals( "Mac OS X" ) );
-  }
-
-  /**  On Unix type OS? */
-  final public static boolean isUnix()
-  {
-    final String strOS;
-    boolean bUnix = false;
-
-    try{ strOS = System.getProperty( "os.name" ); }
-    catch( final SecurityException e ) { return( bUnix ); }
-
-    if( strOS.contains( "AIX" )   || strOS.equals( "Digital Unix" ) ||
-        strOS.equals( "FreeBSD" ) || strOS.equals( "HP UX" )        ||
-        strOS.equals( "Irix" )    || isLinux()                      ||
-        strOS.equals( "MPE/iX" )  || strOS.equals( "Solaris" )      ||
-        strOS.equals( "SunOS" ) )
-      bUnix = true;
-
-    return( bUnix );
-  }
-
-  /** On Windows? */
-  final public static boolean isWindows()
-  {
-    final String strOS;
-
-    try{ strOS = System.getProperty( "os.name" ); }
-    catch( final SecurityException e ) { return( false ); }
-
-    return( strOS.contains( "Windows" ) );
-  }
-
-  /**
-   *  Replace invalid XML chars by spaces. See supported chars at
-   *  http://www.w3.org/TR/2006/REC-xml-20060816/#charsets.
-   *
-   *  @param str input stream
-   *  @return result stream
-   */
-  final public static String fixChars( final String str )
-  {
-    char[] result = new char[str.length()];
-
-    for( int i = 0; i < str.length(); i++ )
-    {
-      char c = str.charAt( i );
-
-      if( c < 0x20 )
-      {
-        if( c != 0x09 && c != 0x0A && c != 0x0D )  c = ' ';
+          out.flush();
+      } catch (Exception e) {
+          e.printStackTrace();
       }
-      else if( c >= 0x20    && c <= 0xD7FF )   {}
-      else if( c >= 0xE000  && c <= 0xFFFD )   {}
-      else if( c >= 0x10000 && c <= 0x10FFFF ) {}
-      else c = ' ';
-
-      result[i] = c;
-    }
-
-    return( new String( result ) );
-  }
-  
-   /**
-     * ~inverse of String.split() refactor note: In future releases, this might
-     * best be moved to a different file
-     */
-    public static String joinString(String separator, String[] items) {
-        if (items.length < 1)
-            return "";
-        StringBuilder joined = new StringBuilder();
-        for (int i = 0; i < items.length; i++) {
-            joined.append(items[i]);
-            if (i != items.length - 1)
-                joined.append(separator);
-        }
-        return joined.toString();
-    }
-
-    /**
-     * Print UTF-8 text to stdout (useful for debugging)
-     * 
-     * @param output
-     *            The UTF-8 format string to be printed.
-     */
-    public static void printUTF8(String output) {
-        try {
-            BufferedWriter out = UTF8WriterBuilder(System.out);
-            out.write(output);
-
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Creates new BufferedWriter configured for UTF-8 output and connects it to
-     * an OutputStream
-     * 
-     * @param out
-     *            Outputstream to connect to.
-     */
-    public static BufferedWriter UTF8WriterBuilder(OutputStream out) throws Exception {
-        return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-    }
-
-    /**
-     * Save UTF-8 format data to file.
-     * 
-     * @param dir
-     *            directory to write to.
-     * @param filename
-     *            filename of file to write.
-     * @param output
-     *            UTF-8 format text to write
-     */
-    public static void saveUTF8(String dir, String filename, String output) {
-        try {
-            // Page name can contain invalid characters, see [1878113]
-            // Contributed by Anatoly Techtonik
-            filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
-            File path = new File(dir, filename);
-            FileOutputStream f = new FileOutputStream(path);
-            BufferedWriter out = UTF8WriterBuilder(f);
-            out.write(output);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Formats UI strings.
-     *
-     * Note: This is only a first attempt at putting right what goes wrong in
-     * MessageFormat. Currently it only duplicates single quotes, but it doesn't
-     * even test if the string contains parameters (numbers in curly braces),
-     * and it doesn't allow for string containg already escaped quotes.
-     *
-     * @param str
-     *            The string to format
-     * @param arguments
-     *            Arguments to use in formatting the string
-     *
-     * @return The formatted string
-     *
-     * @author Henry Pijffers (henry.pijffers@saxnot.com)
-     */
-    public static String format(String str, Object... arguments) {
-        // MessageFormat.format expects single quotes to be escaped
-        // by duplicating them, otherwise the string will not be formatted
-        str = str.replaceAll("'", "''");
-        return MessageFormat.format(str, arguments);
-    }
-
-    public static boolean isEmpty(final String str) {
-        return str == null || str.isEmpty();
-    }
-
-    public static String removeXMLInvalidChars(String str) {
-        StringBuilder sb = new StringBuilder(str.length());
-        for (int c, i = 0; i < str.length(); i += Character.charCount(c)) {
-            c = str.codePointAt(i);
-            if (!isValidXMLChar(c)) {
-                c = ' ';
-            }
-            sb.appendCodePoint(c);
-        }
-        return sb.toString();
-    }
-
-    public static boolean isValidXMLChar(int codePoint) {
-        if (codePoint < 0x20) {
-            if (codePoint != 0x09 && codePoint != 0x0A && codePoint != 0x0D) {
-                return false;
-            }
-        } else if (codePoint >= 0x20 && codePoint <= 0xD7FF) {
-        } else if (codePoint >= 0xE000 && codePoint <= 0xFFFD) {
-        } else if (codePoint >= 0x10000 && codePoint <= 0x10FFFF) {
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Converts a single code point into valid XML. Output stream must convert stream
-     * to UTF-8 when saving to disk.
-     */
-    public static String escapeXMLChars(int cp) {
-        switch (cp) {
-        // case '\'':
-        // return "&apos;";
-        case '&':
-            return "&amp;";
-        case '>':
-            return "&gt;";
-        case '<':
-            return "&lt;";
-        case '"':
-            return "&quot;";
-        default:
-            return String.valueOf(Character.toChars(cp));
-        }
-    }
-
-    /**
-     * Converts a stream of plaintext into valid XML. Output stream must convert
-     * stream to UTF-8 when saving to disk.
-     */
-    public static String makeValidXML(String plaintext) {
-        StringBuilder out = new StringBuilder();
-        String text = removeXMLInvalidChars(plaintext);
-        for (int cp, i = 0; i < text.length(); i += Character.charCount(cp)) {
-            cp = text.codePointAt(i);
-            out.append(escapeXMLChars(cp));
-        }
-        return out.toString();
-    }
-
-
-
-    /**
-     * Returns the location of the configuration directory, depending on the
-     * user's platform. Also creates the configuration directory, if necessary.
-     * If any problems occur while the location of the configuration directory
-     * is being determined, an empty string will be returned, resulting in the
-     * current working directory being used.
-     *
-     * <ul><li>Windows XP: &lt;Documents and Settings>\&lt;User name>\Application Data\OmegaT
-     * <li>Windows Vista: User\&lt;User name>\AppData\Roaming 
-     * <li>Linux: ~/.omegat 
-     * <li>Solaris/SunOS: ~/.omegat
-     * <li>FreeBSD: ~/.omegat 
-     * <li>Mac OS X: ~/Library/Preferences/OmegaT 
-     * <li>Other: User home directory
-     * </ul>
-     *
-     * @return The full path of the directory containing the OmegaT
-     *         configuration files, including trailing path separator.
-     *
-     * @author Henry Pijffers (henry.pijffers@saxnot.com)
-     */
-    public static String getConfigDir() {
-        // if the configuration directory has already been determined, return it
-        if (m_configDir != null) {
-            return m_configDir;
-        }
-
-        OsType os = Platform.getOsType(); // name of operating system
-        String home; // user home directory
-
-        // get os and user home properties
-        try {
-            // get the user's home directory
-            home = System.getProperty("user.home");
-        } catch (SecurityException e) {
-            // access to the os/user home properties is restricted,
-            // the location of the config dir cannot be determined,
-            // set the config dir to the current working dir
-            m_configDir = new File(".").getAbsolutePath() + File.separator;
-            return m_configDir;
-        }
-
-        // if os or user home is null or empty, we cannot reliably determine
-        // the config dir, so we use the current working dir (= empty string)
-        if (os == null || Utilities.isEmpty(home)) {
-            // set the config dir to the current working dir
-            m_configDir = new File(".").getAbsolutePath() + File.separator;
-            return m_configDir;
-        }
-
-        // check for Windows versions
-        if (os == OsType.WIN32 || os == OsType.WIN64) {
-            String appData = null;
-
-            // We do not use %APPDATA%
-            // Trying first Vista/7, because "Application Data" exists also as virtual folder, 
-            // so we would not be able to differentiate with 2000/XP otherwise
-            File appDataFile = new File(home, "AppData\\Roaming");
-            if (appDataFile.exists()) {
-                appData = appDataFile.getAbsolutePath();
-            } else {
-                // Trying to locate "Application Data" for 2000 and XP
-                // C:\Documents and Settings\<User>\Application Data
-                appDataFile = new File(home, "Application Data");
-                if (appDataFile.exists()) {
-                    appData = appDataFile.getAbsolutePath();
-                }
-            }
-
-            if (!Utilities.isEmpty(appData)) {
-                // if a valid application data dir has been found,
-                // append an OmegaT subdir to it
-                m_configDir = appData + WINDOWS_CONFIG_DIR;
-            } else {
-                // otherwise set the config dir to the user's home directory,
-                // usually
-                // C:\Documents and Settings\<User>\OmegaT
-                m_configDir = home + WINDOWS_CONFIG_DIR;
-            }
-        }
-        // Check for UNIX varieties
-        // Solaris is generally detected as SunOS
-        else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
-            // set the config dir to the user's home dir + "/.omegat/", so it's
-            // hidden
-            m_configDir = home + UNIX_CONFIG_DIR;
-        }
-        // check for Mac OS X
-        else if (Platform.isMacOSX()) {
-            // set the config dir to the user's home dir +
-            // "/Library/Preferences/OmegaT/"
-            m_configDir = home + OSX_CONFIG_DIR;
-        }
-        // other OSes / default
-        else {
-            // use the user's home directory by default
-            m_configDir = home + File.separator;
-        }
-
-        // create the path to the configuration dir, if necessary
-        if (!m_configDir.isEmpty()) {
-            try {
-                // check if the dir exists
-                File dir = new File(m_configDir);
-                if (!dir.exists()) {
-                    // create the dir
-                    boolean created = dir.mkdirs();
-
-                    // if the dir could not be created,
-                    // set the config dir to the current working dir
-                    if (!created) {
-                        m_configDir = new File(".").getAbsolutePath() + File.separator;
-                    }
-                }
-            } catch (SecurityException e) {
-                // the system doesn't want us to write where we want to write
-                // reset the config dir to the current working dir
-                m_configDir = new File(".").getAbsolutePath() + File.separator;
-
-            }
-        }
-
-        // we should have a correct, existing config dir now
-        return m_configDir;
-    }
-    
-
-    /** Caching install dir */
-    private static String INSTALLDIR = null;
-
-    /**
-     * Returns Application installation directory
-     */
-    public static String installDir() {
-        if (INSTALLDIR == null) {
-            String cp = System.getProperty("java.class.path");
-            
-            // See if we are running from a JAR
-            String path = extractClasspathElement(cp, File.separator + AppConstants.APPLICATION_JAR);
-            
-            if (path == null) {
-                // We're not running from a JAR; probably debug mode (in IDE, etc.)
-                path = extractClasspathElement(cp, AppConstants.DEBUG_CLASSPATH);
-            }
-            
-            // WTF?!! Falling back to current directory
-            if (path == null) {
-                path = ".";
-            }
-            
-            // Cache the absolute path
-            INSTALLDIR = new File(path).getAbsolutePath();
-        }
-        return INSTALLDIR;
-    }
-
-    /**
-     * Extracts an element of a class path.
-     *
-     * @param fullcp
-     *            the classpath
-     * @param posInsideElement
-     *            position inside a class path string, that fits inside some
-     *            classpath element.
-     */
-    private static String classPathElement(String fullcp, int posInsideElement) {
-        // semicolon before the path to the Jar
-        int semicolon1 = fullcp.lastIndexOf(File.pathSeparatorChar, posInsideElement);
-        // semicolon after the path to the Jar
-        int semicolon2 = fullcp.indexOf(File.pathSeparatorChar, posInsideElement);
-        if (semicolon1 < 0)
-            semicolon1 = -1;
-        if (semicolon2 < 0)
-            semicolon2 = fullcp.length();
-        return fullcp.substring(semicolon1 + 1, semicolon2);
-    }
-
-    /**
-     * Extract classpath element that ends with <code>ending</code> from
-     * the full classpath <code>cp</code>, if present. If not present, returns
-     * null.
-     */
-    private static String extractClasspathElement(String cp, String ending) {
-        try {
-            int pos = cp.indexOf(ending);
-            if (pos >= 0) {
-                String path = classPathElement(cp, pos);
-                return path.substring(0, path.indexOf(ending));
-            }
-        } catch (Exception e) {
-            // should never happen, but just in case ;-)
-        }
-        return null;
-    }
-    
-    
-  public static float cost( final float[][] mat, final int i, final int j, final float[] v1, final float[] v2, final int d )
-  {
-    final float b2 = Math.abs( v1[i - 1] - v2[j - 1] );
-
-    return( min3( mat[i - 1][j] + v1[i - 1] / d, mat[i - 1][j - 1] + b2,
-        mat[i][j - 1] + v2[j - 1] / d ) );
   }
 
-  public static float min3( float a, final float b, final float c )
-  {
-    if( b < a ) { a = b; }
-
-    if( c < a ) return( c );
-
-    return( a );
+  /**
+   * Creates new BufferedWriter configured for UTF-8 output and connects it to
+   * an OutputStream
+   * 
+   * @param out OutputStream object
+   * @return BufferWriter object with UTF-8 configuration
+   *
+   * @throws java.lang.Exception      Outputstream to connect to.
+   */
+  public static BufferedWriter UTF8WriterBuilder(OutputStream out) throws Exception {
+      return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
   }
 
-  public static float max3( float a, final float b, final float c )
-  {
-    if( b > a ) { a = b; }
-
-    if( c > a ) return( c );
-
-    return( a );
-  }
-
-  public static int argmin3( float a, final float b, final float c )
-  {
-    int iArgMin3 = 0;
-
-    if( b < a )
-    {
-      a = b;
-      ++iArgMin3;  // +1
+  /**
+   * Save UTF-8 format data to file.
+   * 
+   * @param dir
+   *            directory to write to.
+   * @param filename
+   *            filename of file to write.
+   * @param output
+   *            UTF-8 format text to write
+   */
+  public static void saveUTF8(String dir, String filename, String output) {
+    try {
+      // Page name can contain invalid characters, see [1878113]
+      // Contributed by Anatoly Techtonik
+      filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
+      File path = new File(dir, filename);
+      FileOutputStream f = new FileOutputStream(path);
+      BufferedWriter out = UTF8WriterBuilder(f);
+      out.write(output);
+      out.close();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-
-    if( c < a ) return( 3 );
-
-    return( ++iArgMin3 );  // 1 or 2
   }
 
-  public static int argmax3( float a, final float b, final float c )
-  {
-    int iArgMax3 = 0;
+  /**
+   * Returns the location of the configuration directory, depending on the
+   * user's platform. Also creates the configuration directory, if necessary.
+   * If any problems occur while the location of the configuration directory
+   * is being determined, an empty string will be returned, resulting in the
+   * current working directory being used.
+   *
+   * <ul><li>Windows XP: &lt;Documents and Settings>\&lt;User name>\Application Data\OmegaT
+   * <li>Windows Vista: User\&lt;User name>\AppData\Roaming 
+   * <li>Linux: ~/.omegat 
+   * <li>Solaris/SunOS: ~/.omegat
+   * <li>FreeBSD: ~/.omegat 
+   * <li>Mac OS X: ~/Library/Preferences/OmegaT 
+   * <li>Other: User home directory
+   * </ul>
+   *
+   * @return The full path of the directory containing the OmegaT
+   *         configuration files, including trailing path separator.
+   *
+   * @author Henry Pijffers (henry.pijffers@saxnot.com)
+   */
+  public static String getConfigDir() {
+      // if the configuration directory has already been determined, return it
+      if (configDirectory != null) {
+          return configDirectory;
+      }
 
-    if( b > a )
-    {
-      a = b;
-      ++iArgMax3;  // +1
+      OsType os = Platform.getOsType(); // name of operating system
+      String home; // user home directory
+
+      // get os and user home properties
+      try {
+          // get the user's home directory
+          home = System.getProperty("user.home");
+      } catch (SecurityException e) {
+          // access to the os/user home properties is restricted,
+          // the location of the config dir cannot be determined,
+          // set the config dir to the current working dir
+          configDirectory = new File(".").getAbsolutePath() + File.separator;
+          return configDirectory;
+      }
+
+      // if os or user home is null or empty, we cannot reliably determine
+      // the config dir, so we use the current working dir (= empty string)
+      if (os == null || StringUtil.isEmpty(home)) {
+          // set the config dir to the current working dir
+          configDirectory = new File(".").getAbsolutePath() + File.separator;
+          return configDirectory;
+      }
+
+      // check for Windows versions
+      if (os == OsType.WIN32 || os == OsType.WIN64) {
+          String appData = null;
+
+          // We do not use %APPDATA%
+          // Trying first Vista/7, because "Application Data" exists also as virtual folder, 
+          // so we would not be able to differentiate with 2000/XP otherwise
+          File appDataFile = new File(home, "AppData\\Roaming");
+          if (appDataFile.exists()) {
+              appData = appDataFile.getAbsolutePath();
+          } else {
+              // Trying to locate "Application Data" for 2000 and XP
+              // C:\Documents and Settings\<User>\Application Data
+              appDataFile = new File(home, "Application Data");
+              if (appDataFile.exists()) {
+                  appData = appDataFile.getAbsolutePath();
+              }
+          }
+
+          if (!StringUtil.isEmpty(appData)) {
+              // if a valid application data dir has been found,
+              // append an OmegaT subdir to it
+              configDirectory = appData + WINDOWS_CONFIG_DIR;
+          } else {
+              // otherwise set the config dir to the user's home directory,
+              // usually
+              // C:\Documents and Settings\<User>\OmegaT
+              configDirectory = home + WINDOWS_CONFIG_DIR;
+          }
+      }
+      // Check for UNIX varieties
+      // Solaris is generally detected as SunOS
+      else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
+          // set the config dir to the user's home dir + "/.omegat/", so it's
+          // hidden
+          configDirectory = home + UNIX_CONFIG_DIR;
+      }
+      // check for Mac OS X
+      else if (Platform.isMacOSX()) {
+          // set the config dir to the user's home dir +
+          // "/Library/Preferences/OmegaT/"
+          configDirectory = home + OSX_CONFIG_DIR;
+      }
+      // other OSes / default
+      else {
+          // use the user's home directory by default
+          configDirectory = home + File.separator;
+      }
+
+      // create the path to the configuration dir, if necessary
+      if (!configDirectory.isEmpty()) {
+          try {
+              // check if the dir exists
+              File dir = new File(configDirectory);
+              if (!dir.exists()) {
+                  // create the dir
+                  boolean created = dir.mkdirs();
+
+                  // if the dir could not be created,
+                  // set the config dir to the current working dir
+                  if (!created) {
+                      configDirectory = new File(".").getAbsolutePath() + File.separator;
+                  }
+              }
+          } catch (SecurityException e) {
+              // the system doesn't want us to write where we want to write
+              // reset the config dir to the current working dir
+              configDirectory = new File(".").getAbsolutePath() + File.separator;
+
+          }
+      }
+
+      // we should have a correct, existing config dir now
+      return configDirectory;
+  }
+
+
+  /** Caching install dir */
+  private static String INSTALLDIR = null;
+
+  /**
+   * Returns Application installation directory
+   * 
+ * @return 
+   */
+  public static String installDir() {
+      if (INSTALLDIR == null) {
+          String cp = System.getProperty("java.class.path");
+
+          // See if we are running from a JAR
+          String path = extractClasspathElement(cp, File.separator + AppConstants.APPLICATION_JAR);
+
+          if (path == null) {
+              // We're not running from a JAR; probably debug mode (in IDE, etc.)
+              path = extractClasspathElement(cp, AppConstants.DEBUG_CLASSPATH);
+          }
+
+          // WTF?!! Falling back to current directory
+          if (path == null) {
+              path = ".";
+          }
+
+          // Cache the absolute path
+          INSTALLDIR = new File(path).getAbsolutePath();
+      }
+      return INSTALLDIR;
+  }
+
+  /**
+   * Extracts an element of a class path.
+   *
+   * @param fullcp
+   *            the classpath
+   * @param posInsideElement
+   *            position inside a class path string, that fits inside some
+   *            classpath element.
+   */
+  private static String classPathElement(String fullcp, int posInsideElement) {
+    // semicolon before the path to the Jar
+    int semicolon1 = fullcp.lastIndexOf(File.pathSeparatorChar, posInsideElement);
+    // semicolon after the path to the Jar
+    int semicolon2 = fullcp.indexOf(File.pathSeparatorChar, posInsideElement);
+    if (semicolon1 < 0)
+      semicolon1 = -1;
+    if (semicolon2 < 0)
+      semicolon2 = fullcp.length();
+    return fullcp.substring(semicolon1 + 1, semicolon2);
+  }
+
+  /**
+   * Extract classpath element that ends with <code>ending</code> from
+   * the full classpath <code>cp</code>, if present. If not present, returns
+   * null.
+   */
+  private static String extractClasspathElement(String cp, String ending) {
+    try {
+      int pos = cp.indexOf(ending);
+      if (pos >= 0) {
+        String path = classPathElement(cp, pos);
+        return path.substring(0, path.indexOf(ending));
+      }
+    } catch (Exception e) {
+        // should never happen, but just in case ;-)
     }
-
-    if( c > a ) return( 3 );
-
-    return( ++iArgMax3 );  // 1 or 2
-  }
-
-  public static boolean isAlignedOKES( final float[] v1, final float[] v2, final int i,    final int j )
-  {
-    return( Math.abs( v1[i - 1] - v2[j] ) < Math.abs( v1[i] - v2[j] ) );
-  }
-
-  public static boolean isAlignedOKSE( final float[] v1, final float[] v2, final int i, final int j )
-  {
-    return( Math.abs( v1[i] - v2[j - 1] ) < Math.abs( v1[i] - v2[j] ) );
-  }
+    return null;
+  } 
   
   public static int largerSize(int a, int b)
   {
-    return ( a < b )? b - 1 : a - 1;
+    return ( a < b )? b  : a ;
+  }
+
+  private Utilities() {
   }
   
 }//  Utilities{}

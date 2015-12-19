@@ -73,7 +73,7 @@ public class MediaWikiDownloader {
                 // s=URLEncoder.encode(s, "UTF-8"); // breaks previously
                 // correctly encoded page names
                 splitted[splitted.length - 1] = s;
-                joined = Utilities.joinString("index.php?title=", splitted);
+                joined = StringUtil.joinString("index.php?title=", splitted);
                 joined = joined + "&action=raw";
             } else {
                 // assume script is behind some sort
@@ -84,7 +84,7 @@ public class MediaWikiDownloader {
                 s = s.replaceAll(" ", "_");
                 // s=URLEncoder.encode(s, "UTF-8");
                 splitted[splitted.length - 1] = s;
-                joined = Utilities.joinString("/", splitted);
+                joined = StringUtil.joinString("/", splitted);
                 joined = joined + "?action=raw";
             }
             String page = getTextFromURL(joined);

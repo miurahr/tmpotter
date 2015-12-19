@@ -16,6 +16,7 @@
  */
 package bitext2tmx.util;
 
+import java.text.MessageFormat;
 import java.util.StringTokenizer;
 
 
@@ -103,6 +104,54 @@ public class StringUtil {
     }
 
     return( cad );
+  }
+
+  /**
+   * ~inverse of String.split() refactor note: In future releases, this might
+   * best be moved to a different file
+   *
+   * @param separator
+   * @param items
+   * @return String joining items with separator
+   */
+  public static String joinString(String separator, String[] items) {
+    if (items.length < 1) {
+      return "";
+    }
+    StringBuilder joined = new StringBuilder();
+    for (int i = 0; i < items.length; i++) {
+      joined.append(items[i]);
+      if (i != items.length - 1) {
+        joined.append(separator);
+      }
+    }
+    return joined.toString();
+  }
+
+  /**
+   * Formats UI strings.
+   *
+   * Note: This is only a first attempt at putting right what goes wrong in
+   * MessageFormat. Currently it only duplicates single quotes, but it doesn't
+   * even test if the string contains parameters (numbers in curly braces),
+   * and it doesn't allow for string containg already escaped quotes.
+   *
+   * @param str
+   *            The string to format
+   * @param arguments
+   *            Arguments to use in formatting the string
+   *
+   * @return The formatted string
+   *
+   * @author Henry Pijffers (henry.pijffers@saxnot.com)
+   */
+  public static String format(String str, Object... arguments) {
+    str = str.replaceAll("'", "''");
+    return MessageFormat.format(str, arguments);
+  }
+
+  public static boolean isEmpty(final String str) {
+    return str == null || str.isEmpty();
   }
 
 

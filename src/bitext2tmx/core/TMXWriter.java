@@ -16,8 +16,6 @@
  */
 package bitext2tmx.core;
 
-import bitext2tmx.util.Utilities;
-import static bitext2tmx.util.Utilities.getValidXMLText;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +24,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import bitext2tmx.util.Utilities;
+import static bitext2tmx.util.xml.XMLUtil.getValidXMLText;
 
 /**
  *
@@ -59,12 +60,11 @@ public class TMXWriter {
     try
     {
       fw = new FileOutputStream( fNombre );
-      //osw = new OutputStreamWriter(fw,cod_TMX);_strTMXEnc
       osw = new OutputStreamWriter( fw, _strTMXEnc );
       bw = new BufferedWriter( osw );
       pw = new PrintWriter( bw );
 
-      max = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size());
+      max = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size()) - 1 ;
       //pw.println("<?xml version=\"1.0\" encoding=\"" + cod_TMX + "\"?>"); //poner el encoding
       pw.println( "<?xml version=\"1.0\" encoding=\"" + _strTMXEnc + "\"?>" ); //poner
       pw.println( "<tmx version=\"1.4\">" );

@@ -1,41 +1,30 @@
 /*
-#######################################################################
-#
-#  bitext2tmx - Bitext Aligner/TMX Editor
-#
-#  Copyright (C) 2005-2006 Susana Santos Antón
-#            (C) 2006-2009 Raymond: Martin et al
-#            (C) 2015 Hiroshi Miura
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#
-#######################################################################
-*/
-
-
+ #######################################################################
+ #
+ #  bitext2tmx - Bitext Aligner/TMX Editor
+ #
+ #  Copyright (C) 2005-2006 Susana Santos Antón
+ #            (C) 2006-2009 Raymond: Martin et al
+ #            (C) 2015 Hiroshi Miura
+ #
+ #  This program is free software; you can redistribute it and/or modify
+ #  it under the terms of the GNU General Public License as published by
+ #  the Free Software Foundation; either version 2 of the License, or
+ #  (at your option) any later version.
+ #
+ #  This program is distributed in the hope that it will be useful,
+ #  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #  GNU General Public License for more details.
+ #
+ #  You should have received a copy of the GNU General Public License
+ #  along with this program; if not, write to the Free Software
+ #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ #
+ #######################################################################
+ */
 package bitext2tmx.ui;
 
-import bitext2tmx.util.gui.AquaAdapter;
-import bitext2tmx.ui.dialogs.About;
-import bitext2tmx.ui.dialogs.FontSelector;
-import bitext2tmx.ui.dialogs.Encodings;
-import bitext2tmx.ui.help.Manual;
-import bitext2tmx.ui.dialogs.OpenTexts;
-import bitext2tmx.core.Document;
-import bitext2tmx.core.TMXWriter;
-import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,13 +32,8 @@ import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 
-import java.io.*;
-import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.*;
-import javax.swing.event.*;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -61,1290 +45,1213 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.table.*;
 
-import com.vlsolutions.swing.docking.*;
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import bitext2tmx.core.Align;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.table.TableColumn;
+
+import com.vlsolutions.swing.docking.DockKey;
+import com.vlsolutions.swing.docking.DockingConstants;
+import com.vlsolutions.swing.docking.DockingDesktop;
+
+import bitext2tmx.core.Aligner;
 import bitext2tmx.core.TMXReader;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
 import bitext2tmx.util.AppConstants;
-
+import bitext2tmx.ui.dialogs.About;
+import bitext2tmx.ui.dialogs.FontSelector;
+import bitext2tmx.ui.dialogs.Encodings;
+import bitext2tmx.ui.help.Manual;
+import bitext2tmx.ui.dialogs.OpenTexts;
+import bitext2tmx.core.Document;
+import bitext2tmx.core.TMXWriter;
 import bitext2tmx.util.RuntimePreferences;
+import bitext2tmx.util.gui.AquaAdapter;
 import bitext2tmx.util.Utilities;
+import bitext2tmx.util.Platform;
 
+import static bitext2tmx.util.Localization.getString;
 import static bitext2tmx.util.StringUtil.formatText;
 import static bitext2tmx.util.StringUtil.restoreText;
-import static bitext2tmx.util.gui.AquaAdapter.*;
-import static bitext2tmx.util.Localization.*;
-import static bitext2tmx.util.Utilities.*;
-
 
 /**
-*
-*/
+ *
+ */
 final public class MainWindow extends JFrame implements ActionListener,
-  WindowListener
-{
+        WindowListener {
+
   final private static long serialVersionUID = -540065960678391862L;
 
-  private DockingDesktop  _Desktop;
+  private DockingDesktop desktop;
 
-  final private AlignmentsView  _vwAlignments   = new AlignmentsView( this );
-  final private SegmentEditor   _edLeftSegment  = new SegmentEditor( this );
-  final private SegmentEditor   _edRightSegment = new SegmentEditor( this );
-  final private ControlView    _vwControls     = new ControlView( this );
+  final private AlignmentsView viewAlignments = new AlignmentsView(this);
+  final private SegmentEditor edLeftSegment = new SegmentEditor(this);
+  final private SegmentEditor editRightSegment = new SegmentEditor(this);
+  final private ControlView viewControls = new ControlView(this);
 
   //  Menubar
-  final private JMenuBar  _mbar = new JMenuBar();
+  final private JMenuBar _mbar = new JMenuBar();
 
   //  File menu
-  private JMenu      _mnuFile;
-  private JMenuItem  _mniFileOpen;
-  private JMenuItem  _mniFileSave;
-  private JMenuItem  _mniFileSaveAs;
-  private JMenuItem  _mniFileClose;
-  private JMenuItem  _mniFileQuit;
+  private JMenu menuItemFile;
+  private JMenuItem menuItemFileOpen;
+  private JMenuItem menuItemFileSave;
+  private JMenuItem menuItemFileSaveAs;
+  private JMenuItem menuItemFileClose;
+  private JMenuItem menuItemFileQuit;
 
   //  Settings menu
-  private JMenu      _mnuSettings;
-  private JMenuItem  _mniSettingsFonts;
-  private JMenuItem  _mncbSettingsLinebreak;
+  private JMenu menuSettings;
+  private JMenuItem menuItemSettingsFonts;
+  private JMenuItem menuCallbackSettingsLinebreak;
 
   //  Look and Feel submenu
-  private JMenu      _mnuLaf;
-  private JMenuItem  _mniLafGtk;
-  private JMenuItem  _mniLafLiquid;
-  private JMenuItem  _mniLafMetal;
-  private JMenuItem  _mniLafNimbus;
-  private JMenuItem  _mniLafSystem;
+  private JMenu menuLaf;
+  private JMenuItem menuItemLafGtk;
+  private JMenuItem menuItemLafLiquid;
+  private JMenuItem menuLafMetal;
+  private JMenuItem menuItemLafNimbus;
+  private JMenuItem menuItemLafSystem;
 
   //  Help menu
-  private JMenu      _mnuHelp;
-  private JMenuItem  _mniHelpManual;
-  private JMenuItem  _mniHelpAbout;
+  private JMenu menuHelp;
+  private JMenuItem menuItemHelpManual;
+  private JMenuItem menuItemHelpAbout;
 
   //  Statusbar
-  private JPanel  _pnlStatusBar;
-  private JLabel  _lblStatusBar;
+  private JPanel panelStatusBar;
+  private JLabel labelStatusBar;
 
-  private Document  _alstOriginal;
-  private Document  _alstTranslation;
+  private Document documentOriginal;
+  private Document documentTranslation;
 
-  final private ArrayList  _alstBitext;
+  final private ArrayList arrayListBitext;
 
-  final private ArrayList<SegmentChanges>  _alstChanges;
-  final private ArrayList  _alstLang;
+  final private ArrayList<SegmentChanges> arrayListChanges;
+  final private ArrayList arrayListLang;
 
+  private int topArrays;    //  =  0;
+  private int positionTextArea;  //  =  0;
+  private int identChanges = -1;
+  private int identLabel;  //  =  0;
+  private int _identAnt;     //  =  0;
 
-  private int  _topArrays;    //  =  0;
-  private int  _posTextArea;  //  =  0;
-  private int  _iChanges     = -1;
-  private int  _iIdentLabel;  //  =  0;
-  private int  _identAnt;     //  =  0;
+  private String stringLangOriginal = "en";
+  private String stringLangTranslation = "en";
+  private String stringOriginal;
+  private String stringTranslation;
 
-  private String  _strLangOriginal    = "en";
-  private String  _strLangTranslation = "en";
-  private String  _strOriginal;
-  private String  _strTranslation;
+  private File userHome = new File(System.getProperty("user.home"));
+  private File filePathOriginal;
+  private File filePathTranslation;
 
-  private File  _fUserHome   = new File( System.getProperty( "user.home" ) );
-  private File  _fPathOriginal;
-  private File  _fPathTranslation;
+  private String _ult_recorridoinv;
 
-  private String  _ult_recorridoinv;
+  private Font _fntUserInterface;
+  private Font fontTableHeader;
+  private Font fontTable;
+  private Font _fntSourceEditor;
+  private Font _fntTargetEditor;
 
-  private Font  _fntUserInterface;
-  private Font  _fntTableHeader;
-  private Font  _fntTable;
-  private Font  _fntSourceEditor;
-  private Font  _fntTargetEditor;
+  public MainWindow() {
+    this.arrayListBitext = new ArrayList();
+    this.arrayListChanges = new ArrayList<>();
+    this.arrayListLang = new ArrayList();
 
-
-  public MainWindow()
-  {
-    this._alstBitext = new ArrayList();
-    this._alstChanges = new ArrayList<>();
-    this._alstLang = new ArrayList();
-    
     initDockingUI();
     makeUI();
     setWindowIcon();
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
-    try
-    {
-      AquaAdapter.connect( this, "displayAbout", AquaEvent.ABOUT );
-      AquaAdapter.connect( this, "quit", AquaEvent.QUIT );
-    }
-    catch( final NoClassDefFoundError e )
-    {
-     System.out.println( e );
+    try {
+      AquaAdapter.connect(this, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
+      AquaAdapter.connect(this, "quit", AquaAdapter.AquaEvent.QUIT);
+    } catch (final NoClassDefFoundError e) {
+      System.out.println(e);
     }
 
-    setDefaultCloseOperation( javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE );
-    addWindowListener( new WindowAdapter()
-      {@Override
-       final public void windowClosing( final WindowEvent e ) {
-         quit(); 
-       } } );
+    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      @Override
+      final public void windowClosing(final WindowEvent e) {
+        quit();
+      }
+    });
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     final Dimension frameSize = this.getSize();
 
-    if( frameSize.height > screenSize.height ) frameSize.height = screenSize.height;
-    if( frameSize.width > screenSize.width ) frameSize.width = screenSize.width;
+    if (frameSize.height > screenSize.height) {
+      frameSize.height = screenSize.height;
+    }
+    if (frameSize.width > screenSize.width) {
+      frameSize.width = screenSize.width;
+    }
 
-    this.setLocation( ( screenSize.width - frameSize.width ) / 2,
-      ( screenSize.height - frameSize.height ) / 2 );
+    this.setLocation((screenSize.width - frameSize.width) / 2,
+            (screenSize.height - frameSize.height) / 2);
 
-    setFonts( null );
+    setFonts(null);
 
   }
   private static final Logger LOG = Logger.getLogger(MainWindow.class.getName());
 
-
-  private void initDockingUI()
-  {
+  private void initDockingUI() {
     DockingUISettings.getInstance().installUI();
 
-    UIManager.put( "DockViewTitleBar.titleFont", getUserInterfaceFont() );
+    UIManager.put("DockViewTitleBar.titleFont", getUserInterfaceFont());
 
-    UIManager.put( "DockViewTitleBar.close",          getDesktopIcon( "close.png" ) );
-    UIManager.put( "DockViewTitleBar.close.rollover", getDesktopIcon( "close_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.close.pressed",  getDesktopIcon( "close_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.close", getDesktopIcon("close.png"));
+    UIManager.put("DockViewTitleBar.close.rollover", getDesktopIcon("close_hovered.png"));
+    UIManager.put("DockViewTitleBar.close.pressed", getDesktopIcon("close_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.hide",              getDesktopIcon( "min.png" ) );
-    UIManager.put( "DockViewTitleBar.hide.rollover",     getDesktopIcon( "min_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.hide.pressed",      getDesktopIcon( "min_pressed.png" ) );
-    UIManager.put( "DockViewTitleBar.maximize",          getDesktopIcon( "max.png" ) );
-    UIManager.put( "DockViewTitleBar.maximize.rollover", getDesktopIcon( "max_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.maximize.pressed", getDesktopIcon( "max_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.hide", getDesktopIcon("min.png"));
+    UIManager.put("DockViewTitleBar.hide.rollover", getDesktopIcon("min_hovered.png"));
+    UIManager.put("DockViewTitleBar.hide.pressed", getDesktopIcon("min_pressed.png"));
+    UIManager.put("DockViewTitleBar.maximize", getDesktopIcon("max.png"));
+    UIManager.put("DockViewTitleBar.maximize.rollover", getDesktopIcon("max_hovered.png"));
+    UIManager.put("DockViewTitleBar.maximize.pressed", getDesktopIcon("max_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.restore",          getDesktopIcon( "restore.png" ) );
-    UIManager.put( "DockViewTitleBar.restore.rollover", getDesktopIcon( "restore_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.restore.pressed", getDesktopIcon( "restore_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.restore", getDesktopIcon("restore.png"));
+    UIManager.put("DockViewTitleBar.restore.rollover", getDesktopIcon("restore_hovered.png"));
+    UIManager.put("DockViewTitleBar.restore.pressed", getDesktopIcon("restore_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.dock",          getDesktopIcon( "restore.png" ) );
-    UIManager.put( "DockViewTitleBar.dock.rollover", getDesktopIcon( "restore_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.dock.pressed",  getDesktopIcon( "restore_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.dock", getDesktopIcon("restore.png"));
+    UIManager.put("DockViewTitleBar.dock.rollover", getDesktopIcon("restore_hovered.png"));
+    UIManager.put("DockViewTitleBar.dock.pressed", getDesktopIcon("restore_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.float",          getDesktopIcon( "shade.png" ) );
-    UIManager.put( "DockViewTitleBar.float.rollover", getDesktopIcon( "shade_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.float.pressed",  getDesktopIcon( "shade_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.float", getDesktopIcon("shade.png"));
+    UIManager.put("DockViewTitleBar.float.rollover", getDesktopIcon("shade_hovered.png"));
+    UIManager.put("DockViewTitleBar.float.pressed", getDesktopIcon("shade_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.attach",          getDesktopIcon( "un_shade.png" ) );
-    UIManager.put( "DockViewTitleBar.attach.rollover", getDesktopIcon( "un_shade_hovered.png" ) );
-    UIManager.put( "DockViewTitleBar.attach.pressed",  getDesktopIcon( "un_shade_pressed.png" ) );
+    UIManager.put("DockViewTitleBar.attach", getDesktopIcon("un_shade.png"));
+    UIManager.put("DockViewTitleBar.attach.rollover", getDesktopIcon("un_shade_hovered.png"));
+    UIManager.put("DockViewTitleBar.attach.pressed", getDesktopIcon("un_shade_pressed.png"));
 
-    UIManager.put( "DockViewTitleBar.menu.hide",     getDesktopIcon( "min.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.maximize", getDesktopIcon( "max.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.restore",  getDesktopIcon( "restore.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.dock",     getDesktopIcon( "restore.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.float",    getDesktopIcon( "shade.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.attach",   getDesktopIcon( "un_shade.png" ) );
-    UIManager.put( "DockViewTitleBar.menu.close",    getDesktopIcon( "close.png" ) );
+    UIManager.put("DockViewTitleBar.menu.hide", getDesktopIcon("min.png"));
+    UIManager.put("DockViewTitleBar.menu.maximize", getDesktopIcon("max.png"));
+    UIManager.put("DockViewTitleBar.menu.restore", getDesktopIcon("restore.png"));
+    UIManager.put("DockViewTitleBar.menu.dock", getDesktopIcon("restore.png"));
+    UIManager.put("DockViewTitleBar.menu.float", getDesktopIcon("shade.png"));
+    UIManager.put("DockViewTitleBar.menu.attach", getDesktopIcon("un_shade.png"));
+    UIManager.put("DockViewTitleBar.menu.close", getDesktopIcon("close.png"));
 
-    UIManager.put( "DockTabbedPane.close",           getDesktopIcon( "close.png" ) );
-    UIManager.put( "DockTabbedPane.close.rollover",  getDesktopIcon( "close_hovered.png" ) );
-    UIManager.put( "DockTabbedPane.close.pressed",   getDesktopIcon( "close_pressed.png" ) );
+    UIManager.put("DockTabbedPane.close", getDesktopIcon("close.png"));
+    UIManager.put("DockTabbedPane.close.rollover", getDesktopIcon("close_hovered.png"));
+    UIManager.put("DockTabbedPane.close.pressed", getDesktopIcon("close_pressed.png"));
 
-    UIManager.put( "DockTabbedPane.menu.close",         getDesktopIcon( "close.png" ) );
-    UIManager.put( "DockTabbedPane.menu.hide",          getDesktopIcon( "shade.png" ) );
-    UIManager.put( "DockTabbedPane.menu.maximize",      getDesktopIcon( "max.png" ) );
-    UIManager.put( "DockTabbedPane.menu.float",         getDesktopIcon( "shade.png" ) );
-    UIManager.put( "DockTabbedPane.menu.closeAll",      getDesktopIcon( "close.png" ) );
-    UIManager.put( "DockTabbedPane.menu.closeAllOther", getDesktopIcon( "close.png" ) );
+    UIManager.put("DockTabbedPane.menu.close", getDesktopIcon("close.png"));
+    UIManager.put("DockTabbedPane.menu.hide", getDesktopIcon("shade.png"));
+    UIManager.put("DockTabbedPane.menu.maximize", getDesktopIcon("max.png"));
+    UIManager.put("DockTabbedPane.menu.float", getDesktopIcon("shade.png"));
+    UIManager.put("DockTabbedPane.menu.closeAll", getDesktopIcon("close.png"));
+    UIManager.put("DockTabbedPane.menu.closeAllOther", getDesktopIcon("close.png"));
 
-    UIManager.put( "DragControler.detachCursor", getDesktopIcon( "shade.png" ).getImage() );
+    UIManager.put("DragControler.detachCursor", getDesktopIcon("shade.png").getImage());
 
+    UIManager.put("DockViewTitleBar.closeButtonText", getString("VW.TITLEBAR.BTNCLOSE"));
+    UIManager.put("DockViewTitleBar.minimizeButtonText", getString("VW.TITLEBAR.BTNMINIMIZE"));
+    UIManager.put("DockViewTitleBar.maximizeButtonText", getString("VW.TITLEBAR.BTNMAXIMIZE"));
+    UIManager.put("DockViewTitleBar.restoreButtonText", getString("VW.TITLEBAR.BTNRESTORE"));
+    UIManager.put("DockViewTitleBar.floatButtonText", getString("VW.TITLEBAR.BTNFLOAT"));
+    UIManager.put("DockViewTitleBar.attachButtonText", getString("VW.TITLEBAR.BTNATTACH"));
 
-    UIManager.put( "DockViewTitleBar.closeButtonText",    getString( "VW.TITLEBAR.BTNCLOSE" ) );
-    UIManager.put( "DockViewTitleBar.minimizeButtonText", getString( "VW.TITLEBAR.BTNMINIMIZE" ) );
-    UIManager.put( "DockViewTitleBar.maximizeButtonText", getString( "VW.TITLEBAR.BTNMAXIMIZE" ) );
-    UIManager.put( "DockViewTitleBar.restoreButtonText",  getString( "VW.TITLEBAR.BTNRESTORE" ) );
-    UIManager.put( "DockViewTitleBar.floatButtonText",    getString( "VW.TITLEBAR.BTNFLOAT" ) );
-    UIManager.put( "DockViewTitleBar.attachButtonText",   getString( "VW.TITLEBAR.BTNATTACH" ) );
-
-    UIManager.put( "DockTabbedPane.closeButtonText",    getString( "TAB.BTNCLOSE" ) );
-    UIManager.put( "DockTabbedPane.minimizeButtonText", getString( "TAB.BTNMINIMIZE" ) );
-    UIManager.put( "DockTabbedPane.restoreButtonText",  getString( "TAB.BTNRESTORE" ) );
-    UIManager.put( "DockTabbedPane.maximizeButtonText", getString( "TAB.BTNMAXIMIZE" ) );
-    UIManager.put( "DockTabbedPane.floatButtonText",    getString( "TAB.BTNFLOAT" ) );
+    UIManager.put("DockTabbedPane.closeButtonText", getString("TAB.BTNCLOSE"));
+    UIManager.put("DockTabbedPane.minimizeButtonText", getString("TAB.BTNMINIMIZE"));
+    UIManager.put("DockTabbedPane.restoreButtonText", getString("TAB.BTNRESTORE"));
+    UIManager.put("DockTabbedPane.maximizeButtonText", getString("TAB.BTNMAXIMIZE"));
+    UIManager.put("DockTabbedPane.floatButtonText", getString("TAB.BTNFLOAT"));
 
   }
 
-  private ImageIcon getDesktopIcon( final String iconName )
-  {
-    if( isMacOSX() )
-      return( getIcon( "desktop/osx/" + iconName ) );
-
-    return( getIcon( "desktop/" + iconName) );
-  }
-
-  private ImageIcon getIcon( final String iconName )
-  { return Icons.getIcon( iconName ); }
-
-  /**  Set root window icon */
-  private void setWindowIcon()
-  {
-    try{ 
-      //setIconImage( Icons.getIcon( "icon-small.png" ).getImage() ); 
+  private ImageIcon getDesktopIcon(final String iconName) {
+    if (Platform.isMacOSX()) {
+      return (getIcon("desktop/osx/" + iconName));
     }
-    catch( final Exception e )
-    { System.out.println( "Error loading icon: " + e ); }
+
+    return (getIcon("desktop/" + iconName));
   }
 
-  private void makeUI()
-  {
-    makeMenus();
-
-    _lblStatusBar = new JLabel( " " );
-    _pnlStatusBar = new JPanel();
-    _pnlStatusBar.setLayout( new BoxLayout( _pnlStatusBar, BoxLayout.LINE_AXIS ) );
-    _pnlStatusBar.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
-    _pnlStatusBar.add( _lblStatusBar );
-
-    _Desktop = new DockingDesktop();
-    getContentPane().add( _Desktop, BorderLayout.CENTER );
-
-    //  dock objects already exist at this point
-    _Desktop.registerDockable( _vwAlignments );
-    _Desktop.registerDockable( _edLeftSegment );
-    _Desktop.registerDockable( _edRightSegment );
-    _Desktop.registerDockable( _vwControls );
-
-    DockKey keyAlignmentTable = _vwAlignments    .getDockKey();
-    DockKey keyLeftSegment    = _edLeftSegment   .getDockKey();
-    DockKey keyRightSegment   = _edRightSegment  .getDockKey();
-    DockKey keySegmentButtons = _vwControls      .getDockKey();
-
-    keyLeftSegment.setName( getString( "VW.ORIGINAL.NAME" ) );
-    keyLeftSegment.setTooltip( getString( "VW.ORIGINAL.TOOLTIP" ) );
-    keyRightSegment.setName( getString( "VW.TRANSLATION.NAME" ) );
-    keyRightSegment.setTooltip( getString( "VW.TRANSLATION.TOOLTIP" ) );
-
-    keyAlignmentTable  .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
-    keyLeftSegment     .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
-    keyRightSegment    .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
-    keySegmentButtons  .setAutoHideBorder( DockingConstants.HIDE_BOTTOM );
-
-    keyAlignmentTable  .setFloatEnabled( true );
-    keyLeftSegment     .setFloatEnabled( true );
-    keyRightSegment    .setFloatEnabled( true );
-    keySegmentButtons  .setFloatEnabled( true );
-
-    keyAlignmentTable  .setCloseEnabled( false );
-    keyLeftSegment     .setCloseEnabled( false );
-    keyRightSegment    .setCloseEnabled( false );
-    keySegmentButtons  .setCloseEnabled( false );
-
-    keySegmentButtons  .setResizeWeight( 0.1f );
-
-    _Desktop.addDockable( _vwAlignments );
-
-    _Desktop.split( _vwAlignments, _edLeftSegment, DockingConstants.SPLIT_BOTTOM );
-    _Desktop.split( _edLeftSegment, _vwControls, DockingConstants.SPLIT_BOTTOM );
-    _Desktop.split( _edLeftSegment, _edRightSegment, DockingConstants.SPLIT_RIGHT );
-
-    this.setSize( new Dimension( 800, 600 ) );
-    this.setMinimumSize( new Dimension( 640, 480 ) );
-
-    setTitle(AppConstants.getDisplayNameAndVersion() );
-    getContentPane().add( _pnlStatusBar, BorderLayout.SOUTH );
+  private ImageIcon getIcon(final String iconName) {
+    return Icons.getIcon(iconName);
   }
-
-  /** Used by makeMenuComponent to select componenet type */
-  public static enum MenuComponentType { CHECKBOX, ITEM, MENU, RADIOBUTTON };
 
   /**
-   *  Return a new menu component
-   *
-   *  Can return subclasses of JMenuItem: including JMenu!
-   *  Downcast return type to as needed
+   * Set root window icon
    */
-  private <T extends JMenuItem> T makeMenuComponent( final MenuComponentType mniType,
-    final KeyStroke ksShortcut, final ImageIcon icon, final String strText,
-      final String strKey )
-  {
+  private void setWindowIcon() {
+    try {
+      //setIconImage( Icons.getIcon( "icon-small.png" ).getImage() ); 
+    } catch (final Exception e) {
+      System.out.println("Error loading icon: " + e);
+    }
+  }
+
+  private void makeUI() {
+    makeMenus();
+
+    labelStatusBar = new JLabel(" ");
+    panelStatusBar = new JPanel();
+    panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
+    panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
+    panelStatusBar.add(labelStatusBar);
+
+    desktop = new DockingDesktop();
+    getContentPane().add(desktop, BorderLayout.CENTER);
+
+    //  dock objects already exist at this point
+    desktop.registerDockable(viewAlignments);
+    desktop.registerDockable(edLeftSegment);
+    desktop.registerDockable(editRightSegment);
+    desktop.registerDockable(viewControls);
+
+    DockKey keyAlignmentTable = viewAlignments.getDockKey();
+    DockKey keyLeftSegment = edLeftSegment.getDockKey();
+    DockKey keyRightSegment = editRightSegment.getDockKey();
+    DockKey keySegmentButtons = viewControls.getDockKey();
+
+    keyLeftSegment.setName(getString("VW.ORIGINAL.NAME"));
+    keyLeftSegment.setTooltip(getString("VW.ORIGINAL.TOOLTIP"));
+    keyRightSegment.setName(getString("VW.TRANSLATION.NAME"));
+    keyRightSegment.setTooltip(getString("VW.TRANSLATION.TOOLTIP"));
+
+    keyAlignmentTable.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    keyLeftSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    keyRightSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    keySegmentButtons.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+
+    keyAlignmentTable.setFloatEnabled(true);
+    keyLeftSegment.setFloatEnabled(true);
+    keyRightSegment.setFloatEnabled(true);
+    keySegmentButtons.setFloatEnabled(true);
+
+    keyAlignmentTable.setCloseEnabled(false);
+    keyLeftSegment.setCloseEnabled(false);
+    keyRightSegment.setCloseEnabled(false);
+    keySegmentButtons.setCloseEnabled(false);
+
+    keySegmentButtons.setResizeWeight(0.1f);
+
+    desktop.addDockable(viewAlignments);
+
+    desktop.split(viewAlignments, edLeftSegment, DockingConstants.SPLIT_BOTTOM);
+    desktop.split(edLeftSegment, viewControls, DockingConstants.SPLIT_BOTTOM);
+    desktop.split(edLeftSegment, editRightSegment, DockingConstants.SPLIT_RIGHT);
+
+    this.setSize(new Dimension(800, 600));
+    this.setMinimumSize(new Dimension(640, 480));
+
+    setTitle(AppConstants.getDisplayNameAndVersion());
+    getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
+  }
+
+  /**
+   * Used by makeMenuComponent to select componenet type
+   */
+  public static enum MenuComponentType {
+
+    CHECKBOX, ITEM, MENU, RADIOBUTTON
+  };
+
+  /**
+   * Return a new menu component
+   *
+   * Can return subclasses of JMenuItem: including JMenu! Downcast return type
+   * to as needed
+   */
+  private <T extends JMenuItem> T makeMenuComponent(final MenuComponentType mniType,
+          final KeyStroke ksShortcut, final ImageIcon icon, final String strText,
+          final String strKey) {
     JMenuItem mni = null;
 
-    switch( mniType )
-    {
-      case ITEM:        mni = new JMenuItem();            break;
-      case CHECKBOX:    mni = new JCheckBoxMenuItem();    break;
-      case MENU:        mni = new JMenu();                break;
-      case RADIOBUTTON: mni = new JRadioButtonMenuItem(); break;
+    switch (mniType) {
+      case ITEM:
+        mni = new JMenuItem();
+        break;
+      case CHECKBOX:
+        mni = new JCheckBoxMenuItem();
+        break;
+      case MENU:
+        mni = new JMenu();
+        break;
+      case RADIOBUTTON:
+        mni = new JRadioButtonMenuItem();
+        break;
     }
 
     //  Default text, when no localization available, testing
-    mni.setText( strText );
+    mni.setText(strText);
 
-    if( ksShortcut != null )  mni.setAccelerator( ksShortcut );
-    if( !isMacOSX() && icon != null ) mni.setIcon( icon );
+    if (ksShortcut != null) {
+      mni.setAccelerator(ksShortcut);
+    }
+    if (!Platform.isMacOSX() && icon != null) {
+      mni.setIcon(icon);
+    }
 
-    mni.addActionListener( this );
+    mni.addActionListener(this);
 
     //  Localized text
-    if( strKey != null ) setLocalizedText( mni, getString( strKey ) );
+    if (strKey != null) {
+      setLocalizedText(mni, getString(strKey));
+    }
 
     @SuppressWarnings("unchecked")
-    T res = (T)mni;
-    return( res );
+    T res = (T) mni;
+    return (res);
   }
 
-  private void makeMenus()
-  {
-    _mnuFile = makeMenuComponent( MenuComponentType.MENU, null, null, "File", "MNU.FILE" );
+  private void makeMenus() {
+    menuItemFile = makeMenuComponent(MenuComponentType.MENU, null, null, "File", "MNU.FILE");
 
-    _mniFileOpen = makeMenuComponent( MenuComponentType.ITEM, KeyStroke.
-      getKeyStroke( 'O', KeyEvent.CTRL_MASK, false ), getIcon( "project_open.png" ),
-        "Open...", "MNI.FILE.OPEN" );
+    menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM, KeyStroke.
+            getKeyStroke('O', KeyEvent.CTRL_MASK, false), getIcon("project_open.png"),
+            "Open...", "MNI.FILE.OPEN");
 
-    _mniFileSave = makeMenuComponent( MenuComponentType.ITEM,
-      KeyStroke.getKeyStroke( 'S', KeyEvent.CTRL_MASK, false ),
-        getIcon( "filesave.png" ), "Save", "MNI.FILE.SAVE" );
-    _mniFileSave.setEnabled( false );
+    menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
+            KeyStroke.getKeyStroke('S', KeyEvent.CTRL_MASK, false),
+            getIcon("filesave.png"), "Save", "MNI.FILE.SAVE");
+    menuItemFileSave.setEnabled(false);
 
-    _mniFileSaveAs = makeMenuComponent( MenuComponentType.ITEM, null ,
-      getIcon( "filesave.png" ), "Save As...", "MNI.FILE.SAVEAS" );
-    _mniFileSaveAs.setEnabled( false );
+    menuItemFileSaveAs = makeMenuComponent(MenuComponentType.ITEM, null,
+            getIcon("filesave.png"), "Save As...", "MNI.FILE.SAVEAS");
+    menuItemFileSaveAs.setEnabled(false);
 
-    _mniFileClose = makeMenuComponent( MenuComponentType.ITEM,
-      KeyStroke.getKeyStroke( 'W', KeyEvent.CTRL_MASK, false ),
-        getIcon( "fileclose.png" ), "Close", "MNI.FILE.ABORT" );
-    _mniFileClose.setEnabled( false );
+    menuItemFileClose = makeMenuComponent(MenuComponentType.ITEM,
+            KeyStroke.getKeyStroke('W', KeyEvent.CTRL_MASK, false),
+            getIcon("fileclose.png"), "Close", "MNI.FILE.ABORT");
+    menuItemFileClose.setEnabled(false);
 
-    _mniFileQuit = makeMenuComponent( MenuComponentType.ITEM,
-      KeyStroke.getKeyStroke( 'Q', KeyEvent.CTRL_MASK, false ),
-        getIcon( "application-exit.png" ), "Quit", "MNI.FILE.EXIT" );
+    menuItemFileQuit = makeMenuComponent(MenuComponentType.ITEM,
+            KeyStroke.getKeyStroke('Q', KeyEvent.CTRL_MASK, false),
+            getIcon("application-exit.png"), "Quit", "MNI.FILE.EXIT");
 
-    _mnuSettings = makeMenuComponent( MenuComponentType.MENU, null, null,
-      "Settings", "MNU.SETTINGS" );
+    menuSettings = makeMenuComponent(MenuComponentType.MENU, null, null,
+            "Settings", "MNU.SETTINGS");
 
-    _mncbSettingsLinebreak = makeMenuComponent( MenuComponentType.CHECKBOX, null, null,
-      "Linebreaks", "MNI.SETTINGS.LINEBREAK" );
-    _mncbSettingsLinebreak.setToolTipText( getString( "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
-    _mncbSettingsLinebreak.addChangeListener( new javax.swing.event.ChangeListener()
-      { final public void stateChanged( final ChangeEvent e )
-        { 
-          RuntimePreferences.setSegmentByLineBreak(_mncbSettingsLinebreak.isSelected());
-          onLinebreakToggle();
-        }
-      } );
+    menuCallbackSettingsLinebreak = makeMenuComponent(MenuComponentType.CHECKBOX, null, null,
+            "Linebreaks", "MNI.SETTINGS.LINEBREAK");
+    menuCallbackSettingsLinebreak.setToolTipText(getString("MNI.SETTINGS.LINEBREAK.TOOLTIP"));
+    menuCallbackSettingsLinebreak.addChangeListener(new javax.swing.event.ChangeListener() {
+      final public void stateChanged(final ChangeEvent e) {
+        RuntimePreferences.setSegmentByLineBreak(menuCallbackSettingsLinebreak.isSelected());
+        onLinebreakToggle();
+      }
+    });
 
-    _mniSettingsFonts = makeMenuComponent( MenuComponentType.ITEM, null,
-      getIcon( "fonts.png" ), "Configure Fonts...", "MNI.SETTINGS.FONTS" );
-    _mniSettingsFonts.setToolTipText( getString( "MNI.SETTINGS.FONTS.TOOLTIP" ) );
+    menuItemSettingsFonts = makeMenuComponent(MenuComponentType.ITEM, null,
+            getIcon("fonts.png"), "Configure Fonts...", "MNI.SETTINGS.FONTS");
+    menuItemSettingsFonts.setToolTipText(getString("MNI.SETTINGS.FONTS.TOOLTIP"));
 
-    _mnuHelp = makeMenuComponent( MenuComponentType.MENU, null, null,
-      "Help", "MNU.HELP" );
+    menuHelp = makeMenuComponent(MenuComponentType.MENU, null, null,
+            "Help", "MNU.HELP");
 
-    _mniHelpAbout = makeMenuComponent( MenuComponentType.ITEM, null,
-      getIcon( "icon-small.png" ), "About", "MNI.HELP.ABOUT" );
+    menuItemHelpAbout = makeMenuComponent(MenuComponentType.ITEM, null,
+            getIcon("icon-small.png"), "About", "MNI.HELP.ABOUT");
 
-    _mniHelpManual = makeMenuComponent( MenuComponentType.ITEM, 
-      KeyStroke.getKeyStroke( KeyEvent.VK_F1, 0 ),
-        getIcon( "help-contents.png" ), "Manual", "MNI.HELP.MANUAL" );
+    menuItemHelpManual = makeMenuComponent(MenuComponentType.ITEM,
+            KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
+            getIcon("help-contents.png"), "Manual", "MNI.HELP.MANUAL");
 
-    _mnuFile.add( _mniFileOpen );
-    _mnuFile.addSeparator();
-    _mnuFile.add( _mniFileSave );
-    _mnuFile.add( _mniFileSaveAs );
-    _mnuFile.addSeparator();
-    _mnuFile.add( _mniFileClose );
+    menuItemFile.add(menuItemFileOpen);
+    menuItemFile.addSeparator();
+    menuItemFile.add(menuItemFileSave);
+    menuItemFile.add(menuItemFileSaveAs);
+    menuItemFile.addSeparator();
+    menuItemFile.add(menuItemFileClose);
 
-    if( !isMacOSX() )
-    {
-      _mnuFile.addSeparator();
-      _mnuFile.add( _mniFileQuit );
+    if (!Platform.isMacOSX()) {
+      menuItemFile.addSeparator();
+      menuItemFile.add(menuItemFileQuit);
     }
 
-    _mnuSettings.add( _mncbSettingsLinebreak );
-    _mnuSettings.add( _mniSettingsFonts );
+    menuSettings.add(menuCallbackSettingsLinebreak);
+    menuSettings.add(menuItemSettingsFonts);
 
-    if( !isMacOSX() )
-    {
-      _mnuLaf = makeMenuComponent( MenuComponentType.MENU, null, null,
-        "Look and Feel", null );
+    if (!Platform.isMacOSX()) {
+      menuLaf = makeMenuComponent(MenuComponentType.MENU, null, null,
+              "Look and Feel", null);
 
-      _mniLafLiquid = makeMenuComponent( MenuComponentType.ITEM, null, null, "Liquid",
-        null );
+      menuItemLafLiquid = makeMenuComponent(MenuComponentType.ITEM, null, null, "Liquid",
+              null);
 
-      _mniLafMetal = makeMenuComponent( MenuComponentType.ITEM, null, null, "Metal",
-        null );
+      menuLafMetal = makeMenuComponent(MenuComponentType.ITEM, null, null, "Metal",
+              null);
 
-      _mniLafNimbus = makeMenuComponent( MenuComponentType.ITEM, null, null, "Nimbus",
-        null );
+      menuItemLafNimbus = makeMenuComponent(MenuComponentType.ITEM, null, null, "Nimbus",
+              null);
 
-      _mniLafSystem = makeMenuComponent( MenuComponentType.ITEM, null, null, "System",
-        null );
+      menuItemLafSystem = makeMenuComponent(MenuComponentType.ITEM, null, null, "System",
+              null);
 
-      _mniLafLiquid  .setMnemonic( 'L' );
-      _mniLafMetal   .setMnemonic( 'M' );
-      _mniLafNimbus  .setMnemonic( 'N' );
-      _mniLafSystem  .setMnemonic( 'Y' );
+      menuItemLafLiquid.setMnemonic('L');
+      menuLafMetal.setMnemonic('M');
+      menuItemLafNimbus.setMnemonic('N');
+      menuItemLafSystem.setMnemonic('Y');
 
-      if( !isWindows() )
-      {
-        _mniLafGtk = makeMenuComponent( MenuComponentType.ITEM, null, null, "Gtk",
-          null );
-        _mniLafGtk.setMnemonic( 'G' );
-        _mnuLaf.add( _mniLafGtk );
+      if (!Platform.isWindows()) {
+        menuItemLafGtk = makeMenuComponent(MenuComponentType.ITEM, null, null, "Gtk",
+                null);
+        menuItemLafGtk.setMnemonic('G');
+        menuLaf.add(menuItemLafGtk);
       }
 
-      _mnuLaf.add( _mniLafLiquid );
-      _mnuLaf.add( _mniLafMetal );
-      _mnuLaf.add( _mniLafNimbus );
-      _mnuLaf.add( _mniLafSystem );
+      menuLaf.add(menuItemLafLiquid);
+      menuLaf.add(menuLafMetal);
+      menuLaf.add(menuItemLafNimbus);
+      menuLaf.add(menuItemLafSystem);
 
-      _mnuSettings.add( _mnuLaf );
+      menuSettings.add(menuLaf);
     }
 
-    _mnuSettings.add( _mnuLaf );
+    menuSettings.add(menuLaf);
 
-    _mnuHelp.add( _mniHelpManual );
+    menuHelp.add(menuItemHelpManual);
 
-    if( !isMacOSX() )
-    {
-      _mnuHelp.addSeparator();
-      _mnuHelp.add( _mniHelpAbout );
+    if (!Platform.isMacOSX()) {
+      menuHelp.addSeparator();
+      menuHelp.add(menuItemHelpAbout);
     }
 
-    _mbar.add( _mnuFile );
-    _mbar.add( _mnuSettings );
-    _mbar.add( _mnuHelp );
+    _mbar.add(menuItemFile);
+    _mbar.add(menuSettings);
+    _mbar.add(menuHelp);
 
-    setJMenuBar( _mbar );
+    setJMenuBar(_mbar);
   }
 
   /**
-   *  Quit application
+   * Quit application
    *
-   *  @return boolean - OS X Aqua integration only
+   * @return boolean - OS X Aqua integration only
    */
-  private boolean quit()
-  {
+  private boolean quit() {
     //  ToDo: check for unsaved changes first, save, then quit
 
-    SwingUtilities.invokeLater( new Runnable()
-      { public void run() { dispose(); } } );
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        dispose();
+      }
+    });
 
-    return( true );
+    return (true);
   }
 
   /**
-   *  Open dialog to select the files we want to align/convert
+   * Open dialog to select the files we want to align/convert
    *
-   *  Esta funci�n abre un cuadro de di�logo para seleccionar los ficheros que
-   *  queremos alinear.
+   * Esta funci�n abre un cuadro de di�logo para seleccionar los ficheros que
+   * queremos alinear.
    */
-  private void onOpen()
-  {
+  private void onOpen() {
     String originalEncoding;
     String translateEncoding;
 
     final OpenTexts dlg = new OpenTexts();
-    dlg.setPath( _fUserHome );
-    dlg.setModal( true );
-    dlg.setVisible( true );
+    dlg.setPath(userHome);
+    dlg.setModal(true);
+    dlg.setVisible(true);
 
-    if( !dlg.isClosed() )
-    {
-      _fUserHome = dlg.getPath();
-      originalEncoding = (String)dlg.getSourceLangEncComboBox().getSelectedItem();
-      _fPathOriginal   = dlg.getSourcePath();
-      _strOriginal     = dlg.getSource();
-      _strLangOriginal = dlg.getSourceLocale();
-      _vwAlignments.buildDisplay();
-      _alstOriginal = new Document();
-      _alstTranslation = new Document();
-        
-      if( dlg.getTypes() == 0 )
-      {
+    if (!dlg.isClosed()) {
+      userHome = dlg.getPath();
+      originalEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
+      filePathOriginal = dlg.getSourcePath();
+      stringOriginal = dlg.getSource();
+      stringLangOriginal = dlg.getSourceLocale();
+      viewAlignments.buildDisplay();
+      documentOriginal = new Document();
+      documentTranslation = new Document();
+
+      if (dlg.getTypes() == 0) {
         //getSelectedItem()
-        translateEncoding  = (String)dlg.getTargetLangEncComboBox().getSelectedItem();
-        _fPathTranslation   = dlg.getTargetPath();
-        _strTranslation     = dlg.getTarget();
-        _strLangTranslation = dlg.getTargetLocale();
+        translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
+        filePathTranslation = dlg.getTargetPath();
+        stringTranslation = dlg.getTarget();
+        stringLangTranslation = dlg.getTargetLocale();
 
         try {
-          _alstOriginal.readDocument(_strOriginal, originalEncoding);
-          _alstTranslation.readDocument(_strTranslation, translateEncoding);
+          documentOriginal.readDocument(stringOriginal, originalEncoding);
+          documentTranslation.readDocument(stringTranslation, translateEncoding);
         } catch (Exception ex) {
-          JOptionPane.showMessageDialog( this, getString( "MSG.ERROR" ),
-             getString( "MSG.ERROR.FILE.READ" ), JOptionPane.ERROR_MESSAGE );
+          JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
+                  getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
           this.dispose();
         }
-        
-        boolean res = Align.align(_alstOriginal, _alstTranslation);
 
-        if( res )
-        {
+        boolean res = Aligner.align(documentOriginal, documentTranslation);
+
+        if (res) {
           matchArrays();
 
-          for( int cont=0; cont < _alstOriginal.size(); cont++ )
-          {
-            if( _alstOriginal.get( cont ) == null ||
-                (_alstOriginal.get( cont ).equals( "" ) ) &&
-                  ( _alstTranslation.get( cont ) == null ||
-                    _alstTranslation.get( cont ).equals( "" ) ) )
-            {
-              _alstOriginal.remove( cont );
-              _alstTranslation.remove( cont );
+          for (int cont = 0; cont < documentOriginal.size(); cont++) {
+            if (documentOriginal.get(cont) == null
+                    || (documentOriginal.get(cont).equals(""))
+                    && (documentTranslation.get(cont) == null
+                    || documentTranslation.get(cont).equals(""))) {
+              documentOriginal.remove(cont);
+              documentTranslation.remove(cont);
             }
           }
         }
-      }
-      else
-      {
+      } else {
         try {
-          TMXReader.readTMX(_fPathOriginal, originalEncoding,
-                            _strLangOriginal, _strLangTranslation,
-                            _alstOriginal, _alstTranslation);
+          TMXReader.readTMX(filePathOriginal, originalEncoding,
+                  stringLangOriginal, stringLangTranslation,
+                  documentOriginal, documentTranslation);
         } catch (Exception ex) {
           Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        _fPathTranslation = _fPathOriginal;
+        filePathTranslation = filePathOriginal;
       }
 
       initializeAlignmentsView();
       updateAlignmentsView();
-      _vwControls.enableButtons( true );
+      viewControls.enableButtons(true);
       //_vwControls._btnUndo.setEnabled( false );
-      _vwControls.setUndoEnabled( false );
-      _mniFileSaveAs.setEnabled( true );
-      _mniFileClose.setEnabled( true );
+      viewControls.setUndoEnabled(false);
+      menuItemFileSaveAs.setEnabled(true);
+      menuItemFileClose.setEnabled(true);
 
       dlg.dispose();
     }
   }
 
-
   /**
-   *  Actions to perform when closing alignment/editing session.
-   *  Leaves the text as it was so that it can be processed later.
+   * Actions to perform when closing alignment/editing session. Leaves the text
+   * as it was so that it can be processed later.
    *
-   *  Esta funci�n contiene la funcionalidad del bot�n abortar.
-   *  Deja el texto como estaba para volver a tratarlo m�s tarde.
+   * Esta funci�n contiene la funcionalidad del bot�n abortar. Deja el texto
+   * como estaba para volver a tratarlo m�s tarde.
    */
-  private void onClose()
-  {
+  private void onClose() {
     clear();
     //BotonesFalse();
-    _vwControls.enableButtons( false );
+    viewControls.enableButtons(false);
     //  Done in _vwControls
     //_btnUndo.setEnabled( false );
     // Undo is separate
-    _vwControls.setUndoEnabled( false );
-    _mniFileSave.setEnabled( false );
-    _mniFileSaveAs.setEnabled( false );
-    _mniFileClose.setEnabled( false );
+    viewControls.setUndoEnabled(false);
+    menuItemFileSave.setEnabled(false);
+    menuItemFileSaveAs.setEnabled(false);
+    menuItemFileClose.setEnabled(false);
   }
 
   //  ToDo: implement proper functionality; not used currently
-  final void onSave()   { saveBitext(); }
-
-  final void onSaveAs() { saveBitext(); }
-
-  final void displayAbout()
-  {
-    final About dlg = new About( this );
-    dlg.setVisible( true );
+  final void onSave() {
+    saveBitext();
   }
 
+  final void onSaveAs() {
+    saveBitext();
+  }
+
+  final void displayAbout() {
+    final About dlg = new About(this);
+    dlg.setVisible(true);
+  }
 
   /**
-   *  Necessary capabilities to store the bitext
+   * Necessary capabilities to store the bitext
    *
    */
-  private void saveBitext()
-  {
+  private void saveBitext() {
     File userHome;
-    
-    for( int cont = 0; cont < ( _alstOriginal.size() - 1 ); cont++ )
-    {
-      if( _alstOriginal.get( cont ).equals( "" ) && _alstTranslation.get( cont ).equals( "" ) )
-      {
-        _alstOriginal.remove( cont );
-        _alstTranslation.remove( cont );
+
+    for (int cont = 0; cont < (documentOriginal.size() - 1); cont++) {
+      if (documentOriginal.get(cont).equals("") && documentTranslation.get(cont).equals("")) {
+        documentOriginal.remove(cont);
+        documentTranslation.remove(cont);
       }
     }
-    
+
     try {
-      final String nombre = _fPathOriginal.getName().
-          substring( 0, ( _fPathOriginal.getName().length() - 4 ) );
-      boolean guardar = false;
-      boolean salir   = false;
-    
+      String outFileName = filePathOriginal.getName();
+      String outFileNameBase = outFileName.
+              substring(0, (filePathOriginal.getName().length() - 4));
+      boolean save = false;
+      boolean cancel = false;
+
       userHome = new File(RuntimePreferences.getUserHome());
-      File fNombre = new File( nombre.concat( _strLangTranslation + ".tmx" ) );
-      
-      while( !guardar && !salir )
-      {
+      File outFile = new File(outFileNameBase.concat(stringLangTranslation + ".tmx"));
+
+      while (!save && !cancel) {
         final JFileChooser fc = new JFileChooser();
 
         //  switch() on language removed from here -RM
-
         boolean kNombre_Usuario = false;
 
-        while( !kNombre_Usuario )
-        {
-          fc.setLocation( 230, 300 );
-          fc.setCurrentDirectory( userHome );
-          fc.setDialogTitle( getString( "DLG.SAVEAS" ) );
+        while (!kNombre_Usuario) {
+          fc.setLocation(230, 300);
+          fc.setCurrentDirectory(userHome);
+          fc.setDialogTitle(getString("DLG.SAVEAS"));
 
-          fc.setMultiSelectionEnabled( false );
-          fc.setSelectedFile( fNombre );
-          fc.setFileSelectionMode( JFileChooser.FILES_ONLY );
+          fc.setMultiSelectionEnabled(false);
+          fc.setSelectedFile(outFile);
+          fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
           userHome = fc.getCurrentDirectory();
 
           int returnVal;
-          returnVal = fc.showSaveDialog( this );
+          returnVal = fc.showSaveDialog(this);
 
-          if( returnVal == JFileChooser.APPROVE_OPTION )
-          {
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
             returnVal = 1;
-            fNombre = fc.getSelectedFile();
+            outFile = fc.getSelectedFile();
 
-            if( !fNombre.getName().endsWith( ".tmx" ) )
-              fNombre.getName().concat( ".tmx" );
+            if (!outFile.getName().endsWith(".tmx")) {
+              outFileName = outFile.getName().concat(".tmx");
+            }
 
             kNombre_Usuario = true;
-          }
-          else
-          {
+          } else {
             kNombre_Usuario = true;
-            salir = true;
+            cancel = true;
           }
         }
 
         int n;
-        if( kNombre_Usuario && !salir )
-        {
-          //  Comprobar si ya existe el fichero
-          //  Check whether the file exists
-          if( fNombre.exists() )
-          {
-            // "Guardar"/"Save"  & "Cancelar"/"Cancel"
-            final Object[] options = { getString( "BTN.SAVE" ),
-              getString( "BTN.CANCEL" ) };
+        if (kNombre_Usuario && !cancel) {
+          if (outFile.exists()) {
+            final Object[] options = {getString("BTN.SAVE"),
+              getString("BTN.CANCEL")};
 
-            n = JOptionPane.showOptionDialog( this, getString( "MSG.FILE.EXISTS" ), getString( "MSG.WARNING" ),
-                 JOptionPane.OK_CANCEL_OPTION,   JOptionPane.QUESTION_MESSAGE,
-                   null, options, options[0] );
+            n = JOptionPane.showOptionDialog(this, getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[0]);
 
-            //  Sobreescribir - Overwrite
-            if( n == 0 ) guardar = true;
+            //  Overwrite
+            if (n == 0) {
+              save = true;
+            }
           }
-          // No existe->guardar
-          // Doesn't exist ->save
-          else guardar = true;
+          else {
+            save = true;
+          }
 
         }
       }
 
       String encoding = "UTF-8";
-      if( guardar )
-      {
-        //  Pedir el encoding
+      if (save) {
         //  Ask for the encoding
         Encodings dlgEnc = new Encodings();
 
-        dlgEnc.setVisible( true );
+        dlgEnc.setVisible(true);
 
-        if( !dlgEnc.isClosed() )
-        {
-        encoding = dlgEnc.getComboBoxEncoding();
-        dlgEnc.dispose();
+        if (!dlgEnc.isClosed()) {
+          encoding = dlgEnc.getComboBoxEncoding();
+          dlgEnc.dispose();
         }
       }
-      
-      TMXWriter.writeBitext(fNombre,
-              _alstOriginal, _strLangOriginal,
-              _alstTranslation, _strLangTranslation,
+
+      TMXWriter.writeBitext(outFile,
+              documentOriginal, stringLangOriginal,
+              documentTranslation, stringLangTranslation,
               encoding);
-      
-    } catch ( IOException ex) {
+
+    } catch (IOException ex) {
       JOptionPane.
-        showMessageDialog( this, (String)_alstLang.get( 21 ),
-          (String)_alstLang.get( 18 ), JOptionPane.ERROR_MESSAGE );
+              showMessageDialog(this, (String) arrayListLang.get(21),
+                      (String) arrayListLang.get(18), JOptionPane.ERROR_MESSAGE);
       this.dispose();
     }
   }
 
-
   /**
-   *  Esta funci�n inicializa los valores para comenzar la validaci�n
-   *  del siguiente alineamiento.
    *
-   *  Initialize values to start the validation of the following alignment
+   * Initialize values to start the validation of the following alignment
    */
-  private void clear()
-  {
-    int cont = _alstOriginal.size() - 1;
+  private void clear() {
+    int cont = documentOriginal.size() - 1;
 
-    while( !_alstOriginal.isEmpty() ) _alstOriginal.remove( cont-- );
+    while (!documentOriginal.isEmpty()) {
+      documentOriginal.remove(cont--);
+    }
 
-    cont = _alstTranslation.size() - 1;
+    cont = documentTranslation.size() - 1;
 
-    while( !_alstTranslation.isEmpty() ) _alstTranslation.remove( cont-- );
+    while (!documentTranslation.isEmpty()) {
+      documentTranslation.remove(cont--);
+    }
 
-    cont = _alstBitext.size() - 1;
+    cont = arrayListBitext.size() - 1;
 
-    while( !_alstBitext.isEmpty() ) _alstBitext.remove( cont-- );
+    while (!arrayListBitext.isEmpty()) {
+      arrayListBitext.remove(cont--);
+    }
 
-    cont = _alstChanges.size() - 1;
+    cont = arrayListChanges.size() - 1;
 
-    while( !_alstChanges.isEmpty() ) _alstChanges.remove( cont-- );
+    while (!arrayListChanges.isEmpty()) {
+      arrayListChanges.remove(cont--);
+    }
 
-    _iChanges    = -1;
-    _iIdentLabel = 0;
-    _identAnt      = 0;
-    _fPathTranslation   = null;
-    _fPathOriginal = null;
-    //_tbl.setRowSelectionInterval( 0, 0 );
-    //_vwAlignments.setRowSelectionInterval( 0, 0 );
-    //_vwControls._btnUndo.setEnabled( false );
-    _vwControls.setUndoEnabled( false );
-    //fichCreado = false;
+    identChanges = -1;
+    identLabel = 0;
+    _identAnt = 0;
+    filePathTranslation = null;
+    filePathOriginal = null;
+    viewControls.setUndoEnabled(false);
+    viewAlignments.clear();
+    topArrays = 0;
 
-  //System.out.println( "_topArrays: " + _topArrays );
-  //System.out.println( "Model RowCount: " + _vwAlignments._model.getRowCount() );
-    //for( int i = _topArrays; i >= 25; i-- ) _model.removeSegment( i );
-
-    _vwAlignments.clear();
-    _topArrays = 0;
-
-    _edLeftSegment.setText( "" );
-    _edRightSegment.setText( "" );
+    edLeftSegment.setText("");
+    editRightSegment.setText("");
   }
 
-
   /**
-   *  Esta funci�n actualiza los cambios a�adiendo un cambio de
-   *  unir en el array de deshacer y aplica la uni�n
+   * Updates the changes adding a "join" change in the "undo" array and performs
+   * the "join". (not sure about the translation)
    *
-   *  @param textAreaIzq
-   *    :TRUE si hay que unir la parte izq. (El texto fuente)
-   *
-   *  Updates the changes adding a "join" change in the "undo" array
-   *  and performs the "join". (not sure about the translation)
-   *
-   *  @param textAreaIzq
-   *   :TRUE si hay que unir la parte izq. (El texto fuente)
-   *   :TRUE if the left text (source text) has to be joined
+   * @param textAreaIzq :TRUE if the left text (source text) has to be joined
    */
-  private void join( final boolean textAreaIzq )
-  {
-    if( _iIdentLabel != _topArrays )
-    {
-      final SegmentChanges Changes = new SegmentChanges( 0, _posTextArea, textAreaIzq,
-        "", _iIdentLabel );
-      _alstChanges.add( _iChanges, Changes );
+  private void join(final boolean textAreaIzq) {
+    if (identLabel != topArrays) {
+      final SegmentChanges Changes = new SegmentChanges(0, positionTextArea,
+              textAreaIzq, "", identLabel);
+      arrayListChanges.add(identChanges, Changes);
 
-      if( textAreaIzq ) Changes.setFrase( _alstOriginal.get( _iIdentLabel ).toString() );
-      else Changes.setFrase( _alstTranslation.get( _iIdentLabel ).toString() );
+      if (textAreaIzq) {
+        Changes.setFrase(documentOriginal.get(identLabel));
+      } else {
+        Changes.setFrase(documentTranslation.get(identLabel));
+      }
 
-      modifyAlignments( textAreaIzq, 0, 0 );
+      modifyAlignments(textAreaIzq, 0, 0);
     }
   }
 
-
   /**
-   * Funci�n Borrar. Esta funci�n actualiza los cambios a�adiendo un cambio de
-   * borrar en el array de deshacer y aplica el borrado.
-   *
-   * @param textAreaIzq
-   *        :TRUE si hay que borrar la parte izq. (El texto fuente)
-   *
-   * Function Borrar. This function updates the changes adding a delete change 
+   * Delete text. 
+   * 
+   * This function updates the changes adding a delete change
    * to the undo array and deletes
    *
-   * @param textAreaIzq
-   *        :TRUE if the left hand (source text) has to be deleted
+   * @param textAreaIzq :TRUE if the left hand (source text) has to be deleted
    */
-  private void delete( final boolean textAreaIzq )
-  {
-    final SegmentChanges Changes = new SegmentChanges( 1, _posTextArea, textAreaIzq,
-      "", _iIdentLabel );
-    _alstChanges.add( _iChanges, Changes );
+  private void delete(final boolean textAreaIzq) {
+    final SegmentChanges Changes = new SegmentChanges(1, positionTextArea, textAreaIzq,
+            "", identLabel);
+    arrayListChanges.add(identChanges, Changes);
 
-    if( textAreaIzq ) Changes.setFrase(_alstOriginal.get( _iIdentLabel ) );
-    else Changes.setFrase(_alstTranslation.get( _iIdentLabel ) );
-
-    modifyAlignments( textAreaIzq, 1, 0 );
-  }
-
-  /**
-   * Funci�n Split. Esta funci�n actualiza los cambios a�adiendo un cambio de
-   * separar en el array de deshacer y aplica la separaci�n de la frase.
-   *
-   * @param textAreaIzq
-   *        :TRUE si hay que separar la parte izq. (El texto fuente)
-   *
-   * Funci�n Split. This function updates the changes adding a split to the 
-   * undo array and performs the splitting
-   *
-   * @param textAreaIzq
-   *        :TRUE if the left hand (source text) has to be split
-   */
-  private void split( final boolean textAreaIzq )
-  {
-    if( textAreaIzq )
-    {
-      if( _posTextArea >= _alstOriginal.get( _iIdentLabel ).length() )
-        _posTextArea = 0;
+    if (textAreaIzq) {
+      Changes.setFrase(documentOriginal.get(identLabel));
+    } else {
+      Changes.setFrase(documentTranslation.get(identLabel));
     }
-    else
-      if( _posTextArea >= _alstTranslation.get( _iIdentLabel ).length() )
-        _posTextArea = 0;
 
-    final SegmentChanges Changes = new SegmentChanges( 2, _posTextArea, textAreaIzq, "",
-        _iIdentLabel );
-    _alstChanges.add( _iChanges, Changes );
-
-    if( textAreaIzq ) Changes.setFrase( _alstOriginal.get( _iIdentLabel ).toString() );
-    else Changes.setFrase(_alstTranslation.get( _iIdentLabel ) );
-
-    modifyAlignments( textAreaIzq, 2, Changes.getPosition() );
+    modifyAlignments(textAreaIzq, 1, 0);
   }
 
+  /**
+   * Function Split. 
+   * 
+   * This function updates the changes adding a split to the undo
+   * array and performs the splitting
+   *
+   * @param textAreaIzq :TRUE if the left hand (source text) has to be split
+   */
+  private void split(final boolean textAreaIzq) {
+    if (textAreaIzq) {
+      if (positionTextArea >= documentOriginal.get(identLabel).length()) {
+        positionTextArea = 0;
+      }
+    } else if (positionTextArea >= documentTranslation.get(identLabel).length()) {
+      positionTextArea = 0;
+    }
+
+    final SegmentChanges Changes = new SegmentChanges(2, positionTextArea,
+            textAreaIzq, "", identLabel);
+    arrayListChanges.add(identChanges, Changes);
+
+    if (textAreaIzq) {
+      Changes.setFrase(documentOriginal.get(identLabel));
+    } else {
+      Changes.setFrase(documentTranslation.get(identLabel));
+    }
+
+    modifyAlignments(textAreaIzq, 2, Changes.getPosition());
+  }
 
   /**
-   *  Funci�n ModLista. Esta funci�n realiza los cambios: Unir: une la fila
-   *  seleccionada con la siguiente. Borrar: borra la fila seleccionada. Split:
-   *  separa la fila seleccionada por la posici�n indicada creando dos filas.
+   * Perform alignments. 
+   * 
+   * This function performes the following changes. Join:
+   * joins the selected row with the following; Delete: deletes the selected
+   * row; Split: splits the selected row at the given position creating two
+   * rows.
    *
-   *  @param izq:        TRUE si se aplica al texto fuente
-   *  @param operacion:  0->Unir,1->Borrar,2->Split
-   *  @param posicion:   por donde hay que hacer el split
-   *
-   * Function ModLista. This function performes the following changes. Join: 
-   *  joins the selected row with the following; Delete: deletes the selected
-   *  row; Split: splits the selected row at the given position creating two
-   *  rows.
-   *
-   *  @param izq:        TRUE if it applies to the source text
-   *  @param operacion:  0->Join,1->Delete,2->Split
-   *  @param posicion:   position at which the split is performed
+   * @param izq: TRUE if it applies to the source text
+   * @param operacion: 0->Join,1->Delete,2->Split
+   * @param position: position at which the split is performed
    */
-  private void modifyAlignments( final boolean izq, final int operacion, final int posicion )
-  {
+  private void modifyAlignments(final boolean izq, final int operacion, final int position) {
     int cont;
     String cad = "";
 
-    if( operacion == 0 )
-    {
+    if (operacion == 0) {
       // Unir
       // Join
-      cont = _iIdentLabel + 1;
+      cont = identLabel + 1;
 
-      if( izq )
-      {
-        cad = _alstOriginal.get( _iIdentLabel ).toString();
-        cad = cad.concat( " " );
-        cad = cad.concat(_alstOriginal.get( _iIdentLabel + 1 ) );
-        _alstOriginal.set( _iIdentLabel, cad.trim() );
+      if (izq) {
+        cad = documentOriginal.get(identLabel);
+        cad = cad.concat(" ");
+        cad = cad.concat(documentOriginal.get(identLabel + 1));
+        documentOriginal.set(identLabel, cad.trim());
 
-        for( ; cont < _topArrays; cont++ )
-          _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
+        for (; cont < topArrays; cont++) {
+          documentOriginal.set(cont, documentOriginal.get(cont + 1));
+        }
 
-        _alstOriginal.set( _alstOriginal.size() - 1, "" );
+        documentOriginal.set(documentOriginal.size() - 1, "");
+      } else {
+        cad = documentTranslation.get(identLabel);
+        cad = cad.concat(" ");
+        cad = cad.concat(documentTranslation.get(identLabel + 1));
+        documentTranslation.set(identLabel, cad.trim());
+
+        for (; cont < topArrays; cont++) {
+          documentTranslation.set(cont, documentTranslation.get(cont + 1));
+        }
+
+        documentTranslation.set(documentTranslation.size() - 1, "");
       }
-      else
-      {
-        cad = _alstTranslation.get( _iIdentLabel );
-        cad = cad.concat( " " );
-        cad = cad.concat(_alstTranslation.get( _iIdentLabel + 1 ) );
-        _alstTranslation.set( _iIdentLabel, cad.trim() );
+    } else if (operacion == 1) {
+      // Delete
+      cont = identLabel;
 
-        for( ; cont < _topArrays; cont++ )
-          _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
+      if (izq) {
+        for (; cont < topArrays; cont++) {
+          documentOriginal.set(cont, documentOriginal.get(cont + 1));
+        }
+        documentOriginal.set(documentOriginal.size() - 1, "");
+      } else {
+        for (; cont < topArrays; cont++) {
+          documentTranslation.set(cont, documentTranslation.get(cont + 1));
+        }
+        documentTranslation.set(documentTranslation.size() - 1, "");
+      }
+    } else {
+        // Split
+      if (izq) {
+        cont = documentOriginal.size() - 1;
+        if (documentOriginal.get(documentOriginal.size() - 1) != null
+                && !documentOriginal.get(documentOriginal.size() - 1).equals("")) {
+          documentOriginal.add(documentOriginal.size(),
+                  documentOriginal.get(documentOriginal.size() - 1));
+        } else {
+          documentOriginal.set(documentOriginal.size() - 1,
+                  documentOriginal.get(documentOriginal.size() - 2));
+        }
+        for (; cont > (identLabel + 1); cont--) {
+          documentOriginal.set(cont, documentOriginal.get(cont - 1));
+        }
+        if (identLabel < topArrays) {
+          cad = documentOriginal.get(identLabel);
 
-        _alstTranslation.set( _alstTranslation.size() - 1, "" );
+          if (position == 0) {
+            documentOriginal.set(cont - 1, "");
+          } else {
+            documentOriginal.set(cont - 1, cad.substring(0, position).trim());
+          }
+          documentOriginal.set(cont, cad.substring(position).trim());
+        } else {
+          cad = documentOriginal.get(identLabel);
+          if (position == 0) {
+            documentOriginal.set(documentOriginal.size() - 2, "");
+          } else {
+            documentOriginal.set(documentOriginal.size() - 2, cad.substring(0, position).trim());
+          }
+          documentOriginal.set(documentOriginal.size() - 1, cad.substring(position).trim());
+        }
+      } else {
+        cont = documentTranslation.size() - 1;
+        if ((documentTranslation.get(documentTranslation.size() - 1) != null)
+                && !(documentTranslation.get(documentTranslation.size() - 1).equals(""))) {
+          documentTranslation.add(documentTranslation.size(),
+                  documentTranslation.get(documentTranslation.size() - 1));
+        } else {
+          documentTranslation.set(documentTranslation.size() - 1,
+                  documentTranslation.get(documentTranslation.size() - 2));
+        }
+
+        for (; cont > (identLabel + 1); cont--) {
+          documentTranslation.set(cont, documentTranslation.get(cont - 1));
+        }
+
+        if (identLabel < topArrays) {
+          cad = documentTranslation.get(identLabel);
+
+          if (position == 0) {
+            documentTranslation.set(cont - 1, "");
+          } else {
+            documentTranslation.set(cont - 1, cad.substring(0, position).trim());
+          }
+
+          documentTranslation.set(cont, cad.substring(position).trim());
+        } else {
+          cad = documentTranslation.get(identLabel);
+
+          if (position == 0) {
+            documentTranslation.set(documentTranslation.size() - 2, "");
+          } else {
+            documentTranslation.set(documentTranslation.size() - 2, cad.substring(0, position).trim());
+          }
+
+          documentTranslation.set(documentTranslation.size() - 1, cad.substring(position).trim());
+        }
       }
     }
-    else
-      if( operacion == 1 )
-      {
-        // Borrar
-        // Delete
-        cont = _iIdentLabel;
-
-        if( izq )
-        {
-          for( ; cont < _topArrays; cont++ )
-            _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
-
-          _alstOriginal.set( _alstOriginal.size() - 1, "" );
-        }
-        else
-        {
-          for( ; cont < _topArrays; cont++ )
-            _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
-
-          _alstTranslation.set( _alstTranslation.size() - 1, "" );
-        }
-      }
-      else
-      {
-        // Split
-        // Separar
-        if( izq )
-        {
-          cont = _alstOriginal.size() - 1;
-
-          if( _alstOriginal.get( _alstOriginal.size() - 1 ) != null &&
-            !_alstOriginal.get( _alstOriginal.size() - 1 ).equals( "" ) )
-            _alstOriginal.add(_alstOriginal.size(), _alstOriginal.get( _alstOriginal.size() - 1 ) );
-          else
-            _alstOriginal.set( _alstOriginal.size() - 1, _alstOriginal.
-              get( _alstOriginal.size() - 2 ).toString() );
-
-          for( ; cont > ( _iIdentLabel + 1 ); cont-- )
-            _alstOriginal.set(cont, _alstOriginal.get( cont - 1 ) );
-
-          if( _iIdentLabel < _topArrays )
-          {
-            cad = _alstOriginal.get( _iIdentLabel );
-
-            if( posicion == 0 ) _alstOriginal.set( cont - 1, "" );
-            else _alstOriginal.set( cont - 1, cad.substring( 0, posicion ).trim() );
-
-            _alstOriginal.set( cont, cad.substring( posicion ).trim() );
-          }
-          else
-          {
-            cad = _alstOriginal.get( _iIdentLabel );
-
-            if( posicion == 0 ) _alstOriginal.set( _alstOriginal.size() - 2, "" );
-            else _alstOriginal.set( _alstOriginal.size() - 2, cad.substring( 0, posicion ).trim() );
-
-            _alstOriginal.set( _alstOriginal.size() - 1, cad.substring( posicion ).trim() );
-          }
-        }
-        else
-        {
-          // Meta
-          cont = _alstTranslation.size() - 1;
-
-          if( ( _alstTranslation.get( _alstTranslation.size() - 1 ) != null ) &&
-            !( _alstTranslation.get( _alstTranslation.size() - 1 ).equals( "" ) ) )
-            _alstTranslation.add( _alstTranslation.size(), _alstTranslation.
-              get( _alstTranslation.size() - 1 ).toString() );
-          else
-            _alstTranslation.set( _alstTranslation.size() - 1, _alstTranslation.
-              get( _alstTranslation.size() - 2 ).toString() );
-
-          for( ; cont > ( _iIdentLabel + 1 ); cont-- )
-            _alstTranslation.set( cont, _alstTranslation.get( cont - 1 ).toString() );
-
-          if( _iIdentLabel < _topArrays )
-          {
-            cad = _alstTranslation.get( _iIdentLabel ).toString();
-
-            if( posicion == 0 ) _alstTranslation.set( cont - 1, "" );
-            else _alstTranslation.set( cont - 1, cad.substring( 0, posicion ).trim() );
-
-            _alstTranslation.set( cont, cad.substring( posicion ).trim() );
-          }
-          else
-          {
-            cad = _alstTranslation.get( _iIdentLabel ).toString();
-
-            if( posicion == 0 ) _alstTranslation.set( _alstTranslation.size() - 2, "" );
-            else _alstTranslation.set( _alstTranslation.size() - 2, cad.substring( 0, posicion ).trim() );
-
-            _alstTranslation.set( _alstTranslation.size() - 1, cad.substring( posicion ).trim() );
-          }
-        }
-      }
 
     updateAlignmentsView();
   }
 
-
   /**
-   *  Funci�n MostrarTabla. Esta funci�n actualiza las filas de la tabla con las
-   *  modificaciones realizadas, a�ade filas o las quita..
-   *
-   *  Function MostrarTabla. This function updates the rows in the table with the 
-   *  modifications performed, adds rows or removes them.
+   * Update the row in table with mods.
+   * 
+   * This function updates the rows in the table with the
+   * modifications performed, adds rows or removes them.
    */
-  private void updateAlignmentsView()
-  {
-    if( !_alstOriginal.isEmpty() && !_alstTranslation.isEmpty() ) matchArrays();
-
-    for( int cont = 0; cont < _vwAlignments.getRowCount(); cont++ )
-    {
-      _vwAlignments.setModelValueAt( "", cont, 0 );
-      _vwAlignments.setModelValueAt( "", cont, 1 );
-      _vwAlignments.setModelValueAt( "", cont, 2 );
+  private void updateAlignmentsView() {
+    if (!documentOriginal.isEmpty() && !documentTranslation.isEmpty()) {
+      matchArrays();
     }
 
-    if( ( _vwAlignments.getRowCount() > _alstOriginal.size() ) &&
-      ( _alstOriginal.size() > 25 ) )
-    {
-      while( _vwAlignments.getRowCount() != _alstOriginal.size() )
-      {
-        _vwAlignments.removeSegment( _vwAlignments.getRowCount() - 1 );
-        _vwAlignments.setPreferredSize( 805, 15, -1 );
+    for (int cont = 0; cont < viewAlignments.getRowCount(); cont++) {
+      viewAlignments.setModelValueAt("", cont, 0);
+      viewAlignments.setModelValueAt("", cont, 1);
+      viewAlignments.setModelValueAt("", cont, 2);
+    }
+
+    if ((viewAlignments.getRowCount() > documentOriginal.size())
+            && (documentOriginal.size() > 25)) {
+      while (viewAlignments.getRowCount() != documentOriginal.size()) {
+        viewAlignments.removeSegment(viewAlignments.getRowCount() - 1);
+        viewAlignments.setPreferredSize(805, 15, -1);
+      }
+    } else if (viewAlignments.getRowCount() < documentOriginal.size()) {
+      while (viewAlignments.getRowCount() != documentOriginal.size()) {
+        Segment nSeg = new Segment(null, null, null);
+        viewAlignments.addModelSegment(nSeg);
+        viewAlignments.setPreferredSize(805, 15, 1);
       }
     }
-    else
-      if( _vwAlignments.getRowCount() < _alstOriginal.size() )
-        while( _vwAlignments.getRowCount() != _alstOriginal.size() )
-        {
-          Segment nSeg = new Segment( null, null, null );
-          _vwAlignments.addModelSegment( nSeg );
-          _vwAlignments.setPreferredSize( 805, 15, 1 );
-        }
 
-    for( int cont = 0; cont < _alstOriginal.size(); cont++ )
-    {
-      _vwAlignments.setModelValueAt( Integer.toString( cont + 1 ), cont, 0 );
-      _vwAlignments.setModelValueAt( _alstOriginal.get( cont ), cont, 1 );
+    for (int cont = 0; cont < documentOriginal.size(); cont++) {
+      viewAlignments.setModelValueAt(Integer.toString(cont + 1), cont, 0);
+      viewAlignments.setModelValueAt(documentOriginal.get(cont), cont, 1);
     }
 
-    for( int cont = 0; cont < _alstTranslation.size(); cont++ )
-      _vwAlignments.setModelValueAt( _alstTranslation.get( cont ), cont, 2 );
+    for (int cont = 0; cont < documentTranslation.size(); cont++) {
+      viewAlignments.setModelValueAt(documentTranslation.get(cont), cont, 2);
+    }
 
-    if( _iIdentLabel == _topArrays )
-      _vwAlignments.setRowSelectionInterval( _topArrays, _topArrays );
+    if (identLabel == topArrays) {
+      viewAlignments.setRowSelectionInterval(topArrays, topArrays);
+    }
 
-    _vwAlignments.repaint();
+    viewAlignments.repaint();
 
-    _edLeftSegment.setText( formatText( _vwAlignments.getValueAt(
-        _iIdentLabel, 1 ).toString() ) );
-    _edRightSegment.setText( formatText( _vwAlignments.getValueAt(
-        _iIdentLabel, 2 ).toString() ) );
+    edLeftSegment.setText(formatText(viewAlignments.getValueAt(
+            identLabel, 1).toString()));
+    editRightSegment.setText(formatText(viewAlignments.getValueAt(
+            identLabel, 2).toString()));
   }
 
-
- 
   /**
-   *  Funci�n IgualarArrays. Esta funci�n a�ade filas al array del menor tama�o y
-   *  borra si las filas est�n en blanco.
-   *
-   *  Function IgualarArrays: adds rows to the smallest array and 
-   *  deletes blank rows.
+   * Function IgualarArrays: adds rows to the smallest array and deletes blank
+   * rows.
    */
-  private void matchArrays()
-  {
+  private void matchArrays() {
     boolean limpiar = true;
 
-    while( _alstOriginal.size() > _alstTranslation.size() )
-      _alstTranslation.add( _alstTranslation.size(), "" );
-
-    while( _alstTranslation.size() > _alstOriginal.size() )
-      _alstOriginal.add( _alstOriginal.size(), "" );
-
-    while( limpiar )
-    { // Borrar las l�neas en blanco del final
-      // Delete blank lines at the end
-      if( _alstOriginal.get( _alstOriginal.size() - 1 ) == null
-          || ( _alstOriginal.get( _alstOriginal.size() - 1 ).equals( "" ) )
-          && ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null || _alstTranslation.get(
-              _alstTranslation.size() - 1 ).equals( "" ) ) )
-      {
-        _alstOriginal.remove( _alstOriginal.size() - 1 );
-        _alstTranslation.remove( _alstTranslation.size() - 1 );
-      }
-      else limpiar = false;
+    while (documentOriginal.size() > documentTranslation.size()) {
+      documentTranslation.add(documentTranslation.size(), "");
     }
 
-    _topArrays = _alstOriginal.size() - 1;
+    while (documentTranslation.size() > documentOriginal.size()) {
+      documentOriginal.add(documentOriginal.size(), "");
+    }
 
-    if( _iIdentLabel > ( _alstOriginal.size() - 1 ) )
-      _iIdentLabel = _alstOriginal.size() - 1;
-  }
-
-
-  //  Accessed by ControlView
-  final void onOriginalJoin()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    join( true );
-  }
-
-  //  Accessed by ControlView
-  final void onOriginalDelete()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    delete( true );
+    while (limpiar) {
+      // Delete blank lines at the end
+      if (documentOriginal.get(documentOriginal.size() - 1) == null
+              || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
+              && (documentTranslation.get(documentTranslation.size() - 1) == null || documentTranslation.get(
+                      documentTranslation.size() - 1).equals(""))) {
+        documentOriginal.remove(documentOriginal.size() - 1);
+        documentTranslation.remove(documentTranslation.size() - 1);
+      } else {
+        limpiar = false;
+      }
+    }
+    topArrays = documentOriginal.size() - 1;
+    if (identLabel > (documentOriginal.size() - 1)) {
+      identLabel = documentOriginal.size() - 1;
+    }
   }
 
   //  Accessed by ControlView
-  final void onOriginalSplit()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    split( true );
+  final void onOriginalJoin() {
+    identChanges++;
+    join(true);
   }
 
   //  Accessed by ControlView
-  final void onTranslationJoin()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    join( false );
+  final void onOriginalDelete() {
+    identChanges++;
+    delete(true);
   }
 
   //  Accessed by ControlView
-  final void onTranslationDelete()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    delete( false );
+  final void onOriginalSplit() {
+    identChanges++;
+    split(true);
   }
 
   //  Accessed by ControlView
-  final void onTranslationSplit()
-  {
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
-    _iChanges++;
-    split( false );
+  final void onTranslationJoin() {
+    identChanges++;
+    join(false);
   }
 
   //  Accessed by ControlView
-  final void onUndo()
-  {
+  final void onTranslationDelete() {
+    identChanges++;
+    delete(false);
+  }
+
+  //  Accessed by ControlView
+  final void onTranslationSplit() {
+    identChanges++;
+    split(false);
+  }
+
+  //  Accessed by ControlView
+  final void onUndo() {
     undoChanges();
-    _alstChanges.remove( _iChanges );
-    _iChanges--;
+    arrayListChanges.remove(identChanges);
+    identChanges--;
 
-    if( _iChanges == -1 ) _vwControls.setUndoEnabled( false );
+    if (identChanges == -1) {
+      viewControls.setUndoEnabled(false);
+    }
   }
-
 
   /**
-   *  Funci�n DeshacerBorrar. Esta funci�n se encarga de recuperar el �ltimo
-   *  borrado realizado.
-   *  Function DeshacerBorrar: undoes the last delete
+   * Undoes the last delete
    */
-  private void undoDelete()
-  {
-    SegmentChanges ultChanges = _alstChanges.get( _iChanges );
+  private void undoDelete() {
+    SegmentChanges ultChanges = arrayListChanges.get(identChanges);
 
-    _iIdentLabel = ultChanges.getIdent_linea();
+    identLabel = ultChanges.getIdent_linea();
     boolean izq = ultChanges.getSource();
 
-    if( izq )
-    {
-      // Parte Izquierda
+    if (izq) {
       // Left part
-      if( _iIdentLabel == _alstOriginal.size() )
-      {
-        // Reponer el borrado de �ltima l�nea
+      if (identLabel == documentOriginal.size()) {
         // Revert the deleting of the last line
-        _alstOriginal.add(_iIdentLabel, ultChanges.getFrase() );
+        documentOriginal.add(identLabel, ultChanges.getFrase());
 
-        if( _alstOriginal.size() != _alstTranslation.size() )
-          _alstTranslation.add( _alstTranslation.size(), "" );
-      }
-      else
-      { 
-        // Borrados intermedios
+        if (documentOriginal.size() != documentTranslation.size()) {
+          documentTranslation.add(documentTranslation.size(), "");
+        }
+      } else {
         // Intermediate deletions
-        int cont = _alstOriginal.size() - 1;
-        _alstOriginal.add( _alstOriginal.size(), _alstOriginal.
-          get( _alstOriginal.size() - 1 ).toString() );
+        documentOriginal.add(documentOriginal.size(),
+                documentOriginal.get(documentOriginal.size() - 1));
+        for (int cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
+          documentOriginal.set(cont, documentOriginal.get(cont - 1));
+        }
 
-        for( cont = _alstOriginal.size() - 1; cont > _iIdentLabel; cont-- )
-          _alstOriginal.set( cont, _alstOriginal.get( cont - 1 ).toString() );
-
-        _alstOriginal.set( _iIdentLabel, ultChanges.getFrase().toString() );
+        documentOriginal.set(identLabel, ultChanges.getFrase());
       }
-    }
-    else
-    {
+    } else {
       // Parte derecha
       // Right part
-      if( _iIdentLabel == _alstTranslation.size() )
-      {
-        _alstTranslation.add( _iIdentLabel, ultChanges.getFrase().toString() );
+      if (identLabel == documentTranslation.size()) {
+        documentTranslation.add(identLabel, ultChanges.getFrase());
 
-        if( _alstOriginal.size() != _alstTranslation.size() )
-          _alstOriginal.add( _alstOriginal.size(), "" );
-      }
-      else
-      {
-        int cont = _alstTranslation.size() - 1;
-        // El texto origen ten�a como alineamiento una cadena vac�a, se repone
+        if (documentOriginal.size() != documentTranslation.size()) {
+          documentOriginal.add(documentOriginal.size(), "");
+        }
+      } else {
+        int cont = documentTranslation.size() - 1;
         // The source text had an empty string aligned: restore
-        _alstTranslation.add( _alstTranslation.size(), _alstTranslation.
-          get( _alstTranslation.size() - 1 ).toString() );
+        documentTranslation.add(documentTranslation.size(), documentTranslation.
+                get(documentTranslation.size() - 1));
 
-        for( cont = _alstTranslation.size() - 1; cont > _iIdentLabel; cont-- )
-          _alstTranslation.set(cont, _alstTranslation.get( cont - 1 ) );
+        for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
+          documentTranslation.set(cont, documentTranslation.get(cont - 1));
+        }
 
-        _alstTranslation.set(_iIdentLabel, ultChanges.getFrase() );
+        documentTranslation.set(identLabel, ultChanges.getFrase());
       }
     }
 
     updateAlignmentsView();
   }
 
-
   /**
-   *  Undo last change
+   * Undo last change
    *
-   *  Funci�n DeshacerCambios. Esta funci�n recupera el �ltimo cambio realizado.
+   * Funci�n DeshacerCambios. Esta funci�n recupera el �ltimo cambio realizado.
    */
-  private void undoChanges()
-  {
+  private void undoChanges() {
     String cad = "";
     //StructCambios ultCambio = new StructCambios();
     SegmentChanges ultChanges = new SegmentChanges();
     int tam = 0;
 
-    ultChanges = _alstChanges.get( _iChanges );
-    _iIdentLabel = ultChanges.getIdent_linea();
-    int operacion  = ultChanges.getTipo();
-    int posicion   = ultChanges.getPosition();
-    boolean izq    = ultChanges.getSource();
-    _identAnt = _iIdentLabel;
+    ultChanges = arrayListChanges.get(identChanges);
+    identLabel = ultChanges.getIdent_linea();
+    int operacion = ultChanges.getTipo();
+    int posicion = ultChanges.getPosition();
+    boolean izq = ultChanges.getSource();
+    _identAnt = identLabel;
 
-    switch( operacion )
-    {
+    switch (operacion) {
       //if( operacion == 0 )
-      case 0:
-      {
+      case 0: {
         // El complementario de Unir es Split
         // The complement of Join is Split
         final String cadaux = ultChanges.getFrase();
 
-        if( izq )
-        {
-          cad = _alstOriginal.get( _iIdentLabel );
+        if (izq) {
+          cad = documentOriginal.get(identLabel);
 
-          if( !cad.equals( "" ) ) cad = cad.trim();
+          if (!cad.equals("")) {
+            cad = cad.trim();
+          }
 
-          posicion = cad.indexOf( cadaux ) + cadaux.length();
+          posicion = cad.indexOf(cadaux) + cadaux.length();
+        } else {
+          cad = documentTranslation.get(identLabel);
+
+          if (!cad.equals("")) {
+            cad = cad.trim();
+          }
+
+          posicion = cad.indexOf(cadaux) + cadaux.length();
         }
-        else
-        {
-          cad = _alstTranslation.get( _iIdentLabel );
 
-          if( !cad.equals( "" ) ) cad = cad.trim();
-
-          posicion = cad.indexOf( cadaux ) + cadaux.length();
-        }
-
-        modifyAlignments( ultChanges.getSource(), 2, posicion );
+        modifyAlignments(ultChanges.getSource(), 2, posicion);
 
         break;
       }
@@ -1357,41 +1264,35 @@ final public class MainWindow extends JFrame implements ActionListener,
         break;
 
       //else if( operacion == 2 )
-      case 2:
-      {
+      case 2: {
         // El complementario de Split es Unir
         // The complement of Split is Join
         int cont;
 
         // modifyAlignments(ultCambio.getFuente(), 0,
         // 0,ultCambio.getEliminada_fila());
-        cont = _iIdentLabel + 1;
+        cont = identLabel + 1;
 
-        if( izq )
-        {
+        if (izq) {
           cad = ultChanges.getFrase();
-          _alstOriginal.set( _iIdentLabel, cad.trim() );
+          documentOriginal.set(identLabel, cad.trim());
 
-          while( cont < _topArrays )
-          {
-            _alstOriginal.set(cont, _alstOriginal.get( cont + 1 ) );
-           cont++;
-          }
-
-          _alstOriginal.set( _alstOriginal.size() - 1, "" );
-        }
-        else
-        {
-          cad = ultChanges.getFrase();
-          _alstTranslation.set( _iIdentLabel, cad.trim() );
-
-          while( cont < _topArrays )
-          {
-            _alstTranslation.set(cont, _alstTranslation.get( cont + 1 ) );
+          while (cont < topArrays) {
+            documentOriginal.set(cont, documentOriginal.get(cont + 1));
             cont++;
           }
 
-          _alstTranslation.set( _alstTranslation.size() - 1, "" );
+          documentOriginal.set(documentOriginal.size() - 1, "");
+        } else {
+          cad = ultChanges.getFrase();
+          documentTranslation.set(identLabel, cad.trim());
+
+          while (cont < topArrays) {
+            documentTranslation.set(cont, documentTranslation.get(cont + 1));
+            cont++;
+          }
+
+          documentTranslation.set(documentTranslation.size() - 1, "");
         }
 
         updateAlignmentsView();
@@ -1400,8 +1301,7 @@ final public class MainWindow extends JFrame implements ActionListener,
       }
 
       //else if( operacion == 3 )
-      case 3:
-      {
+      case 3: {
         // Se eliminaron lineas enteras en blanco que hay que recuperar
         // Blank lines were deleted and have to be restored
         tam = ultChanges.getTam();
@@ -1409,34 +1309,29 @@ final public class MainWindow extends JFrame implements ActionListener,
 
         filasEliminadas = ultChanges.getNumEliminada();
 
-        while( tam > 0 )
-        {
+        while (tam > 0) {
           // Se crean tantas filas como las que se eliminaron
           // Create as many files as those that were eliminated
-          _alstTranslation.add( _alstTranslation.size(), "" );
-          _alstOriginal.add( _alstOriginal.size(), "" );
-          _topArrays = _alstTranslation.size() - 1;
+          documentTranslation.add(documentTranslation.size(), "");
+          documentOriginal.add(documentOriginal.size(), "");
+          topArrays = documentTranslation.size() - 1;
           tam--;
         }
 
-        int cont2 = _alstOriginal.size() - 1;
+        int cont2 = documentOriginal.size() - 1;
         tam = ultChanges.getTam();
 
-        while( cont2 >= tam && tam > 0 )
-        {
+        while (cont2 >= tam && tam > 0) {
           // recorre los arrays para colocar las lineas en blanco donde
           // corresponden
           // moves across the arrays to place blank lines where needed
-          if( cont2 == filasEliminadas[tam - 1] )
-          {
-            _alstTranslation.set( cont2, "" );
-            _alstOriginal.set( cont2, "" );
+          if (cont2 == filasEliminadas[tam - 1]) {
+            documentTranslation.set(cont2, "");
+            documentOriginal.set(cont2, "");
             tam--;
-          }
-          else
-          {
-            _alstTranslation.set( cont2, _alstTranslation.get( cont2 - tam ).toString() );
-            _alstOriginal.set(cont2, _alstOriginal.get( cont2 - tam ) );
+          } else {
+            documentTranslation.set(cont2, documentTranslation.get(cont2 - tam).toString());
+            documentOriginal.set(cont2, documentOriginal.get(cont2 - tam));
           }
 
           cont2--;
@@ -1448,21 +1343,17 @@ final public class MainWindow extends JFrame implements ActionListener,
       }
 
       //else if( operacion == 4 )
-      case 4:
-      {
+      case 4: {
         // Separar UT
         // Split TU
-        if( izq )
-        {
-          _alstTranslation.set( _iIdentLabel, _alstTranslation.get( _iIdentLabel + 1 ) );
-          _alstOriginal.remove( _iIdentLabel + 1 );
-          _alstTranslation.remove( _iIdentLabel + 1 );
-        }
-        else
-        {
-          _alstOriginal.set( _iIdentLabel, _alstOriginal.get( _iIdentLabel + 1 ) );
-          _alstOriginal.remove( _iIdentLabel + 1 );
-          _alstTranslation.remove( _iIdentLabel + 1 );
+        if (izq) {
+          documentTranslation.set(identLabel, documentTranslation.get(identLabel + 1));
+          documentOriginal.remove(identLabel + 1);
+          documentTranslation.remove(identLabel + 1);
+        } else {
+          documentOriginal.set(identLabel, documentOriginal.get(identLabel + 1));
+          documentOriginal.remove(identLabel + 1);
+          documentTranslation.remove(identLabel + 1);
         }
 
         updateAlignmentsView();
@@ -1471,37 +1362,31 @@ final public class MainWindow extends JFrame implements ActionListener,
 
   }
 
-
   //  Accessed by AlignmentsView
-  final void onTableClicked()
-  {
+  final void onTableClicked() {
     // if (e.getClickCount() == 1 || e.getClickCount() == 2) {
-    _posTextArea = 0;
+    positionTextArea = 0;
 
-    if( _identAnt < _alstOriginal.size() )
-    {
+    if (_identAnt < documentOriginal.size()) {
       //  ToDo: replace with docking editors call
-      _alstOriginal.set( _identAnt, restoreText( _edLeftSegment.getText() ) );
-      _alstTranslation.set( _identAnt, restoreText( _edRightSegment.getText() ) );
+      documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
+      documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
     }
 
-    _edLeftSegment.setText(formatText( _vwAlignments.
-      getValueAt( _vwAlignments.getSelectedRow(), 1 ).toString() ) );
-    _edRightSegment.setText(formatText( _vwAlignments.
-      getValueAt( _vwAlignments.getSelectedRow(), 2 ).toString() ) );
+    edLeftSegment.setText(formatText(viewAlignments.
+            getValueAt(viewAlignments.getSelectedRow(), 1).toString()));
+    editRightSegment.setText(formatText(viewAlignments.
+            getValueAt(viewAlignments.getSelectedRow(), 2).toString()));
 
-    _iIdentLabel = _vwAlignments.getSelectedRow();
-    _identAnt = _iIdentLabel;
+    identLabel = viewAlignments.getSelectedRow();
+    _identAnt = identLabel;
 
-    if( _iIdentLabel == _topArrays )
-    {
-      _vwControls.setTranslationJoinEnabled( false );
-      _vwControls.setOriginalJoinEnabled( false );
-    }
-    else
-    {
-      _vwControls.setTranslationJoinEnabled( true );
-      _vwControls.setOriginalJoinEnabled( true );
+    if (identLabel == topArrays) {
+      viewControls.setTranslationJoinEnabled(false);
+      viewControls.setOriginalJoinEnabled(false);
+    } else {
+      viewControls.setTranslationJoinEnabled(true);
+      viewControls.setOriginalJoinEnabled(true);
     }
     // }
 
@@ -1509,460 +1394,320 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   //  Accessed by AlignmentsView
-  final void onTablePressed( final KeyEvent e )
-  {
+  final void onTablePressed(final KeyEvent e) {
     int fila;
 
-    if( _vwAlignments.getSelectedRow() != -1 )
-    {
-      fila = _vwAlignments.getSelectedRow();
-      _posTextArea = 0;
+    if (viewAlignments.getSelectedRow() != -1) {
+      fila = viewAlignments.getSelectedRow();
+      positionTextArea = 0;
+    } else {
+      fila = 1;
     }
-    else fila = 1;
 
-    if( fila < _vwAlignments.getRowCount() - 1 )
-    {
-      if( ( e.getKeyCode() == KeyEvent.VK_DOWN )
-          || ( e.getKeyCode() == KeyEvent.VK_NUMPAD2 ) )
-      {
-        if( _identAnt < _alstOriginal.size() )
-        {
-          _alstOriginal.set( _identAnt, restoreText( _edLeftSegment.getText() ) );
-          _alstTranslation.set( _identAnt, restoreText( _edRightSegment.getText() ) );
+    if (fila < viewAlignments.getRowCount() - 1) {
+      if ((e.getKeyCode() == KeyEvent.VK_DOWN)
+              || (e.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
+        if (_identAnt < documentOriginal.size()) {
+          documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
+          documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
         }
 
-        _edLeftSegment.setText( formatText(  _vwAlignments.getValueAt( fila + 1, 1 ).toString() ) );
-        _edRightSegment.setText( formatText( _vwAlignments.getValueAt( fila + 1, 2 ).toString() ) );
+        edLeftSegment.setText(formatText(viewAlignments.getValueAt(fila + 1, 1).toString()));
+        editRightSegment.setText(formatText(viewAlignments.getValueAt(fila + 1, 2).toString()));
 
-        _iIdentLabel = fila + 1;
-      }
-      else
-        if( ( e.getKeyCode() == KeyEvent.VK_UP )
-            || ( e.getKeyCode() == KeyEvent.VK_NUMPAD8 ) )
-        {
-          _iIdentLabel = fila - 1;
+        identLabel = fila + 1;
+      } else if ((e.getKeyCode() == KeyEvent.VK_UP)
+              || (e.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
+        identLabel = fila - 1;
 
-          if( fila == 0 )
-          {
-            fila = 1;
-            _iIdentLabel = 0;
-          }
-
-          if( _identAnt < _alstOriginal.size() )
-          {
-            _alstOriginal.set( _identAnt, restoreText( _edLeftSegment.getText() ) );
-            _alstTranslation.set( _identAnt,restoreText( _edRightSegment.getText() ) );
-          }
-
-          _edLeftSegment.setText(formatText( _vwAlignments.getValueAt( fila - 1, 1 ).toString() ) );
-          _edRightSegment.setText( formatText( _vwAlignments.getValueAt( fila - 1, 2 ).toString() ) );
+        if (fila == 0) {
+          fila = 1;
+          identLabel = 0;
         }
 
-      if( _iIdentLabel == _topArrays )
-      {
-        _vwControls.setTranslationJoinEnabled( false );
-        _vwControls.setOriginalJoinEnabled( false );
-      }
-      else
-      {
-        _vwControls.setTranslationJoinEnabled( true );
-        _vwControls.setOriginalJoinEnabled( true );
+        if (_identAnt < documentOriginal.size()) {
+          documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
+          documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
+        }
+
+        edLeftSegment.setText(formatText(viewAlignments.getValueAt(fila - 1, 1).toString()));
+        editRightSegment.setText(formatText(viewAlignments.getValueAt(fila - 1, 2).toString()));
       }
 
-      _identAnt = _iIdentLabel;
+      if (identLabel == topArrays) {
+        viewControls.setTranslationJoinEnabled(false);
+        viewControls.setOriginalJoinEnabled(false);
+      } else {
+        viewControls.setTranslationJoinEnabled(true);
+        viewControls.setOriginalJoinEnabled(true);
+      }
+
+      _identAnt = identLabel;
     }
 
     updateAlignmentsView();
   }
 
   //  Accessed by SegmentEditor
-  final public void setTextAreaPosition( int iPos ) { _posTextArea = iPos; }
-
-  /**
-   *  Modificar_Idioma. Cuando se recoge la selecci�n del idioma por parte del
-   *  usuario, se escribe en el fichero de configuraci�n y se actualiza la
-   *  interfaz.
-   *
-   *  Modificar_Idioma. When the user selects a language, it is written in 
-   *  the configuration file and the interface is updated.
-   */
-  private void updateUI()
-  {
-/*    try
-    {
-      //  Replace with preferences stuff
-      //  Same code again? -RM
-      FileWriter fw = new FileWriter( _fUserDir.getAbsoluteFile()
-          + "/config.txt" );
-      BufferedWriter bw = new BufferedWriter( fw );
-      PrintWriter pw = new PrintWriter( bw );
-
-      pw.println( kIDIOMA );
-      pw.println( _fUserHome.getAbsolutePath() );
-      pw.println( _mncbSettingsLinebreak.isSelected() );
-      pw.close();
-*/
-
-      updateUIText();
-
-      TableColumn col = _vwAlignments.getColumnModel().getColumn( 1 );
-
-      if( _fPathOriginal == null )
-        col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) );
-      else
-        col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
-
-      col = _vwAlignments.getColumnModel().getColumn( 2 );
-
-      if( _fPathTranslation == null )
-        col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) );
-      else
-        col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
-
-      _vwAlignments.setColumnHeaderView();
-
-      updateAlignmentsView();
-
-    /*
-    }
-    catch( java.io.IOException ex )
-    {
-      System.out.println( l10n( "MSG_ERROR_LANGUAGE" ) );
-    }
-    */
+  final public void setTextAreaPosition(int iPos) {
+    positionTextArea = iPos;
   }
 
+  private void onLinebreakToggle() {
 
-  /**
-   *  Update interface text, using the current locale .
-   *
-   *  Actualizacion. Actualiza la interfaz con el idioma seleccionado por el
-   *  usuario.
-   *
-   */
-  private void updateUIText()
-  {
-    setTitle( getString( "WND.APP.TITLE" ) );
-    _vwControls.updateText();
-
-    _mnuFile       .setText( getString( "MNU.FILE" ) );
-    _mniFileQuit   .setText( getString( "MNI.FILE.EXIT" ) );
-
-    _mnuHelp       .setText( getString( "MNU.HELP" ) );
-    _mniHelpAbout  .setText( getString( "MNI.HELP.ABOUT" ) );
-    _mniHelpManual  .setText( getString( "MNI.HELP.MANUAL" ) );
-
-    _mniFileOpen   .setActionCommand( getString( "MNI.FILE.OPEN" ) );
-    _mniFileOpen   .setText( getString( "MNI.FILE.OPEN" ) );
-
-    _mniFileClose.setText( getString( "MNI.FILE.ABORT" ) );
-
-    _mnuSettings      .setText( getString( "MNU.SETTINGS" ) );
-
-    _mniFileSaveAs.setText( getString( "MNI.FILE.SAVEAS" ) );
-
-    _mncbSettingsLinebreak.setText( getString( "MNI.SETTINGS.LINEBREAK" ) );
-    _mncbSettingsLinebreak.setToolTipText( getString(  "MNI.SETTINGS.LINEBREAK.TOOLTIP" ) );
-  }
-
-  //  ToDo: does nothing?
-  private void onLinebreakToggle()
-  {
-    //  ToDo - replace with improved implementation in M1+ -RM
-/*    try
-    {
-      //  Same code again !!! -RM
-      FileWriter fw = new FileWriter( _fUserDir.getAbsoluteFile()
-          + "/config.txt" );
-      BufferedWriter bw = new BufferedWriter( fw );
-      PrintWriter pw = new PrintWriter( bw );
-
-      pw.println( kIDIOMA );
-      pw.println( _fUserHome.getAbsolutePath() );
-      pw.println( _mncbSettingsLinebreak.isSelected() );
-      pw.close();
-    }
-    catch( java.io.IOException ex )
-    {
-      //  println only! -RM
-      System.out.println( l10n( "MSG_ERROR_LANGUAGE" ) );
-    }
-*/
   }
 
   //  Accessed by ControlView currently
-  final void onRemoveBlankRows()
-  {
+  final void onRemoveBlankRows() {
     int maxTamArrays = 0;
     int cont = 0;
     int lineasLimpiar = 0;
-    //final int[] numEliminadas = new int [_kMAXBL];  // default = 1000
-    final int[] numEliminadas = new int [1000];  // default = 1000 - why?
+    final int[] numEliminadas = new int[1000];  // default = 1000 - why?
     int cont2 = 0;
 
-    maxTamArrays = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size());
+    maxTamArrays = Utilities.largerSize(documentOriginal.size(), documentTranslation.size()) - 1;
 
-    while( cont <= ( maxTamArrays - lineasLimpiar ) )
-    {
-      if( ( _alstOriginal.get( cont ) == null || _alstOriginal.get( cont ).equals( "" ) )
-          && ( _alstTranslation.get( cont ) == null || _alstTranslation.get( cont ).equals( "" ) ) )
-      {
+    while (cont <= (maxTamArrays - lineasLimpiar)) {
+      if ((documentOriginal.get(cont) == null || documentOriginal.get(cont).equals(""))
+              && (documentTranslation.get(cont) == null || documentTranslation.get(cont).equals(""))) {
         lineasLimpiar++;
         numEliminadas[cont2] = cont + cont2;
         cont2++;
-        _alstOriginal.remove( cont );
-        _alstTranslation.remove( cont );
+        documentOriginal.remove(cont);
+        documentTranslation.remove(cont);
+      } else {
+        cont++;
       }
-      else cont++;
     }
 
-    JOptionPane.showMessageDialog( this, getString( "MSG.ERASED" ) + " " +
-      lineasLimpiar + " " + getString( "MSG.BLANK.ROWS" ) );
+    JOptionPane.showMessageDialog(this, getString("MSG.ERASED") + " "
+            + lineasLimpiar + " " + getString("MSG.BLANK.ROWS"));
 
+    if (lineasLimpiar > 0) {
+      identChanges++;
 
-    // "Se han borrado n
-    // filas en blanco"
-    if( lineasLimpiar > 0 )
-    {
-      _iChanges++;
-
-      SegmentChanges Changes = new SegmentChanges( 3, 0, false, "", 0 );
-      _alstChanges.add( _iChanges, Changes );
-      Changes.setNumEliminada( numEliminadas, lineasLimpiar );
-      _vwControls.setUndoEnabled( true );
+      SegmentChanges Changes = new SegmentChanges(3, 0, false, "", 0);
+      arrayListChanges.add(identChanges, Changes);
+      Changes.setNumEliminada(numEliminadas, lineasLimpiar);
+      viewControls.setUndoEnabled(true);
       updateAlignmentsView();
     }
   }
 
   //  Accessed by ControlView currently
-  final void onTUSplit()
-  {
+  final void onTUSplit() {
     int izq;
     int cont;
     SegmentChanges Changes;
     //  Done in _vwControls
     //_btnUndo.setEnabled( true );
-    _iChanges++;
+    identChanges++;
 
-    izq = _vwAlignments.getSelectedColumn();
+    izq = viewAlignments.getSelectedColumn();
 
-    _alstOriginal.add(_alstOriginal.size(), 
-            _alstOriginal.get( _alstOriginal.size() - 1 ) );
-    _alstTranslation.add(_alstTranslation.size(), 
-            _alstTranslation.get( _alstTranslation.size() - 1 ) );
+    documentOriginal.add(documentOriginal.size(),
+            documentOriginal.get(documentOriginal.size() - 1));
+    documentTranslation.add(documentTranslation.size(),
+            documentTranslation.get(documentTranslation.size() - 1));
 
-    if( izq == 1 )
-    {
+    if (izq == 1) {
       // Columna izq.
       // Left column.
-      Changes = new SegmentChanges( 4, 0, true, "", _iIdentLabel );
+      Changes = new SegmentChanges(4, 0, true, "", identLabel);
 
-      for( cont = _alstTranslation.size() - 1; cont > _iIdentLabel; cont-- )
-      {
-        _alstTranslation.set( cont, _alstTranslation.get( cont - 1 ).toString() );
+      for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
+        documentTranslation.set(cont, documentTranslation.get(cont - 1));
 
-        if( cont > ( _iIdentLabel + 1 ) )
-          _alstOriginal.set( cont, _alstOriginal.get( cont - 1 ).toString() );
-        else
-          _alstOriginal.set( cont, "" );
+        if (cont > (identLabel + 1)) {
+          documentOriginal.set(cont, documentOriginal.get(cont - 1));
+        } else {
+          documentOriginal.set(cont, "");
+        }
       }
 
-      _alstTranslation.set( _iIdentLabel, "" );
-    }
-    else
-    {
-      Changes = new SegmentChanges( 4, 0, false, "", _iIdentLabel );
+      documentTranslation.set(identLabel, "");
+    } else {
+      Changes = new SegmentChanges(4, 0, false, "", identLabel);
 
-      for( cont = _alstOriginal.size() - 1; cont > _iIdentLabel; cont-- )
-      {
-        _alstOriginal.set( cont, _alstOriginal.get( cont - 1 ).toString() );
+      for (cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
+        documentOriginal.set(cont, documentOriginal.get(cont - 1));
 
-        if( cont > ( _iIdentLabel + 1 ) )
-          _alstTranslation.set( cont, _alstTranslation.get( cont - 1 ).toString() );
-        else _alstTranslation.set( cont, "" );
+        if (cont > (identLabel + 1)) {
+          documentTranslation.set(cont, documentTranslation.get(cont - 1));
+        } else {
+          documentTranslation.set(cont, "");
+        }
       }
 
-      _alstOriginal.set( _iIdentLabel, "" );
+      documentOriginal.set(identLabel, "");
     }
 
-    _alstChanges.add( _iChanges, Changes );
+    arrayListChanges.add(identChanges, Changes);
     updateAlignmentsView();
   }
 
-  private void displayManual()
-  {
+  private void displayManual() {
     final Manual dlg = new Manual();
 
-    dlg.setVisible( true );
+    dlg.setVisible(true);
   }
-
 
   /////////////////////////////////////////////////////////////////////
   //  Fonts
   //
   //  Note: all this fonts stuff will be refactored into its own class
   //  later so it will be independent
-
   /**
-   *  Fonts mutator
-   *  Delegates actual setting of fonts to specific methods
+   * Fonts mutator Delegates actual setting of fonts to specific methods
    *
-   *  @param  Font
+   * @param font to be configured
    *
-   *  Passing in null causes default values to be used
-   *  - used at startup or for reset  
-   *  Passing in a font causes all UI elements to be the same 
-   *  - used with the 'All' window area when selected in the fonts dialog  
+   * Passing in null causes default values to be used - used at startup or for
+   * reset Passing in a font causes all UI elements to be the same - used with
+   * the 'All' window area when selected in the fonts dialog
    */
-  final public void setFonts( final Font font )
-  {
+  final public void setFonts(final Font font) {
     //  Delegate
-    setUserInterfaceFont( font );
-    setTableFont( font );
-    setTableHeaderFont( font );
-    setSourceEditorFont( font );
-    setTargetEditorFont( font );
+    setUserInterfaceFont(font);
+    setTableFont(font);
+    setTableHeaderFont(font);
+    setSourceEditorFont(font);
+    setTargetEditorFont(font);
 
     //  ToDo: 
     //_vwAlignments.setFonts( font );
     //_edLeftSegment.setFonts( font );
     //_edRightSegment.setFonts( font );
-    _vwControls.setFonts( font );
+    viewControls.setFonts(font);
   }
 
-
   /**
-   *  Fonts accessor
+   * Fonts accessor
    *
-   *  @return Font[]
+   * @return Font[]
    */
-  final public Font[] getFonts()
-  {
-    final Font[] afnt =
-    {
-      _fntUserInterface,
-      _fntTable,
-      _fntTableHeader,
-      _fntSourceEditor,
-      _fntTargetEditor
-    };
+  final public Font[] getFonts() {
+    final Font[] afnt
+            = {
+              _fntUserInterface,
+              fontTable,
+              fontTableHeader,
+              _fntSourceEditor,
+              _fntTargetEditor
+            };
 
-    return( afnt );
+    return (afnt);
   }
 
-
   /**
-   *  User interface font mutator
+   * User interface font mutator
    *
-   *  @param  font
+   * @param font
    */
-  final public void setUserInterfaceFont( final Font font )
-  {
+  final public void setUserInterfaceFont(final Font font) {
     _fntUserInterface = font;
 
-    if( _fntUserInterface != null ) 
-    {
+    if (_fntUserInterface != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    }
-    //  Default font (e.g. At startup from prefs file or for reset)    
-    else
-    {
+    } //  Default font (e.g. At startup from prefs file or for reset)    
+    else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
 
       //  And supply a fallback default
-      final String strFontName  = "Serif";
+      final String strFontName = "Serif";
       final String strFontStyle = "Plain";
-      final int iFontSize       = 11;
+      final int iFontSize = 11;
 
       //  Da font
-      _fntUserInterface = new Font( strFontName, getFontStyle( strFontStyle ), iFontSize );
+      _fntUserInterface = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Use delegate to set actual UI fonts
-    setUserInterfaceFonts( _fntUserInterface );
+    setUserInterfaceFonts(_fntUserInterface);
   }
 
   /**
-   *  User interface components font mutator
-   *  Acts as delegate for setUserInterfaceFont()
+   * User interface components font mutator Acts as delegate for
+   * setUserInterfaceFont()
    *
-   *  @param  font
+   * @param font
    */
-  final public void setUserInterfaceFonts( final Font font )
-  {
+  final public void setUserInterfaceFonts(final Font font) {
     //  File menu
-    _mnuFile        .setFont( font );
-    _mniFileOpen    .setFont( font );
-    _mniFileSave    .setFont( font );
-    _mniFileSaveAs  .setFont( font );
-    _mniFileClose   .setFont( font );
+    menuItemFile.setFont(font);
+    menuItemFileOpen.setFont(font);
+    menuItemFileSave.setFont(font);
+    menuItemFileSaveAs.setFont(font);
+    menuItemFileClose.setFont(font);
 
-    if( !isMacOSX() ) _mniFileQuit.setFont( font );
+    if (!Platform.isMacOSX()) {
+      menuItemFileQuit.setFont(font);
+    }
 
     //  Settings menu
-    _mnuSettings            .setFont( font );
-    _mniSettingsFonts       .setFont( font );
-    _mncbSettingsLinebreak  .setFont( font );
+    menuSettings.setFont(font);
+    menuItemSettingsFonts.setFont(font);
+    menuCallbackSettingsLinebreak.setFont(font);
 
-    if( !isMacOSX() )
-    {
-      _mnuLaf        .setFont( font );
-      _mniLafLiquid  .setFont( font );
-      _mniLafMetal   .setFont( font );
-      _mniLafNimbus  .setFont( font );
-      _mniLafSystem  .setFont( font );
+    if (!Platform.isMacOSX()) {
+      menuLaf.setFont(font);
+      menuItemLafLiquid.setFont(font);
+      menuLafMetal.setFont(font);
+      menuItemLafNimbus.setFont(font);
+      menuItemLafSystem.setFont(font);
 
-      if( !isWindows() )  _mniLafGtk.setFont( font );
+      if (!Platform.isWindows()) {
+        menuItemLafGtk.setFont(font);
+      }
     }
 
     //  Help menu
-    _mnuHelp        .setFont( font );
-    _mniHelpManual  .setFont( font );
+    menuHelp.setFont(font);
+    menuItemHelpManual.setFont(font);
 
-    if( !isMacOSX() )  _mniHelpAbout   .setFont( font );
+    if (!Platform.isMacOSX()) {
+      menuItemHelpAbout.setFont(font);
+    }
   }
 
   /**
-   *  User interface font accessor
+   * User interface font accessor
    *
-   *  @return Font
+   * @return Font
    */
-  final public Font getUserInterfaceFont() { return( _fntUserInterface ); }
-
+  final public Font getUserInterfaceFont() {
+    return (_fntUserInterface);
+  }
 
   /**
-   *  Table header font mutator
+   * Table header font mutator
    *
-   *  @param  Font
+   * @param Font
    */
-  final public void setTableHeaderFont( final Font font )
-  {
-    _fntTableHeader = font;
+  final public void setTableHeaderFont(final Font font) {
+    fontTableHeader = font;
 
-    if( _fntTableHeader != null )
-    {
+    if (fontTableHeader != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    }
-    //  Default font (e.g. At startup from prefs file or for reset)    
-    else
-    {
+    } //  Default font (e.g. At startup from prefs file or for reset)    
+    else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
 
       //  And supply a fallback default
-      final String strFontName  = "Dialog";
+      final String strFontName = "Dialog";
       final String strFontStyle = "Plain";
-      final int iFontSize       = 11;
+      final int iFontSize = 11;
 
       //  Da font
-      _fntTableHeader = new Font( strFontName, getFontStyle( strFontStyle ), iFontSize );
+      fontTableHeader = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the source table
@@ -1971,351 +1716,342 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   *  Table header font accessor
+   * Table header font accessor
    *
-   *  @return Font
+   * @return Font
    */
-  final public Font getTableHeaderFont() { return( _fntTableHeader ); }
-
+  final public Font getTableHeaderFont() {
+    return (fontTableHeader);
+  }
 
   /**
-   *  Table font mutator
+   * Table font mutator
    *
-   *  @param  void
-   *  @return Font
+   * @param font
    */
-  final public void setTableFont( final Font font )
-  { 
-    _fntTable = font;
+  final public void setTableFont(final Font font) {
+    fontTable = font;
 
-    if( _fntTable != null )
-    {
+    if (fontTable != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    }
-    //  Default font (e.g. At startup from prefs file or for reset)    
-    else
-    {
+    } //  Default font (e.g. At startup from prefs file or for reset)    
+    else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
 
       //  Or supply a fallback default
-      final String strFontName  = "Dialog";
+      final String strFontName = "Dialog";
       final String strFontStyle = "Plain";
-      final int iFontSize       = 11;
+      final int iFontSize = 11;
 
       //  Da font
-      _fntTable = 
-        new Font( strFontName, getFontStyle( strFontStyle ), iFontSize );  
+      fontTable
+              = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the source table
-    _vwAlignments.setTableFont( _fntTable );
+    viewAlignments.setTableFont(fontTable);
   }
 
   /**
-   *  Table font accessor
+   * Table font accessor
    *
-   *  @param  void
-   *  @return Font
+   * @return Font retrieve font for table
    */
-  final public Font getTableFont() { return( _fntTable ); }
-
+  final public Font getTableFont() {
+    return (fontTable);
+  }
 
   /**
-   *  Original editor font mutator
+   * Original editor font mutator
    *
-   *  @param  Font
-   *  @return void
+   * @param font set editor font to display
    */
-  final public void setSourceEditorFont( final Font font )
-  {
+  final public void setSourceEditorFont(final Font font) {
     _fntSourceEditor = font;
 
-    if( _fntSourceEditor != null )
-    {
+    if (_fntSourceEditor != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    }
-    //  Default font (e.g. At startup from prefs file or for reset)    
-    else
-    {
+    } //  Default font (e.g. At startup from prefs file or for reset)    
+    else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
 
       //  Or supply a fallback default
-      final String strFontName  = "Dialog";
+      final String strFontName = "Dialog";
       final String strFontStyle = "Plain";
-      final int iFontSize       = 11;
+      final int iFontSize = 11;
 
       //  Da font
-      _fntSourceEditor = 
-        new Font( strFontName, getFontStyle( strFontStyle ), iFontSize );  
+      _fntSourceEditor
+              = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the source table
-    _edLeftSegment.setEditorFont( _fntSourceEditor );
+    edLeftSegment.setEditorFont(_fntSourceEditor);
   }
 
+  /**
+   * Original editor font accessor
+   *
+   * @return font
+   */
+  final public Font getSourceEditorFont() {
+    return (_fntSourceEditor);
+  }
 
   /**
-   *  Original editor font accessor
+   * Translation editor font mutator
    *
-   *  @return font
+   * @param font
    */
-  final public Font getSourceEditorFont() { return( _fntSourceEditor ); }
-
-
-  /**
-   *  Translation editor font mutator
-   *
-   *  @param  font
-   */
-  final public void setTargetEditorFont( final Font font )
-  {
+  final public void setTargetEditorFont(final Font font) {
     _fntTargetEditor = font;
 
-    if( _fntTargetEditor != null )
-    {
+    if (_fntTargetEditor != null) {
       //  Write to user preferences goes here
       //  To be done -RM
-    }
-    //  Default font (e.g. At startup from prefs file or for reset)    
-    else
-    {
+    } //  Default font (e.g. At startup from prefs file or for reset)    
+    else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
 
       //  Or supply a fallback default
-      final String strFontName  = "Dialog";
+      final String strFontName = "Dialog";
       final String strFontStyle = "Plain";
-      final int iFontSize       = 11;
+      final int iFontSize = 11;
 
       //  Da font
-      _fntTargetEditor = 
-        new Font( strFontName, getFontStyle( strFontStyle ), iFontSize );
+      _fntTargetEditor
+              = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the target editor pane
-    _edRightSegment.setEditorFont( _fntTargetEditor );
+    editRightSegment.setEditorFont(_fntTargetEditor);
   }
 
   /**
-   *  Translation editor font accessor
+   * Translation editor font accessor
    *
-   *  @return Font
+   * @return Font
    */
-  final public Font getTargetEditorFont() { return( _fntTargetEditor ); }
-
-  /**
-   *  Font family names accessor
-   *
-   *  @return String[]
-   */
-  final public String[] getFontFamilyNames()
-  {
-    GraphicsEnvironment graphics =
-      GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-    return( graphics.getAvailableFontFamilyNames() );
+  final public Font getTargetEditorFont() {
+    return (_fntTargetEditor);
   }
 
   /**
-   *  Font style string accessor
+   * Font family names accessor
    *
-   *  @param  font
-   *  @return String
+   * @return String[]
    */
-  final public String getFontStyleString( final Font font )
-  {
+  final public String[] getFontFamilyNames() {
+    GraphicsEnvironment graphics
+            = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+    return (graphics.getAvailableFontFamilyNames());
+  }
+
+  /**
+   * Font style string accessor
+   *
+   * @param font
+   * @return String
+   */
+  final public String getFontStyleString(final Font font) {
     final String strFontStyle;// = "";
 
-    if( font.isBold() && font.isItalic() )  strFontStyle = "Bold+Italic";
-    else if( font.isItalic() )              strFontStyle = "Italic";
-    else if( font.isBold() )                strFontStyle = "Bold";
-    else if( font.isPlain() )               strFontStyle = "Plain";
-    else                                    strFontStyle = "Plain";
+    if (font.isBold() && font.isItalic()) {
+      strFontStyle = "Bold+Italic";
+    } else if (font.isItalic()) {
+      strFontStyle = "Italic";
+    } else if (font.isBold()) {
+      strFontStyle = "Bold";
+    } else if (font.isPlain()) {
+      strFontStyle = "Plain";
+    } else {
+      strFontStyle = "Plain";
+    }
 
-    return( strFontStyle );
+    return (strFontStyle);
   }
 
-
   /**
-   *  Font style accessor
+   * Font style accessor
    *
-   *  @param  strFontStyle
-   *  @return int
+   * @param strFontStyle
+   * @return int
    */
-  final public int getFontStyle( final String strFontStyle )
-  {
+  final public int getFontStyle(final String strFontStyle) {
     final int iFontStyle;
 
-    if( strFontStyle.equals( "Bold+Italic" ) )  iFontStyle = Font.BOLD + Font.ITALIC;
-    else if( strFontStyle.equals( "Italic" ) )  iFontStyle = Font.ITALIC;
-    else if( strFontStyle.equals( "Bold" ) )    iFontStyle = Font.BOLD;
-    else if( strFontStyle.equals( "Plain" ) )   iFontStyle = Font.PLAIN;
-    else                                        iFontStyle = Font.PLAIN;
+    if (strFontStyle.equals("Bold+Italic")) {
+      iFontStyle = Font.BOLD + Font.ITALIC;
+    } else if (strFontStyle.equals("Italic")) {
+      iFontStyle = Font.ITALIC;
+    } else if (strFontStyle.equals("Bold")) {
+      iFontStyle = Font.BOLD;
+    } else if (strFontStyle.equals("Plain")) {
+      iFontStyle = Font.PLAIN;
+    } else {
+      iFontStyle = Font.PLAIN;
+    }
 
-    return( iFontStyle );
+    return (iFontStyle);
   }
 
   /**
-   *  Display the fonts dialog to allow selection of fonts for
-   *  origianl/translation tables/editors and main window
+   * Display the fonts dialog to allow selection of fonts for
+   * origianl/translation tables/editors and main window
    *
-   *  @param  void
-   *  @return void
+   * @param void
+   * @return void
    */
-  private void displayFontSelector()
-  {
-    FontSelector dlgFonts = new FontSelector( this, getFonts() );
-    dlgFonts.setVisible( true );
+  private void displayFontSelector() {
+    FontSelector dlgFonts = new FontSelector(this, getFonts());
+    dlgFonts.setVisible(true);
   }
 
   //  WindowListener Overrides
   @Override
-  final public void windowActivated( final WindowEvent evt ) {}
-  @Override
-  final public void windowClosed( final WindowEvent evt )    {}
+  final public void windowActivated(final WindowEvent evt) {
+  }
 
   @Override
-  final public void windowClosing( final WindowEvent evt )
-  { if( evt.getSource() == this ) quit(); }
+  final public void windowClosed(final WindowEvent evt) {
+  }
 
   @Override
-  final public void windowDeactivated( final WindowEvent evt ) {}
-  @Override
-  final public void windowDeiconified( final WindowEvent evt ) {}
-  @Override
-  final public void windowIconified( final WindowEvent evt )   {}
-  @Override
-  final public void windowOpened( final WindowEvent evt )      {}
-
-  /**
-   *  class action listener implementation
-   *
-   *  @param  action
-   */
-  @Override
-  final public void actionPerformed( final ActionEvent action )
-  {
-    final Object actor = action.getSource();
-
-    if( actor instanceof JMenuItem )
-    {
-      if( actor == _mniFileOpen )            onOpen();
-      else if( actor == _mniFileSave )       saveBitext();
-      else if( actor == _mniFileSaveAs )     saveBitext();
-      else if( actor == _mniFileClose )      onClose();
-      else if( actor == _mniFileQuit )       quit();
-      else if( actor == _mniSettingsFonts )  displayFontSelector();
-
-      //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
-      else if( actor == _mniLafGtk )
-      {
-        try
-        {
-          UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI( this );
-        }
-        catch( final Exception e )
-        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
-      }
-
-      else if( actor == _mniLafLiquid )
-      {
-        try
-        {
-          UIManager.setLookAndFeel( "com.birosoft.liquid.LiquidLookAndFeel" );
-          com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations( false );
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI( this );
-        }
-        catch( final Exception e )
-        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
-      }
-
-      //  All platforms
-      else if( actor == _mniLafMetal )
-      {
-        try
-        {
-          UIManager.setLookAndFeel( "javax.swing.plaf.metal.MetalLookAndFeel" );
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI( this );
-        }
-        catch( final Exception e )
-        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
-      }
-
-      //  Java 1.6 update 10+
-      else if( actor == _mniLafNimbus )
-      {
-        try
-        {
-          UIManager.setLookAndFeel( "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" );
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI( this );
-        }
-        catch( final Exception e )
-        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
-      }
-
-      else if( actor == _mniLafSystem )
-      {
-        try
-        {
-          UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI( this );
-        }
-        catch( final Exception e )
-        { System.out.println( getString( "OTP.LNF.INIT.ERROR" ) ); }
-      }
-
-      else if( actor == _mniHelpManual )  displayManual();
-      else if( actor == _mniHelpAbout )   displayAbout();
+  final public void windowClosing(final WindowEvent evt) {
+    if (evt.getSource() == this) {
+      quit();
     }
   }
-  
+
+  @Override
+  final public void windowDeactivated(final WindowEvent evt) {
+  }
+
+  @Override
+  final public void windowDeiconified(final WindowEvent evt) {
+  }
+
+  @Override
+  final public void windowIconified(final WindowEvent evt) {
+  }
+
+  @Override
+  final public void windowOpened(final WindowEvent evt) {
+  }
+
+  /**
+   * class action listener implementation
+   *
+   * @param action
+   */
+  @Override
+  final public void actionPerformed(final ActionEvent action) {
+    final Object actor = action.getSource();
+
+    if (actor instanceof JMenuItem) {
+      if (actor == menuItemFileOpen) {
+        onOpen();
+      } else if (actor == menuItemFileSave) {
+        saveBitext();
+      } else if (actor == menuItemFileSaveAs) {
+        saveBitext();
+      } else if (actor == menuItemFileClose) {
+        onClose();
+      } else if (actor == menuItemFileQuit) {
+        quit();
+      } else if (actor == menuItemSettingsFonts) {
+        displayFontSelector();
+      } //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
+      else if (actor == menuItemLafGtk) {
+        try {
+          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(this);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+      } else if (actor == menuItemLafLiquid) {
+        try {
+          UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
+          com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations(false);
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(this);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+      } //  All platforms
+      else if (actor == menuLafMetal) {
+        try {
+          UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(this);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+      } //  Java 1.6 update 10+
+      else if (actor == menuItemLafNimbus) {
+        try {
+          UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(this);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+      } else if (actor == menuItemLafSystem) {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(this);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+      } else if (actor == menuItemHelpManual) {
+        displayManual();
+      } else if (actor == menuItemHelpAbout) {
+        displayAbout();
+      }
+    }
+  }
+
   /**
    *
-   *  Extracts from the TMX those lines having information which is
-   *  useful for alignment, and puts them in the corresponding ArrayList's
-   *  The left part in _alstOriginal corresponds to source text lines and 
-   *  the right part in _alstTranslation corresponds to the target text lines.
-   *  Initialize the table with one line for each left and right line
+   * Extracts from the TMX those lines having information which is useful for
+   * alignment, and puts them in the corresponding ArrayList's The left part in
+   * _alstOriginal corresponds to source text lines and the right part in
+   * _alstTranslation corresponds to the target text lines. Initialize the table
+   * with one line for each left and right line
    *
-   *  Esta funci�n extrae del Tmx las l�neas que contienen
-   *  informaci�n util para el alineamiento, y las mete en los ArrayList
-   *  correspondientes. Parte izq. en _alstOriginal corresponde a las l�neas
-   *  del texto fuente, y parte dcha. en _alstTranslation corresponde a las
-   *  l�neas del texto meta.
-   *  Inicializa la tabla con una fila por cada l�nea izq y dcha.
+   * Esta funci�n extrae del Tmx las l�neas que contienen informaci�n util para
+   * el alineamiento, y las mete en los ArrayList correspondientes. Parte izq.
+   * en _alstOriginal corresponde a las l�neas del texto fuente, y parte dcha.
+   * en _alstTranslation corresponde a las l�neas del texto meta. Inicializa la
+   * tabla con una fila por cada l�nea izq y dcha.
    */
-  private void initializeAlignmentsView()
-  {
+  private void initializeAlignmentsView() {
     TableColumn col;
 
-    col = _vwAlignments.getColumnModel().getColumn( 1 );
-    col.setHeaderValue( getString( "TBL.HDR.COL.SOURCE" ) + _fPathOriginal.getName() );
+    col = viewAlignments.getColumnModel().getColumn(1);
+    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE") + filePathOriginal.getName());
 
-    col = _vwAlignments.getColumnModel().getColumn( 2 );
-    col.setHeaderValue( getString( "TBL.HDR.COL.TARGET" ) + _fPathTranslation.getName() );
+    col = viewAlignments.getColumnModel().getColumn(2);
+    col.setHeaderValue(getString("TBL.HDR.COL.TARGET") + filePathTranslation.getName());
 
-    _vwAlignments.setColumnHeaderView();
+    viewAlignments.setColumnHeaderView();
 
     updateAlignmentsView();
-    _topArrays = _alstOriginal.size() - 1;
-    _iIdentLabel = 0;
+    topArrays = documentOriginal.size() - 1;
+    identLabel = 0;
   }
 
 }// Bitext2tmxWindow{}
-
-
