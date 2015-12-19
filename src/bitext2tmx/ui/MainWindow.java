@@ -161,8 +161,6 @@ final public class MainWindow extends JFrame implements ActionListener,
   private File filePathOriginal;
   private File filePathTranslation;
 
-  private String _ult_recorridoinv;
-
   private Font _fntUserInterface;
   private Font fontTableHeader;
   private Font fontTable;
@@ -375,45 +373,50 @@ final public class MainWindow extends JFrame implements ActionListener,
    * Can return subclasses of JMenuItem: including JMenu! Downcast return type
    * to as needed
    */
-  private <T extends JMenuItem> T makeMenuComponent(final MenuComponentType mniType,
+  private <T extends JMenuItem> T makeMenuComponent(final MenuComponentType menuComponentType,
           final KeyStroke ksShortcut, final ImageIcon icon, final String strText,
           final String strKey) {
-    JMenuItem mni = null;
+    JMenuItem menuItem;
 
-    switch (mniType) {
+    assert strText != null;
+
+    switch (menuComponentType) {
       case ITEM:
-        mni = new JMenuItem();
+        menuItem = new JMenuItem();
         break;
       case CHECKBOX:
-        mni = new JCheckBoxMenuItem();
+        menuItem = new JCheckBoxMenuItem();
         break;
       case MENU:
-        mni = new JMenu();
+        menuItem = new JMenu();
         break;
       case RADIOBUTTON:
-        mni = new JRadioButtonMenuItem();
+        menuItem = new JRadioButtonMenuItem();
+        break;
+      default:
+        menuItem = new JMenuItem();
         break;
     }
 
     //  Default text, when no localization available, testing
-    mni.setText(strText);
+    menuItem.setText(strText);
 
     if (ksShortcut != null) {
-      mni.setAccelerator(ksShortcut);
+      menuItem.setAccelerator(ksShortcut);
     }
     if (!Platform.isMacOSX() && icon != null) {
-      mni.setIcon(icon);
+      menuItem.setIcon(icon);
     }
 
-    mni.addActionListener(this);
+    menuItem.addActionListener(this);
 
     //  Localized text
     if (strKey != null) {
-      setLocalizedText(mni, getString(strKey));
+      setLocalizedText(menuItem, getString(strKey));
     }
 
     @SuppressWarnings("unchecked")
-    T res = (T) mni;
+    T res = (T) menuItem;
     return (res);
   }
 
@@ -449,6 +452,7 @@ final public class MainWindow extends JFrame implements ActionListener,
             "Linebreaks", "MNI.SETTINGS.LINEBREAK");
     menuCallbackSettingsLinebreak.setToolTipText(getString("MNI.SETTINGS.LINEBREAK.TOOLTIP"));
     menuCallbackSettingsLinebreak.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       final public void stateChanged(final ChangeEvent e) {
         RuntimePreferences.setSegmentByLineBreak(menuCallbackSettingsLinebreak.isSelected());
         onLinebreakToggle();
@@ -545,6 +549,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     //  ToDo: check for unsaved changes first, save, then quit
 
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         dispose();
       }
@@ -671,8 +676,6 @@ final public class MainWindow extends JFrame implements ActionListener,
    *
    */
   private void saveBitext() {
-    File userHome;
-
     for (int cont = 0; cont < (documentOriginal.size() - 1); cont++) {
       if (documentOriginal.get(cont).equals("") && documentTranslation.get(cont).equals("")) {
         documentOriginal.remove(cont);
@@ -832,7 +835,12 @@ final public class MainWindow extends JFrame implements ActionListener,
         Changes.setFrase(documentTranslation.get(identLabel));
       }
 
-      modifyAlignments(textAreaIzq, 0, 0);
+      if (textAreaIzq) {
+        documentOriginal.join(identLabel);
+      } else {
+        documentTranslation.join(identLabel);
+      }
+      updateAlignmentsView();
     }
   }
 
@@ -855,7 +863,12 @@ final public class MainWindow extends JFrame implements ActionListener,
       Changes.setFrase(documentTranslation.get(identLabel));
     }
 
-    modifyAlignments(textAreaIzq, 1, 0);
+    if (textAreaIzq) {
+      documentOriginal.delete(identLabel);
+    } else {
+      documentTranslation.delete(identLabel);
+    }
+    updateAlignmentsView();
   }
 
   /**
@@ -874,151 +887,20 @@ final public class MainWindow extends JFrame implements ActionListener,
     } else if (positionTextArea >= documentTranslation.get(identLabel).length()) {
       positionTextArea = 0;
     }
-
     final SegmentChanges Changes = new SegmentChanges(2, positionTextArea,
             textAreaIzq, "", identLabel);
     arrayListChanges.add(identChanges, Changes);
-
     if (textAreaIzq) {
       Changes.setFrase(documentOriginal.get(identLabel));
     } else {
       Changes.setFrase(documentTranslation.get(identLabel));
     }
 
-    modifyAlignments(textAreaIzq, 2, Changes.getPosition());
-  }
-
-  /**
-   * Perform alignments. 
-   * 
-   * This function performes the following changes. Join:
-   * joins the selected row with the following; Delete: deletes the selected
-   * row; Split: splits the selected row at the given position creating two
-   * rows.
-   *
-   * @param izq: TRUE if it applies to the source text
-   * @param operacion: 0->Join,1->Delete,2->Split
-   * @param position: position at which the split is performed
-   */
-  private void modifyAlignments(final boolean izq, final int operacion, final int position) {
-    int cont;
-    String cad = "";
-
-    if (operacion == 0) {
-      // Unir
-      // Join
-      cont = identLabel + 1;
-
-      if (izq) {
-        cad = documentOriginal.get(identLabel);
-        cad = cad.concat(" ");
-        cad = cad.concat(documentOriginal.get(identLabel + 1));
-        documentOriginal.set(identLabel, cad.trim());
-
-        for (; cont < topArrays; cont++) {
-          documentOriginal.set(cont, documentOriginal.get(cont + 1));
-        }
-
-        documentOriginal.set(documentOriginal.size() - 1, "");
-      } else {
-        cad = documentTranslation.get(identLabel);
-        cad = cad.concat(" ");
-        cad = cad.concat(documentTranslation.get(identLabel + 1));
-        documentTranslation.set(identLabel, cad.trim());
-
-        for (; cont < topArrays; cont++) {
-          documentTranslation.set(cont, documentTranslation.get(cont + 1));
-        }
-
-        documentTranslation.set(documentTranslation.size() - 1, "");
-      }
-    } else if (operacion == 1) {
-      // Delete
-      cont = identLabel;
-
-      if (izq) {
-        for (; cont < topArrays; cont++) {
-          documentOriginal.set(cont, documentOriginal.get(cont + 1));
-        }
-        documentOriginal.set(documentOriginal.size() - 1, "");
-      } else {
-        for (; cont < topArrays; cont++) {
-          documentTranslation.set(cont, documentTranslation.get(cont + 1));
-        }
-        documentTranslation.set(documentTranslation.size() - 1, "");
-      }
+    if (textAreaIzq) {
+      documentOriginal.split(identLabel, Changes.getPosition());
     } else {
-        // Split
-      if (izq) {
-        cont = documentOriginal.size() - 1;
-        if (documentOriginal.get(documentOriginal.size() - 1) != null
-                && !documentOriginal.get(documentOriginal.size() - 1).equals("")) {
-          documentOriginal.add(documentOriginal.size(),
-                  documentOriginal.get(documentOriginal.size() - 1));
-        } else {
-          documentOriginal.set(documentOriginal.size() - 1,
-                  documentOriginal.get(documentOriginal.size() - 2));
-        }
-        for (; cont > (identLabel + 1); cont--) {
-          documentOriginal.set(cont, documentOriginal.get(cont - 1));
-        }
-        if (identLabel < topArrays) {
-          cad = documentOriginal.get(identLabel);
-
-          if (position == 0) {
-            documentOriginal.set(cont - 1, "");
-          } else {
-            documentOriginal.set(cont - 1, cad.substring(0, position).trim());
-          }
-          documentOriginal.set(cont, cad.substring(position).trim());
-        } else {
-          cad = documentOriginal.get(identLabel);
-          if (position == 0) {
-            documentOriginal.set(documentOriginal.size() - 2, "");
-          } else {
-            documentOriginal.set(documentOriginal.size() - 2, cad.substring(0, position).trim());
-          }
-          documentOriginal.set(documentOriginal.size() - 1, cad.substring(position).trim());
-        }
-      } else {
-        cont = documentTranslation.size() - 1;
-        if ((documentTranslation.get(documentTranslation.size() - 1) != null)
-                && !(documentTranslation.get(documentTranslation.size() - 1).equals(""))) {
-          documentTranslation.add(documentTranslation.size(),
-                  documentTranslation.get(documentTranslation.size() - 1));
-        } else {
-          documentTranslation.set(documentTranslation.size() - 1,
-                  documentTranslation.get(documentTranslation.size() - 2));
-        }
-
-        for (; cont > (identLabel + 1); cont--) {
-          documentTranslation.set(cont, documentTranslation.get(cont - 1));
-        }
-
-        if (identLabel < topArrays) {
-          cad = documentTranslation.get(identLabel);
-
-          if (position == 0) {
-            documentTranslation.set(cont - 1, "");
-          } else {
-            documentTranslation.set(cont - 1, cad.substring(0, position).trim());
-          }
-
-          documentTranslation.set(cont, cad.substring(position).trim());
-        } else {
-          cad = documentTranslation.get(identLabel);
-
-          if (position == 0) {
-            documentTranslation.set(documentTranslation.size() - 2, "");
-          } else {
-            documentTranslation.set(documentTranslation.size() - 2, cad.substring(0, position).trim());
-          }
-
-          documentTranslation.set(documentTranslation.size() - 1, cad.substring(position).trim());
-        }
-      }
+      documentTranslation.split(identLabel, Changes.getPosition());
     }
-
     updateAlignmentsView();
   }
 
@@ -1211,18 +1093,16 @@ final public class MainWindow extends JFrame implements ActionListener,
   /**
    * Undo last change
    *
-   * Funci�n DeshacerCambios. Esta funci�n recupera el �ltimo cambio realizado.
    */
   private void undoChanges() {
-    String cad = "";
-    //StructCambios ultCambio = new StructCambios();
+    String cad;
     SegmentChanges ultChanges = new SegmentChanges();
     int tam = 0;
 
     ultChanges = arrayListChanges.get(identChanges);
     identLabel = ultChanges.getIdent_linea();
     int operacion = ultChanges.getTipo();
-    int posicion = ultChanges.getPosition();
+    int position;
     boolean izq = ultChanges.getSource();
     _identAnt = identLabel;
 
@@ -1240,7 +1120,7 @@ final public class MainWindow extends JFrame implements ActionListener,
             cad = cad.trim();
           }
 
-          posicion = cad.indexOf(cadaux) + cadaux.length();
+          position = cad.indexOf(cadaux) + cadaux.length();
         } else {
           cad = documentTranslation.get(identLabel);
 
@@ -1248,11 +1128,15 @@ final public class MainWindow extends JFrame implements ActionListener,
             cad = cad.trim();
           }
 
-          posicion = cad.indexOf(cadaux) + cadaux.length();
+          position = cad.indexOf(cadaux) + cadaux.length();
         }
 
-        modifyAlignments(ultChanges.getSource(), 2, posicion);
-
+        if (ultChanges.getSource()) {
+          documentOriginal.split(identLabel, position);
+        } else {
+          documentTranslation.split(identLabel, position);
+        }
+        updateAlignmentsView();
         break;
       }
 
@@ -1330,7 +1214,7 @@ final public class MainWindow extends JFrame implements ActionListener,
             documentOriginal.set(cont2, "");
             tam--;
           } else {
-            documentTranslation.set(cont2, documentTranslation.get(cont2 - tam).toString());
+            documentTranslation.set(cont2, documentTranslation.get(cont2 - tam));
             documentOriginal.set(cont2, documentOriginal.get(cont2 - tam));
           }
 
@@ -1344,7 +1228,6 @@ final public class MainWindow extends JFrame implements ActionListener,
 
       //else if( operacion == 4 )
       case 4: {
-        // Separar UT
         // Split TU
         if (izq) {
           documentTranslation.set(identLabel, documentTranslation.get(identLabel + 1));
