@@ -73,6 +73,25 @@ public class AppConstants {
   public static final String [] straEncodings = {
       ENCODINGS_UTF8, ENCODINGS_ISO8859_1, ENCODINGS_CP932, ENCODINGS_DEFAULT
   };
+  public static final String TAG_REPLACEMENT = "\b";
+  
+  /**
+   * Char which should be used instead protected parts. 
+   * 
+   * <p>It should be non-letter char, to be able to have
+   * correct words counter.
+   *
+   * <p>This char can be placed around protected text for 
+   * separate words inside protected text and words
+   * outside if there are no spaces between they.
+   */
+  public static final char TAG_REPLACEMENT_CHAR = '\b';
+  
+  /** Pattern that detects language and country,
+   * with an optionnal script in the middle.
+   */
+  public static final Pattern LANG_AND_COUNTRY = Pattern
+          .compile("([A-Za-z]{1,8})(?:(?:-|_)(?:[A-Za-z]{4}(?:-|_))?([A-Za-z0-9]{1,8}))?");
 
   /**
    * Make app name and version string for human.

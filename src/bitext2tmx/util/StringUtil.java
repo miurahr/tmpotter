@@ -24,6 +24,7 @@
 package bitext2tmx.util;
 
 import java.text.MessageFormat;
+import java.text.Normalizer;
 import java.util.StringTokenizer;
 
 
@@ -154,5 +155,41 @@ public class StringUtil {
     return str == null || str.isEmpty();
   }
 
+  /**
+   * Returns first not null object from list, or null if all values is null.
+   */
+  public static <T> T nvl(T... values) {
+    for (int i = 0; i < values.length; i++) {
+      if (values[i] != null) {
+        return values[i];
+      }
+    }
+    return null;
+  }
 
+  /**
+   * Apply Unicode NFC normalization to a string.
+   */
+  public static String normalizeUnicode(CharSequence text) {
+    return Normalizer.isNormalized(text, Normalizer.Form.NFC) ? text.toString() :
+          Normalizer.normalize(text, Normalizer.Form.NFC);
+  }
+
+  /**
+   * Returns first letter in lowercase. Usually used for create tag shortcuts.
+   */
+  public static int getFirstLetterLowercase(String st) {
+    if (st == null) {
+      return 0;
+    }
+
+    for (int cp, i = 0; i < st.length(); i += Character.charCount(cp)) {
+      cp = st.codePointAt(i);
+      if (Character.isLetter(cp)) {
+        return Character.toLowerCase(cp);
+      }
+    }
+
+    return 0;
+  }
 }
