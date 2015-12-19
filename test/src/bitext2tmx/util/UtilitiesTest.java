@@ -16,7 +16,7 @@
  */
 package bitext2tmx.util;
 
-import bitext2tmx.core.Aligner;
+import bitext2tmx.core.TranslationAligner;
 import java.io.BufferedWriter;
 import java.io.OutputStream;
 import junit.framework.TestCase;

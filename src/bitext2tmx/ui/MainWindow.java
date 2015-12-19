@@ -69,7 +69,8 @@ import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.DockingConstants;
 import com.vlsolutions.swing.docking.DockingDesktop;
 
-import bitext2tmx.core.Aligner;
+import bitext2tmx.core.DocumentSegmenter;
+import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.core.TMXReader;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
@@ -591,15 +592,15 @@ final public class MainWindow extends JFrame implements ActionListener,
         stringLangTranslation = dlg.getTargetLocale();
 
         try {
-          documentOriginal.readDocument(stringOriginal, originalEncoding);
-          documentTranslation.readDocument(stringTranslation, translateEncoding);
+          documentOriginal = DocumentSegmenter.readDocument(stringOriginal, stringLangOriginal, originalEncoding);
+          documentTranslation = DocumentSegmenter.readDocument(stringTranslation, stringLangTranslation, translateEncoding);
         } catch (Exception ex) {
           JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
                   getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
           this.dispose();
         }
 
-        boolean res = Aligner.align(documentOriginal, documentTranslation);
+        boolean res = TranslationAligner.align(documentOriginal, documentTranslation);
 
         if (res) {
           matchArrays();
@@ -617,7 +618,6 @@ final public class MainWindow extends JFrame implements ActionListener,
       } else {
         try {
           TMXReader.readTMX(filePathOriginal, originalEncoding,
-                  stringLangOriginal, stringLangTranslation,
                   documentOriginal, documentTranslation);
         } catch (Exception ex) {
           Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);

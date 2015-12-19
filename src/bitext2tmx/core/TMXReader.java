@@ -20,7 +20,6 @@ import static bitext2tmx.util.Localization.getString;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -30,37 +29,43 @@ import java.util.ArrayList;
  */
 public class TMXReader {
   
-  private static String  _strTMXEnc;
-  private static String  _strLangOriginal    = "en";
-  private static String  _strLangTranslation = "en";
+  private static String  languageOriginal    = "en";
+  private static String  languageTranslation = "en";
   
 
   //  FixMe: only reads TMX 1.1-1.2
   //  ToDo: need to read TMX 1.1-1.4
  /**
   *  Read in TMX
+   * @param fPathOriginal
+   * @param encoding
+   * @param originalDocument
+   * @param translationDocument
+   * @param langOriginal
+   * @param langTranslation
   */
-  public static void readTMX( final File fPathOriginal, final String encodeing,
-                                       String langOriginal, String langTranslation,
-                             Document _alstOriginal, Document _alstTranslation)
+  public static void readTMX(final File fPathOriginal, final String encoding,
+          Document originalDocument, Document translationDocument)
   {
-    ArrayList<String> _alstBitext = new ArrayList<>();
+    ArrayList<String> tmxSourceText = new ArrayList<>();
     
     try
     {
       final FileInputStream fis = new FileInputStream( fPathOriginal );
-      final InputStreamReader isr;
+      final InputStreamReader inputReader;
 
-      if( encodeing.equals( getString( "ENCODING.DEFAULT" ) ) )
-        isr = new InputStreamReader( fis );
-      else if(encodeing.equals( "UTF-8" ) )
-        isr = new InputStreamReader( fis, "UTF-8" );
-      else
-        isr = new InputStreamReader(fis, "ISO-8859-1");
-
-      final BufferedReader br = new BufferedReader( isr );
+      if (encoding.equals(getString("ENCODING.DEFAULT"))){
+        inputReader = new InputStreamReader( fis );
+      } else if (encoding.equals("UTF-8")) {
+        inputReader = new InputStreamReader( fis, "UTF-8" );
+      } else if (encoding.equals( "UTF-16")) {
+        inputReader = new InputStreamReader(fis, "UTF-16");
+      } else {
+        inputReader = new InputStreamReader(fis, "ISO-8859-1");
+      }
+      final BufferedReader br = new BufferedReader(inputReader);
       String linea;
-      int cont   = 0;
+      int index   = 0;
       int indice = 0;
       int aux    = 0;
       boolean pI      = false;
@@ -69,30 +74,29 @@ public class TMXReader {
       while( ( linea = br.readLine() ) != null ) 
       {
         linea = linea.trim();
-        _alstBitext.add( cont, linea );
-        cont++;
+        tmxSourceText.add(index, linea );
+        index++;
 
-        //Si no tengo los idiomas
         if( !idioma1 )
         {
-          if( linea.indexOf( "<tu tuid" ) != -1 ) aux = 0;
-          else if( linea.indexOf( "</tu>" ) != -1 )
+          if( linea.contains("<tu tuid") ) aux = 0;
+          else if( linea.contains("</tu>") )
           {
             if( aux == 2 ) idioma1 = true;
             else aux = 0;
           }
-          else if( linea.indexOf( "<tuv" ) != -1)
+          else if( linea.contains("<tuv"))
           {
             if( aux == 0 )
             {
-              indice = linea.indexOf( "lang=" );
-              _strLangOriginal = linea.substring( indice + 6, indice + 8 );
+              indice = linea.indexOf("lang=");
+              languageOriginal = linea.substring(indice+6, indice+8).toLowerCase();
               aux++;
             }
             else
             {
               indice = linea.indexOf( "lang=" );
-              _strLangTranslation = linea.substring( indice + 6, indice + 8 );
+              languageTranslation = linea.substring(indice+6, indice+8).toLowerCase();
               aux++;
             }
           }
@@ -100,82 +104,74 @@ public class TMXReader {
       }
 
       idioma1 = false;
-      cont = 0;
+      index = 0;
       aux  = 0;
 
-      while( cont < _alstBitext.size() )
-      {
-        linea = (String)_alstBitext.get( cont );
-
-        while( linea.indexOf( "  " ) > -1 )
-        {
-          linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-            linea.substring( linea.indexOf( "  " ) + 1 );
+      while( index < tmxSourceText.size() ) {
+        linea = tmxSourceText.get(index);
+        while( linea.contains("  ")) {
+          linea = linea.substring( 0, linea.indexOf("  ") ) +
+            linea.substring( linea.indexOf("  ") + 1 );
         }
 
-        if (linea.indexOf("<tuv") != -1)
-        {
-          if( linea.indexOf( _strLangOriginal ) != -1 )     pI = true;
-          else if( linea.indexOf( _strLangTranslation ) != -1) pI = false;
-        }
-        else if( linea.indexOf( "<seg>" ) != -1 )
-        {
-          linea = removeTag( linea, "seg" );
+        if (linea.toLowerCase().contains("<tuv")) {
+          if (linea.toLowerCase().contains(languageOriginal)) {
+            pI = true;
+          } else if( linea.toLowerCase().contains(languageTranslation)) {
+            pI = false;
+          } else {
+            System.out.println("Unknown language"+linea);
+          }
+        } else if (linea.toLowerCase().contains("<seg>")) {
+          linea = removeTag(linea, "seg");
 
-          while( linea.indexOf( "  " ) > -1 )
-          {
-            linea = linea.substring( 0, linea.indexOf( "  " ) ) +
-              linea.substring( linea.indexOf( "  " ) + 1 );
+          while (linea.contains("  ")) {
+            linea = linea.substring( 0, linea.indexOf("  ")) +
+              linea.substring( linea.indexOf("  ") + 1);
           }
 
-          if( pI )
-          {
-            _alstOriginal.add( aux, linea );
-            _alstTranslation.add( aux, "" );
+          if (pI) {
+            originalDocument.add(aux, linea);
+            translationDocument.add(aux, "");
             idioma1 = true;
             aux++;
-          }
-          else
-          {
-            if( !idioma1 )
-            {
-              _alstOriginal.add( aux, "" );
-              _alstTranslation.add( aux, linea );
+          } else {
+            if (!idioma1) {
+              originalDocument.add(aux, "");
+              translationDocument.add(aux, linea);
               aux++;
+            } else {
+              translationDocument.set(translationDocument.size()-1, linea);
             }
-            else _alstTranslation.set( _alstTranslation.size()-1, linea );
-          }
+          } 
         }
 
-        cont++;
+        index++;
       }
-
       br.close();
     }
-    catch( final java.io.IOException ex ) { System.out.println( ex ); }
-
+    catch (final java.io.IOException ex) {
+      System.out.println(ex);
+    }
   }
-
 
   /**
    *  Remove tag
    *
-   *  @param linea : la cadena que hay que retocar,
-   *  @param etiqueta : que queremos quitar
-   *  @return cad devuelve la cadena sin la etiqueta
+   *  @param linea
+   *  @param tagName : tag to be removed
+   *  @return string removing tag
    */
-  private static String removeTag( final String linea, final String etiqueta )
+  private static String removeTag( final String linea, final String tagName )
   {
     String cad = "";
-    final String etiquetaCerrada = "</" + etiqueta + ">";
+    final String endTag = "</" + tagName + ">";
 
-    if( !linea.contains(etiquetaCerrada) ) {
+    if (!linea.contains(endTag)) {
       // FIXME
     } else {
-      cad = linea.substring( etiqueta.length() + 2, linea.indexOf( etiquetaCerrada ) );
+      cad = linea.substring(tagName.length()+2, linea.indexOf(endTag));
     }
-    return( cad );
+    return (cad);
   }
-
-
 }

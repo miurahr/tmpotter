@@ -31,11 +31,11 @@ import java.util.logging.Logger;
  * 
  * @author Hiroshi Miura
  */
-public class Aligner {
+public class TranslationAligner {
   
-  private static final Logger LOG = Logger.getLogger(Aligner.class.getName());
+  private static final Logger LOG = Logger.getLogger(TranslationAligner.class.getName());
 
-  private Aligner(){
+  private TranslationAligner(){
   }
 
   public static boolean align(Document originalDocument, Document translationDocument)

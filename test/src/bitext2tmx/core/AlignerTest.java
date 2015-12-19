@@ -48,7 +48,7 @@ public class AlignerTest extends TestCase {
     Document trans = new Document();
     trans.add("");
     boolean expResult = true;
-    boolean result = Aligner.align(orig, trans);
+    boolean result = TranslationAligner.align(orig, trans);
     assertEquals(expResult, result);
   }
   
