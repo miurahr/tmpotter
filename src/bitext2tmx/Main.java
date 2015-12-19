@@ -34,40 +34,40 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.SwingUtilities;
 
-import bitext2tmx.ui.Bitext2TmxIcons;
-import bitext2tmx.ui.Bitext2tmxWindow;
+import bitext2tmx.ui.Icons;
+import bitext2tmx.ui.MainWindow;
 import bitext2tmx.ui.SplashScreen;
-import bitext2tmx.util.AquaAdapter;
+import bitext2tmx.util.gui.AquaAdapter;
 
-import static bitext2tmx.util.Utilities.*;
-import bitext2tmx.util.BConstants;
+import bitext2tmx.util.AppConstants;
+import bitext2tmx.util.Platform;
 
 
 /**
  *
  */
-final public class Bitext2tmx
+final public class Main
 {
-  public Bitext2tmx()
+  public Main()
   {
     setLnF();
     displaySplash();
     echoStartMsg();
 
-    final Bitext2tmxWindow _wndB2T = new Bitext2tmxWindow();
+    final MainWindow windowMain = new MainWindow();
 
-    SwingUtilities.invokeLater( new Runnable()
-      { public void run() { _wndB2T.setVisible( true ); } } );
+    SwingUtilities.invokeLater(new Runnable()
+      { public void run() { windowMain.setVisible( true ); } } );
   }
 
-  public static void main( String[] straArgs ) { new Bitext2tmx(); }
+  public static void main( String[] straArgs ) { new Main(); }
 
   final private void echoStartMsg()
   {
     System.out.println("\n" +
       ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" +
       "\n" + ";;  " +
-      BConstants.getApplicationDisplayName() +
+      AppConstants.getApplicationDisplayName() +
       ", Locale: " + Locale.getDefault() +
       ", " + new Date() +
       "\n" );
@@ -78,7 +78,7 @@ final public class Bitext2tmx
   {
     try
     {
-      if( isMacOSX() )
+      if( Platform.isMacOSX() )
       {
         System.setProperty( "apple.awt.graphics.UseQuartz", "true" );
         System.setProperty( "apple.laf.useScreenMenuBar", "true" );
@@ -86,7 +86,7 @@ final public class Bitext2tmx
           setProperty( "com.apple.mrj.application.apple.menu.about.name",
              "bitext2tmx" );
         //  ToDo: create (OS X) dock icon
-        AquaAdapter.setDockIconImage( Bitext2TmxIcons.getIcon( "b2t-icon-large.png" ).getImage() );
+        AquaAdapter.setDockIconImage(Icons.getIcon( "icon-large.png" ).getImage() );
       }
       // Workaround for JDK bug 6389282
       // it should be called before setLookAndFeel() for GTK LookandFeel

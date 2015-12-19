@@ -4,7 +4,7 @@
  *
  *  Copyright (C) 2015 Hiroshi Miura
  *
- * This file is copied from OmegaT project
+ * Some part is come from OmegaT project
  * 
  *  Copyright (C) 2007 - Zoltan Bartko
  *              2011 Alex Buloichik
@@ -47,6 +47,8 @@ public final class Platform {
         WIN64,
         // os.arch=x86, os.name=Windows 7, os.version=6.1
         WIN32,
+        // other unix
+        UNIX,
         // unknown system
         OTHER
     }
@@ -63,6 +65,15 @@ public final class Platform {
                 osType = is64 ? OsType.MAC64 : OsType.MAC32;
             } else if (osName.startsWith("Windows")) {
                 osType = is64 ? OsType.WIN64 : OsType.WIN32;
+            } else if ( osName.contains( "AIX" ) ||
+                        osName.equals( "Digital Unix" ) ||
+                        osName.equals( "FreeBSD" ) ||
+                        osName.equals( "HP UX" ) ||
+                        osName.equals( "Irix" ) ||
+                        osName.equals( "MPE/iX" ) ||
+                        osName.equals( "Solaris" ) ||
+                        osName.equals( "SunOS" ) ) {
+                osType = OsType.UNIX;
             }
         }
     }
@@ -87,6 +98,15 @@ public final class Platform {
     }
     
     /**
+     * Returns true if running on Windows
+     */
+    public static boolean isWindows()
+    {
+      OsType os = getOsType();
+      return os == OsType.WIN32 || os == OsType.WIN64;
+    }
+  
+    /**
      * Returns true if the JVM (NOT the OS) is 64-bit
      */
     public static boolean is64Bit() {
@@ -96,4 +116,24 @@ public final class Platform {
         }
         return false;
     }
+    
+    /**  
+     * On Unix type OS?
+     * 
+     * @return true if platform is on Unix
+     */
+    public static boolean isUnix() {
+      OsType os = getOsType();
+      return os == OsType.UNIX;
+    }
+    
+    /**
+     * Returns true if running on Linux
+     * 
+     */
+    public static boolean isLinux() {
+      OsType os = getOsType();
+      return os == OsType.LINUX32 || os == OsType.LINUX64;
+    }
+
 }

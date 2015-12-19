@@ -51,7 +51,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bitext2tmx.util.TranslationException;
+import bitext2tmx.util.xml.XMLStreamReader;
+import bitext2tmx.util.xml.XMLBlock;
+import bitext2tmx.util.xml.XMLUtil;
 
 /**
  * Class to load and save preferences.
@@ -150,7 +152,7 @@ public class Preferences {
      */
     public static boolean isPreferenceDefault(String key, boolean defaultValue) {
         String val = getPreference(key);
-        if (Utilities.isEmpty(val)) {
+        if (StringUtil.isEmpty(val)) {
             setPreference(key, defaultValue);
             return defaultValue;
         }
@@ -199,7 +201,7 @@ public class Preferences {
      */
     public static void setPreference(String name, String value) {
         m_changed = true;
-        if (!Utilities.isEmpty(name) && value != null) {
+        if (!StringUtil.isEmpty(name) && value != null) {
             if (!m_loaded)
                 doLoad();
             Integer i = m_preferenceMap.get(name);
@@ -226,7 +228,7 @@ public class Preferences {
      */
     public static void setPreference(String name, Enum<?> value) {
         m_changed = true;
-        if (!Utilities.isEmpty(name) && value != null) {
+        if (!StringUtil.isEmpty(name) && value != null) {
             if (!m_loaded)
                 doLoad();
             Integer i = m_preferenceMap.get(name);
@@ -418,7 +420,7 @@ public class Preferences {
     
             for (int i = 0; i < m_nameList.size(); i++) {
                 String name = m_nameList.get(i);
-                String val = Utilities.makeValidXML(m_valList.get(i));
+                String val = XMLUtil.makeValidXML(m_valList.get(i));
                 out.write("    <" + name + ">");
                 out.write(val);
                 out.write("</" + name + ">\n");

@@ -24,8 +24,9 @@
  *
  **************************************************************************/
 
-package bitext2tmx.util;
+package bitext2tmx.util.xml;
 
+import bitext2tmx.util.AppConstants;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -96,7 +97,7 @@ public class XMLReader extends Reader {
         // BOM detection
         BufferedInputStream is = new BufferedInputStream(new FileInputStream(fileName));
 
-        is.mark(BConstants.READ_AHEAD_LIMIT);
+        is.mark(AppConstants.READ_AHEAD_LIMIT);
 
         int char1 = is.read();
         int char2 = is.read();
@@ -114,13 +115,13 @@ public class XMLReader extends Reader {
             return new InputStreamReader(is, encoding);
         }
 
-        is.mark(BConstants.READ_AHEAD_LIMIT);
-        byte[] buf = new byte[BConstants.READ_AHEAD_LIMIT];
+        is.mark(AppConstants.READ_AHEAD_LIMIT);
+        byte[] buf = new byte[AppConstants.READ_AHEAD_LIMIT];
         int len = is.read(buf);
         if (len > 0) {
             String buffer = new String(buf, 0, len);
 
-            Matcher matcher_xml = BConstants.XML_ENCODING.matcher(buffer);
+            Matcher matcher_xml = AppConstants.XML_ENCODING.matcher(buffer);
             if (matcher_xml.find())
                 encoding = matcher_xml.group(1);
         }

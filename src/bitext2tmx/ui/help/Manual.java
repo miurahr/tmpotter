@@ -23,7 +23,7 @@
 #######################################################################
 */
 
-package bitext2tmx.ui;
+package bitext2tmx.ui.help;
 
 import java.awt.*;
 import javax.swing.*;
@@ -34,7 +34,7 @@ import java.util.*;
 import javax.swing.border.*;
 
 
-import static bitext2tmx.util.BConstants.*;
+import static bitext2tmx.util.AppConstants.*;
 import static bitext2tmx.util.Localization.*;
 
 

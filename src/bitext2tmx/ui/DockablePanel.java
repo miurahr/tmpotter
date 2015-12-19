@@ -4,10 +4,11 @@
 #  bitext2tmx - Bitext Aligner/TMX Editor
 #
 #  Copyright (C) 2006-2009  Raymond: Martin
+#            (C) 2015 Hiroshi Miura
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -31,66 +32,70 @@ import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.docking.DockingConstants;
 
-
 /**
  *  Dockable Panel
  *
  */
+@SuppressWarnings("serial")
 class DockablePanel extends JPanel implements Dockable
 {
-  boolean _bFloatable;
-
-  DockKey _dockKey;
-  DockingConstants.Hide _dcBorder;
+  private final DockKey dockKey;
 
   /**  Default constructor */
-  protected DockablePanel( final String strKey )
+  protected DockablePanel(final String key)
   {
-    _bFloatable = true;
-    _dcBorder   = DockingConstants.HIDE_BOTTOM;
-
     //  Use default autohide position
-    _dockKey = new DockKey( strKey );
-    _dockKey.setAutoHideBorder( _dcBorder );
-    _dockKey.setFloatEnabled( _bFloatable );
+    dockKey = new DockKey(key);
+    dockKey.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    dockKey.setFloatEnabled(true);
   }
 
   /**  Default constructor */
-  protected DockablePanel( final String strKey, final String strName )
-  {
+  protected DockablePanel(final String key, final String name) {
     //  Use default autohide position
-    this( strKey );
-    _dockKey.setName( strName );
+    this(key);
+    dockKey.setName(name);
   }
 
   /**  Constructor invoked with additional autohide border */
-  protected DockablePanel( final String strKey, final String strName, final DockingConstants.Hide dcBorder )
-  {
-    this( strKey, strName );
-    _dockKey.setAutoHideBorder( dcBorder );
+  protected DockablePanel( final String key, final String name,
+                           final DockingConstants.Hide dcBorder ) {
+    this(key, name);
+    dockKey.setAutoHideBorder(dcBorder);
   }
 
   /**  Constructor invoked with additional floatable flag */
-  protected DockablePanel( final String strKey, final String strName, final boolean bFloatable )
-  {
-    this( strKey, strName );
-    _dockKey.setFloatEnabled( bFloatable );
+  protected DockablePanel( final String key, final String name,
+                           final boolean floatable ) {
+    this(key, name);
+    dockKey.setFloatEnabled(floatable);
   }
 
   /**  Constructor invoked with additional autohide border */
-  protected DockablePanel( final String strKey, final String strName,
-    final DockingConstants.Hide dcBorder, final boolean bFloatable )
-  {
-    this( strKey, strName, dcBorder );
-    _dockKey.setFloatEnabled( bFloatable );
+  protected DockablePanel( final String key, final String name,
+    final DockingConstants.Hide dcBorder, final boolean floatable) {
+    this(key, name, dcBorder);
+    dockKey.setFloatEnabled(floatable);
   }
 
   /**  Update docking panel name */
-  final public void setName( final String strName ) { _dockKey.setName( strName ); }
-  final public void setTooltip( final String strTooltip ) { _dockKey.setTooltip( strTooltip ); }
+  @Override
+  final public void setName(final String name) {
+    dockKey.setName(name);
+  }
+  
+  final public void setTooltip(final String text) {
+    dockKey.setTooltip(text);
+  }
 
-  final public DockKey getDockKey() { return( _dockKey ); }
-  final public Component getComponent() { return( this ); }
-
+  @Override
+  final public DockKey getDockKey() {
+    return dockKey;
+  }
+  
+  @Override
+  final public Component getComponent() {
+    return this;
+  }
 }//  DockablePanel{}
 

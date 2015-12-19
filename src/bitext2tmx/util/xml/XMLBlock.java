@@ -24,8 +24,9 @@
  *
  **************************************************************************/
 
-package bitext2tmx.util;
+package bitext2tmx.util.xml;
 
+import bitext2tmx.util.xml.XMLAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
