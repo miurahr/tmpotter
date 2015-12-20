@@ -14,26 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.core;
+
+import bitext2tmx.util.Localization;
+import bitext2tmx.util.RuntimePreferences;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import bitext2tmx.util.RuntimePreferences;
-import static bitext2tmx.util.Localization.getString;
 
 
 /**
- *
- * @author miurahr
+ * Document segmenting utility class.
+ * 
+ * @author Hiroshi Miura
  */
 public class DocumentSegmenter {
 
   /**
-   *
-   *  Segments texts according to the programmed rules considering
+   * Segments texts.
+   * 
+   * <p> Segments texts according to the programmed rules considering
    *  that a newline is not a segmentation boundary (two newlines
    *  are however)
    *
@@ -116,19 +120,20 @@ public class DocumentSegmenter {
    *  Reads in document to string with the original or translation text
    *  so it can be segmented
    *
-   * @param original: original input document as String
-   * @param language: user provided langage string such as ja_JP
-   * @param encoding: user provided encoding string such as UTF-8
-   * @return outDocument: resulted document
-   * @throws java.io.IOException
+   * @param original original input document as String
+   * @param language user provided langage string such as ja_JP
+   * @param encoding user provided encoding string such as UTF-8
+   * @return outDocument resulted document
+   * @throws java.io.IOException Exception may happen while reading file
    */
-  public static Document readDocument(String original, String language, String encoding) throws IOException {
+  public static Document readDocument(String original, String language,
+          String encoding) throws IOException {
     final FileInputStream fis;
     final InputStreamReader isr;
     String result;
     
     fis = new FileInputStream(original);
-    if (encoding.equals(getString("ENCODING.DEFAULT"))) {
+    if (encoding.equals(Localization.getString("ENCODING.DEFAULT"))) {
       isr = new InputStreamReader(fis);
     } else {
       isr = new InputStreamReader(fis, encoding);

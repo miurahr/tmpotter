@@ -14,29 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.filters;
 
 import java.io.File;
 
 /**
- *
- * @author miurahr
+ * Bi-Text loader.
+ * 
+ * <p> TBD
+ * 
+ * @author Hiroshi Miura
  */
 public class TextHandler implements IImportFilter {
   @Override
-  public boolean isCombinedFileFormat()
-  {
+  public boolean isCombinedFileFormat() {
     return false;
   }
+
   @Override
-  public String getFileFormatName()
-  {
+  public String getFileFormatName() {
     return "bi-text";
   }
   
   @Override
-  public void load(File fSourceFile, File fTargetFile) throws Exception
-  {
+  public void load(File fSourceFile, File fTargetFile) throws Exception {
     /*      while( _alstOriginal.size() > _alstTranslation.size() )
         _alstTranslation.add( _alstTranslation.size(), "" );
 
@@ -44,9 +46,11 @@ public class TextHandler implements IImportFilter {
         _alstOriginal.add( _alstOriginal.size(), "" );
       while( limpiar )
       {
-        if( ( ( _alstOriginal.get( _alstOriginal.size() - 1 ) == null ) || ( _alstOriginal
+        if( ( ( _alstOriginal.get( _alstOriginal.size() - 1 ) == null )
+           || ( _alstOriginal
             .get( _alstOriginal.size() - 1 ).equals( "" ) ) )
-            && ( ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null ) || ( _alstTranslation
+            && ( ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null )
+          || ( _alstTranslation
                 .get( _alstTranslation.size() - 1 ).equals( "" ) ) ) )
         {
           _alstOriginal.remove( _alstOriginal.size() - 1 );
@@ -58,8 +62,7 @@ public class TextHandler implements IImportFilter {
   }
   
   @Override
-  public void load(File fSourceFile, String encoding ) throws Exception
-  {
+  public void load(File sourceFile, String encoding ) throws Exception {
     
   }
 }

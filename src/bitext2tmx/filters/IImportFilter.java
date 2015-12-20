@@ -14,50 +14,52 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.filters;
 
 import java.io.File;
 
 /**
- *
+ * Import filter interface.
+ * 
  * @author Hiroshi Miura
  */
 public interface IImportFilter {
     
-    /**
-     * Human-readable name of the File Format this filter supports.
-     * 
-     * @return File format name
-     */
-    String getFileFormatName();
-    
-    /**
-     * File format has both source and translated text?
-     * 
-     * @return  boolean true if format is combined such as TMX.
-     */
-    boolean isCombinedFileFormat();
-    
-    /**
-     * Read source and translated files
-     * 
-     * @param sourceFile
-     *            source file
-     * @param targetFile
-     *            translated file
-     * @throws Exception
-     */
-    void load(File sourceFile, File targetFile) throws Exception;
-    
-    /**
-     * Read document
-     * 
-     * @param sourceFile
-     *            source file
-     * @param targetFile
-     *            translated file
-     * @throws Exception
-     */
-    void load( File fPath, String sourceEncode ) throws Exception;
-    
+  /**
+   * Human-readable name of the File Format this filter supports.
+   * 
+   * @return File format name
+   */
+  String getFileFormatName();
+
+  /**
+   * File format has both source and translated text?
+   * 
+   * @return  boolean true if format is combined such as TMX.
+   */
+  boolean isCombinedFileFormat();
+
+  /**
+   * Read source and translated files.
+   * 
+   * @param sourceFile
+   *            source file
+   * @param targetFile
+   *            translated file
+   * @throws Exception while file read.
+   */
+  void load(File sourceFile, File targetFile) throws Exception;
+
+  /**
+   * Read document.
+   * 
+   * @param sourceFile
+   *            source file
+   * @param targetFile
+   *            translated file
+   * @throws Exception while file read.
+   */
+  void load( File filePath, String sourceEncode ) throws Exception;
+
 }

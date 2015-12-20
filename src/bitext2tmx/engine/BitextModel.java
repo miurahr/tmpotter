@@ -33,104 +33,190 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 
-
-
-
 /**
+ * Model for bitext.
  *
  */
-final public class BitextModel extends AbstractTableModel
-{
-  private static final long serialVersionUID = 2627766162716454511L;
+@SuppressWarnings("serial")
+public final class BitextModel extends AbstractTableModel {
+  private final LinkedList<Segment> data = new LinkedList<>();
+  private final LinkedList<TableModelListener> tableModelListeners =
+      new LinkedList<>();
 
-  final private LinkedList<Segment> _lstData = new LinkedList<Segment>();
-  final private LinkedList<TableModelListener> _lstTableModelListeners =
-    new LinkedList<TableModelListener>();
+  /**
+   * column sizes.
+   * 
+   * @return column count sizes
+   */
+  @Override
+  public final int getColumnCount() {
+    return 3;
+  }
+  
+  /**
+   * row size.
+   * 
+   * @return row count sizes
+   */
+  @Override
+  public final int getRowCount() {
+    return data.size();
+  }
 
-  final public int getColumnCount() { return( 3 ); }
-  final public int getRowCount()    { return( _lstData.size() ); }
+  /**
+   * get value from row,column.
+   * 
+   * @param row row number
+   * @param column column number
+   * @return object to represent by (row, column)
+   */
+  @Override
+  public final Object getValueAt(final int row, final int column) {
+  
+    final Segment segment = data.get(row);
 
-  final public Object getValueAt( final int iRow, final int iColumn )
-  {
-    final Segment segment = _lstData.get( iRow );
-
-    switch( iColumn )
-    {
-      case 0:  return( segment.getNum() );
-      case 1:  return( segment.getOriginal() );
-      case 2:  return( segment.getTranslation() );
-      default: return( null );
+    switch (column) {
+      case 0:
+        return segment.getNum();
+      case 1:
+        return segment.getOriginal();
+      case 2:
+        return segment.getTranslation();
+      default:
+        return null;
     }
   }
 
-  final public void removeSegment( final int iRow )
-  {
-    _lstData.remove( iRow );
-    fireTableRowsDeleted( iRow, iRow );
+  /**
+   * remove segument on the row.
+   * 
+   * @param row to be removed
+   */
+  public final void removeSegment(final int row) {
+    data.remove(row);
+    fireTableRowsDeleted(row, row);
 
-    fireTableModelEvent( new TableModelEvent( this, iRow, iRow,
-      TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE ) );
+    fireTableModelEvent( new TableModelEvent( this, row, row,
+        TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE ));
   }
 
-  final public void addSegment( final Segment segment )
-  {
-    _lstData.add( segment );
+  /**
+   * Add segment.
+   * 
+   * @param segment to be added
+   */
+  public final void addSegment( final Segment segment ) {
+    data.add( segment );
 
     fireTableModelEvent( new TableModelEvent( this, getRowCount() - 1, 
-      getRowCount() - 1, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT ) );
+        getRowCount() - 1, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT ) );
   }
 
-  final public void addTableModelListener( final TableModelListener l )
-  { _lstTableModelListeners.add( l ); }
+  /**
+   * Add listner to table.
+   * 
+   * @param listener to be added
+   */
+  @Override
+  public final void addTableModelListener( final TableModelListener listener ) {
+    tableModelListeners.add( listener );
+  }
 
-  final public Class getColumnClass( final int iColumn )
-  {
-    switch( iColumn )
-    {
-      case 0:  return( String.class );
-      case 1:  return( String.class );
-      case 2:  return( String.class );
-      default: return( Object.class );
+  /**
+   * Get column class.
+   * 
+   * @param column to get
+   * @return class
+   */
+  @Override
+  public final Class getColumnClass( final int column ) {
+    switch (column) {
+      case 0:
+        return String.class;
+      case 1:
+        return String.class;
+      case 2:
+        return String.class;
+      default:
+        return Object.class;
     }
   }
 
-  final public String getColumnName( final int iColumn )
-  {
-    switch( iColumn )
-    {
-      case 0:  return( "" );
-      case 1:  return( "Original:" );  // ToDo: l10n
-      case 2:  return( "Translation:" );
-      default: return( null );
+  /**
+   * Retrive column name.
+   * 
+   * @param column to get
+   * @return column name
+   */
+  @Override
+  public final String getColumnName( final int column ) {
+    switch ( column ) {
+      case 0:
+        return "";
+      case 1:
+        return "Original:";
+      case 2:
+        return "Translation:)";
+      default:
+        return null;
     }
   }
 
-  final public boolean isCellEditable( final int iRow, final int iColumn )
-  { return( false ); }
-
-  final public void removeTableModelListener( final TableModelListener l )
-  { _lstTableModelListeners.remove( l ); }
-
-  final public void setValueAt( final Object obj, final int iRow,
-    final int iColumn )
-  {
-    final Segment segment = _lstData.get( iRow );
-
-    switch( iColumn )
-    {
-      case 0:  segment.setNum( obj.toString() );
-      case 1:  segment.setOriginal( obj.toString() );
-      case 2:  segment.setTranslation( obj.toString() );
-      default: break;
-    }
-
-    fireTableModelEvent( new TableModelEvent( this, iRow, iRow, iColumn ) );
+  /**
+   * Check cell is editable or not.
+   * 
+   * @param row  to check
+   * @param column to check
+   * @return false
+   */
+  @Override
+  public final boolean isCellEditable( final int row, final int column ) {
+    return false;
   }
 
-  final private void fireTableModelEvent( final TableModelEvent event )
-  {
-    for( TableModelListener listener : _lstTableModelListeners )
+  /**
+   * remove listener from table model.
+   * 
+   * @param listener to be removed
+   */
+  @Override
+  public final void removeTableModelListener( final TableModelListener listener ) {
+    tableModelListeners.remove( listener );
+  }
+
+  /**
+   * set value at row, column to obj.
+   * 
+   * @param obj to be set
+   * @param row where to set
+   * @param column  where to set
+   */
+  @Override
+  public final void setValueAt( final Object obj, final int row,
+          final int column ) {
+    final Segment segment = data.get( row );
+    
+    switch ( column ) {
+      case 0:
+        segment.setNum( obj.toString() );
+        break;
+      case 1:
+        segment.setOriginal( obj.toString() );
+        break;
+      case 2:
+        segment.setTranslation( obj.toString() );
+        break;
+      default:
+        break;
+    }
+
+    fireTableModelEvent( new TableModelEvent( this, row, row, column ) );
+  }
+
+  private void fireTableModelEvent( final TableModelEvent event ) {
+    for ( TableModelListener listener : tableModelListeners ) {
       listener.tableChanged( event );
+    }
   }
 
 }//  BitextModel{}

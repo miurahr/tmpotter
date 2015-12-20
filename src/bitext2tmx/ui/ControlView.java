@@ -26,9 +26,12 @@
 
 package bitext2tmx.ui;
 
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import static bitext2tmx.util.Localization.getString;
+
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,39 +39,33 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import static bitext2tmx.util.Localization.getString;
-
 
 /**
- *   Alignment Table view for parallel texts
+ *   Alignment Table view for parallel texts.
  *
  */
 @SuppressWarnings("serial")
-final class ControlView extends DockablePanel implements ActionListener
-{
-  final private MainWindow windowMain;
+final class ControlView extends DockablePanel implements ActionListener {
+  private final MainWindow windowMain;
 
-  final private JButton  buttonOriginalDelete    = new JButton();
-  final private JButton  buttonOriginalJoin      = new JButton();
-  final private JButton  buttonOriginalSplit     = new JButton();
-  final private JButton  buttonTranslationDelete = new JButton();
-  final private JButton  buttonTranslationJoin   = new JButton();
-  final private JButton  buttonTranslationSplit  = new JButton();
-  final private JButton  buttonRemoveBlankRows   = new JButton();
-  final private JButton  buttonTUSplit           = new JButton();
+  private final JButton  buttonOriginalDelete    = new JButton();
+  private final JButton  buttonOriginalJoin      = new JButton();
+  private final JButton  buttonOriginalSplit     = new JButton();
+  private final JButton  buttonTranslationDelete = new JButton();
+  private final JButton  buttonTranslationJoin   = new JButton();
+  private final JButton  buttonTranslationSplit  = new JButton();
+  private final JButton  buttonRemoveBlankRows   = new JButton();
+  private final JButton  buttonTuSplit           = new JButton();
 
-  final private JButton  buttonUndo              = new JButton();
+  private final JButton  buttonUndo              = new JButton();
 
-  final private JPanel panelButtons       = new JPanel( new GridLayout( 2, 1 ) );
-  final private JPanel panelButtonsTop    = new JPanel( new GridLayout( 1, 2 ) );
-  final private JPanel panelButtonsBottom = new JPanel();
-  final private JPanel panelButtonsLeft   = new JPanel();
-  final private JPanel panelButtonsRight  = new JPanel();
+  private final JPanel panelButtons       = new JPanel( new GridLayout( 2, 1 ) );
+  private final JPanel panelButtonsTop    = new JPanel( new GridLayout( 1, 2 ) );
+  private final JPanel panelButtonsBottom = new JPanel();
+  private final JPanel panelButtonsLeft   = new JPanel();
+  private final JPanel panelButtonsRight  = new JPanel();
 
-  public ControlView( final MainWindow windowMain )
-  {
+  public ControlView( final MainWindow windowMain ) {
     super( "SegmentButtonsView" );
 
     this.windowMain = windowMain;
@@ -86,10 +83,10 @@ final class ControlView extends DockablePanel implements ActionListener
     buttonRemoveBlankRows.addActionListener(this);
     buttonRemoveBlankRows.setEnabled(false);
 
-    setLocalizedText(buttonTUSplit, getString("BTN.SPLIT.TU"));
-    buttonTUSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
-    buttonTUSplit.addActionListener( this );
-    buttonTUSplit.setEnabled( false );
+    setLocalizedText(buttonTuSplit, getString("BTN.SPLIT.TU"));
+    buttonTuSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
+    buttonTuSplit.addActionListener( this );
+    buttonTuSplit.setEnabled( false );
 
     setLocalizedText(buttonTranslationJoin, getString( "BTN.JOIN.TRANSLATION" ) );
     buttonTranslationJoin.addActionListener( this );
@@ -124,7 +121,7 @@ final class ControlView extends DockablePanel implements ActionListener
 
     panelButtonsBottom  .add( buttonUndo,              null );
     panelButtonsBottom  .add( buttonRemoveBlankRows,   null );
-    panelButtonsBottom  .add( buttonTUSplit,           null );
+    panelButtonsBottom  .add( buttonTuSplit,           null );
     panelButtonsLeft    .add( buttonOriginalJoin,      null );
     panelButtonsLeft    .add(buttonOriginalDelete,    null );
     panelButtonsLeft    .add( buttonOriginalSplit,     null );
@@ -143,11 +140,10 @@ final class ControlView extends DockablePanel implements ActionListener
     add( panelButtons, BorderLayout.CENTER );
   }
 
-  final void setFonts( final Font font )
-  {
+  final void setFonts( final Font font ) {
     buttonUndo               .setFont( font );
     buttonRemoveBlankRows    .setFont( font );
-    buttonTUSplit            .setFont( font );
+    buttonTuSplit            .setFont( font );
     buttonOriginalJoin       .setFont( font );
     buttonOriginalDelete     .setFont( font );
     buttonOriginalSplit      .setFont( font );
@@ -156,10 +152,9 @@ final class ControlView extends DockablePanel implements ActionListener
     buttonTranslationSplit   .setFont( font );
   }
 
-  final void enableButtons( boolean bEnabled )
-  {
+  final void enableButtons( boolean bEnabled ) {
     buttonRemoveBlankRows    .setEnabled( bEnabled );
-    buttonTUSplit            .setEnabled( bEnabled );
+    buttonTuSplit            .setEnabled( bEnabled );
     buttonOriginalJoin       .setEnabled( bEnabled );
     buttonOriginalDelete     .setEnabled( bEnabled );
     buttonOriginalSplit      .setEnabled( bEnabled );
@@ -168,23 +163,25 @@ final class ControlView extends DockablePanel implements ActionListener
     buttonTranslationSplit   .setEnabled( bEnabled );
   }
 
-  final public void setUndoEnabled( boolean bEnabled )
-  { buttonUndo.setEnabled( bEnabled ); }
+  public final void setUndoEnabled( boolean bEnabled ) {
+    buttonUndo.setEnabled( bEnabled );
+  }
 
-  final public void setOriginalJoinEnabled( boolean bEnabled )
-  { buttonOriginalJoin.setEnabled( bEnabled ); }
+  public final void setOriginalJoinEnabled( boolean bEnabled ) {
+    buttonOriginalJoin.setEnabled( bEnabled );
+  }
 
-  final public void setTranslationJoinEnabled( boolean bEnabled )
-  { buttonTranslationJoin.setEnabled( bEnabled ); }
+  public final void setTranslationJoinEnabled( boolean bEnabled ) {
+    buttonTranslationJoin.setEnabled( bEnabled );
+  }
 
-  final public void updateText()
-  {
-    buttonUndo.setText(getString( "BTN.UNDO" ) );
+  public final void updateText() {
+    buttonUndo.setText(getString( "BTN.UNDO" ));
 
     buttonRemoveBlankRows.setText(getString( "BTN.DELETE.BLANK.ROWS" ) );
     buttonRemoveBlankRows.setToolTipText(getString( "BTN.DELETE.BLANK.ROWS.TOOLTIP" ) );
-    buttonTUSplit.setText(getString( "BTN.SPLIT.TU" ) );
-    buttonTUSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
+    buttonTuSplit.setText(getString( "BTN.SPLIT.TU" ) );
+    buttonTuSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
 
     buttonOriginalJoin    .setActionCommand(getString( "BTN.JOIN" ) );
     buttonOriginalJoin    .setText(getString( "BTN.JOIN" ) );
@@ -201,11 +198,16 @@ final class ControlView extends DockablePanel implements ActionListener
     buttonTranslationSplit   .setActionCommand(getString( "BTN.SPLIT" ) );
   }
 
-  private void onUndo()            { windowMain.onUndo(); }
-  private void onRemoveBlankRows() { windowMain.onRemoveBlankRows(); }
+  private void onUndo()            {
+    windowMain.onUndo();
+  }
+  
+  private void onRemoveBlankRows() {
+    windowMain.onRemoveBlankRows();
+  }
 
-  private void onTUSplit() {
-    windowMain.onTUSplit();
+  private void onTuSplit() {
+    windowMain.onTuSplit();
     buttonUndo.setEnabled( true );
   }
 
@@ -240,22 +242,29 @@ final class ControlView extends DockablePanel implements ActionListener
   }
 
   @Override
-  final public void actionPerformed( final ActionEvent action ) {
+  public final void actionPerformed( final ActionEvent action ) {
     final Object actor = action.getSource();
 
-    if( actor instanceof JButton )
-    {
-      if( actor == buttonOriginalDelete )          onOriginalDelete();
-      else if( actor == buttonOriginalJoin )       onOriginalJoin();
-      else if( actor == buttonOriginalSplit )      onOriginalSplit();
-
-      else if( actor == buttonTranslationDelete )  onTranslationDelete();
-      else if( actor == buttonTranslationJoin )    onTranslationJoin();
-      else if( actor == buttonTranslationSplit )   onTranslationSplit();
-
-      else if( actor == buttonRemoveBlankRows )    onRemoveBlankRows();
-      else if( actor == buttonTUSplit )            onTUSplit();
-      else if( actor == buttonUndo )               onUndo();
+    if ( actor instanceof JButton ) {
+      if ( actor == buttonOriginalDelete ) {
+        onOriginalDelete();
+      } else if ( actor == buttonOriginalJoin ) {
+        onOriginalJoin();
+      } else if ( actor == buttonOriginalSplit ) {
+        onOriginalSplit();
+      } else if ( actor == buttonTranslationDelete ) {
+        onTranslationDelete();
+      } else if ( actor == buttonTranslationJoin )  {
+        onTranslationJoin();
+      } else if ( actor == buttonTranslationSplit ) {
+        onTranslationSplit();
+      } else if ( actor == buttonRemoveBlankRows )  {
+        onRemoveBlankRows();
+      } else if ( actor == buttonTuSplit )     {
+        onTuSplit();
+      } else if ( actor == buttonUndo )     {
+        onUndo();
+      }
     }
   }
 

@@ -55,6 +55,7 @@ import bitext2tmx.util.AppConstants;
 import static bitext2tmx.util.Localization.getString;
 
 
+@SuppressWarnings("serial")
 final public class OpenWiki extends JDialog implements ActionListener
 {
   /**

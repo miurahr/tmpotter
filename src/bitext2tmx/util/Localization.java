@@ -59,6 +59,7 @@ final public class Localization
   { return( _bundle.getString( strKey ) ); }
 
 
+  @SuppressWarnings("serial")
   final static public class LocalizationException extends Exception
   {
     public LocalizationException() { super(); }

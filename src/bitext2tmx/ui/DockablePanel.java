@@ -25,76 +25,87 @@
 
 package bitext2tmx.ui;
 
-import java.awt.Component;
-import javax.swing.JPanel;
-
 import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.docking.DockingConstants;
 
+import java.awt.Component;
+import javax.swing.JPanel;
+
+
 /**
- *  Dockable Panel
+ *  Dockable Panel.
  *
  */
 @SuppressWarnings("serial")
-class DockablePanel extends JPanel implements Dockable
-{
+class DockablePanel extends JPanel implements Dockable {
   private final DockKey dockKey;
 
-  /**  Default constructor */
-  protected DockablePanel(final String key)
-  {
+  /**
+   * Default constructor.
+   */
+  protected DockablePanel(final String key) {
     //  Use default autohide position
     dockKey = new DockKey(key);
     dockKey.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
     dockKey.setFloatEnabled(true);
   }
 
-  /**  Default constructor */
+  /**
+   * Default constructor.
+   */
   protected DockablePanel(final String key, final String name) {
     //  Use default autohide position
     this(key);
     dockKey.setName(name);
   }
 
-  /**  Constructor invoked with additional autohide border */
+  /**
+   * Constructor invoked with additional autohide border.
+   */
   protected DockablePanel( final String key, final String name,
                            final DockingConstants.Hide dcBorder ) {
     this(key, name);
     dockKey.setAutoHideBorder(dcBorder);
   }
 
-  /**  Constructor invoked with additional floatable flag */
+  /**
+   * Constructor invoked with additional floatable flag.
+   */
   protected DockablePanel( final String key, final String name,
                            final boolean floatable ) {
     this(key, name);
     dockKey.setFloatEnabled(floatable);
   }
 
-  /**  Constructor invoked with additional autohide border */
+  /**
+   * Constructor invoked with additional autohide border.
+   */
   protected DockablePanel( final String key, final String name,
-    final DockingConstants.Hide dcBorder, final boolean floatable) {
+      final DockingConstants.Hide dcBorder, final boolean floatable) {
     this(key, name, dcBorder);
     dockKey.setFloatEnabled(floatable);
   }
 
-  /**  Update docking panel name */
+  /**
+   * Update docking panel name.
+   */
   @Override
-  final public void setName(final String name) {
+  public final void setName(final String name) {
     dockKey.setName(name);
   }
   
-  final public void setTooltip(final String text) {
+  public final void setTooltip(final String text) {
     dockKey.setTooltip(text);
   }
 
   @Override
-  final public DockKey getDockKey() {
+  public final DockKey getDockKey() {
     return dockKey;
   }
   
   @Override
-  final public Component getComponent() {
+  public final Component getComponent() {
     return this;
   }
 }//  DockablePanel{}

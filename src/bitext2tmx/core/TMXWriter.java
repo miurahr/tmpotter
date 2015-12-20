@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.core;
+
+import static bitext2tmx.util.xml.XMLUtil.getValidXMLText;
+
+import bitext2tmx.util.Utilities;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,30 +30,27 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import bitext2tmx.util.Utilities;
-import static bitext2tmx.util.xml.XMLUtil.getValidXMLText;
-
 /**
- *
+ * save to TMX file.
+ * 
  * @author miurahr
  */
 public class TMXWriter {
 
   /**
    *
-   * @param fNombre
-   * @param _alstOriginal
-   * @param langOriginal
-   * @param _alstTranslation
-   * @param langTranslation
-   * @param encoding
-   * @throws java.io.IOException
+   * @param outFileName file name to be written
+   * @param originalDocument Document to be written as source
+   * @param langOriginal  language tag for source
+   * @param translationDocument Document to be written as translation
+   * @param langTranslation language tag for translation
+   * @param encoding character encoding to be written to TMX
+   * @throws java.io.IOException may happen while writing file
    */
-  public static void writeBitext( final File fNombre,
-          Document _alstOriginal, String langOriginal,
-          Document _alstTranslation, String langTranslation,
-          String encoding) throws IOException
-  {
+  public static void writeBitext( final File outFileName,
+          Document originalDocument, String langOriginal,
+          Document translationDocument, String langTranslation,
+          String encoding) throws IOException {
     int cont = 0;
     final FileOutputStream fw;
     final OutputStreamWriter osw;
@@ -56,26 +58,17 @@ public class TMXWriter {
     final PrintWriter pw;
     int max = 0;
 
-    String _strTMXEnc = encoding;
-    try
-    {
-      fw = new FileOutputStream( fNombre );
-      osw = new OutputStreamWriter( fw, _strTMXEnc );
+    String tmxEncoding = encoding;
+    try {
+      fw = new FileOutputStream(outFileName);
+      osw = new OutputStreamWriter(fw, tmxEncoding);
       bw = new BufferedWriter( osw );
       pw = new PrintWriter( bw );
 
-      max = Utilities.largerSize(_alstOriginal.size(), _alstTranslation.size()) - 1 ;
-      //pw.println("<?xml version=\"1.0\" encoding=\"" + cod_TMX + "\"?>"); //poner el encoding
-      pw.println( "<?xml version=\"1.0\" encoding=\"" + _strTMXEnc + "\"?>" ); //poner
-      pw.println( "<tmx version=\"1.4\">" );
-      //pw.println( "  <header creationtool=\"Bitext2tmx\" " +
-                  //"creationtoolversion=\"1.0\" segtype=\"sentence\" o-tmf=\"Bitext2tmx\" " +
-                  //"adminlang=\"en\" srclang=\"" +
-                  //_strLangOriginal.toLowerCase() + "\" " +
-                  //"datatype=\"PlainText\"  o-encoding=\"" + _strTMXEnc + "\">" );
-
-      //pw.println(  );
-      //pw.println(  );
+      max = Utilities.largerSize(originalDocument.size(),
+              translationDocument.size()) - 1 ;
+      pw.println("<?xml version=\"1.0\" encoding=\"" + tmxEncoding + "\"?>");
+      pw.println("<tmx version=\"1.4\">" );
       pw.println( "  <header" );
       pw.println( "    creationtool=\"Bitext2tmx\"" );
       pw.println( "    creationtoolversion=\"1.0\"" );
@@ -84,52 +77,42 @@ public class TMXWriter {
       pw.println( "    adminlang=\"en\"" );
       pw.println( "    srclang=\"" + langOriginal.toLowerCase() + "\"" );
       pw.println( "    datatype=\"PlainText\"" );
-      pw.println( "    o-encoding=\"" + _strTMXEnc + "\"" );
+      pw.println( "    o-encoding=\"" + tmxEncoding + "\"" );
       pw.println( "  >" );
 
       pw.println( "  </header>" );
-      pw.println( "  <body>" );
+      pw.println("  <body>" );
 
-      while( cont <= max )
-      {
-        if( !( _alstOriginal.get( cont ).equals( "" ) ) &&
-            !( _alstTranslation.get( cont ).equals( "" ) ) )
-        {
-          pw.println( "  <tu tuid=\"" + ( cont ) + "\" datatype=\"Text\">" );
+      while (cont <= max) {
+        if (!( originalDocument.get( cont ).equals( "" ))
+            && !( translationDocument.get( cont ).equals( "" ) ) ) {
+          pw.println("  <tu tuid=\"" + ( cont ) + "\" datatype=\"Text\">" );
 
-          if( max >= cont )
-          {
-            if( !( _alstOriginal.get( cont ).equals( "" ) ) )
-            {
-              pw.println( "    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
-              //pw.println("      <seg>" + _alstOriginal.get( cont ) + "</seg>" );
-              pw.println("      <seg>" +
-               getValidXMLText( (String)_alstOriginal.get( cont ) ) +
-                "</seg>" );
-              pw.println( "    </tuv>");
-            }
-            else
-            {
-              pw.println( "    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
-              pw.println( "      <seg>  </seg>");
-              pw.println( "    </tuv>");
+          if (max >= cont) {
+            if (!( originalDocument.get( cont ).equals( "" ))) {
+              pw.println("    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
+              pw.println("      <seg>"
+                  + getValidXMLText( (String)originalDocument.get(cont))
+                  + "</seg>");
+              pw.println("    </tuv>");
+            } else {
+              pw.println("    <tuv xml:lang=\"" + langOriginal.toLowerCase() + "\">" );
+              pw.println("      <seg>  </seg>");
+              pw.println("    </tuv>");
             }
           }
 
-          if( max >= cont )
-          {
-            if( !( _alstTranslation.get( cont ).equals( "" ) ) )
-            {
-              pw.println( "    <tuv xml:lang=\"" + langTranslation.toLowerCase() + "\">" );
-              //pw.println("      <seg>" + _alstTranslation.get( cont ) + "</seg>");
-              pw.println("      <seg>" +
-                getValidXMLText( (String)_alstTranslation.get( cont ) ) +
-                 "</seg>" );
-              pw.println( "    </tuv>");
-            }
-            else
-            {
-              pw.println("    <tuv xml:lang=\"" + langTranslation.toLowerCase() + "\">" );
+          if (max >= cont) {
+            if (!( translationDocument.get( cont ).equals( "" ))) {
+              pw.println("    <tuv xml:lang=\""
+                      + langTranslation.toLowerCase() + "\">" );
+              pw.println("      <seg>"
+                      + getValidXMLText(translationDocument.get(cont)) 
+                      + "</seg>");
+              pw.println("    </tuv>");
+            } else {
+              pw.println("    <tuv xml:lang=\"" + langTranslation.toLowerCase()
+                      + "\">" );
               pw.println("      <seg>  </seg>");
               pw.println("    </tuv>");
             }
@@ -144,12 +127,12 @@ public class TMXWriter {
       pw.println( "  </body>" );
       pw.println( "</tmx>" );
       pw.close();
-    }
-    catch( final IOException ex )
-    {
+    
+    } catch (IOException ex) {
       LOG.log(Level.WARNING, "IO error", ex);
     }
   }
+
   private static final Logger LOG = Logger.getLogger(TMXWriter.class.getName());
 
 }
