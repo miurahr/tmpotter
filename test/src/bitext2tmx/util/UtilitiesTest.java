@@ -68,7 +68,7 @@ public class UtilitiesTest extends TestCase {
   public void testPrintUTF8() {
     System.out.println("printUTF8");
     String output = "test output";
-    Utilities.printUTF8(output);
+    Utilities.printUtf8(output);
   }
 
   /**
@@ -79,7 +79,7 @@ public class UtilitiesTest extends TestCase {
     String dir = "";
     String filename = "";
     String output = "";
-    Utilities.saveUTF8(dir, filename, output);
+    Utilities.saveUtf8(dir, filename, output);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }

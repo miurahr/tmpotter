@@ -38,27 +38,8 @@ public class TextHandler implements IImportFilter {
   }
   
   @Override
-  public void load(File fSourceFile, File fTargetFile) throws Exception {
-    /*      while( _alstOriginal.size() > _alstTranslation.size() )
-        _alstTranslation.add( _alstTranslation.size(), "" );
+  public void load(File sourceFile, File targetFile) throws Exception {
 
-      while( _alstTranslation.size() > _alstOriginal.size() )
-        _alstOriginal.add( _alstOriginal.size(), "" );
-      while( limpiar )
-      {
-        if( ( ( _alstOriginal.get( _alstOriginal.size() - 1 ) == null )
-           || ( _alstOriginal
-            .get( _alstOriginal.size() - 1 ).equals( "" ) ) )
-            && ( ( _alstTranslation.get( _alstTranslation.size() - 1 ) == null )
-          || ( _alstTranslation
-                .get( _alstTranslation.size() - 1 ).equals( "" ) ) ) )
-        {
-          _alstOriginal.remove( _alstOriginal.size() - 1 );
-          _alstTranslation.remove( _alstTranslation.size() - 1 );
-        }
-        else limpiar = false;
-      }
-  */
   }
   
   @Override

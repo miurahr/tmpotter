@@ -31,9 +31,9 @@ package bitext2tmx.engine;
  * 
  */
 public class SegmentChanges {
-  int tipo;
+  int kind;
   int pos;
-  boolean fuente;
+  boolean source;
   String phrase;
   int indexLine;
   int [] numEliminada;
@@ -43,9 +43,9 @@ public class SegmentChanges {
    * Constructor.
    */
   public SegmentChanges() {
-    tipo        = 0;
+    kind        = 0;
     pos         = 0;
-    fuente      = false;
+    source      = false;
     phrase       = "";
     indexLine = -1;
   }
@@ -53,28 +53,28 @@ public class SegmentChanges {
   /**
    * Constructor.
    * 
-   * @param ktipo tipo
-   * @param kpos  pos
-   * @param kfuente fuente
-   * @param kfrase frase
-   * @param kident_linea ident line
+   * @param kind tipo
+   * @param position  pos
+   * @param source fuente
+   * @param phrase frase
+   * @param index ident line
    */
-  public SegmentChanges( int ktipo, int kpos, boolean kfuente, 
-      String kfrase, int kident_linea )  {
-    tipo        = ktipo;
-    pos         = kpos;
-    fuente      = kfuente;
-    phrase       = kfrase;
-    indexLine = kident_linea;
+  public SegmentChanges( int kind, int position, boolean source, 
+      String phrase, int index )  {
+    this.kind        = kind;
+    this.pos         = position;
+    this.source      = source;
+    this.phrase      = phrase;
+    this.indexLine   = index;
   }
 
   /**
-   * Accessor for tipo.
+   * Accessor for kind.
    * 
-   * @return tipo
+   * @return kind
    */
-  public int     getTipo()         {
-    return ( tipo );
+  public int     getKind()         {
+    return ( kind );
   }
   
   /**
@@ -110,7 +110,7 @@ public class SegmentChanges {
    * @return source
    */
   public boolean getSource()       {
-    return ( fuente );
+    return ( source );
   }
   
   /**
@@ -139,7 +139,7 @@ public class SegmentChanges {
    * @param ktipo to be set
    */
   public void setTipo( int ktipo )         {
-    tipo   = ktipo;
+    kind   = ktipo;
   }
   
   /**
@@ -154,10 +154,10 @@ public class SegmentChanges {
   /**
    * Setter for fuente.
    * 
-   * @param kFuente to set boolean
+   * @param source to set boolean
    */
-  public void setFuente( boolean kFuente ) {
-    fuente = kFuente;
+  public void setSource( boolean source ) {
+    this.source = source;
   }
   
   /**
@@ -172,10 +172,10 @@ public class SegmentChanges {
   /**
    * Setter for line ident.
    * 
-   * @param kident_linea to set
+   * @param index to set
    */
-  public void setIdent_linea( int kident_linea ) {
-    indexLine = kident_linea;
+  public void setIdent_linea( int index ) {
+    indexLine = index;
   }
 
   /**
@@ -190,8 +190,4 @@ public class SegmentChanges {
       numEliminada[cont] = keliminadas[cont];
     }
   }
-
-}//  SegmentChanges{}
-
-
-
+}

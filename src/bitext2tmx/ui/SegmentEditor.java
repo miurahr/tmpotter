@@ -107,7 +107,7 @@ final class SegmentEditor extends DockablePanel {
   //final public void setFonts( final Font f ) { _tpn.setFont( f ); }
 
   public final void setEditorFont( final Font font ) {
-    if( textPane != null ) {
+    if ( textPane != null ) {
       textPane.setFont( font );
     } else {
       System.out.println( " _ed _tpn does not exist yet!" );
@@ -129,7 +129,5 @@ final class SegmentEditor extends DockablePanel {
   private void onClicked() {
     windowMain.setTextAreaPosition( textPane.getSelectionStart() );
   }
-
-}// SegmentEditor{}
-
+}
 

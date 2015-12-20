@@ -67,6 +67,4 @@ public class SplashScreen extends JWindow {
     setVisible( false );
     dispose();
   }
-
-}//  SpalshScreen{}
-
+}

@@ -29,10 +29,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- *  Localization: localization functionality
+ *  Localization: localization functionality.
  */
-final public class Localization
-{
+public final class Localization {
   //  Init the bundle
   private static ResourceBundle _bundle = ResourceBundle.getBundle("bitext2tmx/Bundle");
 
@@ -40,38 +39,43 @@ final public class Localization
    * Returns resource bundle.
    */
   public static ResourceBundle getResourceBundle() {
-        return _bundle;
+    return _bundle;
   }
 
   /**
-   *  Private constructor
+   *  Private constructor.
+   * 
    *  @noinspection UNUSED_SYMBOL
    */
   private Localization() {}
 
   /**
-   *  l10n: return localized string for given key
+   *  l10n: return localized string for given key.
    *
-   *  @param  String
-   *  @return String
+   *  @param  String key
+   *  @return String translated string
    */
-  final public static String getString( final String strKey )
-  { return( _bundle.getString( strKey ) ); }
-
-
-  @SuppressWarnings("serial")
-  final static public class LocalizationException extends Exception
-  {
-    public LocalizationException() { super(); }
-
-    /**
-    *  LocalizationException with message parameter
-    *  @param  String
-    *  @return void
-    */
-    public LocalizationException( final String msg ) { super( msg ); }
+  public static final String getString( final String strKey ) {
+    return ( _bundle.getString( strKey ) );
   }
 
-}//  Localization{}
+  /**
+   * Exception on localization.
+   * 
+   */
+  @SuppressWarnings("serial")
+  public static final class LocalizationException extends Exception {
+    public LocalizationException() {
+      super();
+    }
 
-
+    /**
+     *  LocalizationException with message parameter.
+     * 
+     * @param msg exception message
+     */
+    public LocalizationException( final String msg ) {
+      super( msg );
+    }
+  }
+}

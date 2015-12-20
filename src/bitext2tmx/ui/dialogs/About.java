@@ -61,12 +61,12 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public final class About extends JDialog {
 
-  public About( MainWindow mWindow ) {
-    this(mWindow, true );
+  public About( MainWindow mainWindow ) {
+    this(mainWindow, true );
   }
 
-  public About(MainWindow mWIndow, Boolean modal) {
-    super(mWIndow, modal);
+  public About(MainWindow mainWindow, Boolean modal) {
+    super(mainWindow, modal);
     initComponents();
   }
 
@@ -120,14 +120,12 @@ public final class About extends JDialog {
     getContentPane().add( labelIcon, gbc );
 
     setLocalizedText( buttonClose, getString( "BTN.CLOSE" ) );
-    buttonClose.addActionListener( new ActionListener()
-      {
-        @Override
-        public void actionPerformed( final ActionEvent evt ) {
-          onClose(); 
-        }
+    buttonClose.addActionListener( new ActionListener() {
+      @Override
+      public void actionPerformed( final ActionEvent evt ) {
+        onClose(); 
       }
-    );
+    });
 
     gbc.anchor    = GridBagConstraints.CENTER;
     getContentPane().add( buttonClose, gbc );
@@ -151,5 +149,4 @@ public final class About extends JDialog {
   private final JButton  buttonClose  = new JButton();
   private final JPanel   panelButtons = new JPanel();
   // End of variables declaration
-
-}//  About{}
+}

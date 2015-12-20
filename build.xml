@@ -222,10 +222,21 @@
     </zip>
   </target>
 
+  <target name="-post-compile-test" depends="checkstyle"/>
+
   <target name="checkstyle"
         description="Generates a report of code convention violations.">
-      <checkstyle config="doc/google_checks.xml">
-        <fileset dir="src" includes="**/*.java"/>
+    <checkstyle config="doc/codingstyle_checks.xml">
+      <fileset dir="src">
+        <patternset>
+          <include name="**/*.java"/>
+          <exclude name="**/util/xml/*.java"/>
+          <exclude name="**/util/Base64.java"/>
+          <exclude name="**/*Test*"/>
+        </patternset>
+      </fileset>
+      <formatter type="plain"/>
+      <formatter type="xml" toFile="build/checkstyle_errors.xml"/>
     </checkstyle>
   </target>
 

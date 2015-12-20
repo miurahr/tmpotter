@@ -26,8 +26,8 @@
 
 package bitext2tmx.ui;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
 import static bitext2tmx.util.Localization.getString;
+import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -152,27 +152,27 @@ final class ControlView extends DockablePanel implements ActionListener {
     buttonTranslationSplit   .setFont( font );
   }
 
-  final void enableButtons( boolean bEnabled ) {
-    buttonRemoveBlankRows    .setEnabled( bEnabled );
-    buttonTuSplit            .setEnabled( bEnabled );
-    buttonOriginalJoin       .setEnabled( bEnabled );
-    buttonOriginalDelete     .setEnabled( bEnabled );
-    buttonOriginalSplit      .setEnabled( bEnabled );
-    buttonTranslationJoin    .setEnabled( bEnabled );
-    buttonTranslationDelete  .setEnabled( bEnabled );
-    buttonTranslationSplit   .setEnabled( bEnabled );
+  final void enableButtons( boolean enabled ) {
+    buttonRemoveBlankRows    .setEnabled( enabled );
+    buttonTuSplit            .setEnabled( enabled );
+    buttonOriginalJoin       .setEnabled( enabled );
+    buttonOriginalDelete     .setEnabled( enabled );
+    buttonOriginalSplit      .setEnabled( enabled );
+    buttonTranslationJoin    .setEnabled( enabled );
+    buttonTranslationDelete  .setEnabled( enabled );
+    buttonTranslationSplit   .setEnabled( enabled );
   }
 
-  public final void setUndoEnabled( boolean bEnabled ) {
-    buttonUndo.setEnabled( bEnabled );
+  public final void setUndoEnabled( boolean enabled ) {
+    buttonUndo.setEnabled( enabled );
   }
 
-  public final void setOriginalJoinEnabled( boolean bEnabled ) {
-    buttonOriginalJoin.setEnabled( bEnabled );
+  public final void setOriginalJoinEnabled( boolean enabled ) {
+    buttonOriginalJoin.setEnabled( enabled );
   }
 
-  public final void setTranslationJoinEnabled( boolean bEnabled ) {
-    buttonTranslationJoin.setEnabled( bEnabled );
+  public final void setTranslationJoinEnabled( boolean enabled ) {
+    buttonTranslationJoin.setEnabled( enabled );
   }
 
   public final void updateText() {
@@ -267,7 +267,4 @@ final class ControlView extends DockablePanel implements ActionListener {
       }
     }
   }
-
-}//  ControlView{}
-
-
+}

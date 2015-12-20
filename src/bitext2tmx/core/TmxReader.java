@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * 
  * @author Hiroshi Miura
  */
-public class TMXReader {
+public class TmxReader {
   
   private static String  languageOriginal    = "en";
   private static String  languageTranslation = "en";
@@ -42,17 +42,17 @@ public class TMXReader {
  /**
   *  Read in TMX.
   * 
-   * @param fPathOriginal  TMX file path
+   * @param pathOriginal  TMX file path
    * @param encoding  Character encoding of the file
    * @param originalDocument Source text document to be returned
    * @param translationDocument Translation text document to be returned
   */
-  public static void readTmx(final File fPathOriginal, final String encoding,
+  public static void readTmx(final File pathOriginal, final String encoding,
           Document originalDocument, Document translationDocument) {
     ArrayList<String> tmxSourceText = new ArrayList<>();
     
     try {
-      final FileInputStream fis = new FileInputStream( fPathOriginal );
+      final FileInputStream fis = new FileInputStream( pathOriginal );
       final InputStreamReader inputReader;
 
       if (encoding.equals(Localization.getString("ENCODING.DEFAULT"))) {

@@ -94,7 +94,7 @@ public class Main {
    */
   private void setLnF() {
     try {
-      if (Platform.isMacOSX()) {
+      if (Platform.isMacOsx()) {
         System.setProperty( "apple.awt.graphics.UseQuartz", "true" );
         System.setProperty( "apple.laf.useScreenMenuBar", "true" );
         System.setProperty( "com.apple.mrj.application.apple.menu.about.name",

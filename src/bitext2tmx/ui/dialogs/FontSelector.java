@@ -28,24 +28,22 @@
 
 package bitext2tmx.ui.dialogs;
 
+import static bitext2tmx.util.Localization.getString;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
 import bitext2tmx.ui.MainWindow;
+
 import java.awt.Color;
 import java.awt.Dimension;
-
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import java.awt.Font;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -54,75 +52,77 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import static bitext2tmx.util.Localization.getString;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 
 /**
- *  Dialog to select the fonts of bitext2tmx
+ *  Dialog to select the fonts of bitext2tmx.
  *
  */
-final public class FontSelector extends JDialog
-{
-  private static final long serialVersionUID = -6397001323725358841L;
+@SuppressWarnings("serial")
+public final class FontSelector extends JDialog {
 
-  public FontSelector( final MainWindow wndB2T, final Font[] afnt )
-  {
+  /**
+   * Show font selector.
+   * 
+   * @param wndB2T frame
+   * @param afnt font list
+   */
+  public FontSelector( final MainWindow wndB2T, final Font[] afnt ) {
     super( wndB2T, true );
 
-    _wndB2T = wndB2T;
+    windowMain = wndB2T;
 
     initialize();
 
-    getRootPane().setDefaultButton( _btnClose );
+    getRootPane().setDefaultButton( buttonClose );
 
-    _fntDialog = afnt[0];
+    fontDialog = afnt[0];
 
     //  Current font style
-    setFontStyle( _fntDialog.getStyle() );
+    setFontStyle( fontDialog.getStyle() );
 
     //  Conditionals test must be done in order
-    if( getFontStyle() == (Font.BOLD + Font.ITALIC) )
-      _cboxFontStyle.setSelectedIndex( 3 );
+    if ( getFontStyle() == (Font.BOLD + Font.ITALIC) ) {
+      comboFontStyle.setSelectedIndex( 3 );
     //  Italic alone is equivalent to Plain + Italic
-    else if( getFontStyle() == Font.ITALIC )
-      _cboxFontStyle.setSelectedIndex( 1 );
-    else if( getFontStyle() ==  Font.BOLD )
-      _cboxFontStyle.setSelectedIndex( 2 );
-    else if( getFontStyle() == Font.PLAIN )
-      _cboxFontStyle.setSelectedIndex( 0 );
-    else
-      _cboxFontStyle.setSelectedIndex( 0 );
+    } else if ( getFontStyle() == Font.ITALIC ) {
+      comboFontStyle.setSelectedIndex( 1 );
+    } else if ( getFontStyle() ==  Font.BOLD ) {
+      comboFontStyle.setSelectedIndex( 2 );
+    } else if ( getFontStyle() == Font.PLAIN ) {
+      comboFontStyle.setSelectedIndex( 0 );
+    } else {
+      comboFontStyle.setSelectedIndex( 0 );
+    }
+    
+    fontComboBox.setSelectedItem( fontDialog.getName() );
 
-    _fontComboBox.setSelectedItem( _fntDialog.getName() );
+    sizeSpinner.setValue( fontDialog.getSize() );
 
-    _sizeSpinner.setValue( _fntDialog.getSize() );
-
-    setFonts( _fntDialog );
+    setFonts( fontDialog );
   }
 
-
-  final private void initialize()
-  {
+  private void initialize() {
     final GridBagConstraints    gridBagConstraints;
 
-    _buttonPanel         = new JPanel();
-    _fontComboBox        = new JComboBox( _wndB2T.getFontFamilyNames() );
-    _fontLabel           = new JLabel();
-    _sizeSpinner         = new JSpinner();
-    _sizeLabel           = new JLabel();
-    _previewTextArea     = new JTextArea();
+    buttonPanel         = new JPanel();
+    fontComboBox        = new JComboBox( windowMain.getFontFamilyNames() );
+    fontLabel           = new JLabel();
+    sizeSpinner         = new JSpinner();
+    sizeLabel           = new JLabel();
+    previewTextArea     = new JTextArea();
 
-    _btnApply            = new JButton();
-    _btnClose            = new JButton();
+    buttonApply            = new JButton();
+    buttonClose            = new JButton();
 
-    _lblFontStyle        = new JLabel();
-    _lblFontDisplayArea  = new JLabel();
+    labelFontStyle        = new JLabel();
+    labelFontDisplayArea  = new JLabel();
 
-    _cboxFontStyle       = new JComboBox( _astrFontStyles );
-    _cboxFontDisplayArea = new JComboBox( _astrFontWindowAreas );
+    comboFontStyle       = new JComboBox( fontStyleList );
+    comboFontDisplayArea = new JComboBox( fontWindowAreasList );
 
 
     getContentPane().setLayout( new GridBagLayout() );
@@ -131,9 +131,12 @@ final public class FontSelector extends JDialog
 
     setModal( false );
 
-    addWindowListener( new WindowAdapter()
-      { public void windowClosing( final WindowEvent evt )
-        { DialogClose(); } } );
+    addWindowListener( new WindowAdapter() {
+      @Override
+      public void windowClosing( final WindowEvent evt ) {
+          dialogClose();
+      }
+    } );
 
 
     //  Build Dialog Grid Layout
@@ -146,7 +149,7 @@ final public class FontSelector extends JDialog
 
     //  Top row 0 - Font Label & Combobox
 
-    _fontLabel.setText( getString( "DLG.FONTS.LBL.SOURCE.FONT" ) );
+    fontLabel.setText( getString( "DLG.FONTS.LBL.SOURCE.FONT" ) );
 
     gridBagConstraints.gridx  = 0;
     gridBagConstraints.gridy  = 0;
@@ -154,16 +157,19 @@ final public class FontSelector extends JDialog
     gridBagConstraints.anchor = GridBagConstraints.WEST;
     gridBagConstraints.insets = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _fontLabel, gridBagConstraints );
+    getContentPane().add( fontLabel, gridBagConstraints );
 
 
-    _fontComboBox.setMaximumRowCount( 10 );
+    fontComboBox.setMaximumRowCount( 10 );
 
-    _fontComboBox.addActionListener( new ActionListener()
-      { public void actionPerformed( final ActionEvent evt )
-        { fontComboBoxActionPerformed( evt ); } } );
+    fontComboBox.addActionListener( new ActionListener() {
+        @Override
+        public void actionPerformed( final ActionEvent evt ) {
+          fontComboBoxActionPerformed( evt );
+        }
+    } );
 
-    _fontComboBox.setBackground( new Color( 255, 255,255 ) );
+    fontComboBox.setBackground( new Color( 255, 255,255 ) );
 
     gridBagConstraints.gridx   = 1;
     gridBagConstraints.gridy   = 0;
@@ -171,11 +177,11 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weightx = 1.0;
     gridBagConstraints.insets  = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _fontComboBox, gridBagConstraints );
+    getContentPane().add( fontComboBox, gridBagConstraints );
 
 
     //  Row 2 - Font Style
-    _lblFontStyle.setText( getString( "DLG.FONTS.LBL.STYLE" ) ); 
+    labelFontStyle.setText( getString( "DLG.FONTS.LBL.STYLE" ) ); 
 
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
@@ -183,12 +189,15 @@ final public class FontSelector extends JDialog
 
     gridBagConstraints.insets = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _lblFontStyle, gridBagConstraints );
+    getContentPane().add( labelFontStyle, gridBagConstraints );
 
 
-    _cboxFontStyle.addActionListener( new ActionListener()
-      { public void actionPerformed( final ActionEvent evt )
-        { FontStyleComboBoxEvent( evt ); } } );
+    comboFontStyle.addActionListener( new ActionListener() {
+        @Override
+        public void actionPerformed( final ActionEvent evt ) {
+          fontStyleComboBoxEvent( evt );
+        }
+    } );
 
 
     gridBagConstraints.gridx   = 1;
@@ -197,11 +206,11 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weightx = 1.0;
     gridBagConstraints.insets  = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _cboxFontStyle, gridBagConstraints );
+    getContentPane().add( comboFontStyle, gridBagConstraints );
 
 
     //  Row 3 - Size Label & Spinner
-    _sizeLabel.setText( getString( "DLG.FONTS.LBL.FONTSIZE" ) );
+    sizeLabel.setText( getString( "DLG.FONTS.LBL.FONTSIZE" ) );
 
     gridBagConstraints.gridx  = 0;
     gridBagConstraints.gridy  = 2;
@@ -210,23 +219,26 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weightx = 0.0;
     gridBagConstraints.insets = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _sizeLabel, gridBagConstraints );
+    getContentPane().add( sizeLabel, gridBagConstraints );
 
 
-    _sizeSpinner.addChangeListener( new ChangeListener()
-      { public void stateChanged( final ChangeEvent evt )
-        { sizeSpinnerStateChanged( evt ); } } );
+    sizeSpinner.addChangeListener( new ChangeListener() {
+        @Override
+        public void stateChanged( final ChangeEvent evt ) {
+          sizeSpinnerStateChanged( evt );
+        }
+    } );
 
     gridBagConstraints.gridx  = 1;
     gridBagConstraints.gridy  = 2;
     gridBagConstraints.fill   = GridBagConstraints.HORIZONTAL;
     gridBagConstraints.insets = new Insets( 5, 10, 5, 10 );
-    getContentPane().add( _sizeSpinner, gridBagConstraints ); 
+    getContentPane().add( sizeSpinner, gridBagConstraints ); 
 
 
     //  Row 3 - Font Display Area
-    _lblFontDisplayArea = new JLabel();
-    _lblFontDisplayArea.setText( getString( "DLG.FONTS.LBL.DISPLAY.AREA" ) );
+    labelFontDisplayArea = new JLabel();
+    labelFontDisplayArea.setText( getString( "DLG.FONTS.LBL.DISPLAY.AREA" ) );
 
     gridBagConstraints.gridx   = 0;
     gridBagConstraints.gridy   = 3;
@@ -234,12 +246,15 @@ final public class FontSelector extends JDialog
 
     gridBagConstraints.insets = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _lblFontDisplayArea, gridBagConstraints );
+    getContentPane().add( labelFontDisplayArea, gridBagConstraints );
 
 
-    _cboxFontDisplayArea.addActionListener( new ActionListener()
-       { public void actionPerformed( final ActionEvent evt )
-         { FontDisplayAreaComboBoxEvent( evt ); } } );
+    comboFontDisplayArea.addActionListener( new ActionListener() {
+        @Override
+        public void actionPerformed( final ActionEvent evt ) {
+          fontDisplayAreaComboBoxEvent( evt );
+        }
+    } );
 
     gridBagConstraints.gridx   = 1;
     gridBagConstraints.gridy   = 3;
@@ -247,23 +262,24 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weightx = 1.0;
     gridBagConstraints.insets  = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _cboxFontDisplayArea, gridBagConstraints );
+    getContentPane().add( comboFontDisplayArea, gridBagConstraints );
 
 
     //  Preview Text Area
-    _bdrTextPreview = new TitledBorder( null, getString( "DLG.FONTS.SAMPLE.TEXT" ),
-      TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
-        _fontLabel.getFont() );
+    bdrTextPreview = new TitledBorder( null,
+            getString( "DLG.FONTS.SAMPLE.TEXT" ),
+            TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
+            fontLabel.getFont() );
 
     //  White background
-    _previewTextArea.setBackground( new Color( 255, 255, 255 ) );
-    _previewTextArea.setEditable( false );
-    _previewTextArea.setLineWrap( true );
-    _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
-    _previewTextArea.setWrapStyleWord( true );
-    _previewTextArea.setBorder( _bdrTextPreview );
+    previewTextArea.setBackground( new Color( 255, 255, 255 ) );
+    previewTextArea.setEditable( false );
+    previewTextArea.setLineWrap( true );
+    previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
+    previewTextArea.setWrapStyleWord( true );
+    previewTextArea.setBorder( bdrTextPreview );
 
-    _previewTextArea.setPreferredSize( new Dimension( 100, 100 ) );
+    previewTextArea.setPreferredSize( new Dimension( 100, 100 ) );
 
     gridBagConstraints.gridx     = 0;
     gridBagConstraints.gridy     = 4;
@@ -273,24 +289,29 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weighty   = 1.0;
     gridBagConstraints.insets    = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _previewTextArea, gridBagConstraints );
+    getContentPane().add( previewTextArea, gridBagConstraints );
 
     //  Botom row - Button Panel OK & Cancel
-    _buttonPanel.setLayout(new FlowLayout( FlowLayout.RIGHT ) );
+    buttonPanel.setLayout(new FlowLayout( FlowLayout.RIGHT ) );
 
-    setLocalizedText( _btnApply, getString( "BTN.APPLY" ) );
-    _btnApply.addActionListener( new ActionListener()
-      { public void actionPerformed( final ActionEvent action )
-        { OnApplyButton( action ); } } );
+    setLocalizedText( buttonApply, getString( "BTN.APPLY" ) );
+    buttonApply.addActionListener( new ActionListener() {
+        @Override
+        public void actionPerformed( final ActionEvent action ) {
+          onApplyButton( action );
+        }
+    } );
 
-    _buttonPanel.add( _btnApply );
+    buttonPanel.add( buttonApply );
 
-    setLocalizedText( _btnClose, getString( "BTN.CLOSE" ) );
-    _btnClose.addActionListener( new ActionListener()
-      { public void actionPerformed( final ActionEvent evt )
-        { CloseButtonEvent( evt ); } } );
+    setLocalizedText( buttonClose, getString( "BTN.CLOSE" ) );
+    buttonClose.addActionListener( new ActionListener() {
+      public void actionPerformed( final ActionEvent evt ) {
+        closeButtonEvent( evt );
+      }
+    } );
 
-    _buttonPanel.add( _btnClose );
+    buttonPanel.add( buttonClose );
 
     gridBagConstraints.gridx     = 0;
     gridBagConstraints.gridy     = 5;
@@ -300,7 +321,7 @@ final public class FontSelector extends JDialog
     gridBagConstraints.weighty   = 0.0;
     gridBagConstraints.insets    = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _buttonPanel, gridBagConstraints );
+    getContentPane().add( buttonPanel, gridBagConstraints );
 
     pack();
 
@@ -309,74 +330,85 @@ final public class FontSelector extends JDialog
     java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     java.awt.Dimension dialogSize = getSize();
 
-    setLocation( ( screenSize.width - dialogSize.width )/2,
-     ( screenSize.height - dialogSize.height )/2 );
+    setLocation( ( screenSize.width - dialogSize.width ) / 2,
+        ( screenSize.height - dialogSize.height ) / 2 );
   }
 
 
-  /**  New Font, selected by the user */
-  final public Font getSelectedFont()
-  {
-    return( new Font( _fontComboBox.getSelectedItem().toString(), 
-      getFontStyle(), ( (Number)_sizeSpinner.getValue() ).intValue() ) );
+  /** 
+   * New Font, selected by the user.
+   */
+  public final Font getSelectedFont() {
+    return ( new Font( fontComboBox.getSelectedItem().toString(), 
+        getFontStyle(), ( (Number)sizeSpinner.getValue() ).intValue() ) );
   }
 
-  final public void setFontStyle( final int iFontStyle )
-  { _iFontStyle = iFontStyle; }
+  public final void setFontStyle( final int fontStyle ) {
+    this.fontStyle = fontStyle;
+  }
 
-  final public void setFontStyle()
-  {
-    switch( _cboxFontStyle.getSelectedIndex() )
-    {
+  /**
+   * set font style.
+   * 
+   * <p> such as PLAIN, ITALIC, BOLD...
+   */
+  public final void setFontStyle() {
+    switch ( comboFontStyle.getSelectedIndex() ) {
       case 0:
-        _iFontStyle = Font.PLAIN;
+        fontStyle = Font.PLAIN;
         break;
       case 1:
-        _iFontStyle = Font.ITALIC;
+        fontStyle = Font.ITALIC;
         break;
       case 2:
-        _iFontStyle = Font.BOLD;
+        fontStyle = Font.BOLD;
         break;
       case 3:
-        _iFontStyle = Font.BOLD + Font.ITALIC;
+        fontStyle = Font.BOLD + Font.ITALIC;
         break;
       default:
-        _iFontStyle = Font.PLAIN;
+        fontStyle = Font.PLAIN;
     }
   }
 
-  final public int getFontStyle() { return( _iFontStyle ); }
+  public final int getFontStyle() {
+    return ( fontStyle );
+  }
 
-  final public void setFontDisplayArea()
-  {
+  /**
+   * Set test on font display area by bundle.
+   */
+  public final void setFontDisplayArea() {
     //  Should set font area variable to use to set fonts
-    switch( _cboxFontDisplayArea.getSelectedIndex() )
-    {
+    switch ( comboFontDisplayArea.getSelectedIndex() ) {
       case 0:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TABLE" ) );
+        previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TABLE" ) );
         break;
       case 1:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TABLE.HDR" ));
+        previewTextArea.setText(
+                getString( "DLG.FONTS.SAMPLE.TEXT.TABLE.HDR" ));
         break;
       case 2:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.SOURCE.EDITOR" ) );
+        previewTextArea.setText(
+                getString( "DLG.FONTS.SAMPLE.TEXT.SOURCE.EDITOR" ) );
         break;
       case 3:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.TARGET.EDITOR" ) );
+        previewTextArea.setText(
+                getString( "DLG.FONTS.SAMPLE.TEXT.TARGET.EDITOR" ) );
         break;
       case 4:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.OTHER" ) );
+        previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT.OTHER" ) );
         break;
       default:
-        _previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
+        previewTextArea.setText( getString( "DLG.FONTS.SAMPLE.TEXT" ) );
+        break;
     }
   }
 
-  private void setFonts( final Font font )
-  {
+  private void setFonts( final Font font ) {
     setFont( font );
 
-    _fontLabel.setFont( font );
+    fontLabel.setFont( font );
 
     //  Set the font so that the strings will all show up
     //  Specifically needed for non ISO-8859 languages
@@ -386,114 +418,109 @@ final public class FontSelector extends JDialog
     //  - this is non EditView stuff
     //  - font for other UI stuff should be set independent
     //    of components that work with "document" text
-    _fontComboBox.setFont( font );
+    fontComboBox.setFont( font );
 
-    _cboxFontStyle.setFont( font );
-    _cboxFontDisplayArea.setFont( font );
+    comboFontStyle.setFont( font );
+    comboFontDisplayArea.setFont( font );
 
-    _sizeLabel.setFont( font );
+    sizeLabel.setFont( font );
 
-    _lblFontStyle.setFont( font );
-    _lblFontDisplayArea.setFont( font );
+    labelFontStyle.setFont( font );
+    labelFontDisplayArea.setFont( font );
 
-    _previewTextArea.setFont( font );
+    previewTextArea.setFont( font );
 
-    _bdrTextPreview.setTitleFont( font );
+    bdrTextPreview.setTitleFont( font );
 
-    _btnApply.setFont( font );
-    _btnClose.setFont( font );
+    buttonApply.setFont( font );
+    buttonClose.setFont( font );
   }
 
-  final public void setTextPreviewFont( final Font font ) {}
+  public final void setTextPreviewFont( final Font font ) {}
 
-  private void fontComboBoxActionPerformed( final ActionEvent evt )
-  { _previewTextArea.setFont( getSelectedFont() ); }
+  private void fontComboBoxActionPerformed( final ActionEvent evt ) {
+    previewTextArea.setFont( getSelectedFont() );
+  }
 
-  private void sizeSpinnerStateChanged( final ChangeEvent evt )
-  { _previewTextArea.setFont( getSelectedFont() ); }
+  private void sizeSpinnerStateChanged( final ChangeEvent evt ) {
+    previewTextArea.setFont( getSelectedFont() );
+  }
 
-  private void FontStyleComboBoxEvent( final ActionEvent evt )
-  {
+  private void fontStyleComboBoxEvent( final ActionEvent evt ) {
     setFontStyle(); 
-    _previewTextArea.setFont( getSelectedFont() );
+    previewTextArea.setFont( getSelectedFont() );
   }
 
-  private void FontDisplayAreaComboBoxEvent( final ActionEvent evt )
-  { setFontDisplayArea(); }
+  private void fontDisplayAreaComboBoxEvent( final ActionEvent evt ) {
+    setFontDisplayArea();
+  }
 
-  private void OnApplyButton( final ActionEvent action )
-  {
+  private void onApplyButton( final ActionEvent action ) {
     //  Should set font area variable to use to set fonts
-    switch( _cboxFontDisplayArea.getSelectedIndex() )
-    {
+    switch ( comboFontDisplayArea.getSelectedIndex() ) {
       //  Table
       case 0:
-        _wndB2T.setTableFont( getSelectedFont() );
+        windowMain.setTableFont( getSelectedFont() );
         break;
       //  Table Header
       case 1:
-        _wndB2T.setTableHeaderFont( getSelectedFont() );
+        windowMain.setTableHeaderFont( getSelectedFont() );
         break;
       //  Source Editor
       case 2:
-        _wndB2T.setSourceEditorFont( getSelectedFont() );
+        windowMain.setSourceEditorFont( getSelectedFont() );
         break;
       //  Target Editor
       case 3:
-        _wndB2T.setTargetEditorFont( getSelectedFont() );
+        windowMain.setTargetEditorFont( getSelectedFont() );
         break;
       //  Windows, Dialogs, Menus, etc.
       case 4:
-        _wndB2T.setUserInterfaceFont( getSelectedFont() );
+        windowMain.setUserInterfaceFont( getSelectedFont() );
         setFonts( getSelectedFont() );
         break;
       //  All GUI components  
       case 5:
       default:
-        _wndB2T.setFonts( getSelectedFont() );
+        windowMain.setFonts( getSelectedFont() );
         setFonts( getSelectedFont() );
     }
   }
 
-  private void CloseButtonEvent( final ActionEvent evt )
-  { DialogClose(); }
+  private void closeButtonEvent( final ActionEvent evt ) {
+    dialogClose();
+  }
 
-  private void DialogClose()
-  {
+  private void dialogClose() {
     setVisible( false );
     dispose();
   }
 
+  private final MainWindow windowMain;
 
-  private MainWindow _wndB2T;
+  private JPanel           buttonPanel;
+  private JComboBox        fontComboBox;
+  private JLabel           fontLabel;
+  private JTextArea        previewTextArea;
+  private TitledBorder     bdrTextPreview;
+  private JLabel           sizeLabel;
+  private JSpinner         sizeSpinner;
 
-  private JPanel           _buttonPanel;
-  private JComboBox        _fontComboBox;
-  private JLabel           _fontLabel;
-  private JTextArea        _previewTextArea;
-  private TitledBorder     _bdrTextPreview;
-  private JLabel           _sizeLabel;
-  private JSpinner         _sizeSpinner;
+  private JButton          buttonApply;
+  private JButton          buttonClose;
 
-  private JButton          _btnApply;
-  private JButton          _btnClose;
+  private int              fontStyle;
 
-  private int              _iFontStyle;
+  private JLabel           labelFontStyle; 
+  private JLabel           labelFontDisplayArea;
 
-  private JLabel           _lblFontStyle; 
-  private JLabel           _lblFontDisplayArea;
+  private JComboBox        comboFontStyle;
+  private JComboBox        comboFontDisplayArea;
 
-  private JComboBox        _cboxFontStyle;
-  private JComboBox        _cboxFontDisplayArea;
+  // The current editor and viewer font, passed in
+  private final Font fontDialog;
 
-  /** The current editor and viewer font, passed in */
-  private Font _fntDialog;
-
-  /** The current font for other UI elements, passed in */
-  //private Font _fntOther;
-
-
-  final private String[] _astrFontStyles =
+  private final String[] fontStyleList = 
   {
     getString( "FONT.STYLE.PLAIN" ),
     getString( "FONT.STYLE.ITALIC" ),
@@ -502,7 +529,7 @@ final public class FontSelector extends JDialog
   };
 
 
-  final private String[] _astrFontWindowAreas =
+  private final String[] fontWindowAreasList = 
   {
     getString( "DLG.FONTS.WND.AREA.TABLE" ),
     getString( "DLG.FONTS.WND.AREA.TABLE.HDR" ),
@@ -512,5 +539,4 @@ final public class FontSelector extends JDialog
     getString( "DLG.FONTS.WND.AREA.ALL" ) 
   };
 
-}//  DlgFonts{}
-
+}

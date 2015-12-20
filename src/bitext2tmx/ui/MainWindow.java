@@ -34,8 +34,8 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import bitext2tmx.core.Document;
 import bitext2tmx.core.DocumentSegmenter;
-import bitext2tmx.core.TMXReader;
-import bitext2tmx.core.TMXWriter;
+import bitext2tmx.core.TmxReader;
+import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
@@ -287,7 +287,7 @@ public final class MainWindow extends JFrame implements ActionListener,
   }
 
   private ImageIcon getDesktopIcon(final String iconName) {
-    if (Platform.isMacOSX()) {
+    if (Platform.isMacOsx()) {
       return (getIcon("desktop/osx/" + iconName));
     }
 
@@ -409,7 +409,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     if (ksShortcut != null) {
       menuItem.setAccelerator(ksShortcut);
     }
-    if (!Platform.isMacOSX() && icon != null) {
+    if (!Platform.isMacOsx() && icon != null) {
       menuItem.setIcon(icon);
     }
 
@@ -485,7 +485,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuItemFile.addSeparator();
     menuItemFile.add(menuItemFileClose);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemFile.addSeparator();
       menuItemFile.add(menuItemFileQuit);
     }
@@ -493,7 +493,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuSettings.add(menuCallbackSettingsLinebreak);
     menuSettings.add(menuItemSettingsFonts);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuLaf = makeMenuComponent(MenuComponentType.MENU, null, null,
               "Look and Feel", null);
 
@@ -533,7 +533,7 @@ public final class MainWindow extends JFrame implements ActionListener,
 
     menuHelp.add(menuItemHelpManual);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuHelp.addSeparator();
       menuHelp.add(menuItemHelpAbout);
     }
@@ -621,7 +621,7 @@ public final class MainWindow extends JFrame implements ActionListener,
         }
       } else {
         try {
-          TMXReader.readTmx(filePathOriginal, originalEncoding,
+          TmxReader.readTmx(filePathOriginal, originalEncoding,
                   documentOriginal, documentTranslation);
         } catch (Exception ex) {
           Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -765,7 +765,7 @@ public final class MainWindow extends JFrame implements ActionListener,
         }
       }
 
-      TMXWriter.writeBitext(outFile,
+      TmxWriter.writeBitext(outFile,
               documentOriginal, stringLangOriginal,
               documentTranslation, stringLangTranslation,
               encoding);
@@ -1106,7 +1106,7 @@ public final class MainWindow extends JFrame implements ActionListener,
 
     ultChanges = arrayListChanges.get(identChanges);
     identLabel = ultChanges.getIdent_linea();
-    int operacion = ultChanges.getTipo();
+    int operacion = ultChanges.getKind();
     int position;
     boolean izq = ultChanges.getSource();
     identAnt = identLabel;
@@ -1505,7 +1505,7 @@ public final class MainWindow extends JFrame implements ActionListener,
       //  Write to user preferences goes here
       //  To be done -RM
 
-     //  Default font (e.g. At startup from prefs file or for reset)    
+      //  Default font (e.g. At startup from prefs file or for reset)    
     } else {
       //  Read from user preferences goes here
       //  To be done -RM
@@ -1540,7 +1540,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuItemFileSaveAs.setFont(font);
     menuItemFileClose.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemFileQuit.setFont(font);
     }
 
@@ -1549,7 +1549,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuItemSettingsFonts.setFont(font);
     menuCallbackSettingsLinebreak.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuLaf.setFont(font);
       menuItemLafLiquid.setFont(font);
       menuLafMetal.setFont(font);
@@ -1565,7 +1565,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuHelp.setFont(font);
     menuItemHelpManual.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemHelpAbout.setFont(font);
     }
   }
@@ -1945,4 +1945,4 @@ public final class MainWindow extends JFrame implements ActionListener,
     identLabel = 0;
   }
 
-}// Bitext2tmxWindow{}
+}

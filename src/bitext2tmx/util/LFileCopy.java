@@ -27,6 +27,8 @@
 
 package bitext2tmx.util;
 
+import static bitext2tmx.util.Localization.getString;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,7 +38,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import static bitext2tmx.util.Localization.getString;
 
 /**
  * Utility class for copying untranslatable files.
@@ -46,77 +47,94 @@ import static bitext2tmx.util.Localization.getString;
  * @author Maxym Mykhalchuk
  */
 public class LFileCopy {
-    private static int BUFSIZE = 1024;
+  private static int BUFSIZE = 1024;
 
-    /** Copies one file. Creates directories on the path to dest if necessary. */
-    public static void copy(File src, File dest) throws IOException {
-        if (!src.exists()) {
-            throw new IOException(StringUtil.format(getString("LFC_ERROR_FILE_DOESNT_EXIST"),
-                    src.getAbsolutePath()));
-        }
-        FileInputStream fis = new FileInputStream(src);
-        dest.getParentFile().mkdirs();
-        FileOutputStream fos = new FileOutputStream(dest);
-        byte[] b = new byte[BUFSIZE];
-        int readBytes;
-        while ((readBytes = fis.read(b)) > 0) {
-            fos.write(b, 0, readBytes);
-        }
-        fis.close();
-        fos.close();
+  /** Copies one file. Creates directories on the path to dest if necessary. */
+  public static void copy(File src, File dest) throws IOException {
+    if (!src.exists()) {
+      throw new IOException(StringUtil
+                .format(getString("LFC_ERROR_FILE_DOESNT_EXIST"),
+                src.getAbsolutePath()));
     }
+    FileInputStream fis = new FileInputStream(src);
+    dest.getParentFile().mkdirs();
+    FileOutputStream fos = new FileOutputStream(dest);
+    byte[] ba = new byte[BUFSIZE];
+    int readBytes;
+    while ((readBytes = fis.read(ba)) > 0) {
+      fos.write(ba, 0, readBytes);
+    }
+    fis.close();
+    fos.close();
+  }
 
-    /** Stores a file from input stream. Input stream is not closed. */
-    public static void copy(InputStream src, File dest) throws IOException {
-        dest.getParentFile().mkdirs();
-        FileOutputStream fos = new FileOutputStream(dest);
-        byte[] b = new byte[BUFSIZE];
-        int readBytes;
-        while ((readBytes = src.read(b)) > 0) {
-            fos.write(b, 0, readBytes);
-        }
-        fos.close();
+  /** 
+   * Stores a file from input stream.
+   * 
+   * <p>Input stream is not closed.
+   * 
+   * @param src input
+   * @param dest output
+   * @throws java.io.IOException if stream has error.
+   */
+  public static void copy(InputStream src, File dest) throws IOException {
+    dest.getParentFile().mkdirs();
+    FileOutputStream fos = new FileOutputStream(dest);
+    byte[] ba = new byte[BUFSIZE];
+    int readBytes;
+    while ((readBytes = src.read(ba)) > 0) {
+      fos.write(ba, 0, readBytes);
     }
+    fos.close();
+  }
 
-    /**
-     * Transfers all the input stream to the output stream. Input and output
-     * streams are not closed.
-     */
-    public static void copy(InputStream src, OutputStream dest) throws IOException {
-        byte[] b = new byte[BUFSIZE];
-        int readBytes;
-        while ((readBytes = src.read(b)) > 0) {
-            dest.write(b, 0, readBytes);
-        }
+  /**
+   * Transfers all the input stream to the output stream.
+   * 
+   * <p>Input and output
+   * streams are not closed.
+   * @param src input
+   * @param dest output
+   * @throws java.io.IOException if input, output has error
+   */
+  public static void copy(InputStream src, OutputStream dest) throws IOException {
+    byte[] ba = new byte[BUFSIZE];
+    int readBytes;
+    while ((readBytes = src.read(ba)) > 0) {
+      dest.write(ba, 0, readBytes);
     }
+  }
 
-    /**
-     * Transfers all data from reader to writer. Reader and writer are not
-     * closed.
-     */
-    public static void copy(Reader src, Writer dest) throws IOException {
-        char[] b = new char[BUFSIZE];
-        int readChars;
-        while ((readChars = src.read(b)) > 0) {
-            dest.write(b, 0, readChars);
-        }
+  /**
+   * Transfers all data from reader to writer.
+   * 
+   * <p>Reader and writer are not
+   * closed.
+   */
+  public static void copy(Reader src, Writer dest) throws IOException {
+    char[] ba = new char[BUFSIZE];
+    int readChars;
+    while ((readChars = src.read(ba)) > 0) {
+      dest.write(ba, 0, readChars);
     }
+  }
 
-    /**
-     * Loads contents of a file into output stream. Output stream is not closed.
-     */
-    public static void copy(File src, OutputStream dest) throws IOException {
-        if (!src.exists()) {
-            throw new IOException(StringUtil.format(getString("LFC_ERROR_FILE_DOESNT_EXIST"),
-                    src.getAbsolutePath()));
-        }
-        FileInputStream fis = new FileInputStream(src);
-        byte[] b = new byte[BUFSIZE];
-        int readBytes;
-        while ((readBytes = fis.read(b)) > 0) {
-            dest.write(b, 0, readBytes);
-        }
-        fis.close();
+  /**
+   * Loads contents of a file into output stream. Output stream is not closed.
+   */
+  public static void copy(File src, OutputStream dest) throws IOException {
+    if (!src.exists()) {
+      throw new IOException(StringUtil
+              .format(getString("LFC_ERROR_FILE_DOESNT_EXIST"),
+              src.getAbsolutePath()));
     }
+    FileInputStream fis = new FileInputStream(src);
+    byte[] ba = new byte[BUFSIZE];
+    int readBytes;
+    while ((readBytes = fis.read(ba)) > 0) {
+      dest.write(ba, 0, readBytes);
+    }
+    fis.close();
+  }
 
 }

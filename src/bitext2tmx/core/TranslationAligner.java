@@ -60,10 +60,10 @@ public class TranslationAligner {
       final float[][] vote  = new float[tamF + 1][tamM + 1];
       final float[][] costArray  = new float[tamF + 1][tamM + 1];
       final float[][] result = new float[tamF + 1][tamM + 1];
-      float gainX = 5;
-      float gainS = 1;
-      float gainE = 1;
-      int limitD = 2;
+      final float gainX = 5;
+      final float gainS = 1;
+      final float gainE = 1;
+      final int limitD = 2;
       int cont  = 0;
       int cont2 = 0;
 
@@ -166,14 +166,14 @@ public class TranslationAligner {
       // simplification of _ult_recorridoinv
       char been = 'x';
       String storage = "";
-      int i = tamF - 1;
-      int j = tamM - 1;
+      int i1 = tamF - 1;
+      int i2 = tamM - 1;
 
       for (cont = 0; cont < ultRecov.length(); cont++) {
         switch (ultRecov.charAt(cont)) {
           case 's':
-            i--;
-            if (been == 'e' && isAlignedOkSe(v1, v2, i, j)) {
+            i1--;
+            if (been == 'e' && isAlignedOkSe(v1, v2, i1, i2)) {
               char[] storageChar = storage.toCharArray();
               storageChar[storage.length() - 1] = 'x';
               storage = new String(storageChar);
@@ -185,8 +185,8 @@ public class TranslationAligner {
             break;
 
           case 'e':
-            j--;
-            if (been == 's' && isAlignedOkEs(v1, v2, i, j)) {
+            i2--;
+            if (been == 's' && isAlignedOkEs(v1, v2, i1, i2)) {
               char[] storageChar = storage.toCharArray();
               storageChar[storage.length() - 1] = 'x';
               storage = new String( storageChar );
@@ -198,7 +198,7 @@ public class TranslationAligner {
             break;
 
           case 'x':
-            i--;
+            i1--;
             been = 'x';
             storage = storage + 'x';
             break;
@@ -218,8 +218,8 @@ public class TranslationAligner {
       Source.add(originalDocument.get( 0 ) );
       Target.add(translationDocument.get( 0 ) );
 
-      for (i = ultRecov.length() - 1; i >= 0; i--) {
-        switch (ultRecov.charAt(i)) {
+      for (i1 = ultRecov.length() - 1; i1 >= 0; i1--) {
+        switch (ultRecov.charAt(i1)) {
           case 'x':
             Source.add(originalDocument.get( f1 ) );
             Target.add(translationDocument.get( f2 ) );
@@ -331,5 +331,4 @@ public class TranslationAligner {
           final int i1, final int i2) {
     return Math.abs(v1[i1 - 1] - v2[i2]) < Math.abs(v1[i1] - v2[i2]);
   }
-
 }

@@ -26,8 +26,13 @@
 
 package bitext2tmx.ui.dialogs;
 
-import java.awt.Frame;
+import static bitext2tmx.util.Localization.getString;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
+import bitext2tmx.util.AppConstants;
+
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -43,255 +48,308 @@ import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
 
-import bitext2tmx.util.AppConstants;
-import static bitext2tmx.util.Localization.getString;
-
-
+/**
+ * dialog to open wiki page.
+ * 
+ * @author Hiroshi Miura
+ */
 @SuppressWarnings("serial")
-final public class OpenWiki extends JDialog implements ActionListener
-{
+public final class OpenWiki extends JDialog implements ActionListener {
+
+  private final JPanel  panel = new JPanel();
+
+  private final JLabel      labelOriginal = new JLabel();
+  private final JTextField  fieldOriginal = new JTextField();
+  private final JButton     buttonOriginal = new JButton();
+
+  private final JLabel      labelTranslation = new JLabel();
+  private final JTextField  fieldTranslation = new JTextField();
+  private final JButton     buttonTranslation = new JButton();
+
+  private final JButton  buttonOk     = new JButton();
+  private final JButton  buttonCancel = new JButton();
+
+  private final JLabel  labelEncoding            = new JLabel();
+  private final JLabel  labelOriginalEncoding    = new JLabel();
+  private final JLabel  labelTranslationEncoding = new JLabel();
+
+  private File     filePath;
+  private File     originalFilePath;
+  private File     translationFilePath;
+  private String   stringOriginal;
+  private String   stringTranslation;
+  private boolean  closed;
+  private int      type;  // = 0;  // 0: text (default); 1: tmx
+
   /**
-   *
+   * get file path.
+   * 
+   * @return file
    */
+  public final File getPath() {
+    return ( filePath );
+  }
+  
+  /**
+   * set file path.
+   * 
+   * @param filePath path to set
+   */
+  public final void setPath( final File filePath ) {
+    this.filePath = filePath;
+  }
 
-  final private JPanel  _pnl = new JPanel();
+  public final File getSourcePath() {
+    return ( originalFilePath );
+  }
+  
+  public final File getTargetPath() {
+    return ( translationFilePath );
+  }
 
-  final private JLabel      _lblOriginal = new JLabel();
-  final private JTextField  _tfdOriginal = new JTextField();
-  final private JButton     _btnOriginal = new JButton();
+  public final boolean isClosed() {
+    return ( closed );
+  }
 
-  final private JLabel      _lblTranslation = new JLabel();
-  final private JTextField  _tfdTranslation = new JTextField();
-  final private JButton     _btnTranslation = new JButton();
+  public final String getSource() {
+    return ( stringOriginal );
+  }
+  
+  public final String getTarget() {
+    return ( stringTranslation );
+  }
 
-  final private JButton  _btnOK     = new JButton();
-  final private JButton  _btnCancel = new JButton();
+  public final int getTypes() {
+    return ( type );
+  }
 
-  final private JLabel  _lblEncoding            = new JLabel();
-  final private JLabel  _lblOriginalEncoding    = new JLabel();
-  final private JLabel  _lblTranslationEncoding = new JLabel();
+  private final JComboBox  comboOriginalLang    = new JComboBox();
+  private final JComboBox  comboTranslationLang = new JComboBox();
+  private final JLabel     labelOriginalLang    = new JLabel();
+  private final JLabel     labelTranslationLang = new JLabel();
 
-  private File     _fPath;
-  private File     _fOriginalPath;
-  private File     _fTranslationPath;
-  private String   _strOriginal;
-  private String   _strTranslation;
-  private boolean  _bClosed;
-  private int      _type;  // = 0;  // 0: text (default); 1: tmx
+  private String originalLanguage;
+  private String translationLanguage;
 
-  final public File getPath() { return( _fPath ); }
-  final public void setPath( final File fPath ) { _fPath = fPath; }
+  public File userPath = new File( System.getProperty( "user.dir" ) );
 
-  final public File getSourcePath() { return( _fOriginalPath ); }
-  final public File getTargetPath() { return( _fTranslationPath ); }
+  private final JComboBox comboOriginalEncoding    = new JComboBox( AppConstants.straEncodings );
+  private final JComboBox comboTranslationEncoding = new JComboBox( AppConstants.straEncodings );
+  private final int numEncodings = AppConstants.straEncodings.length;
 
-  final public boolean isClosed() { return( _bClosed ); }
-
-  final public String getSource() { return( _strOriginal ); }
-  final public String getTarget() { return( _strTranslation ); }
-
-  final public int getTypes()  { return( _type ); }
-
-  final private JComboBox  _cbxOriginalLang    = new JComboBox();
-  final private JComboBox  _cbxTranslationLang = new JComboBox();
-  final private JLabel     _lblOriginalLang    = new JLabel();
-  final private JLabel     _lblTranslationLang = new JLabel();
-
-  private String _strOriginalLang;
-  private String _strTranslationLang;
-
-  public File _fUserPath = new File( System.getProperty( "user.dir" ) );
-
-  final private JComboBox _cbxOriginalEncoding    = new JComboBox( AppConstants.straEncodings );
-  final private JComboBox _cbxTranslationEncoding = new JComboBox( AppConstants.straEncodings );
-  final private int numEncodings = AppConstants.straEncodings.length;
-
-  final private String [] IdiomasCa = {"Alemany","Angl�s","�rab","Catal��","Txec","Core��",
+  private final String [] idiomCa = {"Alemany","Angl�s","�rab","Catal��",
+      "Txec","Core��",
       "Dan�s","Espanyol","Finland�s","Franc�s","Holand�s","Hongar�s",
-      "Itali��","Japon�s","Noruec","Polon�s","Portugu�s","Rus","Suec","Tailand�s","Xin�s"};
+      "Itali��","Japon�s","Noruec","Polon�s","Portugu�s","Rus","Suec",
+      "Tailand�s","Xin�s"};
 
-  final private String [] IdiomasEs = {"Alem�n","�rabe","Catal�n","Checo","Chino","Coreano",
+  private final String [] idiomEs = {"Alem�n","�rabe","Catal�n","Checo",
+      "Chino","Coreano",
       "Dan�s","Espa�ol","Finland�s","Franc�s","Holand�s","H�ngaro","Ingl�s",
-      "Italiano","Japon�s","Noruego","Polaco","Portugu�s","Ruso","Sueco","Tailand�s"};
+      "Italiano","Japon�s","Noruego","Polaco","Portugu�s","Ruso",
+      "Sueco","Tailand�s"};
 
-  final private String [] IdiomasIn = {"Arab","Catalan","Chinese","Czech","Danish","Dutch","English",
+  private final String [] idiomIn = {"Arab","Catalan","Chinese","Czech",
+      "Danish","Dutch","English",
       "Finnish","French","German","Hungarian","Italian","Japanese","Korean",
       "Norwegian","Polish","Portuguese","Russian","Spanish","Swedish","Thai"};
 
-  public OpenWiki( final Frame frame, final String title, final boolean modal )
-  {
+  public OpenWiki( final Frame frame, final String title, final boolean modal ) {
     super( frame, title, modal );
-
     initialize();
   }
 
-  public OpenWiki() { this( null, "", false ); }
+  public OpenWiki() {
+    this( null, "", false );
+  }
 
-  final private void initialize()// throws Exception
-  {
-    _pnl.setLayout( null );
+  private final void initialize() { // throws Exception
+    panel.setLayout( null );
 
-    _lblOriginal.setText( getString( "LBL.SOURCE.URL" ) );
-    _lblOriginal.setBounds( new Rectangle( 5, 10, 200, 15 ) );
+    labelOriginal.setText( getString( "LBL.SOURCE.URL" ) );
+    labelOriginal.setBounds( new Rectangle( 5, 10, 200, 15 ) );
 
-    _tfdOriginal.setText( "" );
-    _tfdOriginal.setBounds( new Rectangle( 5, 30, 300, 22 ) );
+    fieldOriginal.setText( "" );
+    fieldOriginal.setBounds( new Rectangle( 5, 30, 300, 22 ) );
 
-    _lblTranslation.setText( getString( "LBL.TARGET.URL" ) );
-    _lblTranslation.setBounds( new Rectangle( 5, 55, 200, 15 ) );
+    labelTranslation.setText( getString( "LBL.TARGET.URL" ) );
+    labelTranslation.setBounds( new Rectangle( 5, 55, 200, 15 ) );
 
-    _tfdTranslation.setText( "" );
-    _tfdTranslation.setBounds( new Rectangle( 5, 75, 300, 22 ) );
+    fieldTranslation.setText( "" );
+    fieldTranslation.setBounds( new Rectangle( 5, 75, 300, 22 ) );
 
-    setLocalizedText( _btnOK, getString( "BTN.OK" ) );
-    _btnOK.addActionListener( this );
-    _btnOK.setBounds( new Rectangle( 205, 115, 100, 22 ) );
+    setLocalizedText( buttonOk, getString( "BTN.OK" ) );
+    buttonOk.addActionListener( this );
+    buttonOk.setBounds( new Rectangle( 205, 115, 100, 22 ) );
 
-    setLocalizedText( _btnCancel, getString( "BTN.CANCEL" ) );
-    _btnCancel.addActionListener( this );
-    _btnCancel.setBounds( new Rectangle( 310, 115, 100, 22 ) );
+    setLocalizedText( buttonCancel, getString( "BTN.CANCEL" ) );
+    buttonCancel.addActionListener( this );
+    buttonCancel.setBounds( new Rectangle( 310, 115, 100, 22 ) );
 
-    addWindowListener( new WindowAdapter()
-      { public void windowClosing( final WindowEvent evt ) { onClose(); } } );
+    addWindowListener( new WindowAdapter() {
+        @Override
+        public void windowClosing( final WindowEvent evt ) {
+          onClose();
+        }
+    } );
 
     setModal( true );
     setResizable( false );
     setTitle( getString( "DLG.OPENWIKI.TITLE" ) );
     getContentPane().setLayout( null );
 
-    _cbxOriginalLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
-    _cbxOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    _cbxOriginalLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
+    comboOriginalLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
+    comboOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
+    comboOriginalLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
 
-    _cbxOriginalEncoding.removeItemAt( numEncodings - 1 );
-    _cbxOriginalEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
-    _cbxOriginalEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
-    _cbxOriginalEncoding.setSelectedIndex( 0 );
-    _cbxOriginalEncoding.setBounds( new Rectangle( 530, 30, 100, 22 ) );
+    comboOriginalEncoding.removeItemAt( numEncodings - 1 );
+    comboOriginalEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
+    comboOriginalEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
+    comboOriginalEncoding.setSelectedIndex( 0 );
+    comboOriginalEncoding.setBounds( new Rectangle( 530, 30, 100, 22 ) );
 
-    _lblOriginalLang.setText( getString( "LBL.SOURCE.LANG" ) );
-    _lblOriginalLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
+    labelOriginalLang.setText( getString( "LBL.SOURCE.LANG" ) );
+    labelOriginalLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
 
-    _lblOriginalEncoding.setText( getString( "LBL.ENCODING" ) );
-    _lblOriginalEncoding.setBounds( new Rectangle( 530, 10, 100, 16 ) );
+    labelOriginalEncoding.setText( getString( "LBL.ENCODING" ) );
+    labelOriginalEncoding.setBounds( new Rectangle( 530, 10, 100, 16 ) );
 
-    _cbxTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
-    _cbxTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    _cbxTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
+    comboTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
+    comboTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
+    comboTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
 
-    _cbxTranslationEncoding.removeItemAt( numEncodings - 1 );
-    _cbxTranslationEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
-    _cbxTranslationEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
-    _cbxTranslationEncoding.setSelectedIndex( 0 );
-    _cbxTranslationEncoding.setBounds( new Rectangle( 530, 75, 100, 22 ) );
+    comboTranslationEncoding.removeItemAt( numEncodings - 1 );
+    comboTranslationEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
+    comboTranslationEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
+    comboTranslationEncoding.setSelectedIndex( 0 );
+    comboTranslationEncoding.setBounds( new Rectangle( 530, 75, 100, 22 ) );
 
-    _lblTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
-    _lblTranslationLang.setBounds( new Rectangle( 420, 55, 100, 16 ) );
+    labelTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
+    labelTranslationLang.setBounds( new Rectangle( 420, 55, 100, 16 ) );
 
-    _lblTranslationEncoding.setText( getString( "LBL.ENCODING" ) );
-    _lblTranslationEncoding.setBounds( new Rectangle( 530, 55, 100, 16 ) );
+    labelTranslationEncoding.setText( getString( "LBL.ENCODING" ) );
+    labelTranslationEncoding.setBounds( new Rectangle( 530, 55, 100, 16 ) );
 
-    _pnl.setBounds( new Rectangle( -1, 0, 640, 180 ) );
+    panel.setBounds( new Rectangle( -1, 0, 640, 180 ) );
 
-    _pnl.add( _tfdTranslation, null );
-    _pnl.add( _tfdOriginal, null );
+    panel.add( fieldTranslation, null );
+    panel.add( fieldOriginal, null );
 
-    _pnl.add( _cbxOriginalLang, null );
-    _pnl.add( _cbxTranslationLang, null );
-    _pnl.add( _cbxOriginalEncoding, null );
-    _pnl.add( _cbxTranslationEncoding, null );
+    panel.add( comboOriginalLang, null );
+    panel.add( comboTranslationLang, null );
+    panel.add( comboOriginalEncoding, null );
+    panel.add( comboTranslationEncoding, null );
 
-    _pnl.add( _btnCancel, null );
-    _pnl.add( _btnOK, null );
+    panel.add( buttonCancel, null );
+    panel.add( buttonOk, null );
 
-    _pnl.add( _lblOriginalLang, null );
-    _pnl.add( _lblOriginalEncoding, null );
-    _pnl.add( _lblTranslationEncoding, null );
-    _pnl.add( _lblOriginal, null );
-    _pnl.add( _lblTranslationLang, null );
-    _pnl.add( _lblTranslation, null );
+    panel.add( labelOriginalLang, null );
+    panel.add( labelOriginalEncoding, null );
+    panel.add( labelTranslationEncoding, null );
+    panel.add( labelOriginal, null );
+    panel.add( labelTranslationLang, null );
+    panel.add( labelTranslation, null );
 
-    getContentPane().add( _pnl, null );
+    getContentPane().add( panel, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setBounds( ( screenSize.width - 640 ) / 2,
-      ( screenSize.height - 180 ) / 2, 640, 180 );
+        ( screenSize.height - 180 ) / 2, 640, 180 );
   }
 
-  final public String getSourceLocale() { return( _strOriginalLang ); }
-  final public String getTargetLocale() { return( _strTranslationLang ); }
+  /**
+   * get source locale.
+   * 
+   * @return locale
+   */
+  public final String getSourceLocale() {
+    return ( originalLanguage );
+  }
+  
+  /**
+   * get translation locale.
+   *
+   * @return locale
+   */
+  public final String getTargetLocale() {
+    return ( translationLanguage );
+  }
 
-  final public JComboBox getSourceLangEncComboBox() { return( _cbxOriginalEncoding ); }
-  final public JComboBox getTargetLangEncComboBox() { return( _cbxTranslationEncoding ); }
+  public final JComboBox getSourceLangEncComboBox() {
+    return ( comboOriginalEncoding );
+  }
+  
+  public final JComboBox getTargetLangEncComboBox() {
+    return ( comboTranslationEncoding );
+  }
 
+  private void onOk() {
+    boolean errorOrig = true;
 
-  private void onOK()
-  {
-    boolean bErrorOrig = true;
-
-    try
-    {
-      if( _tfdOriginal.getText() != null )
-      {
+    try {
+      if ( fieldOriginal.getText() != null ) {
         //  FixMe: this is only used for the side-effect of throwing an exception
         //  should check for existence of file instead!!!
-        final FileReader fr = new FileReader( _tfdOriginal.getText() );
+        final FileReader fr = new FileReader( fieldOriginal.getText() );
         fr.close();
-        _strOriginal = _tfdOriginal.getText();
-        _fOriginalPath = new File( _strOriginal );
-        bErrorOrig = false;
+        stringOriginal = fieldOriginal.getText();
+        originalFilePath = new File( stringOriginal );
+        errorOrig = false;
       }
 
-      if( _tfdTranslation.getText() != null )
-      {
-          //  FixMe: this is only used for the side-effect of throwing an exception
-          final FileReader fr = new FileReader( _tfdTranslation.getText() );
-          fr.close();
-          _strTranslation = _tfdTranslation.getText();
-          _fTranslationPath = new File( _strTranslation );
-          setVisible( false );
+      if ( fieldTranslation.getText() != null ) {
+        //  FixMe: this is only used for the side-effect of throwing an exception
+        final FileReader fr = new FileReader( fieldTranslation.getText() );
+        fr.close();
+        stringTranslation = fieldTranslation.getText();
+        translationFilePath = new File( stringTranslation );
+        setVisible( false );
+      } else {
+        setVisible( false );
       }
-      else setVisible( false );
-
-    }
-    catch( final IOException ex )
-    {
-      JOptionPane.showMessageDialog( _pnl, getString( "MSG_ERROR_FILE_NOTFOUND" ),
-        getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
-
-      if( bErrorOrig ) _tfdOriginal.setText( "" );
-      else _tfdTranslation.setText( "" );
+    } catch ( final IOException ex ) {
+      JOptionPane.showMessageDialog( panel, getString( "MSG_ERROR_FILE_NOTFOUND" ),
+          getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+      if ( errorOrig ) {
+        fieldOriginal.setText( "" );
+      } else {
+        fieldTranslation.setText( "" );
+      }
     }
   }
 
-  private void onCancel() { onClose(); }
+  private void onCancel() {
+    onClose();
+  }
 
-  private void onClose()
-  {
-    _bClosed = true;
+  private void onClose() {
+    closed = true;
     setVisible( false );
     dispose();
   }
 
-  final public void actionPerformed( final ActionEvent action )
-  {
+  /**
+   * Action handler.
+   * 
+   * @param action performed
+   */
+  @Override
+  public final void actionPerformed( final ActionEvent action ) {
     final Object actor = action.getSource();
-
-    if( actor instanceof JButton )
-    {
-      if( actor == _btnCancel )            onCancel();
-      else if( actor == _btnOK )           onOK();
+    if ( actor instanceof JButton ) {
+      if ( actor == buttonCancel ) {
+        onCancel();
+      } else if ( actor == buttonOk ) {
+        onOk();
+      }
     }
   }
-
-}//  OpenTexts{}
+}
 
 

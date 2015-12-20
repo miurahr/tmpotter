@@ -218,7 +218,4 @@ public final class BitextModel extends AbstractTableModel {
       listener.tableChanged( event );
     }
   }
-
-}//  BitextModel{}
-
-
+}

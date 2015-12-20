@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.util;
 
 import java.text.MessageFormat;
@@ -21,8 +22,9 @@ import java.util.StringTokenizer;
 
 
 /**
+ * String utilities.
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
 public class StringUtil {
   
@@ -37,31 +39,26 @@ public class StringUtil {
    *  @param cad : la cadena que hay que formatear
    *  @return cad con la cadena formateada
    */
-  public static String formatText( final String cad )
-  {
+  public static String formatText( final String cad ) {
     String palabra = "";
     String newCad  = "";
     String frase  = "";
 
-    if( cad.length() > _KTAMTEXTAREA )
-    {
+    if ( cad.length() > _KTAMTEXTAREA ) {
       final StringTokenizer linea = new StringTokenizer( cad, " " );
 
-      while( linea.hasMoreTokens() )
-      {
+      while ( linea.hasMoreTokens() ) {
         palabra = linea.nextToken();
-
-        if( ( palabra.length() + frase.length() ) < _KTAMTEXTAREA )
-        {
+        if ( ( palabra.length() + frase.length() ) < _KTAMTEXTAREA ) {
           //frase = frase + " ";
           //frase = frase + palabra;
           frase = frase + " " + palabra;
-        }
-        else
-        {
-          if( newCad.equals( "" ) ) newCad = frase;
-          else newCad = newCad + "\n" + frase;
-
+        } else {
+          if ( newCad.equals( "" ) ) {
+            newCad = frase;
+          } else {
+            newCad = newCad + "\n" + frase;
+          }
           frase = "";
           frase = palabra;
         }
@@ -71,10 +68,10 @@ public class StringUtil {
       newCad = newCad.trim();
       newCad = newCad + "\n" + frase;
 
-      return( newCad );
+      return ( newCad );
     }
 
-    return( cad );
+    return ( cad );
   }
 
   /**
@@ -83,35 +80,32 @@ public class StringUtil {
    *  @param cad : la frase a la que se tienen que eliminar los \n
    *  @return cad con la frase
    */
-  public static String restoreText( final String cad )
-  {
+  public static String restoreText( final String cad ) {
     String newCad = "";
     String palabra = "";
 
-    if( cad.length() > _KTAMTEXTAREA )
-    {
+    if ( cad.length() > _KTAMTEXTAREA ) {
       final StringTokenizer linea = new StringTokenizer( cad, "\n" );
 
-      while( linea.hasMoreTokens() )
-      {
+      while ( linea.hasMoreTokens() ) {
         palabra = linea.nextToken();
         newCad = newCad + " " + palabra;
       }
 
       newCad = newCad.trim();
 
-      return( newCad );
+      return ( newCad );
     }
 
-    return( cad );
+    return ( cad );
   }
 
   /**
    * ~inverse of String.split() refactor note: In future releases, this might
    * best be moved to a different file
    *
-   * @param separator
-   * @param items
+   * @param separator insert separator
+   * @param items to join
    * @return String joining items with separator
    */
   public static String joinString(String separator, String[] items) {

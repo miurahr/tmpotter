@@ -111,12 +111,12 @@ final class AlignmentsView extends DockablePanel {
     scrollPane.setColumnHeaderView(table.getTableHeader() );
   }
 
-  public final void setRowSelectionInterval( final int i, final int j ) {
-    table.setRowSelectionInterval( i, j );
+  public final void setRowSelectionInterval( final int row, final int len ) {
+    table.setRowSelectionInterval( row, len );
   }
 
-  public final void setValueAt( final String str, final int i, final int j ) {
-    table.setValueAt( str, i, j );
+  public final void setValueAt( final String str, final int row, final int column ) {
+    table.setValueAt( str, row, column );
   }
 
   public final void setPreferredSize( final int width,
@@ -129,12 +129,12 @@ final class AlignmentsView extends DockablePanel {
     return ( table.getRowCount() );
   }
 
-  public final void setModelValueAt( final Object obj, int i, int j ) {
-    bitextModel.setValueAt( obj, i, j );
+  public final void setModelValueAt( final Object obj, int row, int column ) {
+    bitextModel.setValueAt( obj, row, column );
   }
 
-  public final void removeSegment( final int i ) {
-    bitextModel.removeSegment( i );
+  public final void removeSegment( final int row ) {
+    bitextModel.removeSegment( row );
     revalidate();
   }
 
@@ -239,7 +239,4 @@ final class AlignmentsView extends DockablePanel {
     add( scrollPane );
     updateUI();
   }
-
-}//  OriginalView{}
-
-
+}

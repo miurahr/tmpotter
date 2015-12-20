@@ -108,5 +108,4 @@ class DockablePanel extends JPanel implements Dockable {
   public final Component getComponent() {
     return this;
   }
-}//  DockablePanel{}
-
+}

@@ -109,7 +109,4 @@ public class Segment {
   public void setTranslation( final String translation ) {
     this.translation = translation;
   }
-
-}//  Segment{}
-
-
+}

@@ -23,10 +23,7 @@
 #######################################################################
 */
 
-
 package bitext2tmx.ui.dialogs;
-
-
 
 import static bitext2tmx.util.Localization.getString;
 import static org.openide.awt.Mnemonics.setLocalizedText;
@@ -122,7 +119,7 @@ public final class Encodings extends JDialog implements ActionListener {
     return ( comboEncoding.getSelectedItem().toString() );
   }
 
-  final void onOK() {
+  final void onOk() {
     setVisible( false );
   }
 
@@ -132,22 +129,28 @@ public final class Encodings extends JDialog implements ActionListener {
     dispose();
   }
 
-  final public void actionPerformed( final ActionEvent action ) {
+  /**
+   * Action handler.
+   * 
+   * @param action event
+   */
+  @Override
+  public final void actionPerformed( final ActionEvent action ) {
     final Object actor = action.getSource();
 
     if ( actor instanceof JButton ) {
       if ( actor == buttonOk ) {
-        onOK();
+        onOk();
       }
     }
   }
 
   // Variables declaration
-  final private JPanel    panel         = new JPanel();
-  final private JButton   buttonOk       = new JButton();
-  final private JLabel    labelEncoding = new JLabel();
-  final private JComboBox comboEncoding = new JComboBox( AppConstants.straEncodings );
+  private final JPanel    panel         = new JPanel();
+  private final JButton   buttonOk      = new JButton();
+  private final JLabel    labelEncoding = new JLabel();
+  private final JComboBox comboEncoding = new JComboBox( AppConstants.straEncodings );
   // End of variables declaration
-}//  Encodings{}
+}
 
 

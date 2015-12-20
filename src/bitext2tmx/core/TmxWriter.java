@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 
  * @author miurahr
  */
-public class TMXWriter {
+public class TmxWriter {
 
   /**
    *
@@ -133,6 +133,6 @@ public class TMXWriter {
     }
   }
 
-  private static final Logger LOG = Logger.getLogger(TMXWriter.class.getName());
+  private static final Logger LOG = Logger.getLogger(TmxWriter.class.getName());
 
 }
