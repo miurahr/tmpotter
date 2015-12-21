@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.util;
 
 import java.awt.Image;
@@ -22,7 +23,8 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 
 /**
- *
+ * Resource management utility.
+ * 
  * @author Hiroshi Miura
  */
 public class ResourceUtil {
@@ -33,13 +35,13 @@ public class ResourceUtil {
    *            resource name
    * @return Image
    *            An image retrieved by resource name
-   * @throws FileNotFoundException 
+   * @throws FileNotFoundException  when icon file not found
    */
-    public static Image getImage(final String resourceName) throws FileNotFoundException {
-        URL resourceURL = ResourceUtil.class.getResource(resourceName);
-        if (resourceURL == null) {
-            throw new FileNotFoundException(resourceName);
-        }
-        return Toolkit.getDefaultToolkit().getImage(resourceURL);
+  public static Image getImage(final String resourceName) throws FileNotFoundException {
+    URL resourceUrl = ResourceUtil.class.getResource(resourceName);
+    if (resourceUrl == null) {
+      throw new FileNotFoundException(resourceName);
     }
+    return Toolkit.getDefaultToolkit().getImage(resourceUrl);
+  }
 }

@@ -28,63 +28,65 @@
 
 package bitext2tmx.ui.dialogs;
 
+import static bitext2tmx.util.Localization.getString;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
 import bitext2tmx.ui.Icons;
 import bitext2tmx.ui.MainWindow;
+import bitext2tmx.util.AppConstants;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import bitext2tmx.util.AppConstants;
-import static bitext2tmx.util.Localization.getString;
 
 
 /**
- *  About Dialog
+ *  About Dialog.
+ * 
  *  @author Hiroshi Miura
  */
-final public class About extends JDialog
-{
-  final private static long serialVersionUID = -7978170933387914555L;
+@SuppressWarnings("serial")
+public final class About extends JDialog {
 
-  public About( MainWindow mWindow )
-  {
-    this(mWindow, true );
+  public About( MainWindow mainWindow ) {
+    this(mainWindow, true );
   }
 
-  public About(MainWindow mWIndow, Boolean modal) {
-    super(mWIndow, modal);
+  public About(MainWindow mainWindow, Boolean modal) {
+    super(mainWindow, modal);
     initComponents();
   }
 
   @SuppressWarnings("unchecked")
-  private void initComponents()
-  {
+  private void initComponents() {
     setTitle( getString( "DLG.ABOUT.TITLE" ) );
     setModal( true );
     setResizable( false );
 
-    addWindowListener( new WindowAdapter()
-      {@Override public void windowClosing( final WindowEvent evt )
-                             { onClose(); } } );
+    addWindowListener( new WindowAdapter() {
+      @Override
+      public void windowClosing( final WindowEvent evt ) {
+        onClose(); 
+      } 
+    });
 
-    _lbl1.setText(AppConstants.getDisplayNameAndVersion() );
-    _lbl2.setText(AppConstants.getApplicationDescription() );
-    _lbl3.setText(AppConstants.COPYRIGHT );
-    _lbl4.setText(AppConstants.AUTHORS );
+    label1.setText(AppConstants.getDisplayNameAndVersion() );
+    label2.setText(AppConstants.getApplicationDescription() );
+    label3.setText(AppConstants.COPYRIGHT );
+    label4.setText(AppConstants.AUTHORS );
 
     final GridBagConstraints gbc = new GridBagConstraints();
 
@@ -97,53 +99,54 @@ final public class About extends JDialog
     gbc.weightx   = 1.0;
     gbc.insets    = new Insets( 5, 10, 5, 10 );
 
-    getContentPane().add( _lbl1, gbc );
+    getContentPane().add( label1, gbc );
 
     gbc.gridy = 1;
-    getContentPane().add( _lbl2, gbc );
+    getContentPane().add( label2, gbc );
 
     gbc.gridy = 2;
-    getContentPane().add( _lbl3, gbc );
+    getContentPane().add( label3, gbc );
 
     gbc.gridy = 3;
-    getContentPane().add( _lbl4, gbc );
+    getContentPane().add( label4, gbc );
 
-    _lblIcon.setIcon( Icons.getIcon( "icon-medium.png" ) );
-    _pnlButtons.add( _lblIcon, BorderLayout.WEST );
+    labelIcon.setIcon( Icons.getIcon( "icon-medium.png" ) );
+    panelButtons.add( labelIcon, BorderLayout.WEST );
 
     gbc.gridy     = 5;
     gbc.anchor    = GridBagConstraints.SOUTHWEST;
     gbc.insets    = new Insets( 5, 25, 5, 10 );
 
-    getContentPane().add( _lblIcon, gbc );
+    getContentPane().add( labelIcon, gbc );
 
-    setLocalizedText( _btnClose, getString( "BTN.CLOSE" ) );
-    _btnClose.addActionListener( new ActionListener()
-      {@Override public void actionPerformed( final ActionEvent evt )
-                             { onClose(); } } );
+    setLocalizedText( buttonClose, getString( "BTN.CLOSE" ) );
+    buttonClose.addActionListener( new ActionListener() {
+      @Override
+      public void actionPerformed( final ActionEvent evt ) {
+        onClose(); 
+      }
+    });
 
     gbc.anchor    = GridBagConstraints.CENTER;
-    getContentPane().add( _btnClose, gbc );
+    getContentPane().add( buttonClose, gbc );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds( ( screenSize.width - 400 ) / 2,
+    setBounds( ( screenSize.width - 400 ) / 2,
         ( screenSize.height - 200 ) / 2, 400, 200 );
   }
 
-  private void onClose()
-  {
+  private void onClose() {
     setVisible( false );
     dispose();
   }
 
   // Variables declaration
-  final private JLabel   _lbl1       = new JLabel();
-  final private JLabel   _lbl2       = new JLabel();
-  final private JLabel   _lbl3       = new JLabel();
-  final private JLabel   _lbl4       = new JLabel();
-  final private JLabel   _lblIcon    = new JLabel();
-  final private JButton  _btnClose   = new JButton();
-  final private JPanel   _pnlButtons = new JPanel();
+  private final JLabel   label1       = new JLabel();
+  private final JLabel   label2       = new JLabel();
+  private final JLabel   label3       = new JLabel();
+  private final JLabel   label4       = new JLabel();
+  private final JLabel   labelIcon    = new JLabel();
+  private final JButton  buttonClose  = new JButton();
+  private final JPanel   panelButtons = new JPanel();
   // End of variables declaration
-
-}//  About{}
+}

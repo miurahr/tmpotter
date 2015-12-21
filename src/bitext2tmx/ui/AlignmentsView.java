@@ -23,42 +23,44 @@
 #######################################################################
 */
 
-
 package bitext2tmx.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.*;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.*;
+import static bitext2tmx.util.Localization.getString;
 
 import bitext2tmx.engine.BitextModel;
 import bitext2tmx.engine.Segment;
 
-import static bitext2tmx.util.Localization.getString;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 
 /**
- *   Alignment Table view for parallel texts
+ *   Alignment Table view for parallel texts.
  *
  */
-final class AlignmentsView extends DockablePanel
-{
-  private static final long serialVersionUID = -9170260140474066213L;
+@SuppressWarnings("serial")
+final class AlignmentsView extends DockablePanel {
 
-  final private MainWindow windowMain;
+  private final MainWindow windowMain;
 
-  BitextModel          _model;
-  JTable               _tbl;
-  private JScrollPane  _scpn;
+  BitextModel          bitextModel;
+  JTable               table;
+  private JScrollPane  scrollPane;
 
-  public AlignmentsView( final MainWindow parent )
-  {
+  public AlignmentsView( final MainWindow parent ) {
     super( "AlignmentTableView" );
 
     windowMain = parent;
@@ -73,148 +75,168 @@ final class AlignmentsView extends DockablePanel
     setLayout( new BorderLayout() );
   }
 
-  final private void onTableClicked() { windowMain.onTableClicked(); }
-
-  final private void onTablePressed( final KeyEvent e )
-  { windowMain.onTablePressed( e ); }
-
-  final public void setFonts( final Font f ) { //_tpnOriginal.setFont( f );
+  private void onTableClicked() {
+    windowMain.onTableClicked();
   }
 
-  final public void setTableFont( final Font f )
-  {
-   if( _tbl != null )
-   {
-    int iSize = f.getSize();
-
-    if( iSize <= 10 ) _tbl.setRowHeight( 10 );
-    else _tbl.setRowHeight( iSize );
-
-    _tbl.setFont( f );
-   }
-   else System.out.println( " _tbl does notexist yet!" );
+  private void onTablePressed( final KeyEvent event ) {
+    windowMain.onTablePressed( event );
   }
 
-  final public TableColumnModel getColumnModel()
-  { return( _tbl.getColumnModel() ); }
-
-  final public void setColumnHeaderView()
-  { _scpn.setColumnHeaderView( _tbl.getTableHeader() ); }
-
-  final public void setRowSelectionInterval( final int i, final int j )
-  { _tbl.setRowSelectionInterval( i, j ); }
-
-  final public void setValueAt( final String str, final int i, final int j )
-  { _tbl.setValueAt( str, i, j ); }
-
-  final public void setPreferredSize( final int iWidth, final int iHeightMutliple, final int iOffset )
-  {
-    _tbl.setPreferredSize( new Dimension( iWidth, ( _tbl.
-      getRowCount() * iHeightMutliple ) + iOffset ) );
+  public final void setFonts( final Font font ) {
+    //_tpnOriginal.setFont( f );
   }
 
-  final public int getRowCount() { return( _tbl.getRowCount() ); }
+  public final void setTableFont( final Font font ) {
+    if ( table != null ) {
+      int size = font.getSize();
 
-  final public void setModelValueAt( final Object obj, final int i, final int j )
-  { _model.setValueAt( obj, i, j ); }
+      if ( size <= 10 ) {
+        table.setRowHeight( 10 );
+      } else {
+        table.setRowHeight( size );
+      }
 
-  final public void removeSegment( final int i )
-  {
-    _model.removeSegment( i );
+      table.setFont( font );
+    } else {
+      // System.out.println( " table does not exist yet!" );
+    }
+  }
+
+  public final TableColumnModel getColumnModel() {
+    return ( table.getColumnModel() );
+  }
+
+  public final void setColumnHeaderView() {
+    scrollPane.setColumnHeaderView(table.getTableHeader() );
+  }
+
+  public final void setRowSelectionInterval( final int row, final int len ) {
+    table.setRowSelectionInterval( row, len );
+  }
+
+  public final void setValueAt( final String str, final int row, final int column ) {
+    table.setValueAt( str, row, column );
+  }
+
+  public final void setPreferredSize( final int width,
+          final int height, final int offset ) {
+    table.setPreferredSize(new Dimension( width, ( table
+        .getRowCount() * height ) + offset ) );
+  }
+
+  public final int getRowCount() {
+    return ( table.getRowCount() );
+  }
+
+  public final void setModelValueAt( final Object obj, int row, int column ) {
+    bitextModel.setValueAt( obj, row, column );
+  }
+
+  public final void removeSegment( final int row ) {
+    bitextModel.removeSegment( row );
     revalidate();
   }
 
-  final public void addModelSegment( final Segment segment )
-  { _model.addSegment( segment ); }
-
-  //  FixMe: called before table exists!
-  final public void repaint() { //_tbl.repaint();
+  public final void addModelSegment( final Segment segment ) {
+    bitextModel.addSegment( segment );
   }
 
-  final public Object getValueAt( final int iRow, final int iCol )
-  { return( _tbl.getValueAt( iRow, iCol ) ); }
+  //  FixMe: called before table exists!
+  public final void repaint() {
+    //_tbl.repaint();
+  }
 
-  final public int getSelectedRow() { return( _tbl.getSelectedRow() ); }
+  public final Object getValueAt( final int row, final int column ) {
+    return ( table.getValueAt( row, column ) );
+  }
 
-  final public int getSelectedColumn() { return( _tbl.getSelectedColumn() ); }
+  public final int getSelectedRow() {
+    return ( table.getSelectedRow() );
+  }
 
-  final public JTableHeader getTableHeader() { return( _tbl.getTableHeader() ); }
+  public final int getSelectedColumn() {
+    return ( table.getSelectedColumn() );
+  }
 
+  public final JTableHeader getTableHeader() {
+    return ( table.getTableHeader() );
+  }
 
-  final void clear()
-  {
-   _model = null;
+  final void clear() {
+    bitextModel = null;
 
-    if( _scpn != null )
-    {
-      _scpn.removeAll();
-      _scpn = null;
+    if ( scrollPane != null ) {
+      scrollPane.removeAll();
+      scrollPane = null;
     }
 
-    if( _tbl != null ) _tbl = null;
+    if ( table != null ) {
+      table = null;
+    }
 
     removeAll();
     repaint();
     updateUI();
   }
 
-  final void buildDisplay()
-  {
-    _model = new BitextModel();
-    _tbl   = new JTable( _model );
+  final void buildDisplay() {
+    bitextModel = new BitextModel();
+    table   = new JTable( bitextModel );
 
-    TableColumn column = null;
+    TableColumn column;
 
     //  Segment
-    column = _tbl.getColumnModel().getColumn( 0 );
+    column = table.getColumnModel().getColumn( 0 );
     column.setPreferredWidth( 60 );
-    column.setHeaderValue( _tbl.getColumnName( 0 ) );
+    column.setHeaderValue(table.getColumnName( 0 ) );
 
     //  Original
-    column = _tbl.getColumnModel().getColumn( 1 );
+    column = table.getColumnModel().getColumn( 1 );
     column.setPreferredWidth( 600 );
-    column.setHeaderValue( _tbl.getColumnName( 1 ) );
+    column.setHeaderValue(table.getColumnName( 1 ) );
 
     //  Translation
-    column = _tbl.getColumnModel().getColumn( 2 );
+    column = table.getColumnModel().getColumn( 2 );
     column.setPreferredWidth( 600 );
-    column.setHeaderValue( _tbl.getColumnName( 2 ) );
+    column.setHeaderValue(table.getColumnName( 2 ) );
 
-    _tbl.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-    _tbl.setAutoscrolls( true );
+    table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+    table.setAutoscrolls( true );
 
     // ToDo: set the start height according to the users font point size
-    _tbl.setRowHeight( 15 );
-    _tbl.setRowMargin( 2 );
-    _tbl.setRowSelectionAllowed( true );
-    _tbl.setColumnSelectionAllowed( false );
-    _tbl.setAutoCreateColumnsFromModel( false );
-    _tbl.setSelectionBackground( new Color( 220, 235, 250 ) );
+    table.setRowHeight( 15 );
+    table.setRowMargin( 2 );
+    table.setRowSelectionAllowed( true );
+    table.setColumnSelectionAllowed( false );
+    table.setAutoCreateColumnsFromModel( false );
+    table.setSelectionBackground( new Color( 220, 235, 250 ) );
     //  ToDo: make user configurable
     //_tbl.setShowGrid( false );
     //  ToDo: make user configurable
-    _tbl.setShowHorizontalLines( false );
+    table.setShowHorizontalLines( false );
 
-    _tbl.addKeyListener( new KeyAdapter()
-      { final public void keyPressed( final KeyEvent e )
-        { onTablePressed( e ); } } );
+    table.addKeyListener( new KeyAdapter() {
+      public final void keyPressed( final KeyEvent event ) {
+        onTablePressed( event );
+      }
+    });
 
-    _tbl.addMouseListener( new MouseAdapter()
-      { final public void mouseClicked( final MouseEvent e )
-        { onTableClicked(); } } );
+    table.addMouseListener( new MouseAdapter() {
+      public final void mouseClicked( final MouseEvent event ) {
+        onTableClicked();
+      }
+    });
 
-    _scpn = new JScrollPane( _tbl );
-    _scpn.setColumnHeader( null );
+    scrollPane = new JScrollPane( table );
+    scrollPane.setColumnHeader( null );
     //_scpnTable.setBounds( new Rectangle( 14, 0, 823, 394 ) );
 
     // Unnecessary? Container gets header automatically, I think?
     // this sets the scpn header from the table - won't scroll
-    _scpn.setColumnHeaderView( _tbl.getTableHeader() );
+    scrollPane.setColumnHeaderView(table.getTableHeader() );
 
-    add( _scpn );
+    add( scrollPane );
     updateUI();
   }
-
-}//  OriginalView{}
-
-
+}

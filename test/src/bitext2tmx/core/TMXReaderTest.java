@@ -50,7 +50,7 @@ public class TMXReaderTest extends TestCase {
     String langTranslation = "";
     Document _alstOriginal = null;
     Document _alstTranslation = null;
-    TMXReader.readTMX(fPathOriginal, encodeing, _alstOriginal, _alstTranslation);
+    TmxReader.readTmx(fPathOriginal, encodeing, _alstOriginal, _alstTranslation);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }

@@ -50,7 +50,7 @@ public class TMXWriterTest extends TestCase {
     Document _alstTranslation = null;
     String langTranslation = "";
     String encoding = "";
-    TMXWriter.writeBitext(fNombre, _alstOriginal, langOriginal, _alstTranslation, langTranslation, encoding);
+    TmxWriter.writeBitext(fNombre, _alstOriginal, langOriginal, _alstTranslation, langTranslation, encoding);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }

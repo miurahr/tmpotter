@@ -27,39 +27,42 @@
 
 package bitext2tmx.util;
 
+import bitext2tmx.util.Platform.OsType;
+
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import bitext2tmx.util.Platform.OsType;
 
 
 /**
- *  Utility functions
+ *  Utility functions.
  */
-public class Utilities
-{
+public class Utilities {
   /* Variables */
   private static String configDirectory = null;
 
   /* Constants */
-  private final static String WINDOWS_CONFIG_DIR = "\\Bitext2tmx\\";
-  private final static String UNIX_CONFIG_DIR = "/.bitext2tmx/";
-  private final static String OSX_CONFIG_DIR = "/Library/Preferences/Bitext2tmx/";
+  private static final String WINDOWS_CONFIG_DIR = "\\Bitext2tmx\\";
+  private static final String UNIX_CONFIG_DIR = "/.bitext2tmx/";
+  private static final String OSX_CONFIG_DIR = "/Library/Preferences/Bitext2tmx/";
+
+  private static final Logger LOG = Logger.getLogger(Utilities.class.getName());
 
   /**
-   *  Return names of all font families available
+   *  Return names of all font families available.
    * 
-   * @return 
+   * @return font name
    */
-  final public static String[] getFontNames()
-  {
+  public static final String[] getFontNames() {
     final GraphicsEnvironment graphics =
-      GraphicsEnvironment.getLocalGraphicsEnvironment();
-    return( graphics.getAvailableFontFamilyNames() );
+        GraphicsEnvironment.getLocalGraphicsEnvironment();
+    return ( graphics.getAvailableFontFamilyNames() );
   }
 
 
@@ -69,15 +72,15 @@ public class Utilities
    * @param output
    *            The UTF-8 format string to be printed.
    */
-  public static void printUTF8(String output) {
-      try {
-          BufferedWriter out = UTF8WriterBuilder(System.out);
-          out.write(output);
+  public static void printUtf8(String output) {
+    try {
+      BufferedWriter out = utf8WriterBuilder(System.out);
+      out.write(output);
 
-          out.flush();
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
+      out.flush();
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Error", e);
+    }
   }
 
   /**
@@ -89,8 +92,8 @@ public class Utilities
    *
    * @throws java.lang.Exception      Outputstream to connect to.
    */
-  public static BufferedWriter UTF8WriterBuilder(OutputStream out) throws Exception {
-      return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+  public static BufferedWriter utf8WriterBuilder(OutputStream out) throws Exception {
+    return new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
   }
 
   /**
@@ -103,18 +106,18 @@ public class Utilities
    * @param output
    *            UTF-8 format text to write
    */
-  public static void saveUTF8(String dir, String filename, String output) {
+  public static void saveUtf8(String dir, String filename, String output) {
     try {
       // Page name can contain invalid characters, see [1878113]
       // Contributed by Anatoly Techtonik
       filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
       File path = new File(dir, filename);
-      FileOutputStream f = new FileOutputStream(path);
-      BufferedWriter out = UTF8WriterBuilder(f);
+      FileOutputStream fos = new FileOutputStream(path);
+      BufferedWriter out = utf8WriterBuilder(fos);
       out.write(output);
       out.close();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.log(Level.WARNING, "utf8 save exception", e);
     }
   }
 
@@ -140,140 +143,136 @@ public class Utilities
    * @author Henry Pijffers (henry.pijffers@saxnot.com)
    */
   public static String getConfigDir() {
-      // if the configuration directory has already been determined, return it
-      if (configDirectory != null) {
-          return configDirectory;
+    // if the configuration directory has already been determined, return it
+    if (configDirectory != null) {
+      return configDirectory;
+    }
+
+    OsType os = Platform.getOsType(); // name of operating system
+    String home; // user home directory
+
+    // get os and user home properties
+    try {
+      // get the user's home directory
+      home = System.getProperty("user.home");
+    } catch (SecurityException e) {
+      // access to the os/user home properties is restricted,
+      // the location of the config dir cannot be determined,
+      // set the config dir to the current working dir
+      configDirectory = new File(".").getAbsolutePath() + File.separator;
+      return configDirectory;
+    }
+
+    // if os or user home is null or empty, we cannot reliably determine
+    // the config dir, so we use the current working dir (= empty string)
+    if (os == null || StringUtil.isEmpty(home)) {
+      // set the config dir to the current working dir
+      configDirectory = new File(".").getAbsolutePath() + File.separator;
+      return configDirectory;
+    }
+
+    // check for Windows versions
+    if (os == OsType.WIN32 || os == OsType.WIN64) {
+      String appData = null;
+
+      // We do not use %APPDATA%
+      // Trying first Vista/7, because "Application Data" exists also as virtual folder, 
+      // so we would not be able to differentiate with 2000/XP otherwise
+      File appDataFile = new File(home, "AppData\\Roaming");
+      if (appDataFile.exists()) {
+        appData = appDataFile.getAbsolutePath();
+      } else {
+        // Trying to locate "Application Data" for 2000 and XP
+        // C:\Documents and Settings\<User>\Application Data
+        appDataFile = new File(home, "Application Data");
+        if (appDataFile.exists()) {
+          appData = appDataFile.getAbsolutePath();
+        }
       }
 
-      OsType os = Platform.getOsType(); // name of operating system
-      String home; // user home directory
-
-      // get os and user home properties
-      try {
-          // get the user's home directory
-          home = System.getProperty("user.home");
-      } catch (SecurityException e) {
-          // access to the os/user home properties is restricted,
-          // the location of the config dir cannot be determined,
-          // set the config dir to the current working dir
-          configDirectory = new File(".").getAbsolutePath() + File.separator;
-          return configDirectory;
+      if (!StringUtil.isEmpty(appData)) {
+        // if a valid application data dir has been found,
+        // append an OmegaT subdir to it
+        configDirectory = appData + WINDOWS_CONFIG_DIR;
+      } else {
+        // otherwise set the config dir to the user's home directory,
+        // usually
+        // C:\Documents and Settings\<User>\OmegaT
+        configDirectory = home + WINDOWS_CONFIG_DIR;
       }
-
-      // if os or user home is null or empty, we cannot reliably determine
-      // the config dir, so we use the current working dir (= empty string)
-      if (os == null || StringUtil.isEmpty(home)) {
-          // set the config dir to the current working dir
-          configDirectory = new File(".").getAbsolutePath() + File.separator;
-          return configDirectory;
-      }
-
-      // check for Windows versions
-      if (os == OsType.WIN32 || os == OsType.WIN64) {
-          String appData = null;
-
-          // We do not use %APPDATA%
-          // Trying first Vista/7, because "Application Data" exists also as virtual folder, 
-          // so we would not be able to differentiate with 2000/XP otherwise
-          File appDataFile = new File(home, "AppData\\Roaming");
-          if (appDataFile.exists()) {
-              appData = appDataFile.getAbsolutePath();
-          } else {
-              // Trying to locate "Application Data" for 2000 and XP
-              // C:\Documents and Settings\<User>\Application Data
-              appDataFile = new File(home, "Application Data");
-              if (appDataFile.exists()) {
-                  appData = appDataFile.getAbsolutePath();
-              }
-          }
-
-          if (!StringUtil.isEmpty(appData)) {
-              // if a valid application data dir has been found,
-              // append an OmegaT subdir to it
-              configDirectory = appData + WINDOWS_CONFIG_DIR;
-          } else {
-              // otherwise set the config dir to the user's home directory,
-              // usually
-              // C:\Documents and Settings\<User>\OmegaT
-              configDirectory = home + WINDOWS_CONFIG_DIR;
-          }
-      }
+    } else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
       // Check for UNIX varieties
       // Solaris is generally detected as SunOS
-      else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
-          // set the config dir to the user's home dir + "/.omegat/", so it's
-          // hidden
-          configDirectory = home + UNIX_CONFIG_DIR;
-      }
+      // set the config dir to the user's home dir + "/.omegat/", so it's
+      // hidden
+      configDirectory = home + UNIX_CONFIG_DIR;
+    } else if (Platform.isMacOsx()) {
       // check for Mac OS X
-      else if (Platform.isMacOSX()) {
-          // set the config dir to the user's home dir +
-          // "/Library/Preferences/OmegaT/"
-          configDirectory = home + OSX_CONFIG_DIR;
-      }
+      // set the config dir to the user's home dir +
+      // "/Library/Preferences/OmegaT/"
+      configDirectory = home + OSX_CONFIG_DIR;
+    } else {
       // other OSes / default
-      else {
-          // use the user's home directory by default
-          configDirectory = home + File.separator;
-      }
+      configDirectory = home + File.separator;
+      // use the user's home directory by default
+    }
 
-      // create the path to the configuration dir, if necessary
-      if (!configDirectory.isEmpty()) {
-          try {
-              // check if the dir exists
-              File dir = new File(configDirectory);
-              if (!dir.exists()) {
-                  // create the dir
-                  boolean created = dir.mkdirs();
+    // create the path to the configuration dir, if necessary
+    if (!configDirectory.isEmpty()) {
+      try {
+        // check if the dir exists
+        File dir = new File(configDirectory);
+        if (!dir.exists()) {
+          // create the dir
+          boolean created = dir.mkdirs();
 
-                  // if the dir could not be created,
-                  // set the config dir to the current working dir
-                  if (!created) {
-                      configDirectory = new File(".").getAbsolutePath() + File.separator;
-                  }
-              }
-          } catch (SecurityException e) {
-              // the system doesn't want us to write where we want to write
-              // reset the config dir to the current working dir
-              configDirectory = new File(".").getAbsolutePath() + File.separator;
-
+          // if the dir could not be created,
+          // set the config dir to the current working dir
+          if (!created) {
+            configDirectory = new File(".").getAbsolutePath() + File.separator;
           }
+        }
+      } catch (SecurityException e) {
+        // the system doesn't want us to write where we want to write
+        // reset the config dir to the current working dir
+        configDirectory = new File(".").getAbsolutePath() + File.separator;
       }
+    }
 
-      // we should have a correct, existing config dir now
-      return configDirectory;
+    // we should have a correct, existing config dir now
+    return configDirectory;
   }
 
 
-  /** Caching install dir */
-  private static String INSTALLDIR = null;
+  // Caching install dir
+  private static String strInstallDir = null;
 
   /**
-   * Returns Application installation directory
+   * Returns Application installation directory.
    * 
- * @return 
+   * @return  install directory as String
    */
   public static String installDir() {
-      if (INSTALLDIR == null) {
-          String cp = System.getProperty("java.class.path");
+    if (strInstallDir == null) {
+      String cp = System.getProperty("java.class.path");
+      // See if we are running from a JAR
+      String path = extractClasspathElement(cp, File.separator
+              + AppConstants.APPLICATION_JAR);
 
-          // See if we are running from a JAR
-          String path = extractClasspathElement(cp, File.separator + AppConstants.APPLICATION_JAR);
-
-          if (path == null) {
-              // We're not running from a JAR; probably debug mode (in IDE, etc.)
-              path = extractClasspathElement(cp, AppConstants.DEBUG_CLASSPATH);
-          }
-
-          // WTF?!! Falling back to current directory
-          if (path == null) {
-              path = ".";
-          }
-
-          // Cache the absolute path
-          INSTALLDIR = new File(path).getAbsolutePath();
+      if (path == null) {
+        // We're not running from a JAR; probably debug mode (in IDE, etc.)
+        path = extractClasspathElement(cp, AppConstants.DEBUG_CLASSPATH);
       }
-      return INSTALLDIR;
+
+      // WTF?!! Falling back to current directory
+      if (path == null) {
+        path = ".";
+      }
+
+      // Cache the absolute path
+      strInstallDir = new File(path).getAbsolutePath();
+    }
+    return strInstallDir;
   }
 
   /**
@@ -290,10 +289,12 @@ public class Utilities
     int semicolon1 = fullcp.lastIndexOf(File.pathSeparatorChar, posInsideElement);
     // semicolon after the path to the Jar
     int semicolon2 = fullcp.indexOf(File.pathSeparatorChar, posInsideElement);
-    if (semicolon1 < 0)
+    if (semicolon1 < 0) {
       semicolon1 = -1;
-    if (semicolon2 < 0)
+    }
+    if (semicolon2 < 0) {
       semicolon2 = fullcp.length();
+    }
     return fullcp.substring(semicolon1 + 1, semicolon2);
   }
 
@@ -315,14 +316,11 @@ public class Utilities
     return null;
   } 
   
-  public static int largerSize(int a, int b)
-  {
-    return ( a < b )? b  : a ;
+  public static int largerSize(int num1, int num2) {
+    return ( num1 < num2 ) ? num2  : num1 ;
   }
 
   private Utilities() {
+    // static utility constructer
   }
-  
-}//  Utilities{}
-
-
+}

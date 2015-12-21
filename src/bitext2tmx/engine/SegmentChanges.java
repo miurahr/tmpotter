@@ -27,70 +27,167 @@ package bitext2tmx.engine;
 
 
 /**
- *  Clase que contiene los elementos constitutivos de un cambio realizado
- *  sobre la alineaci�n del bitexto
+ *  Action when segument changing.
+ * 
  */
-public class SegmentChanges
-{
-  int tipo;
+public class SegmentChanges {
+  int kind;
   int pos;
-  boolean fuente;
-  String frase;
-  int ident_linea;
+  boolean source;
+  String phrase;
+  int indexLine;
   int [] numEliminada;
 
-  //  constructores
-  public SegmentChanges()
-  {
-    tipo        = 0;
+
+  /**
+   * Constructor.
+   */
+  public SegmentChanges() {
+    kind        = 0;
     pos         = 0;
-    fuente      = false;
-    frase       = "";
-    ident_linea = -1;
+    source      = false;
+    phrase       = "";
+    indexLine = -1;
   }
 
-  public SegmentChanges( int ktipo, int kpos, boolean kfuente, 
-    String kfrase, int kident_linea ) 
-  {
-    tipo        = ktipo;
-    pos         = kpos;
-    fuente      = kfuente;
-    frase       = kfrase;
-    ident_linea = kident_linea;
+  /**
+   * Constructor.
+   * 
+   * @param kind tipo
+   * @param position  pos
+   * @param source fuente
+   * @param phrase frase
+   * @param index ident line
+   */
+  public SegmentChanges( int kind, int position, boolean source, 
+      String phrase, int index )  {
+    this.kind        = kind;
+    this.pos         = position;
+    this.source      = source;
+    this.phrase      = phrase;
+    this.indexLine   = index;
   }
 
-  //  m�todos
-  public int     getTipo()         { return( tipo );  }
-  public int     getPosition()          { return( pos );   }
-  public String  getFrase()        { return( frase ); }
-  public int     getIdent_linea()  { return( ident_linea );  }
-  public boolean getSource()       { return( fuente ); }
-  public int[]   getNumEliminada() { return( numEliminada ); }
+  /**
+   * Accessor for kind.
+   * 
+   * @return kind
+   */
+  public int     getKind()         {
+    return ( kind );
+  }
+  
+  /**
+   * Accessor for position.
+   * 
+   * @return position
+   */
+  public int     getPosition()          {
+    return  ( pos );
+  }
+  
+  /**
+   * Accessor for frase.
+   * 
+   * @return frase
+   */
+  public String  getFrase()        {
+    return ( phrase );
+  }
 
-  public int getTam()
-  {
+  /**
+   * Accessor for ident line.
+   * 
+   * @return ident
+   */
+  public int     getIdent_linea()  {
+    return ( indexLine );
+  }
+
+  /**
+   * Accessor for source/translation indicator.
+   * 
+   * @return source
+   */
+  public boolean getSource()       {
+    return ( source );
+  }
+  
+  /**
+   * Accessor for num eliminada.
+   * 
+   * @return numEliminada
+   */
+  public int[]   getNumEliminada() {
+    return ( numEliminada );
+  }
+
+  /**
+   * Accessor for TAM.
+   * 
+   * @return length of numEliminada
+   */
+  public int getTam() {
     int tam = numEliminada.length;
 
-    return( tam );
+    return ( tam );
   }
 
-  public void setTipo( int ktipo )         { tipo   = ktipo;   }
-  public void setPos( int kpos )           { pos    = kpos;    }
-  public void setFuente( boolean kFuente ) { fuente = kFuente; }
-  public void setFrase( String kfrase )    { frase  = kfrase;  }
+  /**
+   * Setter for Tipo.
+   * 
+   * @param ktipo to be set
+   */
+  public void setTipo( int ktipo )         {
+    kind   = ktipo;
+  }
+  
+  /**
+   * Setter for position.
+   * 
+   * @param kpos to set
+   */
+  public void setPos( int kpos )           {
+    pos    = kpos;
+  }
+  
+  /**
+   * Setter for fuente.
+   * 
+   * @param source to set boolean
+   */
+  public void setSource( boolean source ) {
+    this.source = source;
+  }
+  
+  /**
+   * Setter for frase.
+   * 
+   * @param kfrase string to set
+   */
+  public void setFrase( String kfrase )    {
+    phrase  = kfrase;
+  }
 
-  public void setIdent_linea( int kident_linea ) 
-  { ident_linea = kident_linea; }
+  /**
+   * Setter for line ident.
+   * 
+   * @param index to set
+   */
+  public void setIdent_linea( int index ) {
+    indexLine = index;
+  }
 
-  public void setNumEliminada( int[] keliminadas, int tam )
-  {
+  /**
+   * Setter for num of Eliminada.
+   * 
+   * @param keliminadas eliminada
+   * @param tam number of array
+   */
+  public void setNumEliminada( int[] keliminadas, int tam ) {
     numEliminada = new int[tam];
-
-    for( int cont=0; cont<tam; cont++ )
-     numEliminada[cont] = keliminadas[cont];
+    for ( int cont = 0; cont < tam; cont++ ) {
+      numEliminada[cont] = keliminadas[cont];
+    }
   }
-
-}//  SegmentChanges{}
-
-
-
+}

@@ -27,7 +27,7 @@ package bitext2tmx.engine;
 
 
 /**
-*
+* Segment class.
 */
 /*
   This class is not strictly correct
@@ -37,32 +37,76 @@ package bitext2tmx.engine;
   
   or it is a row in the table
 */
-final public class Segment
-{
-  private String _strNum;
-  private String _strOriginal;
-  private String _strTranslation;
+public class Segment {
+  private String num;
+  private String original;
+  private String translation;
 
-  public Segment( final String strNum, final String strOriginal, final String strTranslation )
-  {
-    _strNum         = strNum;
-    _strOriginal    = strOriginal;
-    _strTranslation = strTranslation;
+  /**
+   * Constructor.
+   * 
+   * @param num row number
+   * @param original original pharase
+   * @param translation translation pharase
+   */
+  public Segment( final String num, final String original,
+          final String translation ) {
+    this.num         = num;
+    this.original    = original;
+    this.translation = translation;
   }
 
-  final public String getNum()         { return( _strNum ); }
-  final public String getOriginal()    { return( _strOriginal ); }
-  final public String getTranslation() { return( _strTranslation ); }
+  /**
+   * Accessor to num.
+   * 
+   * @return num
+   */
+  public String getNum() {
+    return num;
+  }
+  
+  /**
+   * get original string.
+   * 
+   * @return original string in segument.
+   */
+  public String getOriginal()    {
+    return original;
+  }
+  
+  /**
+   * get translation string.
+   *
+   * @return translation string in segument.
+   */
+  public String getTranslation() {
+    return translation;
+  }
 
-  final public void setNum( final String strNum )
-  { _strNum = strNum; }
+  /**
+   * set number of segment.
+   * 
+   * @param num  string to set
+   */
+  public void setNum( final String num ) {
+    this.num = num;
+  }
 
-  final public void setOriginal( final String strOriginal )
-  { _strOriginal = strOriginal; }
+  /**
+   * set original string.
+   * 
+   * @param original to set
+   */
+  public void setOriginal( final String original ) {
+    this.original = original;
+  }
 
-  final public void setTranslation( final String strTranslation )
-  { _strTranslation = strTranslation; }
-
-}//  Segment{}
-
-
+  /**
+   * set translation string.
+   * 
+   * @param translation to set
+   */
+  public void setTranslation( final String translation ) {
+    this.translation = translation;
+  }
+}

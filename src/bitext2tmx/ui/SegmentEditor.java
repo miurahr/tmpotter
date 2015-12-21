@@ -26,30 +26,29 @@
 
 package bitext2tmx.ui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 
 /**
- *   Segment editor
+ *   Segment editor.
  *
  */
 @SuppressWarnings("serial")
 final class SegmentEditor extends DockablePanel {
-  final private JTextPane textPane =  new JTextPane();
-  final private MainWindow windowMain;
+  private final JTextPane textPane =  new JTextPane();
+  private final MainWindow windowMain;
 
-  public SegmentEditor( final MainWindow windowMain )
-  {
+  public SegmentEditor( final MainWindow windowMain ) {
     super( "SegmentEditor", "SegmentEditor", false );
 
     this.windowMain = windowMain;
@@ -65,14 +64,14 @@ final class SegmentEditor extends DockablePanel {
 
     textPane.addKeyListener( new KeyAdapter() {
       @Override
-      final public void keyReleased( final KeyEvent e ) { 
+      public final void keyReleased( final KeyEvent evnet ) { 
           onKeyReleased();
       }
     });
 
     textPane.addMouseListener( new MouseAdapter() {
       @Override
-      final public void mouseClicked( final MouseEvent e ) {
+      public final void mouseClicked( final MouseEvent event ) {
         onClicked();
       }
     });
@@ -96,32 +95,39 @@ final class SegmentEditor extends DockablePanel {
     add( scpn, gbc );
   }
 
-  final public String getText() { return( textPane.getText() ); }
+  public final String getText() {
+    return ( textPane.getText() );
+  }
 
-  final public void setText( final String strText )
-  {
+  public final void setText( final String strText ) {
     textPane.setText( strText );
     textPane.setCaretPosition( 0 );
   }
 
   //final public void setFonts( final Font f ) { _tpn.setFont( f ); }
 
-  final public void setEditorFont( final Font f )
-  {
-    if( textPane != null ) textPane.setFont( f );
-    else System.out.println( " _ed _tpn does not exist yet!" );
+  public final void setEditorFont( final Font font ) {
+    if ( textPane != null ) {
+      textPane.setFont( font );
+    } else {
+      System.out.println( " _ed _tpn does not exist yet!" );
+    }
   }
 
-  final public void reset() { textPane.setText( "" ); }
+  public final void reset() {
+    textPane.setText( "" );
+  }
 
-  final public int getSelectionStart() { return( textPane.getSelectionStart() ); }
+  public final int getSelectionStart() {
+    return ( textPane.getSelectionStart() );
+  }
 
-  private void onKeyReleased()
-  { windowMain.setTextAreaPosition( textPane.getSelectionStart() ); }
+  private void onKeyReleased() {
+    windowMain.setTextAreaPosition( textPane.getSelectionStart() );
+  }
 
-  private void onClicked()
-  { windowMain.setTextAreaPosition( textPane.getSelectionStart() ); }
-
-}// SegmentEditor{}
-
+  private void onClicked() {
+    windowMain.setTextAreaPosition( textPane.getSelectionStart() );
+  }
+}
 

@@ -23,12 +23,16 @@
 #######################################################################
 */
 
-
 package bitext2tmx.ui.dialogs;
 
+import static bitext2tmx.util.Localization.getString;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
+import bitext2tmx.util.AppConstants;
+
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -42,101 +46,111 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import bitext2tmx.util.AppConstants;
-import static bitext2tmx.util.Localization.getString;
-
 
 /**
-* Ask encodings
+* Ask encodings.
 *
-* @author
+* @author 
 */
-final public class Encodings extends JDialog implements ActionListener
-{
-  private static final long serialVersionUID = 9103389076759237131L;
+@SuppressWarnings("serial")
+public final class Encodings extends JDialog implements ActionListener {
 
-  boolean _bClosed;
+  boolean closed;
 
-  final public boolean isClosed() { return( _bClosed ); }
+  public final boolean isClosed() {
+    return ( closed );
+  }
 
-  public Encodings( final Frame frame, final boolean modal )
-  {
+  /**
+   * Encoding dialog.
+   * 
+   * @param frame frame to show
+   * @param modal is modal?
+   */
+  public Encodings( final Frame frame, final boolean modal ) {
     super( frame, modal );
 
     initialize();
   }
 
-  public Encodings()
-  {
+  public Encodings() {
     //  No resize! -RM
     this( null, false );
   }
 
-  private void initialize()
-  {
-    _pnl.setLayout( null );
+  private void initialize() {
+    panel.setLayout( null );
 
-    setLocalizedText( _btnOK, getString( "BTN.OK" ) );
-    _btnOK.addActionListener( this );
-    _btnOK.setBounds( new Rectangle( 72, 85, 115, 29 ) );
+    setLocalizedText( buttonOk, getString( "BTN.OK" ) );
+    buttonOk.addActionListener( this );
+    buttonOk.setBounds( new Rectangle( 72, 85, 115, 29 ) );
 
-    _cbxEncoding.setSelectedIndex( 1 );
-    _cbxEncoding.setBounds( new Rectangle( 60, 43, 145, 30 ) );
+    comboEncoding.setSelectedIndex( 1 );
+    comboEncoding.setBounds( new Rectangle( 60, 43, 145, 30 ) );
 
-    _lblEncoding.setOpaque( false );
-    _lblEncoding.setBounds( new Rectangle( 53, 15, 176, 27 ) );
-    _lblEncoding.setText( getString( "LBL.ENCODING" ) );
+    labelEncoding.setOpaque( false );
+    labelEncoding.setBounds( new Rectangle( 53, 15, 176, 27 ) );
+    labelEncoding.setText( getString( "LBL.ENCODING" ) );
 
-    _pnl.setEnabled( true );
+    panel.setEnabled( true );
 
-    addWindowListener( new WindowAdapter()
-      { public void windowClosing( final WindowEvent evt ) { onClose(); } } );
+    addWindowListener( new WindowAdapter() {
+        public void windowClosing( final WindowEvent evt ) {
+          onClose(); 
+        } 
+    } );
 
     setModal( true );
     setResizable( false );
     setTitle( getString( "DLG.ENCODING.TITLE" ) );
 
-    getContentPane().add( _pnl, BorderLayout.CENTER );
+    getContentPane().add( panel, BorderLayout.CENTER );
 
-    _pnl.add( _lblEncoding, null );
-    _pnl.add(_cbxEncoding, null );
-    _pnl.add( _btnOK, null );
+    panel.add( labelEncoding, null );
+    panel.add(comboEncoding, null );
+    panel.add( buttonOk, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      setBounds( ( screenSize.width - 260 ) / 2,
+    setBounds( ( screenSize.width - 260 ) / 2,
         ( screenSize.height - 150 ) / 2, 260, 150 );
   }
 
-  final public String getComboBoxEncoding()
-  { return( _cbxEncoding.getSelectedItem().toString() ); }
+  public final String getComboBoxEncoding() {
+    return ( comboEncoding.getSelectedItem().toString() );
+  }
 
-  final void onOK() { setVisible( false ); }
+  final void onOk() {
+    setVisible( false );
+  }
 
-  final void onClose()
-  {
-    _bClosed = true;
+  final void onClose() {
+    closed = true;
     setVisible( false );
     dispose();
   }
 
-  final public void actionPerformed( final ActionEvent action )
-  {
+  /**
+   * Action handler.
+   * 
+   * @param action event
+   */
+  @Override
+  public final void actionPerformed( final ActionEvent action ) {
     final Object actor = action.getSource();
 
-    if( actor instanceof JButton )
-    {
-      if( actor == _btnOK ) onOK();
+    if ( actor instanceof JButton ) {
+      if ( actor == buttonOk ) {
+        onOk();
+      }
     }
   }
 
   // Variables declaration
-  final private JPanel    _pnl         = new JPanel();
-  final private JButton   _btnOK       = new JButton();
-  final private JLabel    _lblEncoding = new JLabel();
-  final private JComboBox _cbxEncoding = new JComboBox( AppConstants.straEncodings );
+  private final JPanel    panel         = new JPanel();
+  private final JButton   buttonOk      = new JButton();
+  private final JLabel    labelEncoding = new JLabel();
+  private final JComboBox comboEncoding = new JComboBox( AppConstants.straEncodings );
   // End of variables declaration
-}//  Encodings{}
+}
 
 

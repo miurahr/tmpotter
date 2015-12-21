@@ -36,6 +36,8 @@
 
 <project name="bitext2tmx" default="default" basedir=".">
   <description>Builds, tests, and runs bitext2tmx</description>
+  <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
+    classpath="lib/checkstyle-6.13-all.jar"/>
   <import file="nbproject/build-impl.xml"/>
 
   <!--
@@ -202,23 +204,41 @@
     </condition>
   </target>
 
-    <!-- Builds a source distribution -->
-    <target name="src" depends="init,get-revision" description="Build source distribution">
-      <mkdir dir="dist2"/>
-      <!-- Create temporary Version.properties with current revision -->
-      <tempfile property="temp.version.props" destdir="dist2" deleteonexit="true"/>
-      <copy file="src/bitext2tmx/Version.properties" tofile="${temp.version.props}"/>
-      <propertyfile file="${temp.version.props}">
-        <entry key="revision" value="${repo.revision}"/>
-      </propertyfile>
-      <!-- Build zip -->
-      <zip destfile="dist2/bitext2tmx_${version}_${revision}_Source.zip">
-        <fileset dir="."
-            includes="doc/** lib/** nbproject/** release/** src/** test/** build.xml"
-            excludes="**/nbproject/private/** **/build/** **/dist/** src/bitext2tmx/Version.properties" />
-        <zipfileset file="${temp.version.props}" fullpath="src/bitext2tmx/Version.properties"/>
-      </zip>
-    </target>
+  <!-- Builds a source distribution -->
+  <target name="src" depends="init,get-revision" description="Build source distribution">
+    <mkdir dir="dist2"/>
+    <!-- Create temporary Version.properties with current revision -->
+    <tempfile property="temp.version.props" destdir="dist2" deleteonexit="true"/>
+    <copy file="src/bitext2tmx/Version.properties" tofile="${temp.version.props}"/>
+    <propertyfile file="${temp.version.props}">
+      <entry key="revision" value="${repo.revision}"/>
+    </propertyfile>
+    <!-- Build zip -->
+    <zip destfile="dist2/bitext2tmx_${version}_${revision}_Source.zip">
+      <fileset dir="."
+          includes="doc/** lib/** nbproject/** release/** src/** test/** build.xml"
+          excludes="**/nbproject/private/** **/build/** **/dist/** src/bitext2tmx/Version.properties" />
+      <zipfileset file="${temp.version.props}" fullpath="src/bitext2tmx/Version.properties"/>
+    </zip>
+  </target>
+
+  <target name="-post-compile-test" depends="checkstyle"/>
+
+  <target name="checkstyle"
+        description="Generates a report of code convention violations.">
+    <checkstyle config="doc/codingstyle_checks.xml">
+      <fileset dir="src">
+        <patternset>
+          <include name="**/*.java"/>
+          <exclude name="**/util/xml/*.java"/>
+          <exclude name="**/util/Base64.java"/>
+          <exclude name="**/*Test*"/>
+        </patternset>
+      </fileset>
+      <formatter type="plain"/>
+      <formatter type="xml" toFile="build/checkstyle_errors.xml"/>
+    </checkstyle>
+  </target>
 
   <target name="-post-clean">
     <delete file="MANIFEST.MF" />

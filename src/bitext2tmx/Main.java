@@ -27,63 +27,77 @@
 package bitext2tmx;
 
 
-import java.util.Date;
-import java.util.Locale;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.SwingUtilities;
-
 import bitext2tmx.ui.Icons;
 import bitext2tmx.ui.MainWindow;
 import bitext2tmx.ui.SplashScreen;
-import bitext2tmx.util.gui.AquaAdapter;
-
 import bitext2tmx.util.AppConstants;
 import bitext2tmx.util.Platform;
+import bitext2tmx.util.gui.AquaAdapter;
+
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 
 /**
- *
+ * Main class.
+ * 
  */
-final public class Main
-{
-  public Main()
-  {
+public class Main {
+  /**
+   * Main constructor.
+   * 
+   */
+  public Main() {
     setLnF();
     displaySplash();
     echoStartMsg();
 
     final MainWindow windowMain = new MainWindow();
 
-    SwingUtilities.invokeLater(new Runnable()
-      { public void run() { windowMain.setVisible( true ); } } );
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        windowMain.setVisible( true ); 
+      } 
+    });
+  }
+  
+  private static final Logger LOG = Logger.getLogger(Main.class.getName());
+
+  /**
+   * main method.
+   * 
+   * @param straArgs command line argument
+   */
+  public static void main(String[] straArgs) {
+    new Main();
+  }
+  
+  private void echoStartMsg() {
+    System.out.println("\n"
+        + ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
+        + "\n" + ";;  "
+        + AppConstants.getApplicationDisplayName()
+        + ", Locale: " + Locale.getDefault()
+        + ", " + new Date()
+        + "\n" );
   }
 
-  public static void main( String[] straArgs ) { new Main(); }
-
-  final private void echoStartMsg()
-  {
-    System.out.println("\n" +
-      ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" +
-      "\n" + ";;  " +
-      AppConstants.getApplicationDisplayName() +
-      ", Locale: " + Locale.getDefault() +
-      ", " + new Date() +
-      "\n" );
-  }
-
-  /**  Set the Swing Look and Feel */
-  final private void setLnF()
-  {
-    try
-    {
-      if( Platform.isMacOSX() )
-      {
+  /** 
+   * Set the Swing Look and Feel.
+   */
+  private void setLnF() {
+    try {
+      if (Platform.isMacOsx()) {
         System.setProperty( "apple.awt.graphics.UseQuartz", "true" );
         System.setProperty( "apple.laf.useScreenMenuBar", "true" );
-        System.
-          setProperty( "com.apple.mrj.application.apple.menu.about.name",
+        System.setProperty( "com.apple.mrj.application.apple.menu.about.name",
              "bitext2tmx" );
         //  ToDo: create (OS X) dock icon
         AquaAdapter.setDockIconImage(Icons.getIcon( "icon-large.png" ).getImage() );
@@ -93,24 +107,27 @@ final public class Main
       UIManager.getInstalledLookAndFeels();
       UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
       System.setProperty("swing.aatext", "true");
+    
+    } catch (final ClassNotFoundException 
+            | IllegalAccessException 
+            | InstantiationException 
+            | UnsupportedLookAndFeelException cnfe) {
+      LOG.logrb(Level.INFO, "Main", "setLnF", "MW-LOOK-AND-FEEL-EXCEPTION", "", cnfe);
     }
-    //  ToDo: log proper exception messages
-    catch( final ClassNotFoundException | IllegalAccessException | 
-            InstantiationException | UnsupportedLookAndFeelException cnfe )
-    {  }
   }
 
-  final private void displaySplash()
-  {
-    new Thread()
-      {
-        public void run()
-        {
+  private void displaySplash() {
+    new Thread() {
+        @Override
+        public void run() {
           final SplashScreen splash = new SplashScreen();
           splash.display();
 
-          try{ sleep( 5000 ); }
-          catch( InterruptedException ie ) {}
+          try {
+            sleep(5000); 
+          } catch (InterruptedException ie) {
+            LOG.log(Level.INFO, "Splash try to be Interrupted.");
+          }
 
           splash.remove();
         }
@@ -118,5 +135,3 @@ final public class Main
   }
 
 }
-
-

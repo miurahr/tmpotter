@@ -23,19 +23,62 @@
  #
  #######################################################################
  */
+
 package bitext2tmx.ui;
 
-import java.awt.event.*;
+import static bitext2tmx.util.Localization.getString;
+import static bitext2tmx.util.StringUtil.formatText;
+import static bitext2tmx.util.StringUtil.restoreText;
+
+import static org.openide.awt.Mnemonics.setLocalizedText;
+
+import bitext2tmx.core.Document;
+import bitext2tmx.core.DocumentSegmenter;
+import bitext2tmx.core.TmxReader;
+import bitext2tmx.core.TmxWriter;
+import bitext2tmx.core.TranslationAligner;
+import bitext2tmx.engine.Segment;
+import bitext2tmx.engine.SegmentChanges;
+import bitext2tmx.ui.dialogs.About;
+import bitext2tmx.ui.dialogs.Encodings;
+import bitext2tmx.ui.dialogs.FontSelector;
+import bitext2tmx.ui.dialogs.OpenTexts;
+import bitext2tmx.ui.help.Manual;
+import bitext2tmx.util.AppConstants;
+import bitext2tmx.util.Platform;
+import bitext2tmx.util.RuntimePreferences;
+import bitext2tmx.util.Utilities;
+import bitext2tmx.util.gui.AquaAdapter;
+
+import com.vlsolutions.swing.docking.DockKey;
+import com.vlsolutions.swing.docking.DockingConstants;
+import com.vlsolutions.swing.docking.DockingDesktop;
+import com.vlsolutions.swing.docking.ui.DockingUISettings;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -43,71 +86,30 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
-import com.vlsolutions.swing.docking.ui.DockingUISettings;
-
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableColumn;
 
-import com.vlsolutions.swing.docking.DockKey;
-import com.vlsolutions.swing.docking.DockingConstants;
-import com.vlsolutions.swing.docking.DockingDesktop;
-
-import bitext2tmx.core.DocumentSegmenter;
-import bitext2tmx.core.TranslationAligner;
-import bitext2tmx.core.TMXReader;
-import bitext2tmx.engine.Segment;
-import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.util.AppConstants;
-import bitext2tmx.ui.dialogs.About;
-import bitext2tmx.ui.dialogs.FontSelector;
-import bitext2tmx.ui.dialogs.Encodings;
-import bitext2tmx.ui.help.Manual;
-import bitext2tmx.ui.dialogs.OpenTexts;
-import bitext2tmx.core.Document;
-import bitext2tmx.core.TMXWriter;
-import bitext2tmx.util.RuntimePreferences;
-import bitext2tmx.util.gui.AquaAdapter;
-import bitext2tmx.util.Utilities;
-import bitext2tmx.util.Platform;
-
-import static bitext2tmx.util.Localization.getString;
-import static bitext2tmx.util.StringUtil.formatText;
-import static bitext2tmx.util.StringUtil.restoreText;
 
 /**
- *
+ * Main window class,.
+ * 
  */
-final public class MainWindow extends JFrame implements ActionListener,
+@SuppressWarnings("serial")
+public final class MainWindow extends JFrame implements ActionListener,
         WindowListener {
-
-  final private static long serialVersionUID = -540065960678391862L;
-
   private DockingDesktop desktop;
 
-  final private AlignmentsView viewAlignments = new AlignmentsView(this);
-  final private SegmentEditor edLeftSegment = new SegmentEditor(this);
-  final private SegmentEditor editRightSegment = new SegmentEditor(this);
-  final private ControlView viewControls = new ControlView(this);
+  private final AlignmentsView viewAlignments = new AlignmentsView(this);
+  private final SegmentEditor edLeftSegment = new SegmentEditor(this);
+  private final SegmentEditor editRightSegment = new SegmentEditor(this);
+  private final ControlView viewControls = new ControlView(this);
 
   //  Menubar
-  final private JMenuBar _mbar = new JMenuBar();
+  private final JMenuBar menuBar = new JMenuBar();
 
   //  File menu
   private JMenu menuItemFile;
@@ -142,16 +144,16 @@ final public class MainWindow extends JFrame implements ActionListener,
   private Document documentOriginal;
   private Document documentTranslation;
 
-  final private ArrayList arrayListBitext;
+  private final ArrayList arrayListBitext;
 
-  final private ArrayList<SegmentChanges> arrayListChanges;
-  final private ArrayList arrayListLang;
+  private final ArrayList<SegmentChanges> arrayListChanges;
+  private final ArrayList arrayListLang;
 
   private int topArrays;    //  =  0;
   private int positionTextArea;  //  =  0;
   private int identChanges = -1;
   private int identLabel;  //  =  0;
-  private int _identAnt;     //  =  0;
+  private int identAnt;     //  =  0;
 
   private String stringLangOriginal = "en";
   private String stringLangTranslation = "en";
@@ -162,19 +164,23 @@ final public class MainWindow extends JFrame implements ActionListener,
   private File filePathOriginal;
   private File filePathTranslation;
 
-  private Font _fntUserInterface;
+  private Font fontUserInterface;
   private Font fontTableHeader;
   private Font fontTable;
-  private Font _fntSourceEditor;
-  private Font _fntTargetEditor;
+  private Font fontSourceEditor;
+  private Font fontTranslationEditor;
 
+  /**
+   * Main window class.
+   * 
+   */
   public MainWindow() {
     this.arrayListBitext = new ArrayList();
     this.arrayListChanges = new ArrayList<>();
     this.arrayListLang = new ArrayList();
 
-    initDockingUI();
-    makeUI();
+    initDockingUi();
+    makeUi();
     setWindowIcon();
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
@@ -188,7 +194,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
-      final public void windowClosing(final WindowEvent e) {
+      public final void windowClosing(final WindowEvent event) {
         quit();
       }
     });
@@ -209,9 +215,10 @@ final public class MainWindow extends JFrame implements ActionListener,
     setFonts(null);
 
   }
+
   private static final Logger LOG = Logger.getLogger(MainWindow.class.getName());
 
-  private void initDockingUI() {
+  private void initDockingUi() {
     DockingUISettings.getInstance().installUI();
 
     UIManager.put("DockViewTitleBar.titleFont", getUserInterfaceFont());
@@ -280,7 +287,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   private ImageIcon getDesktopIcon(final String iconName) {
-    if (Platform.isMacOSX()) {
+    if (Platform.isMacOsx()) {
       return (getIcon("desktop/osx/" + iconName));
     }
 
@@ -292,7 +299,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Set root window icon
+   * Set root window icon.
    */
   private void setWindowIcon() {
     try {
@@ -302,7 +309,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     }
   }
 
-  private void makeUI() {
+  private void makeUi() {
     makeMenus();
 
     labelStatusBar = new JLabel(" ");
@@ -320,19 +327,17 @@ final public class MainWindow extends JFrame implements ActionListener,
     desktop.registerDockable(editRightSegment);
     desktop.registerDockable(viewControls);
 
-    DockKey keyAlignmentTable = viewAlignments.getDockKey();
     DockKey keyLeftSegment = edLeftSegment.getDockKey();
-    DockKey keyRightSegment = editRightSegment.getDockKey();
-    DockKey keySegmentButtons = viewControls.getDockKey();
-
     keyLeftSegment.setName(getString("VW.ORIGINAL.NAME"));
     keyLeftSegment.setTooltip(getString("VW.ORIGINAL.TOOLTIP"));
+    keyLeftSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    DockKey keyRightSegment = editRightSegment.getDockKey();
     keyRightSegment.setName(getString("VW.TRANSLATION.NAME"));
     keyRightSegment.setTooltip(getString("VW.TRANSLATION.TOOLTIP"));
-
-    keyAlignmentTable.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    keyLeftSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
     keyRightSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    DockKey keyAlignmentTable = viewAlignments.getDockKey();
+    keyAlignmentTable.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
+    DockKey keySegmentButtons = viewControls.getDockKey();
     keySegmentButtons.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
 
     keyAlignmentTable.setFloatEnabled(true);
@@ -361,17 +366,16 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Used by makeMenuComponent to select componenet type
+   * Used by makeMenuComponent to select componenet type.
    */
   public static enum MenuComponentType {
-
     CHECKBOX, ITEM, MENU, RADIOBUTTON
-  };
+  }
 
   /**
-   * Return a new menu component
+   * Return a new menu component.
    *
-   * Can return subclasses of JMenuItem: including JMenu! Downcast return type
+   * <p>Can return subclasses of JMenuItem: including JMenu! Downcast return type
    * to as needed
    */
   private <T extends JMenuItem> T makeMenuComponent(final MenuComponentType menuComponentType,
@@ -405,7 +409,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     if (ksShortcut != null) {
       menuItem.setAccelerator(ksShortcut);
     }
-    if (!Platform.isMacOSX() && icon != null) {
+    if (!Platform.isMacOsx() && icon != null) {
       menuItem.setIcon(icon);
     }
 
@@ -424,8 +428,8 @@ final public class MainWindow extends JFrame implements ActionListener,
   private void makeMenus() {
     menuItemFile = makeMenuComponent(MenuComponentType.MENU, null, null, "File", "MNU.FILE");
 
-    menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM, KeyStroke.
-            getKeyStroke('O', KeyEvent.CTRL_MASK, false), getIcon("project_open.png"),
+    menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM, KeyStroke
+            .getKeyStroke('O', KeyEvent.CTRL_MASK, false), getIcon("project_open.png"),
             "Open...", "MNI.FILE.OPEN");
 
     menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
@@ -454,7 +458,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuCallbackSettingsLinebreak.setToolTipText(getString("MNI.SETTINGS.LINEBREAK.TOOLTIP"));
     menuCallbackSettingsLinebreak.addChangeListener(new javax.swing.event.ChangeListener() {
       @Override
-      final public void stateChanged(final ChangeEvent e) {
+      public final void stateChanged(final ChangeEvent event) {
         RuntimePreferences.setSegmentByLineBreak(menuCallbackSettingsLinebreak.isSelected());
         onLinebreakToggle();
       }
@@ -481,7 +485,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuItemFile.addSeparator();
     menuItemFile.add(menuItemFileClose);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemFile.addSeparator();
       menuItemFile.add(menuItemFileQuit);
     }
@@ -489,7 +493,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuSettings.add(menuCallbackSettingsLinebreak);
     menuSettings.add(menuItemSettingsFonts);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuLaf = makeMenuComponent(MenuComponentType.MENU, null, null,
               "Look and Feel", null);
 
@@ -529,20 +533,20 @@ final public class MainWindow extends JFrame implements ActionListener,
 
     menuHelp.add(menuItemHelpManual);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuHelp.addSeparator();
       menuHelp.add(menuItemHelpAbout);
     }
 
-    _mbar.add(menuItemFile);
-    _mbar.add(menuSettings);
-    _mbar.add(menuHelp);
+    menuBar.add(menuItemFile);
+    menuBar.add(menuSettings);
+    menuBar.add(menuHelp);
 
-    setJMenuBar(_mbar);
+    setJMenuBar(menuBar);
   }
 
   /**
-   * Quit application
+   * Quit application.
    *
    * @return boolean - OS X Aqua integration only
    */
@@ -560,10 +564,8 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Open dialog to select the files we want to align/convert
+   * Open dialog to select the files we want to align/convert.
    *
-   * Esta funci�n abre un cuadro de di�logo para seleccionar los ficheros que
-   * queremos alinear.
    */
   private void onOpen() {
     String originalEncoding;
@@ -592,8 +594,10 @@ final public class MainWindow extends JFrame implements ActionListener,
         stringLangTranslation = dlg.getTargetLocale();
 
         try {
-          documentOriginal = DocumentSegmenter.readDocument(stringOriginal, stringLangOriginal, originalEncoding);
-          documentTranslation = DocumentSegmenter.readDocument(stringTranslation, stringLangTranslation, translateEncoding);
+          documentOriginal = DocumentSegmenter.readDocument(stringOriginal,
+                  stringLangOriginal, originalEncoding);
+          documentTranslation = DocumentSegmenter.readDocument(stringTranslation,
+                  stringLangTranslation, translateEncoding);
         } catch (Exception ex) {
           JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
                   getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
@@ -617,7 +621,7 @@ final public class MainWindow extends JFrame implements ActionListener,
         }
       } else {
         try {
-          TMXReader.readTMX(filePathOriginal, originalEncoding,
+          TmxReader.readTmx(filePathOriginal, originalEncoding,
                   documentOriginal, documentTranslation);
         } catch (Exception ex) {
           Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -638,11 +642,10 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Actions to perform when closing alignment/editing session. Leaves the text
+   * Actions to perform when closing alignment/editing session.
+   * 
+   * <p>Leaves the text
    * as it was so that it can be processed later.
-   *
-   * Esta funci�n contiene la funcionalidad del bot�n abortar. Deja el texto
-   * como estaba para volver a tratarlo m�s tarde.
    */
   private void onClose() {
     clear();
@@ -672,7 +675,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Necessary capabilities to store the bitext
+   * Necessary capabilities to store the bitext.
    *
    */
   private void saveBitext() {
@@ -685,8 +688,8 @@ final public class MainWindow extends JFrame implements ActionListener,
 
     try {
       String outFileName = filePathOriginal.getName();
-      String outFileNameBase = outFileName.
-              substring(0, (filePathOriginal.getName().length() - 4));
+      String outFileNameBase = outFileName
+              .substring(0, (filePathOriginal.getName().length() - 4));
       boolean save = false;
       boolean cancel = false;
 
@@ -697,9 +700,9 @@ final public class MainWindow extends JFrame implements ActionListener,
         final JFileChooser fc = new JFileChooser();
 
         //  switch() on language removed from here -RM
-        boolean kNombre_Usuario = false;
+        boolean nameOfUser = false;
 
-        while (!kNombre_Usuario) {
+        while (!nameOfUser) {
           fc.setLocation(230, 300);
           fc.setCurrentDirectory(userHome);
           fc.setDialogTitle(getString("DLG.SAVEAS"));
@@ -720,29 +723,29 @@ final public class MainWindow extends JFrame implements ActionListener,
               outFileName = outFile.getName().concat(".tmx");
             }
 
-            kNombre_Usuario = true;
+            nameOfUser = true;
           } else {
-            kNombre_Usuario = true;
+            nameOfUser = true;
             cancel = true;
           }
         }
 
-        int n;
-        if (kNombre_Usuario && !cancel) {
+        int selected;
+        if (nameOfUser && !cancel) {
           if (outFile.exists()) {
             final Object[] options = {getString("BTN.SAVE"),
               getString("BTN.CANCEL")};
 
-            n = JOptionPane.showOptionDialog(this, getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
+            selected = JOptionPane.showOptionDialog(this,
+                    getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[0]);
 
             //  Overwrite
-            if (n == 0) {
+            if (selected == 0) {
               save = true;
             }
-          }
-          else {
+          } else {
             save = true;
           }
 
@@ -762,22 +765,23 @@ final public class MainWindow extends JFrame implements ActionListener,
         }
       }
 
-      TMXWriter.writeBitext(outFile,
+      TmxWriter.writeBitext(outFile,
               documentOriginal, stringLangOriginal,
               documentTranslation, stringLangTranslation,
               encoding);
 
     } catch (IOException ex) {
-      JOptionPane.
-              showMessageDialog(this, (String) arrayListLang.get(21),
+      JOptionPane
+              .showMessageDialog(this, (String) arrayListLang.get(21),
                       (String) arrayListLang.get(18), JOptionPane.ERROR_MESSAGE);
       this.dispose();
     }
   }
 
   /**
+   * clear empty segment.
    *
-   * Initialize values to start the validation of the following alignment
+   * <p>Initialize values to start the validation of the following alignment
    */
   private void clear() {
     int cont = documentOriginal.size() - 1;
@@ -806,7 +810,7 @@ final public class MainWindow extends JFrame implements ActionListener,
 
     identChanges = -1;
     identLabel = 0;
-    _identAnt = 0;
+    identAnt = 0;
     filePathTranslation = null;
     filePathOriginal = null;
     viewControls.setUndoEnabled(false);
@@ -847,7 +851,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   /**
    * Delete text. 
    * 
-   * This function updates the changes adding a delete change
+   * <p>This function updates the changes adding a delete change
    * to the undo array and deletes
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be deleted
@@ -874,7 +878,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   /**
    * Function Split. 
    * 
-   * This function updates the changes adding a split to the undo
+   * <p>This function updates the changes adding a split to the undo
    * array and performs the splitting
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be split
@@ -907,7 +911,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   /**
    * Update the row in table with mods.
    * 
-   * This function updates the rows in the table with the
+   * <p>This function updates the rows in the table with the
    * modifications performed, adds rows or removes them.
    */
   private void updateAlignmentsView() {
@@ -929,8 +933,8 @@ final public class MainWindow extends JFrame implements ActionListener,
       }
     } else if (viewAlignments.getRowCount() < documentOriginal.size()) {
       while (viewAlignments.getRowCount() != documentOriginal.size()) {
-        Segment nSeg = new Segment(null, null, null);
-        viewAlignments.addModelSegment(nSeg);
+        Segment nullSegment = new Segment(null, null, null);
+        viewAlignments.addModelSegment(nullSegment);
         viewAlignments.setPreferredSize(805, 15, 1);
       }
     }
@@ -975,7 +979,8 @@ final public class MainWindow extends JFrame implements ActionListener,
       // Delete blank lines at the end
       if (documentOriginal.get(documentOriginal.size() - 1) == null
               || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
-              && (documentTranslation.get(documentTranslation.size() - 1) == null || documentTranslation.get(
+            && (documentTranslation.get(documentTranslation.size() - 1) == null
+              || documentTranslation.get(
                       documentTranslation.size() - 1).equals(""))) {
         documentOriginal.remove(documentOriginal.size() - 1);
         documentTranslation.remove(documentTranslation.size() - 1);
@@ -1037,7 +1042,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Undoes the last delete
+   * Undoes the last delete.
    */
   private void undoDelete() {
     SegmentChanges ultChanges = arrayListChanges.get(identChanges);
@@ -1076,8 +1081,8 @@ final public class MainWindow extends JFrame implements ActionListener,
       } else {
         int cont = documentTranslation.size() - 1;
         // The source text had an empty string aligned: restore
-        documentTranslation.add(documentTranslation.size(), documentTranslation.
-                get(documentTranslation.size() - 1));
+        documentTranslation.add(documentTranslation.size(), documentTranslation
+                .get(documentTranslation.size() - 1));
 
         for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
           documentTranslation.set(cont, documentTranslation.get(cont - 1));
@@ -1091,7 +1096,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Undo last change
+   * Undo last change.
    *
    */
   private void undoChanges() {
@@ -1101,10 +1106,10 @@ final public class MainWindow extends JFrame implements ActionListener,
 
     ultChanges = arrayListChanges.get(identChanges);
     identLabel = ultChanges.getIdent_linea();
-    int operacion = ultChanges.getTipo();
+    int operacion = ultChanges.getKind();
     int position;
     boolean izq = ultChanges.getSource();
-    _identAnt = identLabel;
+    identAnt = identLabel;
 
     switch (operacion) {
       //if( operacion == 0 )
@@ -1240,8 +1245,12 @@ final public class MainWindow extends JFrame implements ActionListener,
         }
 
         updateAlignmentsView();
+        break;
       }
-    }//  switch()
+        
+      default:
+        break;
+    } //  switch()
 
   }
 
@@ -1250,19 +1259,19 @@ final public class MainWindow extends JFrame implements ActionListener,
     // if (e.getClickCount() == 1 || e.getClickCount() == 2) {
     positionTextArea = 0;
 
-    if (_identAnt < documentOriginal.size()) {
+    if (identAnt < documentOriginal.size()) {
       //  ToDo: replace with docking editors call
-      documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
-      documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
+      documentOriginal.set(identAnt, restoreText(edLeftSegment.getText()));
+      documentTranslation.set(identAnt, restoreText(editRightSegment.getText()));
     }
 
-    edLeftSegment.setText(formatText(viewAlignments.
-            getValueAt(viewAlignments.getSelectedRow(), 1).toString()));
-    editRightSegment.setText(formatText(viewAlignments.
-            getValueAt(viewAlignments.getSelectedRow(), 2).toString()));
+    edLeftSegment.setText(formatText(viewAlignments
+            .getValueAt(viewAlignments.getSelectedRow(), 1).toString()));
+    editRightSegment.setText(formatText(viewAlignments
+            .getValueAt(viewAlignments.getSelectedRow(), 2).toString()));
 
     identLabel = viewAlignments.getSelectedRow();
-    _identAnt = identLabel;
+    identAnt = identLabel;
 
     if (identLabel == topArrays) {
       viewControls.setTranslationJoinEnabled(false);
@@ -1277,7 +1286,7 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   //  Accessed by AlignmentsView
-  final void onTablePressed(final KeyEvent e) {
+  final void onTablePressed(final KeyEvent event) {
     int fila;
 
     if (viewAlignments.getSelectedRow() != -1) {
@@ -1288,19 +1297,23 @@ final public class MainWindow extends JFrame implements ActionListener,
     }
 
     if (fila < viewAlignments.getRowCount() - 1) {
-      if ((e.getKeyCode() == KeyEvent.VK_DOWN)
-              || (e.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-        if (_identAnt < documentOriginal.size()) {
-          documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
-          documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
+      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
+        if (identAnt < documentOriginal.size()) {
+          documentOriginal.set(identAnt,
+                  restoreText(edLeftSegment.getText()));
+          documentTranslation.set(identAnt,
+                  restoreText(editRightSegment.getText()));
         }
 
-        edLeftSegment.setText(formatText(viewAlignments.getValueAt(fila + 1, 1).toString()));
-        editRightSegment.setText(formatText(viewAlignments.getValueAt(fila + 1, 2).toString()));
+        edLeftSegment.setText(formatText(viewAlignments
+                .getValueAt(fila + 1, 1).toString()));
+        editRightSegment.setText(formatText(viewAlignments
+                .getValueAt(fila + 1, 2).toString()));
 
         identLabel = fila + 1;
-      } else if ((e.getKeyCode() == KeyEvent.VK_UP)
-              || (e.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
+      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
         identLabel = fila - 1;
 
         if (fila == 0) {
@@ -1308,9 +1321,9 @@ final public class MainWindow extends JFrame implements ActionListener,
           identLabel = 0;
         }
 
-        if (_identAnt < documentOriginal.size()) {
-          documentOriginal.set(_identAnt, restoreText(edLeftSegment.getText()));
-          documentTranslation.set(_identAnt, restoreText(editRightSegment.getText()));
+        if (identAnt < documentOriginal.size()) {
+          documentOriginal.set(identAnt, restoreText(edLeftSegment.getText()));
+          documentTranslation.set(identAnt, restoreText(editRightSegment.getText()));
         }
 
         edLeftSegment.setText(formatText(viewAlignments.getValueAt(fila - 1, 1).toString()));
@@ -1325,15 +1338,15 @@ final public class MainWindow extends JFrame implements ActionListener,
         viewControls.setOriginalJoinEnabled(true);
       }
 
-      _identAnt = identLabel;
+      identAnt = identLabel;
     }
 
     updateAlignmentsView();
   }
 
   //  Accessed by SegmentEditor
-  final public void setTextAreaPosition(int iPos) {
-    positionTextArea = iPos;
+  public final void setTextAreaPosition(int position) {
+    positionTextArea = position;
   }
 
   private void onLinebreakToggle() {
@@ -1351,8 +1364,10 @@ final public class MainWindow extends JFrame implements ActionListener,
     maxTamArrays = Utilities.largerSize(documentOriginal.size(), documentTranslation.size()) - 1;
 
     while (cont <= (maxTamArrays - lineasLimpiar)) {
-      if ((documentOriginal.get(cont) == null || documentOriginal.get(cont).equals(""))
-              && (documentTranslation.get(cont) == null || documentTranslation.get(cont).equals(""))) {
+      if ((documentOriginal.get(cont) == null 
+              || documentOriginal.get(cont).equals(""))
+            && (documentTranslation.get(cont) == null 
+              || documentTranslation.get(cont).equals(""))) {
         lineasLimpiar++;
         numEliminadas[cont2] = cont + cont2;
         cont2++;
@@ -1369,19 +1384,19 @@ final public class MainWindow extends JFrame implements ActionListener,
     if (lineasLimpiar > 0) {
       identChanges++;
 
-      SegmentChanges Changes = new SegmentChanges(3, 0, false, "", 0);
-      arrayListChanges.add(identChanges, Changes);
-      Changes.setNumEliminada(numEliminadas, lineasLimpiar);
+      SegmentChanges changes = new SegmentChanges(3, 0, false, "", 0);
+      arrayListChanges.add(identChanges, changes);
+      changes.setNumEliminada(numEliminadas, lineasLimpiar);
       viewControls.setUndoEnabled(true);
       updateAlignmentsView();
     }
   }
 
   //  Accessed by ControlView currently
-  final void onTUSplit() {
+  final void onTuSplit() {
     int izq;
     int cont;
-    SegmentChanges Changes;
+    SegmentChanges changes;
     //  Done in _vwControls
     //_btnUndo.setEnabled( true );
     identChanges++;
@@ -1396,7 +1411,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     if (izq == 1) {
       // Columna izq.
       // Left column.
-      Changes = new SegmentChanges(4, 0, true, "", identLabel);
+      changes = new SegmentChanges(4, 0, true, "", identLabel);
 
       for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
         documentTranslation.set(cont, documentTranslation.get(cont - 1));
@@ -1410,7 +1425,7 @@ final public class MainWindow extends JFrame implements ActionListener,
 
       documentTranslation.set(identLabel, "");
     } else {
-      Changes = new SegmentChanges(4, 0, false, "", identLabel);
+      changes = new SegmentChanges(4, 0, false, "", identLabel);
 
       for (cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
         documentOriginal.set(cont, documentOriginal.get(cont - 1));
@@ -1425,7 +1440,7 @@ final public class MainWindow extends JFrame implements ActionListener,
       documentOriginal.set(identLabel, "");
     }
 
-    arrayListChanges.add(identChanges, Changes);
+    arrayListChanges.add(identChanges, changes);
     updateAlignmentsView();
   }
 
@@ -1435,21 +1450,17 @@ final public class MainWindow extends JFrame implements ActionListener,
     dlg.setVisible(true);
   }
 
-  /////////////////////////////////////////////////////////////////////
-  //  Fonts
-  //
-  //  Note: all this fonts stuff will be refactored into its own class
-  //  later so it will be independent
+  
   /**
-   * Fonts mutator Delegates actual setting of fonts to specific methods
+   * Fonts mutator Delegates actual setting of fonts to specific methods.
    *
-   * @param font to be configured
-   *
-   * Passing in null causes default values to be used - used at startup or for
+   * <p> Passing in null causes default values to be used - used at startup or for
    * reset Passing in a font causes all UI elements to be the same - used with
    * the 'All' window area when selected in the fonts dialog
+   *
+   * @param font to be configured
    */
-  final public void setFonts(final Font font) {
+  public final void setFonts(final Font font) {
     //  Delegate
     setUserInterfaceFont(font);
     setTableFont(font);
@@ -1465,37 +1476,37 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Fonts accessor
+   * Fonts accessor.
    *
    * @return Font[]
    */
-  final public Font[] getFonts() {
+  public final Font[] getFonts() {
     final Font[] afnt
             = {
-              _fntUserInterface,
+              fontUserInterface,
               fontTable,
               fontTableHeader,
-              _fntSourceEditor,
-              _fntTargetEditor
+              fontSourceEditor,
+              fontTranslationEditor
             };
 
     return (afnt);
   }
 
   /**
-   * User interface font mutator
+   * User interface font mutator.
    *
-   * @param font
+   * @param font UI font
    */
-  final public void setUserInterfaceFont(final Font font) {
-    _fntUserInterface = font;
+  public final void setUserInterfaceFont(final Font font) {
+    fontUserInterface = font;
 
-    if (_fntUserInterface != null) {
+    if (fontUserInterface != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    } //  Default font (e.g. At startup from prefs file or for reset)    
-    else {
+      //  Default font (e.g. At startup from prefs file or for reset)    
+    } else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
@@ -1506,20 +1517,22 @@ final public class MainWindow extends JFrame implements ActionListener,
       final int iFontSize = 11;
 
       //  Da font
-      _fntUserInterface = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
+      fontUserInterface = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Use delegate to set actual UI fonts
-    setUserInterfaceFonts(_fntUserInterface);
+    setUserInterfaceFonts(fontUserInterface);
   }
 
   /**
-   * User interface components font mutator Acts as delegate for
+   * User interface components font mutator.
+   * 
+   * <p>Acts as delegate for
    * setUserInterfaceFont()
    *
-   * @param font
+   * @param font UI font to be set
    */
-  final public void setUserInterfaceFonts(final Font font) {
+  public final void setUserInterfaceFonts(final Font font) {
     //  File menu
     menuItemFile.setFont(font);
     menuItemFileOpen.setFont(font);
@@ -1527,7 +1540,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuItemFileSaveAs.setFont(font);
     menuItemFileClose.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemFileQuit.setFont(font);
     }
 
@@ -1536,7 +1549,7 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuItemSettingsFonts.setFont(font);
     menuCallbackSettingsLinebreak.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuLaf.setFont(font);
       menuItemLafLiquid.setFont(font);
       menuLafMetal.setFont(font);
@@ -1552,34 +1565,34 @@ final public class MainWindow extends JFrame implements ActionListener,
     menuHelp.setFont(font);
     menuItemHelpManual.setFont(font);
 
-    if (!Platform.isMacOSX()) {
+    if (!Platform.isMacOsx()) {
       menuItemHelpAbout.setFont(font);
     }
   }
 
   /**
-   * User interface font accessor
+   * User interface font accessor.
    *
    * @return Font
    */
-  final public Font getUserInterfaceFont() {
-    return (_fntUserInterface);
+  public final Font getUserInterfaceFont() {
+    return (fontUserInterface);
   }
 
   /**
-   * Table header font mutator
+   * Table header font mutator.
    *
-   * @param Font
+   * @param font to be set
    */
-  final public void setTableHeaderFont(final Font font) {
+  public final void setTableHeaderFont(final Font font) {
     fontTableHeader = font;
 
     if (fontTableHeader != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    } //  Default font (e.g. At startup from prefs file or for reset)    
-    else {
+     //  Default font (e.g. At startup from prefs file or for reset)    
+    } else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
@@ -1599,28 +1612,28 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Table header font accessor
+   * Table header font accessor.
    *
    * @return Font
    */
-  final public Font getTableHeaderFont() {
+  public final Font getTableHeaderFont() {
     return (fontTableHeader);
   }
 
   /**
-   * Table font mutator
+   * Table font mutator.
    *
-   * @param font
+   * @param font to be set to table
    */
-  final public void setTableFont(final Font font) {
+  public final void setTableFont(final Font font) {
     fontTable = font;
 
     if (fontTable != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    } //  Default font (e.g. At startup from prefs file or for reset)    
-    else {
+      //  Default font (e.g. At startup from prefs file or for reset)    
+    } else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
@@ -1640,28 +1653,28 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Table font accessor
+   * Table font accessor.
    *
    * @return Font retrieve font for table
    */
-  final public Font getTableFont() {
+  public final Font getTableFont() {
     return (fontTable);
   }
 
   /**
-   * Original editor font mutator
+   * Original editor font mutator.
    *
    * @param font set editor font to display
    */
-  final public void setSourceEditorFont(final Font font) {
-    _fntSourceEditor = font;
+  public final void setSourceEditorFont(final Font font) {
+    fontSourceEditor = font;
 
-    if (_fntSourceEditor != null) {
+    if (fontSourceEditor != null) {
       //  Write to user preferences goes here
       //  To be done -RM
 
-    } //  Default font (e.g. At startup from prefs file or for reset)    
-    else {
+      //  Default font (e.g. At startup from prefs file or for reset)    
+    } else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
@@ -1672,36 +1685,36 @@ final public class MainWindow extends JFrame implements ActionListener,
       final int iFontSize = 11;
 
       //  Da font
-      _fntSourceEditor
+      fontSourceEditor
               = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the source table
-    edLeftSegment.setEditorFont(_fntSourceEditor);
+    edLeftSegment.setEditorFont(fontSourceEditor);
   }
 
   /**
-   * Original editor font accessor
+   * Original editor font accessor.
    *
    * @return font
    */
-  final public Font getSourceEditorFont() {
-    return (_fntSourceEditor);
+  public final Font getSourceEditorFont() {
+    return (fontSourceEditor);
   }
 
   /**
-   * Translation editor font mutator
+   * Translation editor font mutator.
    *
-   * @param font
+   * @param font to be set to Editor
    */
-  final public void setTargetEditorFont(final Font font) {
-    _fntTargetEditor = font;
+  public final void setTargetEditorFont(final Font font) {
+    fontTranslationEditor = font;
 
-    if (_fntTargetEditor != null) {
+    if (fontTranslationEditor != null) {
       //  Write to user preferences goes here
       //  To be done -RM
-    } //  Default font (e.g. At startup from prefs file or for reset)    
-    else {
+      //  Default font (e.g. At startup from prefs file or for reset)    
+    } else {
       //  Read from user preferences goes here
       //  To be done -RM
       //  ...
@@ -1712,29 +1725,29 @@ final public class MainWindow extends JFrame implements ActionListener,
       final int iFontSize = 11;
 
       //  Da font
-      _fntTargetEditor
+      fontTranslationEditor
               = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
 
     //  Set it in the target editor pane
-    editRightSegment.setEditorFont(_fntTargetEditor);
+    editRightSegment.setEditorFont(fontTranslationEditor);
   }
 
   /**
-   * Translation editor font accessor
+   * Translation editor font accessor.
    *
    * @return Font
    */
-  final public Font getTargetEditorFont() {
-    return (_fntTargetEditor);
+  public final Font getTargetEditorFont() {
+    return (fontTranslationEditor);
   }
 
   /**
-   * Font family names accessor
+   * Font family names accessor.
    *
-   * @return String[]
+   * @return String[] font family names
    */
-  final public String[] getFontFamilyNames() {
+  public final String[] getFontFamilyNames() {
     GraphicsEnvironment graphics
             = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
@@ -1742,12 +1755,12 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Font style string accessor
+   * Font style string accessor.
    *
-   * @param font
-   * @return String
+   * @param font to retrieve
+   * @return String style 
    */
-  final public String getFontStyleString(final Font font) {
+  public final String getFontStyleString(final Font font) {
     final String strFontStyle;// = "";
 
     if (font.isBold() && font.isItalic()) {
@@ -1766,12 +1779,12 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Font style accessor
+   * Font style accessor.
    *
-   * @param strFontStyle
-   * @return int
+   * @param strFontStyle font style string
+   * @return int font style
    */
-  final public int getFontStyle(final String strFontStyle) {
+  public final int getFontStyle(final String strFontStyle) {
     final int iFontStyle;
 
     if (strFontStyle.equals("Bold+Italic")) {
@@ -1790,11 +1803,10 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   * Display the fonts dialog to allow selection of fonts for
+   * Display fonts dialog.
+   * 
+   * <p>Display the fonts dialog to allow selection of fonts for
    * origianl/translation tables/editors and main window
-   *
-   * @param void
-   * @return void
    */
   private void displayFontSelector() {
     FontSelector dlgFonts = new FontSelector(this, getFonts());
@@ -1803,43 +1815,43 @@ final public class MainWindow extends JFrame implements ActionListener,
 
   //  WindowListener Overrides
   @Override
-  final public void windowActivated(final WindowEvent evt) {
+  public final void windowActivated(final WindowEvent evt) {
   }
 
   @Override
-  final public void windowClosed(final WindowEvent evt) {
+  public final void windowClosed(final WindowEvent evt) {
   }
 
   @Override
-  final public void windowClosing(final WindowEvent evt) {
+  public final void windowClosing(final WindowEvent evt) {
     if (evt.getSource() == this) {
       quit();
     }
   }
 
   @Override
-  final public void windowDeactivated(final WindowEvent evt) {
+  public final void windowDeactivated(final WindowEvent evt) {
   }
 
   @Override
-  final public void windowDeiconified(final WindowEvent evt) {
+  public final void windowDeiconified(final WindowEvent evt) {
   }
 
   @Override
-  final public void windowIconified(final WindowEvent evt) {
+  public final void windowIconified(final WindowEvent evt) {
   }
 
   @Override
-  final public void windowOpened(final WindowEvent evt) {
+  public final void windowOpened(final WindowEvent evt) {
   }
 
   /**
-   * class action listener implementation
+   * class action listener implementation.
    *
-   * @param action
+   * @param action   gotten
    */
   @Override
-  final public void actionPerformed(final ActionEvent action) {
+  public final void actionPerformed(final ActionEvent action) {
     final Object actor = action.getSource();
 
     if (actor instanceof JMenuItem) {
@@ -1855,8 +1867,8 @@ final public class MainWindow extends JFrame implements ActionListener,
         quit();
       } else if (actor == menuItemSettingsFonts) {
         displayFontSelector();
-      } //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
-      else if (actor == menuItemLafGtk) {
+        //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
+      } else if (actor == menuItemLafGtk) {
         try {
           UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
           DockingUISettings.getInstance().updateUI();
@@ -1873,8 +1885,8 @@ final public class MainWindow extends JFrame implements ActionListener,
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
         }
-      } //  All platforms
-      else if (actor == menuLafMetal) {
+        //  All platforms
+      } else if (actor == menuLafMetal) {
         try {
           UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
           DockingUISettings.getInstance().updateUI();
@@ -1882,8 +1894,8 @@ final public class MainWindow extends JFrame implements ActionListener,
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
         }
-      } //  Java 1.6 update 10+
-      else if (actor == menuItemLafNimbus) {
+        //  Java 1.6 update 10+
+      } else if (actor == menuItemLafNimbus) {
         try {
           UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
           DockingUISettings.getInstance().updateUI();
@@ -1908,18 +1920,14 @@ final public class MainWindow extends JFrame implements ActionListener,
   }
 
   /**
-   *
-   * Extracts from the TMX those lines having information which is useful for
+   * Initialize alignment view.
+   * 
+   * <p>Extracts from the TMX those lines having information which is useful for
    * alignment, and puts them in the corresponding ArrayList's The left part in
    * _alstOriginal corresponds to source text lines and the right part in
    * _alstTranslation corresponds to the target text lines. Initialize the table
    * with one line for each left and right line
    *
-   * Esta funci�n extrae del Tmx las l�neas que contienen informaci�n util para
-   * el alineamiento, y las mete en los ArrayList correspondientes. Parte izq.
-   * en _alstOriginal corresponde a las l�neas del texto fuente, y parte dcha.
-   * en _alstTranslation corresponde a las l�neas del texto meta. Inicializa la
-   * tabla con una fila por cada l�nea izq y dcha.
    */
   private void initializeAlignmentsView() {
     TableColumn col;
@@ -1937,4 +1945,4 @@ final public class MainWindow extends JFrame implements ActionListener,
     identLabel = 0;
   }
 
-}// Bitext2tmxWindow{}
+}

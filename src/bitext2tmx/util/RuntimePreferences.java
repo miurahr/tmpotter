@@ -14,33 +14,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package bitext2tmx.util;
 
 /**
- *
+ * Preference that remember only run time.
+ * 
  * @author Hiroshi Miura
  */
 public class RuntimePreferences {
   private static boolean segmentByLineBreak;
   private static String userHome = "/";
   
-  public static boolean isSegmentByLineBreak()
-  {
+  /**
+   * Ask if segment by line break.
+   * 
+   * @return true if segmented by line break
+   */
+  public static boolean isSegmentByLineBreak() {
     return segmentByLineBreak;
   }
   
-  public static void setSegmentByLineBreak(boolean segmentRule)
-  {
+  /**
+   * set rule for segment by line break.
+   * 
+   * @param segmentRule boolean if true, we segment by line break
+   */
+  public static void setSegmentByLineBreak(boolean segmentRule) {
     segmentByLineBreak = segmentRule;
   }
   
-  public static void setUserHome(String home)
-  {
+  /**
+   * Set user home directory.
+   * 
+   * @param home user home directory
+   */
+  public static void setUserHome(String home) {
     userHome = home;
   }
   
-  public static String getUserHome()
-  {
+  /**
+   * Get user home directory.
+   * 
+   * @return string user home
+   */
+  public static String getUserHome() {
     return userHome;
   }
 }

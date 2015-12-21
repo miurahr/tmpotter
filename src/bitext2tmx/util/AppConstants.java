@@ -25,36 +25,39 @@
 
 package bitext2tmx.util;
 
-import java.io.File;
-import java.util.regex.Pattern;
-import java.util.ResourceBundle;
+import static bitext2tmx.util.Localization.getString;
 
-import static bitext2tmx.util.Localization.*;
+import java.io.File;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 
 /**
- *  Constants - class level (global scope)
+ *  Constants - class level (global scope).
  *
  */
-public class AppConstants
-{
-  private static String __VERSION_KEY = "version";
-  private static String __UPDATE_KEY = "update";
-  private static String __REVISION_KEY = "revision";
-
+public class AppConstants {
+  private static final String __VERSION_KEY = "version";
+  private static final String __UPDATE_KEY = "update";
+  private static final String __REVISION_KEY = "revision";
   private static String BRANDING = "";
   private static final String NAME = getString( "WND.APP.TITLE" );
-  private static final String VERSION = ResourceBundle.getBundle("bitext2tmx/Version")
-            .getString(__VERSION_KEY);
-  private static final String UPDATE = ResourceBundle.getBundle("bitext2tmx/Version")
-            .getString(__UPDATE_KEY);
-  private static final String REVISION = ResourceBundle.getBundle("bitext2tmx/Version")
-            .getString(__REVISION_KEY);
+  private static final String VERSION = ResourceBundle
+          .getBundle("bitext2tmx/Version")
+          .getString(__VERSION_KEY);
+  private static final String UPDATE = ResourceBundle
+          .getBundle("bitext2tmx/Version")
+          .getString(__UPDATE_KEY);
+  private static final String REVISION = ResourceBundle
+          .getBundle("bitext2tmx/Version")
+          .getString(__REVISION_KEY);
   public static final String COPYRIGHT   = "Copyright (C) 2005-2009,2015";
-  public static final String LICENSE     = "Released as Free Software under GPL v3 and later";
-  public static final String AUTHORS     = "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
-  public static final String BUILDCLASSPATH = "build" + File.separator+ "classes";
-
+  public static final String LICENSE     = 
+          "Released as Free Software under GPL v3 and later";
+  public static final String AUTHORS     = 
+          "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
+  public static final String BUILDCLASSPATH = "build"
+          + File.separator + "classes";
   public static final int READ_AHEAD_LIMIT = 65536;
 
   public static final Pattern XML_ENCODING = Pattern
@@ -72,6 +75,11 @@ public class AppConstants
       ENCODINGS_UTF8, ENCODINGS_ISO8859_1, ENCODINGS_CP932, ENCODINGS_DEFAULT
   };
 
+  /**
+   * Make app name and version string for human.
+   *
+   * @return string to indicate for human reading
+   */
   public static String getDisplayNameAndVersion() {
     if (UPDATE != null && !UPDATE.equals("0")) {
       return StringUtil.format(getString("app-version-template-pretty-update"),
@@ -83,21 +91,28 @@ public class AppConstants
   }
 
   /**
-   * Get the application name for display purposes (includes branding)
+   * Get the application name for display purposes (includes branding).
+   *
+   * @return  application name for human reading.
    */
-  public static String getApplicationDisplayName() {;
+  public static String getApplicationDisplayName() {
     return BRANDING.isEmpty() ? NAME : NAME + " " + BRANDING;
   }
+  
+  /**
+   * Get the application description.
+   * 
+   * @return string to describe application
+   */
   public static String getApplicationDescription() {
     return getString("WND.APP.DESCRIPTION");
   }
+  
   public static String getAppNameAndVersion() {
     return StringUtil.format(getString("app-version-template"), NAME, VERSION, UPDATE, REVISION);
   }
+
   public static String getVersion() {
     return StringUtil.format(getString("version-template"), VERSION, UPDATE, REVISION);
   }
-
-}//  Constants{}
-
-
+}
