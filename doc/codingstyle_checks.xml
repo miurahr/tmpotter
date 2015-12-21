@@ -4,8 +4,16 @@
           "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <!--
-    Checkstyle configuration that checks the Google coding conventions from Google Java Style
-    that can be found at https://google.github.io/styleguide/javaguide.html.
+    Checkstyle custom configuration.
+    it is as almost same as https://google.github.io/styleguide/javaguide.html.
+
+    Difference:
+     - Comment indentation
+
+    Temporary ignored:
+     - JavaDoc paragraph
+     - Package name convention
+     - Catch parameter
 
     Checkstyle is very configurable. Be sure to read the documentation at
     http://checkstyle.sf.net (or in your downloaded distribution).
