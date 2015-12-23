@@ -39,20 +39,5 @@ public class TMXReaderTest extends TestCase {
     super.tearDown();
   }
 
-  /**
-   * Test of readTMX method, of class TMXReader.
-   */
-  public void testReadTMX() {
-    System.out.println("readTMX");
-    File fPathOriginal = null;
-    String encodeing = "";
-    String langOriginal = "";
-    String langTranslation = "";
-    Document _alstOriginal = null;
-    Document _alstTranslation = null;
-    TmxReader.readTmx(fPathOriginal, encodeing, _alstOriginal, _alstTranslation);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
   
 }

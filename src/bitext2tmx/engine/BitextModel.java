@@ -72,6 +72,10 @@ public final class BitextModel extends AbstractTableModel {
   @Override
   public final Object getValueAt(final int row, final int column) {
   
+    if ( getRowCount() < 1 ) {
+      return null;
+    }
+    
     final Segment segment = data.get(row);
 
     switch (column) {

@@ -24,7 +24,10 @@
 package bitext2tmx.util;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -34,6 +37,70 @@ public final class Localization {
   //  Init the bundle
   private static ResourceBundle _bundle = ResourceBundle.getBundle("bitext2tmx/Bundle");
 
+  private static final ArrayList<String> languageList = new ArrayList<>();
+  private static final ArrayList<String> langId = new ArrayList<>();
+  
+  static {
+    languageList.add(getString("language-name-arab"));
+    langId.add("AR");
+    languageList.add(getString("language-name-bulgarian"));
+    langId.add("BG");
+    languageList.add(getString("language-name-catalan"));
+    langId.add("CA");
+    languageList.add(getString("language-name-chinese"));
+    langId.add("ZH");
+    languageList.add(getString("language-name-czech"));
+    langId.add("CZ");
+    languageList.add(getString("language-name-danish"));
+    langId.add("DA");
+    languageList.add(getString("language-name-dutch"));
+    langId.add("NL");
+    languageList.add(getString("language-name-english"));
+    langId.add("EN");
+    languageList.add(getString("language-name-finnish"));
+    langId.add("FI");
+    languageList.add(getString("language-name-french"));
+    langId.add("FR");
+    languageList.add(getString("language-name-german"));
+    langId.add("DE");
+    languageList.add(getString("language-name-hungarian"));
+    langId.add("HU");
+    languageList.add(getString("language-name-italian"));
+    langId.add("IT");
+    languageList.add(getString("language-name-japanese"));
+    langId.add("JA");
+    languageList.add(getString("language-name-korean"));
+    langId.add("KO");
+    languageList.add(getString("language-name-norwegian"));
+    langId.add("NB");
+    languageList.add(getString("language-name-polish"));
+    langId.add("PL");
+    languageList.add(getString("language-name-portuguese"));
+    langId.add("PT");
+    languageList.add(getString("language-name-russian"));
+    langId.add("RU");
+    languageList.add(getString("language-name-spanish"));
+    langId.add("ES");
+    languageList.add(getString("language-name-swedish"));
+    langId.add("SV");
+    languageList.add(getString("language-name-thai"));
+    langId.add("TH");
+  }
+ 
+  /**
+   * Return language name list in local character.
+   * 
+   * @return String array of language name in local language.
+   */
+  public static String[] getLanguageList() {
+    String[] list = new String[languageList.size()];
+    return languageList.toArray(list);
+  }
+  
+  public static String getLanguageCode(int index) {
+    return langId.get(index);
+  }
+  
   /**
    * Returns resource bundle.
    */

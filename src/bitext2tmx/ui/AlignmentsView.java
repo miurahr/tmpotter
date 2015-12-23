@@ -112,7 +112,9 @@ final class AlignmentsView extends DockablePanel {
   }
 
   public final void setRowSelectionInterval( final int row, final int len ) {
-    table.setRowSelectionInterval( row, len );
+    if (row > 0 && len > 0) {
+      table.setRowSelectionInterval( row, len );
+    }
   }
 
   public final void setValueAt( final String str, final int row, final int column ) {

@@ -1,26 +1,30 @@
-/**
- * ************************************************************************
- *  bitext2tmx - Bitext Aligner/TMX Editor.
- * 
- *  Copyright (C) 2005-2009  Raymond: Martin
- *            (C) 2015 Hiroshi Miura
- *  This file is imported from OmegaT
+/**************************************************************************
+ *
+ *  bitext2tmx - Bitext Aligner/TMX Editor
+ *
+ *  Copyright (C) 2015 Hiroshi Miura
+ *
+ *  This file is part of bitext2tmx.
+ *
+ *  This file come from OmegaT project
+ *
  *  Copyright (C) 2010 Alex Buloichik, 2012 Thomas Cordonnier,
- *               2013 Alex Buloichik, 2014 Aaron Madlon-Kay
+ *                2013 Alex Buloichik, 2014 Aaron Madlon-Kay
+ *
+ *  bitext2tmx is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  bitext2tmx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  * 
- * This is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ *  You should have received a copy of the GNU General Public License
+ *  along with bitext2tmx.  If not, see http://www.gnu.org/licenses/.
  *
- * OmegaT is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see http://www.gnu.org/licenses/.
- *************************************************************************
- */
+ **************************************************************************/
 
 package bitext2tmx.util;
 
@@ -145,7 +149,8 @@ public class TmxReader2 {
     this.useSlash = useSlash;
 
     // log the parsing attempt
-    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR_INFO_READING_FILE", file.getAbsolutePath());
+    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR_INFO_READING_FILE",
+            file.getAbsolutePath());
 
     boolean allFound = true;
 
@@ -418,19 +423,23 @@ public class TmxReader2 {
           inlineLevel++;
           segInlineTag.setLength(0);
           if ("bpt".equals(eleStart.getName().getLocalPart())) {
-            inlineTagHandler.startBpt(getAttributeValue(eleStart, "i"), getAttributeValue(eleStart, "x"));
-            inlineTagHandler.setTagShortcutLetter(StringUtil.getFirstLetterLowercase(getAttributeValue(eleStart,
+            inlineTagHandler.startBpt(getAttributeValue(eleStart, "i"),
+                    getAttributeValue(eleStart, "x"));
+            inlineTagHandler.setTagShortcutLetter(StringUtil
+                    .getFirstLetterLowercase(getAttributeValue(eleStart,
                     "type")));
           } else if ("ept".equals(eleStart.getName().getLocalPart())) {
             inlineTagHandler.startEpt(getAttributeValue(eleStart, "i"));
           } else if ("it".equals(eleStart.getName().getLocalPart())) {
             inlineTagHandler.startOther();
-            inlineTagHandler.setOtherTagShortcutLetter(StringUtil.getFirstLetterLowercase(getAttributeValue(eleStart,
+            inlineTagHandler.setOtherTagShortcutLetter(StringUtil
+                    .getFirstLetterLowercase(getAttributeValue(eleStart,
                     "type")));
             inlineTagHandler.setCurrentPos(getAttributeValue(eleStart, "pos"));
           } else if ("ph".equals(eleStart.getName().getLocalPart())) {
             inlineTagHandler.startOther();
-            inlineTagHandler.setOtherTagShortcutLetter(StringUtil.getFirstLetterLowercase(getAttributeValue(eleStart,
+            inlineTagHandler.setOtherTagShortcutLetter(StringUtil
+                    .getFirstLetterLowercase(getAttributeValue(eleStart,
                     "type")));
           } else {
             inlineTagHandler.startOther();
@@ -492,7 +501,8 @@ public class TmxReader2 {
           }
           if (tagN == null) {
             // check error of TMX reading
-            LOG.logrb(Level.SEVERE, "TMXReader2", "parseSegExtLevel2", "TMX_ERROR_READING_LEVEL2", "");
+            LOG.logrb(Level.SEVERE, "TMXReader2", "parseSegExtLevel2",
+                    "TMX_ERROR_READING_LEVEL2", "");
             segContent.setLength(0);
             // wait for end seg
             while (true) {
@@ -620,7 +630,8 @@ public class TmxReader2 {
      * @param isParagraphSegtype boolean to indicate paragraph seg type
      * @return true if TU contains required source and target info
      */
-    boolean onEntry(ParsedTu tu, ParsedTuv tuvSource, ParsedTuv tuvTarget, boolean isParagraphSegtype);
+    boolean onEntry(ParsedTu tu, ParsedTuv tuvSource, ParsedTuv tuvTarget,
+            boolean isParagraphSegtype);
   }
 
   public static class ParsedTu {
@@ -671,6 +682,7 @@ public class TmxReader2 {
   };
 
   public static final XMLResolver TMX_DTD_RESOLVER_2 = new XMLResolver() {
+    @Override
     public Object resolveEntity(String publicId, String systemId,
             String baseUri, String namespace) throws XMLStreamException {
       if (systemId.endsWith("tmx11.dtd")) {

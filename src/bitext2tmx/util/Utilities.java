@@ -51,14 +51,19 @@
 
 package bitext2tmx.util;
 
+import static bitext2tmx.util.Localization.getString;
 import bitext2tmx.util.Platform.OsType;
 
 import java.awt.GraphicsEnvironment;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +82,7 @@ public class Utilities {
   private static final String OSX_CONFIG_DIR = "/Library/Preferences/Bitext2tmx/";
 
   private static final Logger LOG = Logger.getLogger(Utilities.class.getName());
-
+  
   /**
    *  Return names of all font families available.
    * 
@@ -172,7 +177,7 @@ public class Utilities {
       return configDirectory;
     }
 
-    OsType os = Platform.getOsType(); // name of operating system
+    Platform.OsType os = Platform.getOsType(); // name of operating system
     String home; // user home directory
 
     // get os and user home properties

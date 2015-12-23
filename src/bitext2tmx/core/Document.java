@@ -68,6 +68,16 @@ public class Document {
   }
   
   /**
+   * Clean up all strings.
+   */
+  public void clean() {
+    int cont = documentSegments.size() - 1;
+    while (!documentSegments.isEmpty()) {
+      documentSegments.remove(cont--);
+    }
+  }
+  
+  /**
    * Perform alignments:join.
    *
    * <p>joins the selected row with the following.
@@ -131,4 +141,5 @@ public class Document {
     }
     documentSegments.set(index + 1, cad.substring(position).trim());
   }
+  
 }

@@ -168,6 +168,18 @@ public class StringUtil {
   }
 
   /**
+   * Returns first non-zero object from list, or zero if all values is null.
+   */
+  public static long nvlLong(long... values) {
+    for (int i = 0; i < values.length; i++) {
+      if (values[i] != 0) {
+        return values[i];
+      }
+    }
+    return 0;
+  }
+  
+  /**
    * Apply Unicode NFC normalization to a string.
    */
   public static String normalizeUnicode(CharSequence text) {

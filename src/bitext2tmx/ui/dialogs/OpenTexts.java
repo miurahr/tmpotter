@@ -80,7 +80,6 @@ public final class OpenTexts extends JDialog implements ActionListener {
   private String   originalDoc;
   private String   translationDoc;
   private boolean  closed;
-  private int      type;  // = 0;  // 0: text (default); 1: tmx
 
   public final File getPath() {
     return ( filePath );
@@ -110,9 +109,6 @@ public final class OpenTexts extends JDialog implements ActionListener {
     return ( translationDoc );
   }
 
-  public final int getTypes()  {
-    return ( type );
-  }
 
   private final JComboBox  comboOriginalLang    = new JComboBox();
   private final JComboBox  comboTranslationLang = new JComboBox();
@@ -341,21 +337,15 @@ public final class OpenTexts extends JDialog implements ActionListener {
     if ( returnVal == JFileChooser.APPROVE_OPTION ) {
       originalFilepath = fc.getSelectedFile();
 
-      if ( fc.getName( originalFilepath ).endsWith( ".txt" )
-          || fc.getName( originalFilepath ).endsWith( ".tmx" ) ) {
+      if ( fc.getName( originalFilepath ).endsWith( ".txt" ) ) {
         if ( originalFilepath.exists() ) {
           originalDoc = fc.getName( originalFilepath );
           fieldOriginal.setText( originalFilepath.getPath() );
-
-          if ( fc.getName( originalFilepath ).endsWith( ".txt" ) ) {
-            labelTranslation.setEnabled( true );
-            buttonTranslation.setEnabled( true );
-            comboTranslationEncoding.setEnabled( true );
-            labelTranslationLang.setEnabled( true );
-            comboTranslationLang.setEnabled( true );
-          } else { 
-            type = 1;
-          }  // TMX document
+          labelTranslation.setEnabled( true );
+          buttonTranslation.setEnabled( true );
+          comboTranslationEncoding.setEnabled( true );
+          labelTranslationLang.setEnabled( true );
+          comboTranslationLang.setEnabled( true );
         } else {
           JOptionPane.showMessageDialog(panel,
               getString( "MSG_ERROR_FILE_NOTFOUND" ),
@@ -382,7 +372,6 @@ public final class OpenTexts extends JDialog implements ActionListener {
         if ( translationFilePath.exists() ) {
           translationDoc = fc.getName( translationFilePath );
           fieldTranslation.setText( translationFilePath.getPath() );
-          type = 0;  // plain-text
         } else {
           JOptionPane.showMessageDialog(panel,
                   getString( "MSG_ERROR_FILE_NOTFOUND" ),
@@ -409,18 +398,13 @@ public final class OpenTexts extends JDialog implements ActionListener {
         setLanguageCode( true );
         errorOrig = false;
       }
-
-      if ( type == 0 ) {
-        if ( fieldTranslation.getText() != null ) {
-          //  FixMe: this is only used for the side-effect of throwing an exception
-          final FileReader fr = new FileReader( fieldTranslation.getText() );
-          fr.close();
-          translationDoc = fieldTranslation.getText();
-          translationFilePath = new File( translationDoc );
-          setLanguageCode( false );
-          setVisible( false );
-        }
-      } else {
+      if ( fieldTranslation.getText() != null ) {
+        //  FixMe: this is only used for the side-effect of throwing an exception
+        final FileReader fr = new FileReader( fieldTranslation.getText() );
+        fr.close();
+        translationDoc = fieldTranslation.getText();
+        translationFilePath = new File( translationDoc );
+        setLanguageCode( false );
         setVisible( false );
       }
     } catch ( final IOException ex ) {

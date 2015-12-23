@@ -90,7 +90,8 @@ public class FileUtil {
    * Read file as UTF-8 text.
    */
   public static String readTextFile(File file) throws IOException {
-    BufferedReader rd = new BufferedReader(new InputStreamReader(new FileInputStream(file), AppConstants.ENCODINGS_UTF8));
+    BufferedReader rd = new BufferedReader(new InputStreamReader(
+            new FileInputStream(file), AppConstants.ENCODINGS_UTF8));
 
     try {
       StringWriter out = new StringWriter();
@@ -229,7 +230,8 @@ public class FileUtil {
    *        the same name already exist
    * @throws IOException when destination is exist or other reason
    */
-  public static void copyFilesTo(File destination, File[] toCopy, ICollisionCallback onCollision) throws IOException {
+  public static void copyFilesTo(File destination, File[] toCopy,
+          ICollisionCallback onCollision) throws IOException {
     if (destination.exists() && !destination.isDirectory()) {
       throw new IOException("Copy-to destination exists and is not a directory.");
     }
@@ -237,14 +239,15 @@ public class FileUtil {
     if (collisions.isEmpty()) {
       return;
     }
-    List<File> toReplace = new ArrayList<File>();
-    List<File> toDelete = new ArrayList<File>();
+    List<File> toReplace = new ArrayList<>();
+    List<File> toDelete = new ArrayList<>();
     int count = 0;
     for (Entry<File, File> e : collisions.entrySet()) {
       if (onCollision != null && onCollision.isCanceled()) {
         break;
       }
-      if (onCollision == null || onCollision.shouldReplace(e.getValue(), count, collisions.size())) {
+      if (onCollision == null || onCollision.shouldReplace(e.getValue(),
+              count, collisions.size())) {
         toReplace.add(e.getKey());
         toDelete.add(e.getValue());
       }
@@ -254,12 +257,14 @@ public class FileUtil {
       for (File file : toDelete) {
         deleteTree(file);
       }
-      copyFilesTo(destination, toReplace.toArray(new File[toReplace.size()]), (File) null);
+      copyFilesTo(destination, toReplace.toArray(new File[toReplace.size()]),
+              (File) null);
     }
   }
 
-  private static Map<File, File> copyFilesTo(File destination, File[] toCopy, File root) throws IOException {
-    Map<File, File> collisions = new LinkedHashMap<File, File>();
+  private static Map<File, File> copyFilesTo(File destination, File[] toCopy,
+          File root) throws IOException {
+    Map<File, File> collisions = new LinkedHashMap<>();
     for (File file : toCopy) {
       if (destination.getPath().startsWith(file.getPath())) {
         // Trying to copy something into its own subtree
