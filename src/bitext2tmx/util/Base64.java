@@ -1,3 +1,14 @@
+/**************************************************************************
+ *
+ *  bitext2tmx - Bitext Aligner/TMX Editor
+ *
+ *  This file is come from OmegaT project.
+ *  This file is part of bitext2tmx.
+ *
+ *  This file is in Public Domain.
+ *
+ **************************************************************************/
+
 package bitext2tmx.util;
 
 /**
