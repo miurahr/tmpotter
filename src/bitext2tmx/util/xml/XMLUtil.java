@@ -27,12 +27,17 @@
 
 package bitext2tmx.util.xml;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Utilities for XML processing.
  * 
  * @author Hiroshi Miura
  */
 public class XMLUtil {
+
+  private static final String RE_TAG = "<\\/?[a-zA-Z]+[0-9]+\\/?>";
   
   /**
    *  Converts a single char into a valid XML character
@@ -162,4 +167,11 @@ public class XMLUtil {
     return( new String( result ) );
   }
 
+    /**
+   * Strips all XML tags (converts to plain text). Tags detected only by
+   * pattern. Protected parts are not used.
+   */
+  public static String stripXmlTags(String xml) {
+    return Pattern.compile(RE_TAG).matcher(xml).replaceAll("");
+  }
 }

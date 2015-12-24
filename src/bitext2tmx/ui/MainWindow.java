@@ -33,6 +33,7 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import bitext2tmx.core.Document;
 import bitext2tmx.core.DocumentSegmenter;
+import bitext2tmx.core.ProjectProperties;
 import bitext2tmx.core.TmxReader;
 import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
@@ -42,8 +43,10 @@ import bitext2tmx.ui.dialogs.About;
 import bitext2tmx.ui.dialogs.Encodings;
 import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.ui.dialogs.OpenTexts;
+import bitext2tmx.ui.dialogs.OpenTmx;
 import bitext2tmx.ui.help.Manual;
 import bitext2tmx.util.AppConstants;
+import bitext2tmx.util.Localization;
 import bitext2tmx.util.Platform;
 import bitext2tmx.util.RuntimePreferences;
 import bitext2tmx.util.Utilities;
@@ -113,6 +116,7 @@ public final class MainWindow extends JFrame implements ActionListener,
   //  File menu
   private JMenu menuItemFile;
   private JMenuItem menuItemFileOpen;
+  private JMenuItem menuItemFileTextOpen;
   private JMenuItem menuItemFileSave;
   private JMenuItem menuItemFileSaveAs;
   private JMenuItem menuItemFileClose;
@@ -425,11 +429,16 @@ public final class MainWindow extends JFrame implements ActionListener,
   }
 
   private void makeMenus() {
-    menuItemFile = makeMenuComponent(MenuComponentType.MENU, null, null, "File", "MNU.FILE");
+    menuItemFile = makeMenuComponent(MenuComponentType.MENU, null, null,
+            "File", "MNU.FILE");
 
     menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM, KeyStroke
-            .getKeyStroke('O', KeyEvent.CTRL_MASK, false), getIcon("project_open.png"),
-            "Open...", "MNI.FILE.OPEN");
+            .getKeyStroke('O', KeyEvent.CTRL_MASK, false),
+            getIcon("project_open.png"), "Open...", "MNI.FILE.OPEN");
+
+    menuItemFileTextOpen = makeMenuComponent(MenuComponentType.ITEM, KeyStroke
+            .getKeyStroke('T', KeyEvent.CTRL_MASK, false),
+            getIcon("project_open.png"), "Open Text...", "MNI.TEXTFILE.OPEN");
 
     menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('S', KeyEvent.CTRL_MASK, false),
@@ -478,6 +487,8 @@ public final class MainWindow extends JFrame implements ActionListener,
             getIcon("help-contents.png"), "Manual", "MNI.HELP.MANUAL");
 
     menuItemFile.add(menuItemFileOpen);
+    menuItemFile.addSeparator();
+    menuItemFile.add(menuItemFileTextOpen);
     menuItemFile.addSeparator();
     menuItemFile.add(menuItemFileSave);
     menuItemFile.add(menuItemFileSaveAs);
@@ -566,7 +577,50 @@ public final class MainWindow extends JFrame implements ActionListener,
    * Open dialog to select the files we want to align/convert.
    *
    */
-  private void onOpen() {
+  private void onOpenTmx() {
+    String originalEncoding;
+
+    final OpenTmx dlg = new OpenTmx(null, "", false);
+    dlg.setPath(userHome);
+    dlg.setModal(true);
+    dlg.setVisible(true);
+
+    if (!dlg.isClosed()) {
+      userHome = dlg.getPath();
+      originalEncoding = (String) dlg.getLangEncComboBox().getSelectedItem();
+      filePathOriginal = dlg.getFilePath();
+      filePathTranslation = filePathOriginal;
+      stringLangOriginal = dlg.getSourceLocale();
+      stringLangTranslation = dlg.getTargetLocale();
+      viewAlignments.buildDisplay();
+
+      try {
+        ProjectProperties prop = new ProjectProperties();
+        prop.setSourceLanguage(stringLangOriginal);
+        prop.setTargetLanguage(stringLangTranslation);
+        TmxReader reader = new TmxReader(prop, filePathOriginal);
+        documentOriginal = reader.getOriginalDocument(documentOriginal);
+        documentTranslation = reader.getTranslationDocument(documentTranslation);
+      } catch (Exception ex) {
+        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+      }
+
+      initializeAlignmentsView();
+      updateAlignmentsView();
+      viewControls.enableButtons(true);
+      viewControls.setUndoEnabled(false);
+      menuItemFileSaveAs.setEnabled(true);
+      menuItemFileClose.setEnabled(true);
+
+      dlg.dispose();
+    }
+  }
+
+    /**
+   * Open dialog to select the files we want to align/convert.
+   *
+   */
+  private void onOpenText() {
     String originalEncoding;
     String translateEncoding;
 
@@ -585,47 +639,36 @@ public final class MainWindow extends JFrame implements ActionListener,
       documentOriginal = new Document();
       documentTranslation = new Document();
 
-      if (dlg.getTypes() == 0) {
-        //getSelectedItem()
-        translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
-        filePathTranslation = dlg.getTargetPath();
-        stringTranslation = dlg.getTarget();
-        stringLangTranslation = dlg.getTargetLocale();
+      translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
+      filePathTranslation = dlg.getTargetPath();
+      stringTranslation = dlg.getTarget();
+      stringLangTranslation = dlg.getTargetLocale();
 
-        try {
-          documentOriginal = DocumentSegmenter.readDocument(stringOriginal,
-                  stringLangOriginal, originalEncoding);
-          documentTranslation = DocumentSegmenter.readDocument(stringTranslation,
-                  stringLangTranslation, translateEncoding);
-        } catch (Exception ex) {
-          JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
-                  getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
-          this.dispose();
-        }
+      try {
+        documentOriginal = DocumentSegmenter.readDocument(stringOriginal,
+                stringLangOriginal, originalEncoding);
+        documentTranslation = DocumentSegmenter.readDocument(stringTranslation,
+                stringLangTranslation, translateEncoding);
+      } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
+                getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
+        this.dispose();
+      }
 
-        boolean res = TranslationAligner.align(documentOriginal, documentTranslation);
+      boolean res = TranslationAligner.align(documentOriginal, documentTranslation);
 
-        if (res) {
-          matchArrays();
+      if (res) {
+        matchArrays();
 
-          for (int cont = 0; cont < documentOriginal.size(); cont++) {
-            if (documentOriginal.get(cont) == null
-                    || (documentOriginal.get(cont).equals(""))
-                    && (documentTranslation.get(cont) == null
-                    || documentTranslation.get(cont).equals(""))) {
-              documentOriginal.remove(cont);
-              documentTranslation.remove(cont);
-            }
+        for (int cont = 0; cont < documentOriginal.size(); cont++) {
+          if (documentOriginal.get(cont) == null
+                  || (documentOriginal.get(cont).equals(""))
+                  && (documentTranslation.get(cont) == null
+                  || documentTranslation.get(cont).equals(""))) {
+            documentOriginal.remove(cont);
+            documentTranslation.remove(cont);
           }
         }
-      } else {
-        try {
-          TmxReader.readTmx(filePathOriginal, originalEncoding,
-                  documentOriginal, documentTranslation);
-        } catch (Exception ex) {
-          Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        filePathTranslation = filePathOriginal;
       }
 
       initializeAlignmentsView();
@@ -783,19 +826,10 @@ public final class MainWindow extends JFrame implements ActionListener,
    * <p>Initialize values to start the validation of the following alignment
    */
   private void clear() {
-    int cont = documentOriginal.size() - 1;
+    documentOriginal.clean();
+    documentTranslation.clean();
 
-    while (!documentOriginal.isEmpty()) {
-      documentOriginal.remove(cont--);
-    }
-
-    cont = documentTranslation.size() - 1;
-
-    while (!documentTranslation.isEmpty()) {
-      documentTranslation.remove(cont--);
-    }
-
-    cont = arrayListBitext.size() - 1;
+    int cont = arrayListBitext.size() - 1;
 
     while (!arrayListBitext.isEmpty()) {
       arrayListBitext.remove(cont--);
@@ -1535,6 +1569,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     //  File menu
     menuItemFile.setFont(font);
     menuItemFileOpen.setFont(font);
+    menuItemFileTextOpen.setFont(font);    
     menuItemFileSave.setFont(font);
     menuItemFileSaveAs.setFont(font);
     menuItemFileClose.setFont(font);
@@ -1855,7 +1890,9 @@ public final class MainWindow extends JFrame implements ActionListener,
 
     if (actor instanceof JMenuItem) {
       if (actor == menuItemFileOpen) {
-        onOpen();
+        onOpenTmx();
+      } else if (actor == menuItemFileTextOpen) {
+        onOpenText();
       } else if (actor == menuItemFileSave) {
         saveBitext();
       } else if (actor == menuItemFileSaveAs) {

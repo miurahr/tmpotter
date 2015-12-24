@@ -67,10 +67,11 @@ public class Preferences {
   public static final String FILE_PREFERENCES = "bitext2tmx" + ".prefs";
 
   // preference names
+  public static final String SOURCE_LOCALE = "source_lang";
+  public static final String TARGET_LOCALE = "target_lang";
   public static final String PROXY_USER = "proxy_user";
   public static final String PROXY_PASS = "proxy_pass";
-
-  
+          
   //Singleton
   static {
     m_loaded = false;
