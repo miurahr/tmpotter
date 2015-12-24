@@ -29,6 +29,7 @@ import static bitext2tmx.util.Localization.getString;
 import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import bitext2tmx.util.AppConstants;
+import bitext2tmx.util.Localization;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -126,23 +127,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
           .straEncodings );
   private final int numEncodings = AppConstants.straEncodings.length;
 
-  private final String [] idiomCa = {"Alemany","Angl�s","�rab","Catal��",
-      "Txec","Core��",
-      "Dan�s","Espanyol","Finland�s","Franc�s","Holand�s","Hongar�s",
-      "Itali��","Japon�s","Noruec","Polon�s","Portugu�s","Rus","Suec",
-      "Tailand�s","Xin�s"};
-
-  private final String [] idiomEs = {"Alem�n","�rabe","Catal�n","Checo",
-      "Chino","Coreano",
-      "Dan�s","Espa�ol","Finland�s","Franc�s","Holand�s","H�ngaro","Ingl�s",
-      "Italiano","Japon�s","Noruego","Polaco","Portugu�s","Ruso","Sueco",
-      "Tailand�s"};
-
-  private final String [] idiomIn = {"Arab","Catalan","Chinese","Czech",
-      "Danish","Dutch","English",
-      "Finnish","French","German","Hungarian","Italian","Japanese","Korean",
-      "Norwegian","Polish","Portuguese","Russian","Spanish","Swedish","Thai"};
-
+  private final String [] idiom = Localization.getLanguageList();
+  
   /**
    * Constructor.
    * 
@@ -162,9 +148,6 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
   private void initialize() { // throws Exception
-    //  ToDo: remove - use preferences
-    optionsConfiguration();
-
     panel.setLayout( null );
 
     labelOriginal.setText( getString( "LBL.SOURCE.FILE" ) );
@@ -208,6 +191,11 @@ public final class OpenTexts extends JDialog implements ActionListener {
     setResizable( false );
     setTitle( getString( "DLG.OPEN.TITLE" ) );
     getContentPane().setLayout( null );
+    
+    for (String item : idiom) {
+      comboOriginalLang.addItem(item);
+      comboTranslationLang.addItem(item);
+    }
 
     comboOriginalLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
     comboOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
@@ -273,41 +261,6 @@ public final class OpenTexts extends JDialog implements ActionListener {
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setBounds( ( screenSize.width - 640 ) / 2,
         ( screenSize.height - 180 ) / 2, 640, 180 );
-  }
-
-  /**
-   *  Funci�n Opciones_Configuracion.
-   *  Esta funci�n lee las opciones de configuraci�n del idioma.
-   *  Por defecto: Ingl�s.
-   *  kIDIOMA :0->Catal�n
-   *           1->Espa�ol
-   *           2->Ingl�s
-   */
-  final void optionsConfiguration() {
-    //  All this should go out to resource bundles
-    final String langIso = Locale.getDefault().getLanguage();
-
-    if ( langIso.equals( "ca" ) ) {
-      for ( int cont = 0; cont < idiomCa.length; cont++ ) {
-        comboOriginalLang.addItem( idiomCa[cont] );
-        comboTranslationLang.addItem( idiomCa[cont] );
-      }
-    } else if ( langIso.equals( "en" ) ) {
-      for ( int cont = 0; cont < idiomIn.length; cont++ ) {
-        comboOriginalLang.addItem( idiomIn[cont] );
-        comboTranslationLang.addItem( idiomIn[cont] );
-      }
-    } else if ( langIso.equals( "es" ) ) {
-      for ( int cont = 0; cont < idiomEs.length; cont++ ) {
-        comboOriginalLang.addItem( idiomEs[cont] );
-        comboTranslationLang.addItem( idiomEs[cont] );
-      }
-    } else {
-      for ( int cont = 0; cont < idiomIn.length; cont++ ) {
-        comboOriginalLang.addItem( idiomIn[cont] );
-        comboTranslationLang.addItem( idiomIn[cont] );
-      }
-    }
   }
 
   public final String getSourceLocale() {
@@ -435,159 +388,13 @@ public final class OpenTexts extends JDialog implements ActionListener {
    * @param originalFlag indicate original or translation.
    */
   final void setLanguageCode( final boolean originalFlag ) {
-    String strLang;
 
-    strLang = originalFlag ? comboOriginalLang.getSelectedItem().toString() :
-      comboTranslationLang.getSelectedItem().toString();
-
-    if ( strLang.equals( "Alemany" ) || strLang.equals( "Aleman" )
-        || strLang.equals( "German" ) ) {
-      if ( originalFlag ) {
-        originalLang = "de";
-      } else {
-        translationLang = "de";
-      }
-    } else if ( strLang.equals( "�rab" ) || strLang.equals( "�rabe" )
-        || strLang.equals( "Arab" ) ) {
-      if ( originalFlag ) {
-        originalLang = "ar";
-      } else {
-        translationLang = "ar";
-      }
-    } else if ( strLang.equals( "Catal�" ) || strLang.equals( "Catal�n" )
-          || strLang.equals( "Catalan" ) ) {
-      if ( originalFlag ) {
-        originalLang = "ca";
-      } else {
-        translationLang = "ca";
-      }
-    } else if ( strLang.equals( "Espanyol" ) || strLang.equals( "Espa�ol" )
-        || strLang.equals( "Spanish" ) ) {
-      if ( originalFlag ) {
-        originalLang = "es";
-      } else {
-        translationLang = "es";
-      }
-    } else if ( strLang.equals( "Angl�s" ) || strLang.equals( "Ingl�s" )
-            || strLang.equals( "English" ) ) {
-      if ( originalFlag ) {
-        originalLang = "en";
-      } else {
-        translationLang = "en";
-      }
-    } else if ( strLang.equals( "Checo" ) || strLang.equals( "Checo" )
-        || strLang.equals( "Czech" ) ) {
-      if ( originalFlag ) {
-        originalLang = "cs";
-      } else {
-        translationLang = "cs";
-      }
-    } else if ( strLang.equals( "Xin�s" ) || strLang.equals( "Chino" )
-         || strLang.equals( "Chinese" ) ) {
-      if ( originalFlag ) {
-        originalLang = "zh";
-      } else {
-        translationLang = "zh";
-      }
-    } else if ( strLang.equals( "Core�" ) || strLang.equals( "Coreano" )
-         ||  strLang.equals( "Korean" ) ) {
-      if ( originalFlag ) {
-        originalLang = "ko";
-      } else {
-        translationLang = "ko";
-      }
-    } else if ( strLang.equals( "Dan�s" ) || strLang.equals( "Dan�s" )
-        || strLang.equals( "Danish" ) ) {
-      if ( originalFlag ) {
-        originalLang = "da";
-      } else {
-        translationLang = "da";
-      }
-    } else if ( strLang.equals( "Finland�s" ) || strLang.equals( "Finland�s" )
-            || strLang.equals( "Finnish" ) ) {
-      if ( originalFlag ) {
-        originalLang = "fi";
-      } else {
-        translationLang = "fi";
-      }
-    } else if ( strLang.equals( "Franc�s" ) || strLang.equals( "Franc�s" )
-            || strLang.equals( "French" ) ) {
-      if ( originalFlag ) {
-        originalLang = "fr";
-      } else {
-        translationLang = "fr";
-      }
-    } else if ( strLang.equals( "Holand�s" ) || strLang.equals( "Holand�s" )
-            || strLang.equals( "Dutch" ) ) {
-      if ( originalFlag ) {
-        originalLang = "nl";
-      } else  {
-        translationLang = "nl";
-      }
-    } else if ( strLang.equals( "Hongar�s" ) || strLang.equals( "H�ngaro" )
-            || strLang.equals( "Hungarian" ) ) {
-      if ( originalFlag ) {
-        originalLang = "hu";
-      } else {
-        translationLang = "hu";
-      }
-    } else if ( strLang.equals( "Itali�" ) || strLang.equals( "Italiano" )
-            || strLang.equals( "Italian" ) ) {
-      if ( originalFlag ) {
-        originalLang = "it";
-      } else {
-        translationLang = "it";
-      }
-    } else if ( strLang.equals( "Japon�s" ) || strLang.equals( "Japon�s" )
-        || strLang.equals( "Japanese" ) ) {
-      if ( originalFlag ) {
-        originalLang = "ja";
-      } else {
-        translationLang = "ja";
-      }
-    } else if ( strLang.equals( "Noruec" ) || strLang.equals( "Noruego" )
-        || strLang.equals( "Norwegian" ) ) {
-      if ( originalFlag ) {
-        originalLang = "no";
-      } else  {
-        translationLang = "no";
-      }
-    } else if ( strLang.equals( "Polon�s" ) || strLang.equals( "Polaco" ) 
-            || strLang.equals( "Polish" ) ) {
-      if ( originalFlag ) {
-        originalLang = "pl";
-      } else {
-        translationLang = "pl";
-      }
-    } else if ( strLang.equals( "Portugu�s" ) || strLang.equals( "Portugu�s" )
-            || strLang.equals( "Portuguese" ) ) {
-      if ( originalFlag ) {
-        originalLang = "pt";
-      } else {
-        translationLang = "pt";
-      }
-    } else if ( strLang.equals( "Rus" ) || strLang.equals( "Ruso" )
-        || strLang.equals( "Russian" ) ) {
-      if ( originalFlag ) {
-        originalLang = "ru";
-      } else {
-        translationLang = "ru";
-      }
-    } else if ( strLang.equals( "Suec" ) || strLang.equals( "Sueco" )     
-        || strLang.equals( "Swedish" ) ) {
-      if ( originalFlag ) {
-        originalLang = "sv";
-      } else    {
-        translationLang = "sv";
-      }
-    } else if ( strLang.equals( "Tailand�s" ) 
-            || strLang.equals( "Tailand�s" )
-            || strLang.equals( "Thai" ) ) {
-      if ( originalFlag ) {
-        originalLang = "th";
-      } else {
-        translationLang = "th";
-      }
+    if (originalFlag) {
+      originalLang = Localization.getLanguageCode(comboOriginalLang
+              .getSelectedIndex());
+    } else {
+      translationLang = Localization.getLanguageCode(comboTranslationLang
+              .getSelectedIndex());
     }
   }
 
