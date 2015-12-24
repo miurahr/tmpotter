@@ -77,6 +77,12 @@ public class TmxEntry {
     otherProperties = ent.otherProperties;
   }
 
+  /**
+   * get properties value.
+   * 
+   * @param propType propertiy type
+   * @return value
+   */
   public String getPropValue(String propType) {
     if (otherProperties == null) {
       return null;
@@ -90,6 +96,13 @@ public class TmxEntry {
     return null;
   }
 
+  /**
+   * Ask property type has value.
+   * 
+   * @param propType property type to ask
+   * @param propValue property value to be equal
+   * @return true  property of the type has the value
+   */
   public boolean hasPropValue(String propType, String propValue) {
     if (otherProperties == null) {
       return false;
