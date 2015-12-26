@@ -40,8 +40,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -170,28 +170,23 @@ public class TmxWriter2 {
    * @param source entry
    * @param translation entry
    * @param entry entry arguments
-   * @param propValues pairs with property name and values
+   * @param properties property name and values
    * @throws java.lang.Exception when file write error occord.
    */
   public void writeEntry(String source, String translation,
-          TmxEntry entry, List<String> propValues)
-          throws Exception {
+          TmxEntry entry, Map<String,String> properties) throws Exception {
     xml.writeCharacters("    ");
     xml.writeStartElement("tu");
     xml.writeCharacters(FileUtil.LINE_SEPARATOR);
 
     // add properties
-    if (propValues != null) {
-      for (int i = 0; i < propValues.size(); i += 2) {
-        if (propValues.get(i + 1) == null) {
-          // value is null - not need to write
-          continue;
-        }
+    if (properties != null) {
+      for (Map.Entry<String, String> ent: properties.entrySet()) {
         xml.writeCharacters("      ");
         xml.writeStartElement("prop");
-        xml.writeAttribute("type", propValues.get(i));
-        xml.writeCharacters(propValues.get(i + 1));
-        xml.writeEndElement(); // prop
+        xml.writeAttribute("type", ent.getKey());
+        xml.writeCharacters(ent.getValue());
+        xml.writeEndElement();
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
       }
     }
