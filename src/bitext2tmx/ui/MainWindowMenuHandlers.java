@@ -30,18 +30,31 @@ import bitext2tmx.core.Document;
 import bitext2tmx.core.DocumentSegmenter;
 import bitext2tmx.core.ProjectProperties;
 import bitext2tmx.core.TmxReader;
+import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.SegmentChanges;
 import bitext2tmx.ui.dialogs.About;
+import bitext2tmx.ui.dialogs.Encodings;
+import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.ui.dialogs.OpenTexts;
 import bitext2tmx.ui.dialogs.OpenTmx;
 import bitext2tmx.ui.help.Manual;
+import bitext2tmx.util.RuntimePreferences;
 
+import com.vlsolutions.swing.docking.ui.DockingUISettings;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
+
 
 /**
  * Action Handlers.
@@ -51,16 +64,18 @@ import javax.swing.table.TableColumn;
 final class MainWindowMenuHandlers {
 
   private final MainWindow mainWindow;
+  private final MainWindowMenus mainWindowMenu;
 
   public MainWindowMenuHandlers(final MainWindow mainWindow) {
     this.mainWindow = mainWindow;
+    this.mainWindowMenu = mainWindow.mainWindowMenu;
   }
 
-  final void helpAboutMenuItemActionPerformed() {
+  final void menuItemHelpAboutActionPerformed() {
     new About(mainWindow).setVisible(true);
   }
 
-  void helpManualMenuItemActionPerformed() {
+  void menuItemHelpManualActionPerformed() {
     final Manual dlg = new Manual();
     dlg.setVisible(true);
   }
@@ -230,7 +245,7 @@ final class MainWindowMenuHandlers {
    * Open dialog to select the files we want to align/convert.
    *
    */
-  void onOpenTmx() {
+  void menuItemFileOpenActionPerformed() {
     final OpenTmx dlg = new OpenTmx(null, "", false);
     dlg.setPath(mainWindow.userHome);
     dlg.setModal(true);
@@ -269,7 +284,7 @@ final class MainWindowMenuHandlers {
    * Open dialog to select the files we want to align/convert.
    *
    */
-  void onOpenText() {
+  void menuItemFileTextOpenActionPerformed() {
     String originalEncoding;
     String translateEncoding;
     final OpenTexts dlg = new OpenTexts();
@@ -382,4 +397,241 @@ final class MainWindowMenuHandlers {
     }
   }
 
+  final void menuItemFileSaveAsActionPerformed() {
+    saveBitext();
+  }
+
+  //  ToDo: implement proper functionality; not used currently
+  final void menuItemFileSaveActionPerformed() {
+    saveBitext();
+  }
+
+  /**
+   * Necessary capabilities to store the bitext.
+   *
+   */
+  private void saveBitext() {
+    for (int cont = 0; cont < (mainWindow.documentOriginal.size() - 1); cont++) {
+      if (mainWindow.documentOriginal.get(cont).equals("")
+              && mainWindow.documentTranslation.get(cont).equals("")) {
+        mainWindow.documentOriginal.remove(cont);
+        mainWindow.documentTranslation.remove(cont);
+      }
+    }
+    try {
+      String outFileName = mainWindow.filePathOriginal.getName();
+      String outFileNameBase = outFileName.substring(0,
+              mainWindow.filePathOriginal.getName().length() - 4);
+      boolean save = false;
+      boolean cancel = false;
+      mainWindow.userHome = new File(RuntimePreferences.getUserHome());
+      File outFile = new File(outFileNameBase.concat(mainWindow
+              .stringLangTranslation + ".tmx"));
+      while (!save && !cancel) {
+        final JFileChooser fc = new JFileChooser();
+        boolean nameOfUser = false;
+        while (!nameOfUser) {
+          fc.setLocation(230, 300);
+          fc.setCurrentDirectory(mainWindow.userHome);
+          fc.setDialogTitle(getString("DLG.SAVEAS"));
+          fc.setMultiSelectionEnabled(false);
+          fc.setSelectedFile(outFile);
+          fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+          mainWindow.userHome = fc.getCurrentDirectory();
+          int returnVal;
+          returnVal = fc.showSaveDialog(mainWindow);
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
+            returnVal = 1;
+            outFile = fc.getSelectedFile();
+            if (!outFile.getName().endsWith(".tmx")) {
+              outFileName = outFile.getName().concat(".tmx");
+              outFile = new File(outFileName);
+            }
+            nameOfUser = true;
+          } else {
+            nameOfUser = true;
+            cancel = true;
+          }
+        }
+        int selected;
+        if (nameOfUser && !cancel) {
+          if (outFile.exists()) {
+            final Object[] options = {getString("BTN.SAVE"),
+                    getString("BTN.CANCEL")};
+            selected = JOptionPane.showOptionDialog(mainWindow,
+                    getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[0]);
+            if (selected == 0) {
+              save = true;
+            }
+          } else {
+            save = true;
+          }
+        }
+      }
+      String encoding = "UTF-8";
+      if (save) {
+        Encodings dlgEnc = new Encodings();
+        dlgEnc.setVisible(true);
+        if (!dlgEnc.isClosed()) {
+          encoding = dlgEnc.getComboBoxEncoding();
+          dlgEnc.dispose();
+        }
+      }
+      TmxWriter.writeBitext(outFile, mainWindow.documentOriginal,
+              mainWindow.stringLangOriginal, mainWindow.documentTranslation,
+              mainWindow.stringLangTranslation, encoding);
+    } catch (IOException ex) {
+      JOptionPane.showMessageDialog(mainWindow,
+              (String) mainWindow.arrayListLang.get(21),
+              (String) mainWindow.arrayListLang.get(18),
+              JOptionPane.ERROR_MESSAGE);
+      mainWindow.dispose();
+    }
+  }
+
+  /**
+   * Actions to perform when closing alignment/editing session.
+   *
+   * <p>Leaves the text
+   * as it was so that it can be processed later.
+   */
+  void menuItemFileCloseActionPerformed() {
+    clear();
+    mainWindow.viewControls.enableButtons(false);
+    mainWindow.viewControls.setUndoEnabled(false);
+    mainWindow.mainWindowMenu.menuItemFileSave.setEnabled(false);
+    mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(false);
+    mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(false);
+  }
+
+  /**
+   * clear empty segment.
+   *
+   * <p>Initialize values to start the validation of the following alignment
+   */
+  private void clear() {
+    mainWindow.documentOriginal.clean();
+    mainWindow.documentTranslation.clean();
+    int cont = mainWindow.arrayListBitext.size() - 1;
+    while (!mainWindow.arrayListBitext.isEmpty()) {
+      mainWindow.arrayListBitext.remove(cont--);
+    }
+    cont = mainWindow.arrayListChanges.size() - 1;
+    while (!mainWindow.arrayListChanges.isEmpty()) {
+      mainWindow.arrayListChanges.remove(cont--);
+    }
+    mainWindow.identChanges = -1;
+    mainWindow.identLabel = 0;
+    mainWindow.identAnt = 0;
+    mainWindow.filePathTranslation = null;
+    mainWindow.filePathOriginal = null;
+    mainWindow.viewControls.setUndoEnabled(false);
+    mainWindow.viewAlignments.clear();
+    mainWindow.topArrays = 0;
+    mainWindow.editLeftSegment.setText("");
+    mainWindow.editRightSegment.setText("");
+  }
+
+  /**
+   * Quit application.
+   *
+   * @return boolean - OS X Aqua integration only
+   */
+  boolean menuItemFileQuitActionPerformed() {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        mainWindow.dispose();
+      }
+    });
+    return true;
+  }
+
+  /**
+   * Display fonts dialog.
+   *
+   * <p>Display the fonts dialog to allow selection of fonts for
+   * origianl/translation tables/editors and main window
+   */
+  void settingsFontsMenuItemActionPerformed() {
+    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.mainWindowFonts.getFonts());
+    dlgFonts.setVisible(true);
+  }
+
+  enum LnfType {GTK, LIQUID, METAL, NIMBUS, SYSTEM}
+
+  void menuItemLafGtkActionPerformed() {
+    onChangeLnF(MainWindowMenuHandlers.LnfType.GTK);
+  }
+
+  void menuItemLafLiquidActionPerformed() {
+    onChangeLnF(MainWindowMenuHandlers.LnfType.LIQUID);
+  }
+
+  void menuLafMetalActionPerformed() {
+    onChangeLnF(MainWindowMenuHandlers.LnfType.METAL);
+  }
+
+  void menuItemLafNimbusActionPerfomed() {
+    onChangeLnF(MainWindowMenuHandlers.LnfType.NIMBUS);
+  }
+
+  void menuItemLafSystemActionPerformed() {
+    onChangeLnF(MainWindowMenuHandlers.LnfType.SYSTEM);
+  }
+
+  final void onChangeLnF(LnfType type) {
+    switch (type) {
+      case GTK:
+        try {
+          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(mainWindow);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+        break;
+      case LIQUID:
+        try {
+          UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
+          com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations(false);
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(mainWindow);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+        break;
+      case METAL:
+        try {
+          UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(mainWindow);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+        //  Java 1.6 update 10+
+        break;
+      case NIMBUS:
+        try {
+          UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(mainWindow);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+        break;
+      case SYSTEM:
+      default:
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          DockingUISettings.getInstance().updateUI();
+          SwingUtilities.updateComponentTreeUI(mainWindow);
+        } catch (final Exception e) {
+          System.out.println(getString("OTP.LNF.INIT.ERROR"));
+        }
+        break;
+    }
+  }
 }

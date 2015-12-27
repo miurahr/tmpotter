@@ -33,15 +33,17 @@ import bitext2tmx.util.RuntimePreferences;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
@@ -49,6 +51,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
 
 /**
  * UI menu class.
@@ -311,6 +314,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
       menuHelp.addSeparator();
       menuHelp.add(menuItemHelpAbout);
     }
+    setActionCommands();
   }
 
   /**
@@ -356,4 +360,22 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     T res = (T) menuItem;
     return res;
   }
+
+  /**
+   * Set 'actionCommand' for all menu items. TODO: change to key from resource
+   * bundle values
+   */
+  protected void setActionCommands() {
+    try {
+      for (Field f : this.getClass().getDeclaredFields()) {
+        if (JMenuItem.class.isAssignableFrom(f.getType())) {
+          JMenuItem menuItem = (JMenuItem) f.get(this);
+          menuItem.setActionCommand(f.getName());
+        }
+      }
+    } catch (IllegalAccessException ex) {
+      throw new ExceptionInInitializerError(ex);
+    }
+  }
+
 }

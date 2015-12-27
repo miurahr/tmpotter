@@ -30,29 +30,16 @@ import static bitext2tmx.util.StringUtil.formatText;
 import static bitext2tmx.util.StringUtil.restoreText;
 
 import bitext2tmx.core.Document;
-import bitext2tmx.core.DocumentSegmenter;
-import bitext2tmx.core.ProjectProperties;
-import bitext2tmx.core.TmxReader;
-import bitext2tmx.core.TmxWriter;
-import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.ui.dialogs.Encodings;
 import bitext2tmx.ui.dialogs.FontSelector;
-import bitext2tmx.ui.dialogs.OpenTexts;
-import bitext2tmx.ui.dialogs.OpenTmx;
-import bitext2tmx.util.AppConstants;
 import bitext2tmx.util.Platform;
-import bitext2tmx.util.RuntimePreferences;
 import bitext2tmx.util.Utilities;
 import bitext2tmx.util.gui.AquaAdapter;
 
-import com.vlsolutions.swing.docking.DockKey;
-import com.vlsolutions.swing.docking.DockingConstants;
 import com.vlsolutions.swing.docking.DockingDesktop;
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -65,26 +52,17 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.table.TableColumn;
 
 
 /**
@@ -115,10 +93,10 @@ public final class MainWindow extends JFrame implements ActionListener,
   protected Document documentOriginal;
   protected Document documentTranslation;
 
-  private final ArrayList arrayListBitext;
+  protected final ArrayList arrayListBitext;
 
   protected final ArrayList<SegmentChanges> arrayListChanges;
-  private final ArrayList arrayListLang;
+  protected final ArrayList arrayListLang;
 
   protected int topArrays;    //  =  0;
   private int positionTextArea;  //  =  0;
@@ -166,7 +144,7 @@ public final class MainWindow extends JFrame implements ActionListener,
     addWindowListener(new WindowAdapter() {
       @Override
       public final void windowClosing(final WindowEvent event) {
-        quit();
+        handler.menuItemFileQuitActionPerformed();
       }
     });
 
@@ -186,10 +164,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     setFonts(null);
 
   }
-
-  private static final Logger LOG = Logger.getLogger(MainWindow.class
-          .getName());
-
 
   protected ImageIcon getDesktopIcon(final String iconName) {
     if (Platform.isMacOsx()) {
@@ -216,193 +190,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     menuBar.add(mainWindowMenu.getMenuSettings());
     menuBar.add(mainWindowMenu.getMenuHelp());
     setJMenuBar(menuBar);
-  }
-
-  /**
-   * Quit application.
-   *
-   * @return boolean - OS X Aqua integration only
-   */
-  private boolean quit() {
-    //  ToDo: check for unsaved changes first, save, then quit
-
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        dispose();
-      }
-    });
-
-    return (true);
-  }
-
-  /**
-   * Actions to perform when closing alignment/editing session.
-   * 
-   * <p>Leaves the text
-   * as it was so that it can be processed later.
-   */
-  private void onClose() {
-    clear();
-    //BotonesFalse();
-    viewControls.enableButtons(false);
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( false );
-    // Undo is separate
-    viewControls.setUndoEnabled(false);
-    mainWindowMenu.menuItemFileSave.setEnabled(false);
-    mainWindowMenu.menuItemFileSaveAs.setEnabled(false);
-    mainWindowMenu.menuItemFileClose.setEnabled(false);
-  }
-
-  //  ToDo: implement proper functionality; not used currently
-  final void onSave() {
-    saveBitext();
-  }
-
-  final void onSaveAs() {
-    saveBitext();
-  }
-
-  /**
-   * Necessary capabilities to store the bitext.
-   *
-   */
-  private void saveBitext() {
-    for (int cont = 0; cont < (documentOriginal.size() - 1); cont++) {
-      if (documentOriginal.get(cont).equals("")
-              && documentTranslation.get(cont).equals("")) {
-        documentOriginal.remove(cont);
-        documentTranslation.remove(cont);
-      }
-    }
-
-    try {
-      String outFileName = filePathOriginal.getName();
-      String outFileNameBase = outFileName
-              .substring(0, (filePathOriginal.getName().length() - 4));
-      boolean save = false;
-      boolean cancel = false;
-
-      userHome = new File(RuntimePreferences.getUserHome());
-      File outFile = new File(outFileNameBase.concat(stringLangTranslation
-              + ".tmx"));
-
-      while (!save && !cancel) {
-        final JFileChooser fc = new JFileChooser();
-
-        //  switch() on language removed from here -RM
-        boolean nameOfUser = false;
-
-        while (!nameOfUser) {
-          fc.setLocation(230, 300);
-          fc.setCurrentDirectory(userHome);
-          fc.setDialogTitle(getString("DLG.SAVEAS"));
-
-          fc.setMultiSelectionEnabled(false);
-          fc.setSelectedFile(outFile);
-          fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-          userHome = fc.getCurrentDirectory();
-
-          int returnVal;
-          returnVal = fc.showSaveDialog(this);
-
-          if (returnVal == JFileChooser.APPROVE_OPTION) {
-            returnVal = 1;
-            outFile = fc.getSelectedFile();
-
-            if (!outFile.getName().endsWith(".tmx")) {
-              outFileName = outFile.getName().concat(".tmx");
-              outFile = new File(outFileName);
-            }
-
-            nameOfUser = true;
-          } else {
-            nameOfUser = true;
-            cancel = true;
-          }
-        }
-
-        int selected;
-        if (nameOfUser && !cancel) {
-          if (outFile.exists()) {
-            final Object[] options = {getString("BTN.SAVE"),
-              getString("BTN.CANCEL")};
-
-            selected = JOptionPane.showOptionDialog(this,
-                    getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[0]);
-
-            //  Overwrite
-            if (selected == 0) {
-              save = true;
-            }
-          } else {
-            save = true;
-          }
-
-        }
-      }
-
-      String encoding = "UTF-8";
-      if (save) {
-        //  Ask for the encoding
-        Encodings dlgEnc = new Encodings();
-
-        dlgEnc.setVisible(true);
-
-        if (!dlgEnc.isClosed()) {
-          encoding = dlgEnc.getComboBoxEncoding();
-          dlgEnc.dispose();
-        }
-      }
-
-      TmxWriter.writeBitext(outFile,
-              documentOriginal, stringLangOriginal,
-              documentTranslation, stringLangTranslation,
-              encoding);
-
-    } catch (IOException ex) {
-      JOptionPane
-              .showMessageDialog(this, (String) arrayListLang.get(21),
-                      (String) arrayListLang.get(18), JOptionPane.ERROR_MESSAGE);
-      this.dispose();
-    }
-  }
-
-  /**
-   * clear empty segment.
-   *
-   * <p>Initialize values to start the validation of the following alignment
-   */
-  private void clear() {
-    documentOriginal.clean();
-    documentTranslation.clean();
-
-    int cont = arrayListBitext.size() - 1;
-
-    while (!arrayListBitext.isEmpty()) {
-      arrayListBitext.remove(cont--);
-    }
-
-    cont = arrayListChanges.size() - 1;
-
-    while (!arrayListChanges.isEmpty()) {
-      arrayListChanges.remove(cont--);
-    }
-
-    identChanges = -1;
-    identLabel = 0;
-    identAnt = 0;
-    filePathTranslation = null;
-    filePathOriginal = null;
-    viewControls.setUndoEnabled(false);
-    viewAlignments.clear();
-    topArrays = 0;
-
-    editLeftSegment.setText("");
-    editRightSegment.setText("");
   }
 
   /**
@@ -825,16 +612,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     return graphics.getAvailableFontFamilyNames();
   }
 
-  /**
-   * Display fonts dialog.
-   * 
-   * <p>Display the fonts dialog to allow selection of fonts for
-   * origianl/translation tables/editors and main window
-   */
-  private void displayFontSelector() {
-    FontSelector dlgFonts = new FontSelector(this, mainWindowFonts.getFonts());
-    dlgFonts.setVisible(true);
-  }
 
   //  WindowListener Overrides
   @Override
@@ -848,7 +625,7 @@ public final class MainWindow extends JFrame implements ActionListener,
   @Override
   public final void windowClosing(final WindowEvent evt) {
     if (evt.getSource() == this) {
-      quit();
+      handler.menuItemFileQuitActionPerformed();
     }
   }
 
@@ -879,67 +656,33 @@ public final class MainWindow extends JFrame implements ActionListener,
 
     if (actor instanceof JMenuItem) {
       if (actor == mainWindowMenu.menuItemFileOpen) {
-        handler.onOpenTmx();
+        handler.menuItemFileOpenActionPerformed();
       } else if (actor == mainWindowMenu.menuItemFileTextOpen) {
-        handler.onOpenText();
+        handler.menuItemFileTextOpenActionPerformed();
       } else if (actor == mainWindowMenu.menuItemFileSave) {
-        saveBitext();
+        handler.menuItemFileSaveActionPerformed();
       } else if (actor == mainWindowMenu.menuItemFileSaveAs) {
-        saveBitext();
+        handler.menuItemFileSaveAsActionPerformed();
       } else if (actor == mainWindowMenu.menuItemFileClose) {
-        onClose();
+        handler.menuItemFileCloseActionPerformed();
       } else if (actor == mainWindowMenu.menuItemFileQuit) {
-        quit();
+        handler.menuItemFileQuitActionPerformed();
       } else if (actor == mainWindowMenu.menuItemSettingsFonts) {
-        displayFontSelector();
-        //  Only Linux, Solaris (UNIX?) with Gtk 2.2+
+        handler.settingsFontsMenuItemActionPerformed();
       } else if (actor == mainWindowMenu.menuItemLafGtk) {
-        try {
-          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI(this);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
+        handler.menuItemLafGtkActionPerformed();
       } else if (actor == mainWindowMenu.menuItemLafLiquid) {
-        try {
-          UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
-          com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations(false);
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI(this);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        //  All platforms
+        handler.menuItemLafLiquidActionPerformed();
       } else if (actor == mainWindowMenu.menuLafMetal) {
-        try {
-          UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI(this);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        //  Java 1.6 update 10+
+        handler.menuLafMetalActionPerformed();
       } else if (actor == mainWindowMenu.menuItemLafNimbus) {
-        try {
-          UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI(this);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
+        handler.menuItemLafNimbusActionPerfomed();
       } else if (actor == mainWindowMenu.menuItemLafSystem) {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          DockingUISettings.getInstance().updateUI();
-          SwingUtilities.updateComponentTreeUI(this);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
+        handler.menuItemLafSystemActionPerformed();
       } else if (actor == mainWindowMenu.menuItemHelpManual) {
-        handler.helpManualMenuItemActionPerformed();
+        handler.menuItemHelpManualActionPerformed();
       } else if (actor == mainWindowMenu.menuItemHelpAbout) {
-        handler.helpAboutMenuItemActionPerformed();
+        handler.menuItemHelpAboutActionPerformed();
       }
     }
   }
