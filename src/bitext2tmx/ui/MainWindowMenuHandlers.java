@@ -25,11 +25,20 @@
 package bitext2tmx.ui;
 
 import bitext2tmx.core.Document;
+import bitext2tmx.core.DocumentSegmenter;
+import bitext2tmx.core.ProjectProperties;
+import bitext2tmx.core.TmxReader;
+import bitext2tmx.core.TranslationAligner;
+import bitext2tmx.engine.SegmentChanges;
 import bitext2tmx.ui.dialogs.About;
+import bitext2tmx.ui.dialogs.OpenTexts;
+import bitext2tmx.ui.dialogs.OpenTmx;
 import bitext2tmx.ui.help.Manual;
-import static bitext2tmx.util.StringUtil.formatText;
-import static bitext2tmx.util.StringUtil.restoreText;
-import java.awt.event.KeyEvent;
+import static bitext2tmx.util.Localization.getString;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.TableColumn;
 
 /**
  * Action Handlers.
@@ -38,17 +47,9 @@ import java.awt.event.KeyEvent;
  */
 final class MainWindowMenuHandlers {
   private final MainWindow mainWindow;
-  private final AlignmentsView viewAlignments;
-  private final SegmentEditor editLeftSegment;
-  private final SegmentEditor editRightSegment;
-  private final ControlView viewControls;
   
-  public MainWindowMenuHandlers(final MainWindow mainWindow, final AlignmentsView viewAlignments, final SegmentEditor editLeftSegment, final SegmentEditor editRightSegment, ControlView viewControls) {
+  public MainWindowMenuHandlers(final MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    this.viewAlignments = viewAlignments;
-    this.editLeftSegment = editLeftSegment;
-    this.editRightSegment = editRightSegment;
-    this.viewControls = viewControls;
   }
   
   final void helpAboutMenuItemActionPerformed() {
@@ -58,6 +59,294 @@ final class MainWindowMenuHandlers {
   void helpManualMenuItemActionPerformed() {
     final Manual dlg = new Manual();
     dlg.setVisible(true);
+  }
+
+  /**
+   * Undo last change.
+   *
+   */
+  void undoChanges() {
+    String cad;
+    SegmentChanges ultChanges = new SegmentChanges();
+    int tam = 0;
+    ultChanges = mainWindow.arrayListChanges.get(mainWindow.identChanges);
+    mainWindow.identLabel = ultChanges.getIdent_linea();
+    int operacion = ultChanges.getKind();
+    int position;
+    boolean izq = ultChanges.getSource();
+    mainWindow.identAnt = mainWindow.identLabel;
+    switch (operacion) {
+      case 0:
+        {
+          final String cadaux = ultChanges.getFrase();
+          if (izq) {
+            cad = mainWindow.documentOriginal.get(mainWindow.identLabel);
+            if (!cad.equals("")) {
+              cad = cad.trim();
+            }
+            position = cad.indexOf(cadaux) + cadaux.length();
+          } else {
+            cad = mainWindow.documentTranslation.get(mainWindow.identLabel);
+            if (!cad.equals("")) {
+              cad = cad.trim();
+            }
+            position = cad.indexOf(cadaux) + cadaux.length();
+          }
+          if (ultChanges.getSource()) {
+            mainWindow.documentOriginal.split(mainWindow.identLabel, position);
+          } else {
+            mainWindow.documentTranslation.split(mainWindow.identLabel, position);
+          }
+          mainWindow.updateAlignmentsView();
+          break;
+        }
+      case 1:
+        undoDelete();
+        break;
+      case 2:
+        {
+          // El complementario de Split es Unir
+          // The complement of Split is Join
+          int cont;
+          cont = mainWindow.identLabel + 1;
+          if (izq) {
+            cad = ultChanges.getFrase();
+            mainWindow.documentOriginal.set(mainWindow.identLabel, cad.trim());
+            while (cont < mainWindow.topArrays) {
+              mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont + 1));
+              cont++;
+            }
+            mainWindow.documentOriginal.set(mainWindow.documentOriginal.size() - 1, "");
+          } else {
+            cad = ultChanges.getFrase();
+            mainWindow.documentTranslation.set(mainWindow.identLabel, cad.trim());
+            while (cont < mainWindow.topArrays) {
+              mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont + 1));
+              cont++;
+            }
+            mainWindow.documentTranslation.set(mainWindow.documentTranslation.size() - 1, "");
+          }
+          mainWindow.updateAlignmentsView();
+          break;
+        }
+      case 3:
+        {
+          tam = ultChanges.getTam();
+          int[] filasEliminadas;
+          filasEliminadas = ultChanges.getNumEliminada();
+          while (tam > 0) {
+            mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+            mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+            mainWindow.topArrays = mainWindow.documentTranslation.size() - 1;
+            tam--;
+          }
+          int cont2 = mainWindow.documentOriginal.size() - 1;
+          tam = ultChanges.getTam();
+          while (cont2 >= tam && tam > 0) {
+            if (cont2 == filasEliminadas[tam - 1]) {
+              mainWindow.documentTranslation.set(cont2, "");
+              mainWindow.documentOriginal.set(cont2, "");
+              tam--;
+            } else {
+              mainWindow.documentTranslation.set(cont2, mainWindow.documentTranslation.get(cont2 - tam));
+              mainWindow.documentOriginal.set(cont2, mainWindow.documentOriginal.get(cont2 - tam));
+            }
+            cont2--;
+          }
+          mainWindow.updateAlignmentsView();
+          break;
+        }
+      case 4:
+        {
+          if (izq) {
+            mainWindow.documentTranslation.set(mainWindow.identLabel, mainWindow.documentTranslation.get(mainWindow.identLabel + 1));
+            mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
+            mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+          } else {
+            mainWindow.documentOriginal.set(mainWindow.identLabel, mainWindow.documentOriginal.get(mainWindow.identLabel + 1));
+            mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
+            mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+          }
+          mainWindow.updateAlignmentsView();
+          break;
+        }
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Undoes the last delete.
+   */
+  private void undoDelete() {
+    SegmentChanges ultChanges = mainWindow.arrayListChanges.get(mainWindow.identChanges);
+    mainWindow.identLabel = ultChanges.getIdent_linea();
+    boolean izq = ultChanges.getSource();
+    if (izq) {
+      if (mainWindow.identLabel == mainWindow.documentOriginal.size()) {
+        mainWindow.documentOriginal.add(mainWindow.identLabel, ultChanges.getFrase());
+        if (mainWindow.documentOriginal.size() != mainWindow.documentTranslation.size()) {
+          mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+        }
+      } else {
+        mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1));
+        for (int cont = mainWindow.documentOriginal.size() - 1; cont > mainWindow.identLabel; cont--) {
+          mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont - 1));
+        }
+        mainWindow.documentOriginal.set(mainWindow.identLabel, ultChanges.getFrase());
+      }
+    } else {
+      if (mainWindow.identLabel == mainWindow.documentTranslation.size()) {
+        mainWindow.documentTranslation.add(mainWindow.identLabel, ultChanges.getFrase());
+        if (mainWindow.documentOriginal.size() != mainWindow.documentTranslation.size()) {
+          mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+        }
+      } else {
+        int cont = mainWindow.documentTranslation.size() - 1;
+        mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1));
+        for (cont = mainWindow.documentTranslation.size() - 1; cont > mainWindow.identLabel; cont--) {
+          mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont - 1));
+        }
+        mainWindow.documentTranslation.set(mainWindow.identLabel, ultChanges.getFrase());
+      }
+    }
+    mainWindow.updateAlignmentsView();
+  }
+
+  /**
+   * Open dialog to select the files we want to align/convert.
+   *
+   */
+  void onOpenTmx() {
+    final OpenTmx dlg = new OpenTmx(null, "", false);
+    dlg.setPath(mainWindow.userHome);
+    dlg.setModal(true);
+    dlg.setVisible(true);
+    if (!dlg.isClosed()) {
+      mainWindow.userHome = dlg.getPath();
+      String originalEncoding = (String) dlg.getLangEncComboBox().getSelectedItem();
+      mainWindow.filePathOriginal = dlg.getFilePath();
+      mainWindow.filePathTranslation = mainWindow.filePathOriginal;
+      mainWindow.stringLangOriginal = dlg.getSourceLocale();
+      mainWindow.stringLangTranslation = dlg.getTargetLocale();
+      mainWindow.viewAlignments.buildDisplay();
+      try {
+        ProjectProperties prop = new ProjectProperties();
+        prop.setSourceLanguage(mainWindow.stringLangOriginal);
+        prop.setTargetLanguage(mainWindow.stringLangTranslation);
+        TmxReader reader = new TmxReader(prop, mainWindow.filePathOriginal);
+        mainWindow.documentOriginal = reader.getOriginalDocument(mainWindow.documentOriginal);
+        mainWindow.documentTranslation = reader.getTranslationDocument(mainWindow.documentTranslation);
+      } catch (Exception ex) {
+        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      initializeAlignmentsView(mainWindow);
+      mainWindow.updateAlignmentsView();
+      mainWindow.viewControls.enableButtons(true);
+      mainWindow.viewControls.setUndoEnabled(false);
+      mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(true);
+      dlg.dispose();
+    }
+  }
+
+  /**
+   * Open dialog to select the files we want to align/convert.
+   *
+   */
+  void onOpenText() {
+    String originalEncoding;
+    String translateEncoding;
+    final OpenTexts dlg = new OpenTexts();
+    dlg.setPath(mainWindow.userHome);
+    dlg.setModal(true);
+    dlg.setVisible(true);
+    if (!dlg.isClosed()) {
+      mainWindow.userHome = dlg.getPath();
+      originalEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
+      mainWindow.filePathOriginal = dlg.getSourcePath();
+      mainWindow.stringOriginal = dlg.getSource();
+      mainWindow.stringLangOriginal = dlg.getSourceLocale();
+      mainWindow.viewAlignments.buildDisplay();
+      mainWindow.documentOriginal = new Document();
+      mainWindow.documentTranslation = new Document();
+      translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
+      mainWindow.filePathTranslation = dlg.getTargetPath();
+      mainWindow.stringTranslation = dlg.getTarget();
+      mainWindow.stringLangTranslation = dlg.getTargetLocale();
+      try {
+        mainWindow.documentOriginal = DocumentSegmenter.readDocument(mainWindow.stringOriginal, mainWindow.stringLangOriginal, originalEncoding);
+        mainWindow.documentTranslation = DocumentSegmenter.readDocument(mainWindow.stringTranslation, mainWindow.stringLangTranslation, translateEncoding);
+      } catch (Exception ex) {
+        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"), getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
+        mainWindow.dispose();
+      }
+      boolean res = TranslationAligner.align(mainWindow.documentOriginal, mainWindow.documentTranslation);
+      if (res) {
+        matchArrays(mainWindow);
+        for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
+          if (mainWindow.documentOriginal.get(cont) == null || (mainWindow.documentOriginal.get(cont).equals("")) && (mainWindow.documentTranslation.get(cont) == null || mainWindow.documentTranslation.get(cont).equals(""))) {
+            mainWindow.documentOriginal.remove(cont);
+            mainWindow.documentTranslation.remove(cont);
+          }
+        }
+      }
+      initializeAlignmentsView(mainWindow);
+      mainWindow.updateAlignmentsView();
+      mainWindow.viewControls.enableButtons(true);
+      mainWindow.viewControls.setUndoEnabled(false);
+      mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(true);
+      dlg.dispose();
+    }
+  }
+
+  /**
+   * Initialize alignment view.
+   *
+   * <p>Extracts from the TMX those lines having information which is useful for
+   * alignment, and puts them in the corresponding ArrayList's The left part in
+   * _alstOriginal corresponds to source text lines and the right part in
+   * _alstTranslation corresponds to the target text lines. Initialize the table
+   * with one line for each left and right line
+   *
+   */
+  protected void initializeAlignmentsView(MainWindow mainWindow) {
+    TableColumn col;
+    col = mainWindow.viewAlignments.getColumnModel().getColumn(1);
+    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE") + mainWindow.filePathOriginal.getName());
+    col = mainWindow.viewAlignments.getColumnModel().getColumn(2);
+    col.setHeaderValue(getString("TBL.HDR.COL.TARGET") + mainWindow.filePathTranslation.getName());
+    mainWindow.viewAlignments.setColumnHeaderView();
+    mainWindow.updateAlignmentsView();
+    mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
+    mainWindow.identLabel = 0;
+  }
+
+  /**
+   * Function IgualarArrays: adds rows to the smallest array and deletes blank
+   * rows.
+   */
+  void matchArrays(MainWindow mainWindow) {
+    boolean limpiar = true;
+    while (mainWindow.documentOriginal.size() > mainWindow.documentTranslation.size()) {
+      mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+    }
+    while (mainWindow.documentTranslation.size() > mainWindow.documentOriginal.size()) {
+      mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+    }
+    while (limpiar) {
+      if (mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1) == null || (mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1).equals("")) && (mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1) == null || mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1).equals(""))) {
+        mainWindow.documentOriginal.remove(mainWindow.documentOriginal.size() - 1);
+        mainWindow.documentTranslation.remove(mainWindow.documentTranslation.size() - 1);
+      } else {
+        limpiar = false;
+      }
+    }
+    mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
+    if (mainWindow.identLabel > (mainWindow.documentOriginal.size() - 1)) {
+      mainWindow.identLabel = mainWindow.documentOriginal.size() - 1;
+    }
   }
   
   

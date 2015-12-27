@@ -36,9 +36,6 @@ import java.awt.GraphicsEnvironment;
  */
 public class MainWindowFonts {
   
-  private MainWindow mainWindow;
-  private MainWindowMenus mainWindowMenu;
-  
   private Font fontTable;
   private Font fontTableHeader;
   private Font fontSourceEditor;
@@ -46,8 +43,6 @@ public class MainWindowFonts {
   private Font fontUserInterface;
 
   public MainWindowFonts(MainWindow mainWindow, MainWindowMenus mainWindowMenu) {
-    this.mainWindow = mainWindow;
-    this.mainWindowMenu = mainWindowMenu;
   }
   
   /**
@@ -58,7 +53,8 @@ public class MainWindowFonts {
    *
    * @param font UI font to be set
    */
-  public final void setUserInterfaceFonts(final Font font) {
+  private final void setUserInterfaceFonts(final Font font,
+          MainWindowMenus mainWindowMenu) {
     mainWindowMenu.menuItemFile.setFont(font);
     mainWindowMenu.menuItemFileOpen.setFont(font);
     mainWindowMenu.menuItemFileTextOpen.setFont(font);
@@ -138,8 +134,7 @@ public class MainWindowFonts {
    *
    * @param font set editor font to display
    */
-  public final void setSourceEditorFont(final Font font,
-          SegmentEditor edLeftSegment) {
+  public final void setSourceEditorFont(final Font font, MainWindow mainWindow) {
     fontSourceEditor = font;
     if (fontSourceEditor == null) {
       final String strFontName = "Dialog";
@@ -148,7 +143,7 @@ public class MainWindowFonts {
       fontSourceEditor = new Font(strFontName, getFontStyle(strFontStyle),
               iFontSize);
     }
-    edLeftSegment.setEditorFont(fontSourceEditor);
+    mainWindow.editLeftSegment.setEditorFont(fontSourceEditor);
   }
 
   /**
@@ -174,8 +169,7 @@ public class MainWindowFonts {
    *
    * @param font to be set to Editor
    */
-  public final void setTargetEditorFont(final Font font,
-          SegmentEditor edRightSegment ) {
+  public final void setTargetEditorFont(final Font font, MainWindow mainWindow) {
     fontTranslationEditor = font;
     if (fontTranslationEditor == null) {
       final String strFontName = "Dialog";
@@ -184,7 +178,7 @@ public class MainWindowFonts {
       fontTranslationEditor = new Font(strFontName, getFontStyle(strFontStyle),
               iFontSize);
     }
-    edRightSegment.setEditorFont(fontTranslationEditor);
+    mainWindow.editRightSegment.setEditorFont(fontTranslationEditor);
   }
 
   /**
@@ -212,7 +206,7 @@ public class MainWindowFonts {
    *
    * @param font to be set to table
    */
-  public final void setTableFont(final Font font, AlignmentsView viewAlignments) {
+  public final void setTableFont(final Font font, MainWindow mainWindow) {
     fontTable = font;
     if (fontTable == null) {
       final String strFontName = "Dialog";
@@ -220,7 +214,7 @@ public class MainWindowFonts {
       final int iFontSize = 11;
       fontTable = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
-    viewAlignments.setTableFont(fontTable);
+    mainWindow.viewAlignments.setTableFont(fontTable);
   }
 
   /**
@@ -228,7 +222,8 @@ public class MainWindowFonts {
    *
    * @param font UI font
    */
-  public final void setUserInterfaceFont(final Font font) {
+  public final void setUserInterfaceFont(final Font font,
+          MainWindow mainWindow) {
     fontUserInterface = font;
     if (fontUserInterface == null) {
       final String strFontName = "Serif";
@@ -236,7 +231,7 @@ public class MainWindowFonts {
       final int iFontSize = 11;
       fontUserInterface = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
-    setUserInterfaceFonts(fontUserInterface);
+    setUserInterfaceFonts(fontUserInterface, mainWindow.mainWindowMenu);
   }
 
   /**

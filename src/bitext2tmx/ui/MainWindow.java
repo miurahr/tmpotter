@@ -94,46 +94,47 @@ import javax.swing.table.TableColumn;
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements ActionListener,
         WindowListener {
-  private DockingDesktop desktop;
+  protected final AlignmentsView viewAlignments = new AlignmentsView(this);
+  protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
+  protected final SegmentEditor editRightSegment = new SegmentEditor(this);
+  protected final ControlView viewControls = new ControlView(this);
 
-  private final AlignmentsView viewAlignments = new AlignmentsView(this);
-  private final SegmentEditor editLeftSegment = new SegmentEditor(this);
-  private final SegmentEditor editRightSegment = new SegmentEditor(this);
-  private final ControlView viewControls = new ControlView(this);
+  protected MainWindowMenuHandlers handler;
+  protected MainWindowMenus mainWindowMenu;
+  protected MainWindowFonts mainWindowFonts;
+
+  protected DockingDesktop desktop;
 
   //  Menubar
-  final JMenuBar menuBar = new JMenuBar();
+  protected final JMenuBar menuBar = new JMenuBar();
 
   //  Statusbar
-  private JPanel panelStatusBar;
-  private JLabel labelStatusBar;
+  protected JPanel panelStatusBar;
+  protected JLabel labelStatusBar;
 
-  private Document documentOriginal;
-  private Document documentTranslation;
+  protected Document documentOriginal;
+  protected Document documentTranslation;
 
   private final ArrayList arrayListBitext;
 
-  private final ArrayList<SegmentChanges> arrayListChanges;
+  protected final ArrayList<SegmentChanges> arrayListChanges;
   private final ArrayList arrayListLang;
 
-  private int topArrays;    //  =  0;
+  protected int topArrays;    //  =  0;
   private int positionTextArea;  //  =  0;
-  private int identChanges = -1;
-  private int identLabel;  //  =  0;
-  private int identAnt;     //  =  0;
+  protected int identChanges = -1;
+  protected int identLabel;  //  =  0;
+  protected int identAnt;     //  =  0;
 
-  private String stringLangOriginal = "en";
-  private String stringLangTranslation = "en";
-  private String stringOriginal;
-  private String stringTranslation;
+  protected String stringLangOriginal = "en";
+  protected String stringLangTranslation = "en";
+  protected String stringOriginal;
+  protected String stringTranslation;
 
-  private File userHome = new File(System.getProperty("user.home"));
-  private File filePathOriginal;
-  private File filePathTranslation;
+  protected File userHome = new File(System.getProperty("user.home"));
+  protected File filePathOriginal;
+  protected File filePathTranslation;
 
-  private MainWindowMenuHandlers handler;
-  private MainWindowMenus mainWindowMenu;
-  private MainWindowFonts mainWindowFonts;
 
   /**
    * Main window class.
@@ -144,14 +145,13 @@ public final class MainWindow extends JFrame implements ActionListener,
     this.arrayListChanges = new ArrayList<>();
     this.arrayListLang = new ArrayList();
 
+    handler = new MainWindowMenuHandlers(this);
     mainWindowMenu = new MainWindowMenus(this, handler);
     mainWindowFonts = new MainWindowFonts(this, mainWindowMenu);
-    handler = new MainWindowMenuHandlers(this, viewAlignments,
-            editLeftSegment, editRightSegment, viewControls);
 
-    MainWindowUI.initDockingUi(this,mainWindowFonts);
+    MainWindowUI.initDockingUi(this);
     makeMenus();
-    makeUi();
+    MainWindowUI.makeUi(this);
     setWindowIcon();
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
@@ -210,52 +210,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     }
   }
 
-  private void makeUi() {
-    this.labelStatusBar = new JLabel(" ");
-    this.panelStatusBar = new JPanel();
-    this.panelStatusBar.setLayout(new BoxLayout(this.panelStatusBar,
-            BoxLayout.LINE_AXIS));
-    this.panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
-    this.panelStatusBar.add(this.labelStatusBar);
-    this.desktop = new DockingDesktop();
-    this.getContentPane().add(this.desktop, BorderLayout.CENTER);
-    this.desktop.registerDockable(this.viewAlignments);
-    this.desktop.registerDockable(this.editLeftSegment);
-    this.desktop.registerDockable(this.editRightSegment);
-    this.desktop.registerDockable(this.viewControls);
-    DockKey keyLeftSegment = this.editLeftSegment.getDockKey();
-    keyLeftSegment.setName(getString("VW.ORIGINAL.NAME"));
-    keyLeftSegment.setTooltip(getString("VW.ORIGINAL.TOOLTIP"));
-    keyLeftSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    DockKey keyRightSegment = this.editRightSegment.getDockKey();
-    keyRightSegment.setName(getString("VW.TRANSLATION.NAME"));
-    keyRightSegment.setTooltip(getString("VW.TRANSLATION.TOOLTIP"));
-    keyRightSegment.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    DockKey keyAlignmentTable = this.viewAlignments.getDockKey();
-    keyAlignmentTable.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    DockKey keySegmentButtons = this.viewControls.getDockKey();
-    keySegmentButtons.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    keyAlignmentTable.setFloatEnabled(true);
-    keyLeftSegment.setFloatEnabled(true);
-    keyRightSegment.setFloatEnabled(true);
-    keySegmentButtons.setFloatEnabled(true);
-    keyAlignmentTable.setCloseEnabled(false);
-    keyLeftSegment.setCloseEnabled(false);
-    keyRightSegment.setCloseEnabled(false);
-    keySegmentButtons.setCloseEnabled(false);
-    keySegmentButtons.setResizeWeight(0.1F);
-    this.desktop.addDockable(this.viewAlignments);
-    this.desktop.split(this.viewAlignments, this.editLeftSegment,
-            DockingConstants.SPLIT_BOTTOM);
-    this.desktop.split(this.editLeftSegment, this.viewControls,
-            DockingConstants.SPLIT_BOTTOM);
-    this.desktop.split(this.editLeftSegment, this.editRightSegment,
-            DockingConstants.SPLIT_RIGHT);
-    this.setSize(new Dimension(800, 600));
-    this.setMinimumSize(new Dimension(640, 480));
-    this.setTitle(AppConstants.getDisplayNameAndVersion());
-    this.getContentPane().add(this.panelStatusBar, BorderLayout.SOUTH);
-  }
 
   private void makeMenus() {
     menuBar.add(mainWindowMenu.getMenuFile());
@@ -280,121 +234,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     });
 
     return (true);
-  }
-
-  /**
-   * Open dialog to select the files we want to align/convert.
-   *
-   */
-  private void onOpenTmx() {
-    String originalEncoding;
-
-    final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(userHome);
-    dlg.setModal(true);
-    dlg.setVisible(true);
-
-    if (!dlg.isClosed()) {
-      userHome = dlg.getPath();
-      originalEncoding = (String) dlg.getLangEncComboBox().getSelectedItem();
-      filePathOriginal = dlg.getFilePath();
-      filePathTranslation = filePathOriginal;
-      stringLangOriginal = dlg.getSourceLocale();
-      stringLangTranslation = dlg.getTargetLocale();
-      viewAlignments.buildDisplay();
-
-      try {
-        ProjectProperties prop = new ProjectProperties();
-        prop.setSourceLanguage(stringLangOriginal);
-        prop.setTargetLanguage(stringLangTranslation);
-        TmxReader reader = new TmxReader(prop, filePathOriginal);
-        documentOriginal = reader.getOriginalDocument(documentOriginal);
-        documentTranslation = reader
-                .getTranslationDocument(documentTranslation);
-      } catch (Exception ex) {
-        Logger.getLogger(MainWindow.class.getName())
-                .log(Level.SEVERE, null, ex);
-      }
-
-      initializeAlignmentsView();
-      updateAlignmentsView();
-      viewControls.enableButtons(true);
-      viewControls.setUndoEnabled(false);
-      mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindowMenu.menuItemFileClose.setEnabled(true);
-
-      dlg.dispose();
-    }
-  }
-
-    /**
-   * Open dialog to select the files we want to align/convert.
-   *
-   */
-  private void onOpenText() {
-    String originalEncoding;
-    String translateEncoding;
-
-    final OpenTexts dlg = new OpenTexts();
-    dlg.setPath(userHome);
-    dlg.setModal(true);
-    dlg.setVisible(true);
-
-    if (!dlg.isClosed()) {
-      userHome = dlg.getPath();
-      originalEncoding = (String) dlg.getSourceLangEncComboBox()
-              .getSelectedItem();
-      filePathOriginal = dlg.getSourcePath();
-      stringOriginal = dlg.getSource();
-      stringLangOriginal = dlg.getSourceLocale();
-      viewAlignments.buildDisplay();
-      documentOriginal = new Document();
-      documentTranslation = new Document();
-
-      translateEncoding = (String) dlg.getTargetLangEncComboBox()
-              .getSelectedItem();
-      filePathTranslation = dlg.getTargetPath();
-      stringTranslation = dlg.getTarget();
-      stringLangTranslation = dlg.getTargetLocale();
-
-      try {
-        documentOriginal = DocumentSegmenter.readDocument(stringOriginal,
-                stringLangOriginal, originalEncoding);
-        documentTranslation = DocumentSegmenter.readDocument(stringTranslation,
-                stringLangTranslation, translateEncoding);
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, getString("MSG.ERROR"),
-                getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
-        this.dispose();
-      }
-
-      boolean res = TranslationAligner.align(documentOriginal,
-              documentTranslation);
-
-      if (res) {
-        matchArrays();
-
-        for (int cont = 0; cont < documentOriginal.size(); cont++) {
-          if (documentOriginal.get(cont) == null
-                  || (documentOriginal.get(cont).equals(""))
-                  && (documentTranslation.get(cont) == null
-                  || documentTranslation.get(cont).equals(""))) {
-            documentOriginal.remove(cont);
-            documentTranslation.remove(cont);
-          }
-        }
-      }
-
-      initializeAlignmentsView();
-      updateAlignmentsView();
-      viewControls.enableButtons(true);
-      //_vwControls._btnUndo.setEnabled( false );
-      viewControls.setUndoEnabled(false);
-      mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindowMenu.menuItemFileClose.setEnabled(true);
-
-      dlg.dispose();
-    }
   }
 
   /**
@@ -659,9 +498,9 @@ public final class MainWindow extends JFrame implements ActionListener,
    * <p>This function updates the rows in the table with the
    * modifications performed, adds rows or removes them.
    */
-  private void updateAlignmentsView() {
+  protected void updateAlignmentsView() {
     if (!documentOriginal.isEmpty() && !documentTranslation.isEmpty()) {
-      matchArrays();
+      handler.matchArrays(this);
     }
 
     for (int cont = 0; cont < viewAlignments.getRowCount(); cont++) {
@@ -705,40 +544,6 @@ public final class MainWindow extends JFrame implements ActionListener,
             identLabel, 2).toString()));
   }
 
-  /**
-   * Function IgualarArrays: adds rows to the smallest array and deletes blank
-   * rows.
-   */
-  private void matchArrays() {
-    boolean limpiar = true;
-
-    while (documentOriginal.size() > documentTranslation.size()) {
-      documentTranslation.add(documentTranslation.size(), "");
-    }
-
-    while (documentTranslation.size() > documentOriginal.size()) {
-      documentOriginal.add(documentOriginal.size(), "");
-    }
-
-    while (limpiar) {
-      // Delete blank lines at the end
-      if (documentOriginal.get(documentOriginal.size() - 1) == null
-              || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
-            && (documentTranslation.get(documentTranslation.size() - 1) == null
-              || documentTranslation.get(
-                      documentTranslation.size() - 1).equals(""))) {
-        documentOriginal.remove(documentOriginal.size() - 1);
-        documentTranslation.remove(documentTranslation.size() - 1);
-      } else {
-        limpiar = false;
-      }
-    }
-    topArrays = documentOriginal.size() - 1;
-    if (identLabel > (documentOriginal.size() - 1)) {
-      identLabel = documentOriginal.size() - 1;
-    }
-  }
-
   //  Accessed by ControlView
   final void onOriginalJoin() {
     identChanges++;
@@ -777,226 +582,13 @@ public final class MainWindow extends JFrame implements ActionListener,
 
   //  Accessed by ControlView
   final void onUndo() {
-    undoChanges();
+    handler.undoChanges();
     arrayListChanges.remove(identChanges);
     identChanges--;
 
     if (identChanges == -1) {
       viewControls.setUndoEnabled(false);
     }
-  }
-
-  /**
-   * Undoes the last delete.
-   */
-  private void undoDelete() {
-    SegmentChanges ultChanges = arrayListChanges.get(identChanges);
-
-    identLabel = ultChanges.getIdent_linea();
-    boolean izq = ultChanges.getSource();
-
-    if (izq) {
-      // Left part
-      if (identLabel == documentOriginal.size()) {
-        // Revert the deleting of the last line
-        documentOriginal.add(identLabel, ultChanges.getFrase());
-
-        if (documentOriginal.size() != documentTranslation.size()) {
-          documentTranslation.add(documentTranslation.size(), "");
-        }
-      } else {
-        // Intermediate deletions
-        documentOriginal.add(documentOriginal.size(),
-                documentOriginal.get(documentOriginal.size() - 1));
-        for (int cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
-          documentOriginal.set(cont, documentOriginal.get(cont - 1));
-        }
-
-        documentOriginal.set(identLabel, ultChanges.getFrase());
-      }
-    } else {
-      // Parte derecha
-      // Right part
-      if (identLabel == documentTranslation.size()) {
-        documentTranslation.add(identLabel, ultChanges.getFrase());
-
-        if (documentOriginal.size() != documentTranslation.size()) {
-          documentOriginal.add(documentOriginal.size(), "");
-        }
-      } else {
-        int cont = documentTranslation.size() - 1;
-        // The source text had an empty string aligned: restore
-        documentTranslation.add(documentTranslation.size(), documentTranslation
-                .get(documentTranslation.size() - 1));
-
-        for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
-          documentTranslation.set(cont, documentTranslation.get(cont - 1));
-        }
-
-        documentTranslation.set(identLabel, ultChanges.getFrase());
-      }
-    }
-
-    updateAlignmentsView();
-  }
-
-  /**
-   * Undo last change.
-   *
-   */
-  private void undoChanges() {
-    String cad;
-    SegmentChanges ultChanges = new SegmentChanges();
-    int tam = 0;
-
-    ultChanges = arrayListChanges.get(identChanges);
-    identLabel = ultChanges.getIdent_linea();
-    int operacion = ultChanges.getKind();
-    int position;
-    boolean izq = ultChanges.getSource();
-    identAnt = identLabel;
-
-    switch (operacion) {
-      //if( operacion == 0 )
-      case 0: {
-        // El complementario de Unir es Split
-        // The complement of Join is Split
-        final String cadaux = ultChanges.getFrase();
-
-        if (izq) {
-          cad = documentOriginal.get(identLabel);
-
-          if (!cad.equals("")) {
-            cad = cad.trim();
-          }
-
-          position = cad.indexOf(cadaux) + cadaux.length();
-        } else {
-          cad = documentTranslation.get(identLabel);
-
-          if (!cad.equals("")) {
-            cad = cad.trim();
-          }
-
-          position = cad.indexOf(cadaux) + cadaux.length();
-        }
-
-        if (ultChanges.getSource()) {
-          documentOriginal.split(identLabel, position);
-        } else {
-          documentTranslation.split(identLabel, position);
-        }
-        updateAlignmentsView();
-        break;
-      }
-
-      //else if( operacion == 1 )
-      case 1:
-        // El complementario de Borrar es Insertar
-        // The complement of Delete is Insert
-        undoDelete();
-        break;
-
-      //else if( operacion == 2 )
-      case 2: {
-        // El complementario de Split es Unir
-        // The complement of Split is Join
-        int cont;
-
-        // modifyAlignments(ultCambio.getFuente(), 0,
-        // 0,ultCambio.getEliminada_fila());
-        cont = identLabel + 1;
-
-        if (izq) {
-          cad = ultChanges.getFrase();
-          documentOriginal.set(identLabel, cad.trim());
-
-          while (cont < topArrays) {
-            documentOriginal.set(cont, documentOriginal.get(cont + 1));
-            cont++;
-          }
-
-          documentOriginal.set(documentOriginal.size() - 1, "");
-        } else {
-          cad = ultChanges.getFrase();
-          documentTranslation.set(identLabel, cad.trim());
-
-          while (cont < topArrays) {
-            documentTranslation.set(cont, documentTranslation.get(cont + 1));
-            cont++;
-          }
-
-          documentTranslation.set(documentTranslation.size() - 1, "");
-        }
-
-        updateAlignmentsView();
-
-        break;
-      }
-
-      //else if( operacion == 3 )
-      case 3: {
-        // Se eliminaron lineas enteras en blanco que hay que recuperar
-        // Blank lines were deleted and have to be restored
-        tam = ultChanges.getTam();
-        int[] filasEliminadas;
-
-        filasEliminadas = ultChanges.getNumEliminada();
-
-        while (tam > 0) {
-          // Se crean tantas filas como las que se eliminaron
-          // Create as many files as those that were eliminated
-          documentTranslation.add(documentTranslation.size(), "");
-          documentOriginal.add(documentOriginal.size(), "");
-          topArrays = documentTranslation.size() - 1;
-          tam--;
-        }
-
-        int cont2 = documentOriginal.size() - 1;
-        tam = ultChanges.getTam();
-
-        while (cont2 >= tam && tam > 0) {
-          // recorre los arrays para colocar las lineas en blanco donde
-          // corresponden
-          // moves across the arrays to place blank lines where needed
-          if (cont2 == filasEliminadas[tam - 1]) {
-            documentTranslation.set(cont2, "");
-            documentOriginal.set(cont2, "");
-            tam--;
-          } else {
-            documentTranslation.set(cont2, documentTranslation.get(cont2 - tam));
-            documentOriginal.set(cont2, documentOriginal.get(cont2 - tam));
-          }
-
-          cont2--;
-        }
-
-        updateAlignmentsView();
-
-        break;
-      }
-
-      //else if( operacion == 4 )
-      case 4: {
-        // Split TU
-        if (izq) {
-          documentTranslation.set(identLabel, documentTranslation.get(identLabel + 1));
-          documentOriginal.remove(identLabel + 1);
-          documentTranslation.remove(identLabel + 1);
-        } else {
-          documentOriginal.set(identLabel, documentOriginal.get(identLabel + 1));
-          documentOriginal.remove(identLabel + 1);
-          documentTranslation.remove(identLabel + 1);
-        }
-
-        updateAlignmentsView();
-        break;
-      }
-        
-      default:
-        break;
-    } //  switch()
-
   }
 
   //  Accessed by AlignmentsView
@@ -1195,20 +787,20 @@ public final class MainWindow extends JFrame implements ActionListener,
    * @param font to be configured
    */
   public final void setFonts(final Font font) {
-    mainWindowFonts.setUserInterfaceFont(font);
-    mainWindowFonts.setTableFont(font, viewAlignments);
+    mainWindowFonts.setUserInterfaceFont(font, this);
+    mainWindowFonts.setTableFont(font, this);
     mainWindowFonts.setTableHeaderFont(font);
-    mainWindowFonts.setSourceEditorFont(font, editLeftSegment);
-    mainWindowFonts.setTargetEditorFont(font, editRightSegment);
+    mainWindowFonts.setSourceEditorFont(font, this);
+    mainWindowFonts.setTargetEditorFont(font, this);
     viewControls.setFonts(font);
   }
 
   public final void setTableFont(final Font font) {
-    mainWindowFonts.setTableFont(font, viewAlignments);
+    mainWindowFonts.setTableFont(font, this);
   }
 
   public final void setUserInterfaceFont(final Font font) {
-    mainWindowFonts.setUserInterfaceFont(font);
+    mainWindowFonts.setUserInterfaceFont(font, this);
   }
 
   public final void setTableHeaderFont(final Font font) {
@@ -1216,11 +808,11 @@ public final class MainWindow extends JFrame implements ActionListener,
   }
 
   public final void setSourceEditorFont(final Font font) {
-    mainWindowFonts.setSourceEditorFont(font, editLeftSegment);
+    mainWindowFonts.setSourceEditorFont(font, this);
   }
 
   public final void setTargetEditorFont(final Font font) {
-    mainWindowFonts.setTargetEditorFont(font, editRightSegment);
+    mainWindowFonts.setTargetEditorFont(font, this);
   }
 
   /**
@@ -1287,9 +879,9 @@ public final class MainWindow extends JFrame implements ActionListener,
 
     if (actor instanceof JMenuItem) {
       if (actor == mainWindowMenu.menuItemFileOpen) {
-        onOpenTmx();
+        handler.onOpenTmx();
       } else if (actor == mainWindowMenu.menuItemFileTextOpen) {
-        onOpenText();
+        handler.onOpenText();
       } else if (actor == mainWindowMenu.menuItemFileSave) {
         saveBitext();
       } else if (actor == mainWindowMenu.menuItemFileSaveAs) {
@@ -1352,29 +944,4 @@ public final class MainWindow extends JFrame implements ActionListener,
     }
   }
 
-  /**
-   * Initialize alignment view.
-   * 
-   * <p>Extracts from the TMX those lines having information which is useful for
-   * alignment, and puts them in the corresponding ArrayList's The left part in
-   * _alstOriginal corresponds to source text lines and the right part in
-   * _alstTranslation corresponds to the target text lines. Initialize the table
-   * with one line for each left and right line
-   *
-   */
-  private void initializeAlignmentsView() {
-    TableColumn col;
-
-    col = viewAlignments.getColumnModel().getColumn(1);
-    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE") + filePathOriginal.getName());
-
-    col = viewAlignments.getColumnModel().getColumn(2);
-    col.setHeaderValue(getString("TBL.HDR.COL.TARGET") + filePathTranslation.getName());
-
-    viewAlignments.setColumnHeaderView();
-
-    updateAlignmentsView();
-    topArrays = documentOriginal.size() - 1;
-    identLabel = 0;
-  }
 }
