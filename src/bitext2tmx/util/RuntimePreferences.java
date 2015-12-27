@@ -29,26 +29,7 @@ package bitext2tmx.util;
  * @author Hiroshi Miura
  */
 public class RuntimePreferences {
-  private static boolean segmentByLineBreak;
   private static String userHome = "/";
-  
-  /**
-   * Ask if segment by line break.
-   * 
-   * @return true if segmented by line break
-   */
-  public static boolean isSegmentByLineBreak() {
-    return segmentByLineBreak;
-  }
-  
-  /**
-   * set rule for segment by line break.
-   * 
-   * @param segmentRule boolean if true, we segment by line break
-   */
-  public static void setSegmentByLineBreak(boolean segmentRule) {
-    segmentByLineBreak = segmentRule;
-  }
   
   /**
    * Set user home directory.

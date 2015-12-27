@@ -37,6 +37,7 @@
 
 package bitext2tmx.util;
 
+import bitext2tmx.segmentation.SRX;
 import bitext2tmx.util.xml.XMLBlock;
 import bitext2tmx.util.xml.XMLStreamReader;
 import bitext2tmx.util.xml.XMLUtil;
@@ -456,6 +457,22 @@ public class Preferences {
     }
     m_changed = false;
   }
+  
+  
+  public static SRX getSRX() {
+    return srx;
+  }
+
+  public static void setSRX(SRX newSrx) {
+    srx = newSrx;
+
+    File srxFile = new File(Utilities.getConfigDir() + SRX.CONF_SENTSEG);
+    try {
+      SRX.saveTo(srx, srxFile);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+  }
 
   private static boolean m_loaded;
   private static boolean m_changed;
@@ -465,4 +482,6 @@ public class Preferences {
   private static List<String> m_nameList;
   private static List<String> m_valList;
   private static Map<String, Integer> m_preferenceMap;
+  
+  private static SRX srx;
 }
