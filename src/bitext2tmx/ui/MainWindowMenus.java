@@ -55,7 +55,7 @@ import javax.swing.event.MenuListener;
  *
  * @author Hiroshi Miura
  */
-final class MainWindowMenus implements ActionListener, MenuListener, IMainMenus {
+final class MainWindowMenus implements ActionListener, MenuListener {
   private static final Logger LOGGER =
           Logger.getLogger(MainWindowMenus.class.getName());
   
@@ -200,17 +200,14 @@ final class MainWindowMenus implements ActionListener, MenuListener, IMainMenus 
     }
   }
 
-  @Override
   public final JMenu getMenuFile() {
     return menuItemFile;
   }
   
-  @Override
   public final JMenu getMenuSettings() {
     return menuSettings;
   }
 
-  @Override
   public final JMenu getMenuHelp() {
     return menuHelp;
   }
