@@ -63,11 +63,11 @@ public final class FontSelector extends JDialog {
 
   /**
    * Show font selector.
-   * 
+   *
    * @param wndB2T frame
    * @param afnt font list
    */
-  public FontSelector( final MainWindow wndB2T, final Font[] afnt ) {
+  public FontSelector( final MainWindow wndB2T, final Font[] afnt) {
     super( wndB2T, true );
 
     windowMain = wndB2T;
@@ -457,7 +457,7 @@ public final class FontSelector extends JDialog {
     switch ( comboFontDisplayArea.getSelectedIndex() ) {
       //  Table
       case 0:
-        windowMain.setTableFont( getSelectedFont() );
+        windowMain.setTableFont( getSelectedFont());
         break;
       //  Table Header
       case 1:
@@ -479,7 +479,7 @@ public final class FontSelector extends JDialog {
       //  All GUI components  
       case 5:
       default:
-        windowMain.setFonts( getSelectedFont() );
+        windowMain.setFonts(getSelectedFont() );
         setFonts( getSelectedFont() );
     }
   }

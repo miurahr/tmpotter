@@ -45,6 +45,13 @@ public class TmxReader {
   private final String name;
   private final List<TmxEntry> entries;
   
+  /**
+   * Read TMX file.
+   * 
+   * @param prop property.
+   * @param file file to open
+   * @throws Exception when read I/O error.
+   */
   public TmxReader(ProjectProperties prop, final File file)
           throws Exception {
     this.name = file.getName();

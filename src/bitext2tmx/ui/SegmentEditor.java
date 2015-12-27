@@ -43,10 +43,15 @@ import javax.swing.JTextPane;
  *
  */
 @SuppressWarnings("serial")
-final class SegmentEditor extends DockablePanel {
+class SegmentEditor extends DockablePanel {
   private final JTextPane textPane =  new JTextPane();
   private final MainWindow windowMain;
 
+  /**
+   * Constructor.
+   * 
+   * @param windowMain main window object.
+   */
   public SegmentEditor( final MainWindow windowMain ) {
     super( "SegmentEditor", "SegmentEditor", false );
 
@@ -103,8 +108,11 @@ final class SegmentEditor extends DockablePanel {
     textPane.setCaretPosition( 0 );
   }
 
-  //final public void setFonts( final Font f ) { _tpn.setFont( f ); }
-
+  /**
+   * Set Editor pane font.
+   * 
+   * @param font to set
+   */
   public final void setEditorFont( final Font font ) {
     if ( textPane != null ) {
       textPane.setFont( font );
