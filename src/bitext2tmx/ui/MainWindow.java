@@ -30,6 +30,11 @@ import static bitext2tmx.util.StringUtil.formatText;
 import static bitext2tmx.util.StringUtil.restoreText;
 
 import bitext2tmx.core.Document;
+import bitext2tmx.core.ProjectProperties;
+import bitext2tmx.core.TextReader;
+import bitext2tmx.core.TmxReader;
+import bitext2tmx.core.TmxWriter;
+import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
 import bitext2tmx.util.Platform;

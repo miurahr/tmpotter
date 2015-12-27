@@ -48,7 +48,6 @@
 #######################################################################
 */
 
-
 package bitext2tmx.util;
 
 import bitext2tmx.util.Platform.OsType;

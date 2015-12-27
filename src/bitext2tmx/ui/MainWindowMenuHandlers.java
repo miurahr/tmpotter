@@ -28,18 +28,20 @@ package bitext2tmx.ui;
 import static bitext2tmx.util.Localization.getString;
 
 import bitext2tmx.core.Document;
-import bitext2tmx.core.DocumentSegmenter;
+import bitext2tmx.core.TextReader;
 import bitext2tmx.core.ProjectProperties;
 import bitext2tmx.core.TmxReader;
 import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.SegmentChanges;
+import bitext2tmx.segmentation.Segmenter;
 import bitext2tmx.ui.dialogs.About;
 import bitext2tmx.ui.dialogs.Encodings;
 import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.ui.dialogs.OpenTexts;
 import bitext2tmx.ui.dialogs.OpenTmx;
 import bitext2tmx.ui.help.Manual;
+import bitext2tmx.util.Preferences;
 import bitext2tmx.util.RuntimePreferences;
 
 import com.vlsolutions.swing.docking.ui.DockingUISettings;
@@ -311,12 +313,13 @@ final class MainWindowMenuHandlers {
       mainWindow.filePathTranslation = dlg.getTargetPath();
       mainWindow.stringTranslation = dlg.getTarget();
       mainWindow.stringLangTranslation = dlg.getTargetLocale();
+      Segmenter.srx = Preferences.getSRX();
       try {
         mainWindow.documentOriginal =
-                DocumentSegmenter.readDocument(mainWindow.stringOriginal,
+                TextReader.read(mainWindow.stringOriginal,
                         mainWindow.stringLangOriginal, originalEncoding);
         mainWindow.documentTranslation =
-                DocumentSegmenter.readDocument(mainWindow.stringTranslation,
+                TextReader.read(mainWindow.stringTranslation,
                         mainWindow.stringLangTranslation, translateEncoding);
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),

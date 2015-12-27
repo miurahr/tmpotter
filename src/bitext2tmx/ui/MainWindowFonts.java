@@ -68,7 +68,6 @@ public class MainWindowFonts {
     }
     mainWindowMenu.menuSettings.setFont(font);
     mainWindowMenu.menuItemSettingsFonts.setFont(font);
-    mainWindowMenu.menuCallbackSettingsLinebreak.setFont(font);
     if (!Platform.isMacOsx()) {
       mainWindowMenu.menuLaf.setFont(font);
       mainWindowMenu.menuItemLafLiquid.setFont(font);

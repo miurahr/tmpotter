@@ -245,18 +245,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
             "MNI.FILE.EXIT");
     menuSettings = makeMenuComponent(MenuComponentType.MENU, null, null,
             "Settings", "MNU.SETTINGS");
-    menuCallbackSettingsLinebreak = makeMenuComponent(MenuComponentType.CHECKBOX,
-            null, null, "Linebreaks", "MNI.SETTINGS.LINEBREAK");
-    menuCallbackSettingsLinebreak.setToolTipText(getString(
-            "MNI.SETTINGS.LINEBREAK.TOOLTIP"));
-    menuCallbackSettingsLinebreak.addChangeListener(new ChangeListener() {
-      @Override
-      public final void stateChanged(final ChangeEvent event) {
-        RuntimePreferences.setSegmentByLineBreak(menuCallbackSettingsLinebreak
-                .isSelected());
-        onLinebreakToggle();
-      }
-    });
     menuItemSettingsFonts = makeMenuComponent(MenuComponentType.ITEM,
             null, getIcon("fonts.png"), "Configure Fonts...",
             "MNI.SETTINGS.FONTS");
@@ -281,7 +269,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
       menuItemFile.addSeparator();
       menuItemFile.add(menuItemFileQuit);
     }
-    menuSettings.add(menuCallbackSettingsLinebreak);
     menuSettings.add(menuItemSettingsFonts);
     if (!Platform.isMacOsx()) {
       menuLaf = makeMenuComponent(MenuComponentType.MENU, null, null,

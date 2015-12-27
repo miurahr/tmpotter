@@ -24,6 +24,7 @@
 package bitext2tmx.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Document hold single text segments in Array.
@@ -37,6 +38,10 @@ public class Document {
 
   public Document() {
     documentSegments = new ArrayList<>();
+  }
+  
+  public Document(List<String> sentences) {
+    documentSegments = new ArrayList<>(sentences);
   }
 
   public boolean isEmpty() {
