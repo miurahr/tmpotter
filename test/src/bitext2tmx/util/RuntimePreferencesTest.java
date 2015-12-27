@@ -34,28 +34,6 @@ import junit.framework.TestCase;
  * @author miurahr
  */
 public class RuntimePreferencesTest extends TestCase {
-  
-  /**
-   * Test of setSegmentByLineBreak method, of class RuntimePreferences.
-   */
-  public void testSetSegmentByLineBreak_setTrue() {
-    System.out.println("setSegmentByLineBreak");
-    boolean segmentRule = true;
-    RuntimePreferences.setSegmentByLineBreak(segmentRule);
-    boolean result = RuntimePreferences.isSegmentByLineBreak();
-    assertTrue(result);
-  }
-  
-  /**
-   * Test of setSegmentByLineBreak method, of class RuntimePreferences.
-   */
-  public void testSetSegmentByLineBreak_setFalse() {
-    System.out.println("setSegmentByLineBreak");
-    boolean segmentRule = false;
-    RuntimePreferences.setSegmentByLineBreak(segmentRule);
-    boolean result = RuntimePreferences.isSegmentByLineBreak();
-    assertFalse(result);
-  }
 
   /**
    * Test of setUserHome method, of class RuntimePreferences.
