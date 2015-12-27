@@ -24,15 +24,41 @@
 
 package bitext2tmx.ui;
 
+import bitext2tmx.core.Document;
+import bitext2tmx.ui.dialogs.About;
+import bitext2tmx.ui.help.Manual;
+import static bitext2tmx.util.StringUtil.formatText;
+import static bitext2tmx.util.StringUtil.restoreText;
+import java.awt.event.KeyEvent;
+
 /**
- * Menu handlers.
+ * Action Handlers.
  *
  * @author Hiroshi Miura
  */
 final class MainWindowMenuHandlers {
   private final MainWindow mainWindow;
-
-  public MainWindowMenuHandlers(final MainWindow mainWindow) {
+  private final AlignmentsView viewAlignments;
+  private final SegmentEditor editLeftSegment;
+  private final SegmentEditor editRightSegment;
+  private final ControlView viewControls;
+  
+  public MainWindowMenuHandlers(final MainWindow mainWindow, final AlignmentsView viewAlignments, final SegmentEditor editLeftSegment, final SegmentEditor editRightSegment, ControlView viewControls) {
     this.mainWindow = mainWindow;
+    this.viewAlignments = viewAlignments;
+    this.editLeftSegment = editLeftSegment;
+    this.editRightSegment = editRightSegment;
+    this.viewControls = viewControls;
   }
+  
+  final void helpAboutMenuItemActionPerformed() {
+    new About(mainWindow).setVisible(true);
+  }
+
+  void helpManualMenuItemActionPerformed() {
+    final Manual dlg = new Manual();
+    dlg.setVisible(true);
+  }
+  
+  
 }

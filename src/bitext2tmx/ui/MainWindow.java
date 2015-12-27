@@ -37,12 +37,10 @@ import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.ui.dialogs.About;
 import bitext2tmx.ui.dialogs.Encodings;
 import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.ui.dialogs.OpenTexts;
 import bitext2tmx.ui.dialogs.OpenTmx;
-import bitext2tmx.ui.help.Manual;
 import bitext2tmx.util.AppConstants;
 import bitext2tmx.util.Platform;
 import bitext2tmx.util.RuntimePreferences;
@@ -146,11 +144,13 @@ public final class MainWindow extends JFrame implements ActionListener,
     this.arrayListChanges = new ArrayList<>();
     this.arrayListLang = new ArrayList();
 
-    handler = new MainWindowMenuHandlers(this);
     mainWindowMenu = new MainWindowMenus(this, handler);
     mainWindowFonts = new MainWindowFonts(this, mainWindowMenu);
+    handler = new MainWindowMenuHandlers(this, viewAlignments,
+            editLeftSegment, editRightSegment, viewControls);
 
-    initDockingUi();
+    MainWindowUI.initDockingUi(this,mainWindowFonts);
+    makeMenus();
     makeUi();
     setWindowIcon();
 
@@ -190,105 +190,8 @@ public final class MainWindow extends JFrame implements ActionListener,
   private static final Logger LOG = Logger.getLogger(MainWindow.class
           .getName());
 
-  private void initDockingUi() {
-    DockingUISettings.getInstance().installUI();
 
-    UIManager.put("DockViewTitleBar.titleFont", mainWindowFonts.getUserInterfaceFont());
-
-    UIManager.put("DockViewTitleBar.close", getDesktopIcon("close.png"));
-    UIManager.put("DockViewTitleBar.close.rollover",
-            getDesktopIcon("close_hovered.png"));
-    UIManager.put("DockViewTitleBar.close.pressed",
-            getDesktopIcon("close_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.hide", getDesktopIcon("min.png"));
-    UIManager.put("DockViewTitleBar.hide.rollover",
-            getDesktopIcon("min_hovered.png"));
-    UIManager.put("DockViewTitleBar.hide.pressed",
-            getDesktopIcon("min_pressed.png"));
-    UIManager.put("DockViewTitleBar.maximize",
-            getDesktopIcon("max.png"));
-    UIManager.put("DockViewTitleBar.maximize.rollover",
-            getDesktopIcon("max_hovered.png"));
-    UIManager.put("DockViewTitleBar.maximize.pressed",
-            getDesktopIcon("max_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.restore",
-            getDesktopIcon("restore.png"));
-    UIManager.put("DockViewTitleBar.restore.rollover",
-            getDesktopIcon("restore_hovered.png"));
-    UIManager.put("DockViewTitleBar.restore.pressed",
-            getDesktopIcon("restore_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.dock", getDesktopIcon("restore.png"));
-    UIManager.put("DockViewTitleBar.dock.rollover",
-            getDesktopIcon("restore_hovered.png"));
-    UIManager.put("DockViewTitleBar.dock.pressed",
-            getDesktopIcon("restore_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.float", getDesktopIcon("shade.png"));
-    UIManager.put("DockViewTitleBar.float.rollover",
-            getDesktopIcon("shade_hovered.png"));
-    UIManager.put("DockViewTitleBar.float.pressed",
-            getDesktopIcon("shade_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.attach", getDesktopIcon("un_shade.png"));
-    UIManager.put("DockViewTitleBar.attach.rollover",
-            getDesktopIcon("un_shade_hovered.png"));
-    UIManager.put("DockViewTitleBar.attach.pressed",
-            getDesktopIcon("un_shade_pressed.png"));
-
-    UIManager.put("DockViewTitleBar.menu.hide", getDesktopIcon("min.png"));
-    UIManager.put("DockViewTitleBar.menu.maximize", getDesktopIcon("max.png"));
-    UIManager.put("DockViewTitleBar.menu.restore",
-            getDesktopIcon("restore.png"));
-    UIManager.put("DockViewTitleBar.menu.dock", getDesktopIcon("restore.png"));
-    UIManager.put("DockViewTitleBar.menu.float", getDesktopIcon("shade.png"));
-    UIManager.put("DockViewTitleBar.menu.attach",
-            getDesktopIcon("un_shade.png"));
-    UIManager.put("DockViewTitleBar.menu.close", getDesktopIcon("close.png"));
-
-    UIManager.put("DockTabbedPane.close", getDesktopIcon("close.png"));
-    UIManager.put("DockTabbedPane.close.rollover",
-            getDesktopIcon("close_hovered.png"));
-    UIManager.put("DockTabbedPane.close.pressed",
-            getDesktopIcon("close_pressed.png"));
-
-    UIManager.put("DockTabbedPane.menu.close", getDesktopIcon("close.png"));
-    UIManager.put("DockTabbedPane.menu.hide", getDesktopIcon("shade.png"));
-    UIManager.put("DockTabbedPane.menu.maximize", getDesktopIcon("max.png"));
-    UIManager.put("DockTabbedPane.menu.float", getDesktopIcon("shade.png"));
-    UIManager.put("DockTabbedPane.menu.closeAll", getDesktopIcon("close.png"));
-    UIManager.put("DockTabbedPane.menu.closeAllOther",
-            getDesktopIcon("close.png"));
-
-    UIManager.put("DragControler.detachCursor",
-            getDesktopIcon("shade.png").getImage());
-
-    UIManager.put("DockViewTitleBar.closeButtonText",
-            getString("VW.TITLEBAR.BTNCLOSE"));
-    UIManager.put("DockViewTitleBar.minimizeButtonText",
-            getString("VW.TITLEBAR.BTNMINIMIZE"));
-    UIManager.put("DockViewTitleBar.maximizeButtonText",
-            getString("VW.TITLEBAR.BTNMAXIMIZE"));
-    UIManager.put("DockViewTitleBar.restoreButtonText",
-            getString("VW.TITLEBAR.BTNRESTORE"));
-    UIManager.put("DockViewTitleBar.floatButtonText",
-            getString("VW.TITLEBAR.BTNFLOAT"));
-    UIManager.put("DockViewTitleBar.attachButtonText",
-            getString("VW.TITLEBAR.BTNATTACH"));
-
-    UIManager.put("DockTabbedPane.closeButtonText", getString("TAB.BTNCLOSE"));
-    UIManager.put("DockTabbedPane.minimizeButtonText",
-            getString("TAB.BTNMINIMIZE"));
-    UIManager.put("DockTabbedPane.restoreButtonText",
-            getString("TAB.BTNRESTORE"));
-    UIManager.put("DockTabbedPane.maximizeButtonText",
-            getString("TAB.BTNMAXIMIZE"));
-    UIManager.put("DockTabbedPane.floatButtonText", getString("TAB.BTNFLOAT"));
-  }
-
-  private ImageIcon getDesktopIcon(final String iconName) {
+  protected ImageIcon getDesktopIcon(final String iconName) {
     if (Platform.isMacOsx()) {
       return (mainWindowMenu.getIcon("desktop/osx/" + iconName));
     }
@@ -308,7 +211,6 @@ public final class MainWindow extends JFrame implements ActionListener,
   }
 
   private void makeUi() {
-    makeMenus();
     this.labelStatusBar = new JLabel(" ");
     this.panelStatusBar = new JPanel();
     this.panelStatusBar.setLayout(new BoxLayout(this.panelStatusBar,
@@ -521,11 +423,6 @@ public final class MainWindow extends JFrame implements ActionListener,
 
   final void onSaveAs() {
     saveBitext();
-  }
-
-  final void displayAbout() {
-    final About dlg = new About(this);
-    dlg.setVisible(true);
   }
 
   /**
@@ -1288,12 +1185,6 @@ public final class MainWindow extends JFrame implements ActionListener,
     updateAlignmentsView();
   }
 
-  private void displayManual() {
-    final Manual dlg = new Manual();
-
-    dlg.setVisible(true);
-  }
-
   /**
    * Fonts mutator Delegates actual setting of fonts to specific methods.
    *
@@ -1454,9 +1345,9 @@ public final class MainWindow extends JFrame implements ActionListener,
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
         }
       } else if (actor == mainWindowMenu.menuItemHelpManual) {
-        displayManual();
+        handler.helpManualMenuItemActionPerformed();
       } else if (actor == mainWindowMenu.menuItemHelpAbout) {
-        displayAbout();
+        handler.helpAboutMenuItemActionPerformed();
       }
     }
   }
