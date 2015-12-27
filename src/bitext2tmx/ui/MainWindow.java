@@ -149,9 +149,9 @@ public final class MainWindow extends JFrame implements ActionListener,
     mainWindowMenu = new MainWindowMenus(this, handler);
     mainWindowFonts = new MainWindowFonts(this, mainWindowMenu);
 
-    MainWindowUI.initDockingUi(this);
+    MainWindowUi.initDockingUi(this);
     makeMenus();
-    MainWindowUI.makeUi(this);
+    MainWindowUi.makeUi(this);
     setWindowIcon();
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About

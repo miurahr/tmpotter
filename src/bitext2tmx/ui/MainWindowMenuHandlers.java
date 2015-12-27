@@ -24,6 +24,8 @@
 
 package bitext2tmx.ui;
 
+import static bitext2tmx.util.Localization.getString;
+
 import bitext2tmx.core.Document;
 import bitext2tmx.core.DocumentSegmenter;
 import bitext2tmx.core.ProjectProperties;
@@ -34,9 +36,10 @@ import bitext2tmx.ui.dialogs.About;
 import bitext2tmx.ui.dialogs.OpenTexts;
 import bitext2tmx.ui.dialogs.OpenTmx;
 import bitext2tmx.ui.help.Manual;
-import static bitext2tmx.util.Localization.getString;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumn;
 
@@ -46,12 +49,13 @@ import javax.swing.table.TableColumn;
  * @author Hiroshi Miura
  */
 final class MainWindowMenuHandlers {
+
   private final MainWindow mainWindow;
-  
+
   public MainWindowMenuHandlers(final MainWindow mainWindow) {
     this.mainWindow = mainWindow;
   }
-  
+
   final void helpAboutMenuItemActionPerformed() {
     new About(mainWindow).setVisible(true);
   }
@@ -76,100 +80,100 @@ final class MainWindowMenuHandlers {
     boolean izq = ultChanges.getSource();
     mainWindow.identAnt = mainWindow.identLabel;
     switch (operacion) {
-      case 0:
-        {
-          final String cadaux = ultChanges.getFrase();
-          if (izq) {
-            cad = mainWindow.documentOriginal.get(mainWindow.identLabel);
-            if (!cad.equals("")) {
-              cad = cad.trim();
-            }
-            position = cad.indexOf(cadaux) + cadaux.length();
-          } else {
-            cad = mainWindow.documentTranslation.get(mainWindow.identLabel);
-            if (!cad.equals("")) {
-              cad = cad.trim();
-            }
-            position = cad.indexOf(cadaux) + cadaux.length();
+      case 0: {
+        final String cadaux = ultChanges.getFrase();
+        if (izq) {
+          cad = mainWindow.documentOriginal.get(mainWindow.identLabel);
+          if (!cad.equals("")) {
+            cad = cad.trim();
           }
-          if (ultChanges.getSource()) {
-            mainWindow.documentOriginal.split(mainWindow.identLabel, position);
-          } else {
-            mainWindow.documentTranslation.split(mainWindow.identLabel, position);
+          position = cad.indexOf(cadaux) + cadaux.length();
+        } else {
+          cad = mainWindow.documentTranslation.get(mainWindow.identLabel);
+          if (!cad.equals("")) {
+            cad = cad.trim();
           }
-          mainWindow.updateAlignmentsView();
-          break;
+          position = cad.indexOf(cadaux) + cadaux.length();
         }
+        if (ultChanges.getSource()) {
+          mainWindow.documentOriginal.split(mainWindow.identLabel, position);
+        } else {
+          mainWindow.documentTranslation.split(mainWindow.identLabel, position);
+        }
+        mainWindow.updateAlignmentsView();
+        break;
+      }
       case 1:
         undoDelete();
         break;
-      case 2:
-        {
+      case 2: {
           // El complementario de Split es Unir
-          // The complement of Split is Join
-          int cont;
-          cont = mainWindow.identLabel + 1;
-          if (izq) {
-            cad = ultChanges.getFrase();
-            mainWindow.documentOriginal.set(mainWindow.identLabel, cad.trim());
-            while (cont < mainWindow.topArrays) {
-              mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont + 1));
-              cont++;
-            }
-            mainWindow.documentOriginal.set(mainWindow.documentOriginal.size() - 1, "");
-          } else {
-            cad = ultChanges.getFrase();
-            mainWindow.documentTranslation.set(mainWindow.identLabel, cad.trim());
-            while (cont < mainWindow.topArrays) {
-              mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont + 1));
-              cont++;
-            }
-            mainWindow.documentTranslation.set(mainWindow.documentTranslation.size() - 1, "");
+        // The complement of Split is Join
+        int cont;
+        cont = mainWindow.identLabel + 1;
+        if (izq) {
+          cad = ultChanges.getFrase();
+          mainWindow.documentOriginal.set(mainWindow.identLabel, cad.trim());
+          while (cont < mainWindow.topArrays) {
+            mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont + 1));
+            cont++;
           }
-          mainWindow.updateAlignmentsView();
-          break;
+          mainWindow.documentOriginal.set(mainWindow.documentOriginal.size() - 1, "");
+        } else {
+          cad = ultChanges.getFrase();
+          mainWindow.documentTranslation.set(mainWindow.identLabel, cad.trim());
+          while (cont < mainWindow.topArrays) {
+            mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont + 1));
+            cont++;
+          }
+          mainWindow.documentTranslation.set(mainWindow.documentTranslation.size() - 1, "");
         }
-      case 3:
-        {
-          tam = ultChanges.getTam();
-          int[] filasEliminadas;
-          filasEliminadas = ultChanges.getNumEliminada();
-          while (tam > 0) {
-            mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
-            mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
-            mainWindow.topArrays = mainWindow.documentTranslation.size() - 1;
+        mainWindow.updateAlignmentsView();
+        break;
+      }
+      case 3: {
+        tam = ultChanges.getTam();
+        int[] filasEliminadas;
+        filasEliminadas = ultChanges.getNumEliminada();
+        while (tam > 0) {
+          mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+          mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+          mainWindow.topArrays = mainWindow.documentTranslation.size() - 1;
+          tam--;
+        }
+        int cont2 = mainWindow.documentOriginal.size() - 1;
+        tam = ultChanges.getTam();
+        while (cont2 >= tam && tam > 0) {
+          if (cont2 == filasEliminadas[tam - 1]) {
+            mainWindow.documentTranslation.set(cont2, "");
+            mainWindow.documentOriginal.set(cont2, "");
             tam--;
-          }
-          int cont2 = mainWindow.documentOriginal.size() - 1;
-          tam = ultChanges.getTam();
-          while (cont2 >= tam && tam > 0) {
-            if (cont2 == filasEliminadas[tam - 1]) {
-              mainWindow.documentTranslation.set(cont2, "");
-              mainWindow.documentOriginal.set(cont2, "");
-              tam--;
-            } else {
-              mainWindow.documentTranslation.set(cont2, mainWindow.documentTranslation.get(cont2 - tam));
-              mainWindow.documentOriginal.set(cont2, mainWindow.documentOriginal.get(cont2 - tam));
-            }
-            cont2--;
-          }
-          mainWindow.updateAlignmentsView();
-          break;
-        }
-      case 4:
-        {
-          if (izq) {
-            mainWindow.documentTranslation.set(mainWindow.identLabel, mainWindow.documentTranslation.get(mainWindow.identLabel + 1));
-            mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
-            mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
           } else {
-            mainWindow.documentOriginal.set(mainWindow.identLabel, mainWindow.documentOriginal.get(mainWindow.identLabel + 1));
-            mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
-            mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+            mainWindow.documentTranslation.set(cont2,
+                    mainWindow.documentTranslation.get(cont2 - tam));
+            mainWindow.documentOriginal.set(cont2,
+                    mainWindow.documentOriginal.get(cont2 - tam));
           }
-          mainWindow.updateAlignmentsView();
-          break;
+          cont2--;
         }
+        mainWindow.updateAlignmentsView();
+        break;
+      }
+      case 4: {
+        if (izq) {
+          mainWindow.documentTranslation.set(mainWindow.identLabel,
+                  mainWindow.documentTranslation.get(mainWindow.identLabel + 1));
+          mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
+          mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+        } else {
+          mainWindow.documentOriginal.set(mainWindow.identLabel,
+                  mainWindow.documentOriginal.get(mainWindow.identLabel + 1));
+          mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
+          mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+        }
+        mainWindow.updateAlignmentsView();
+        break;
+      }
       default:
         break;
     }
@@ -179,35 +183,44 @@ final class MainWindowMenuHandlers {
    * Undoes the last delete.
    */
   private void undoDelete() {
-    SegmentChanges ultChanges = mainWindow.arrayListChanges.get(mainWindow.identChanges);
+    SegmentChanges ultChanges =
+            mainWindow.arrayListChanges.get(mainWindow.identChanges);
     mainWindow.identLabel = ultChanges.getIdent_linea();
     boolean izq = ultChanges.getSource();
+    
+    final Document documentOriginal = mainWindow.documentOriginal;
+    final Document documentTranslation = mainWindow.documentTranslation;
+    final int identLabel = mainWindow.identLabel;
+    
     if (izq) {
-      if (mainWindow.identLabel == mainWindow.documentOriginal.size()) {
-        mainWindow.documentOriginal.add(mainWindow.identLabel, ultChanges.getFrase());
-        if (mainWindow.documentOriginal.size() != mainWindow.documentTranslation.size()) {
-          mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+      if (mainWindow.identLabel == documentOriginal.size()) {
+        documentOriginal.add(mainWindow.identLabel,
+                ultChanges.getFrase());
+        if (documentOriginal.size() != documentTranslation.size()) {
+          documentTranslation.add(documentTranslation.size(), "");
         }
       } else {
-        mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1));
-        for (int cont = mainWindow.documentOriginal.size() - 1; cont > mainWindow.identLabel; cont--) {
-          mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont - 1));
+        documentOriginal.add(documentOriginal.size(),
+                documentOriginal.get(documentOriginal.size() - 1));
+        for (int cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
+          documentOriginal.set(cont, documentOriginal.get(cont - 1));
         }
-        mainWindow.documentOriginal.set(mainWindow.identLabel, ultChanges.getFrase());
+        documentOriginal.set(identLabel, ultChanges.getFrase());
       }
     } else {
-      if (mainWindow.identLabel == mainWindow.documentTranslation.size()) {
-        mainWindow.documentTranslation.add(mainWindow.identLabel, ultChanges.getFrase());
-        if (mainWindow.documentOriginal.size() != mainWindow.documentTranslation.size()) {
-          mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+      if (identLabel == documentTranslation.size()) {
+        documentTranslation.add(identLabel, ultChanges.getFrase());
+        if (documentOriginal.size() != documentTranslation.size()) {
+          documentOriginal.add(documentOriginal.size(), "");
         }
       } else {
-        int cont = mainWindow.documentTranslation.size() - 1;
-        mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1));
-        for (cont = mainWindow.documentTranslation.size() - 1; cont > mainWindow.identLabel; cont--) {
-          mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont - 1));
+        int cont = documentTranslation.size() - 1;
+        documentTranslation.add(documentTranslation.size(),
+                documentTranslation.get(documentTranslation.size() - 1));
+        for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
+          documentTranslation.set(cont, documentTranslation.get(cont - 1));
         }
-        mainWindow.documentTranslation.set(mainWindow.identLabel, ultChanges.getFrase());
+        documentTranslation.set(identLabel, ultChanges.getFrase());
       }
     }
     mainWindow.updateAlignmentsView();
@@ -235,8 +248,10 @@ final class MainWindowMenuHandlers {
         prop.setSourceLanguage(mainWindow.stringLangOriginal);
         prop.setTargetLanguage(mainWindow.stringLangTranslation);
         TmxReader reader = new TmxReader(prop, mainWindow.filePathOriginal);
-        mainWindow.documentOriginal = reader.getOriginalDocument(mainWindow.documentOriginal);
-        mainWindow.documentTranslation = reader.getTranslationDocument(mainWindow.documentTranslation);
+        mainWindow.documentOriginal =
+                reader.getOriginalDocument(mainWindow.documentOriginal);
+        mainWindow.documentTranslation = 
+                reader.getTranslationDocument(mainWindow.documentTranslation);
       } catch (Exception ex) {
         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -275,17 +290,26 @@ final class MainWindowMenuHandlers {
       mainWindow.stringTranslation = dlg.getTarget();
       mainWindow.stringLangTranslation = dlg.getTargetLocale();
       try {
-        mainWindow.documentOriginal = DocumentSegmenter.readDocument(mainWindow.stringOriginal, mainWindow.stringLangOriginal, originalEncoding);
-        mainWindow.documentTranslation = DocumentSegmenter.readDocument(mainWindow.stringTranslation, mainWindow.stringLangTranslation, translateEncoding);
+        mainWindow.documentOriginal =
+                DocumentSegmenter.readDocument(mainWindow.stringOriginal,
+                        mainWindow.stringLangOriginal, originalEncoding);
+        mainWindow.documentTranslation =
+                DocumentSegmenter.readDocument(mainWindow.stringTranslation,
+                        mainWindow.stringLangTranslation, translateEncoding);
       } catch (Exception ex) {
-        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"), getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+                getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      boolean res = TranslationAligner.align(mainWindow.documentOriginal, mainWindow.documentTranslation);
+      boolean res = TranslationAligner.align(mainWindow.documentOriginal,
+              mainWindow.documentTranslation);
       if (res) {
         matchArrays(mainWindow);
         for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
-          if (mainWindow.documentOriginal.get(cont) == null || (mainWindow.documentOriginal.get(cont).equals("")) && (mainWindow.documentTranslation.get(cont) == null || mainWindow.documentTranslation.get(cont).equals(""))) {
+          if (mainWindow.documentOriginal.get(cont) == null
+                  || (mainWindow.documentOriginal.get(cont).equals(""))
+                  && (mainWindow.documentTranslation.get(cont) == null
+                  || mainWindow.documentTranslation.get(cont).equals(""))) {
             mainWindow.documentOriginal.remove(cont);
             mainWindow.documentTranslation.remove(cont);
           }
@@ -304,7 +328,8 @@ final class MainWindowMenuHandlers {
   /**
    * Initialize alignment view.
    *
-   * <p>Extracts from the TMX those lines having information which is useful for
+   * <p>
+   * Extracts from the TMX those lines having information which is useful for
    * alignment, and puts them in the corresponding ArrayList's The left part in
    * _alstOriginal corresponds to source text lines and the right part in
    * _alstTranslation corresponds to the target text lines. Initialize the table
@@ -314,9 +339,11 @@ final class MainWindowMenuHandlers {
   protected void initializeAlignmentsView(MainWindow mainWindow) {
     TableColumn col;
     col = mainWindow.viewAlignments.getColumnModel().getColumn(1);
-    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE") + mainWindow.filePathOriginal.getName());
+    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
+            + mainWindow.filePathOriginal.getName());
     col = mainWindow.viewAlignments.getColumnModel().getColumn(2);
-    col.setHeaderValue(getString("TBL.HDR.COL.TARGET") + mainWindow.filePathTranslation.getName());
+    col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
+            + mainWindow.filePathTranslation.getName());
     mainWindow.viewAlignments.setColumnHeaderView();
     mainWindow.updateAlignmentsView();
     mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
@@ -329,25 +356,30 @@ final class MainWindowMenuHandlers {
    */
   void matchArrays(MainWindow mainWindow) {
     boolean limpiar = true;
-    while (mainWindow.documentOriginal.size() > mainWindow.documentTranslation.size()) {
-      mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
+    Document documentOriginal = mainWindow.documentOriginal;
+    Document documentTranslation = mainWindow.documentTranslation;
+    
+    while (documentOriginal.size() > documentTranslation.size()) {
+      documentTranslation.add(documentTranslation.size(), "");
     }
-    while (mainWindow.documentTranslation.size() > mainWindow.documentOriginal.size()) {
-      mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
+    while (documentTranslation.size() > documentOriginal.size()) {
+      documentOriginal.add(documentOriginal.size(), "");
     }
     while (limpiar) {
-      if (mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1) == null || (mainWindow.documentOriginal.get(mainWindow.documentOriginal.size() - 1).equals("")) && (mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1) == null || mainWindow.documentTranslation.get(mainWindow.documentTranslation.size() - 1).equals(""))) {
-        mainWindow.documentOriginal.remove(mainWindow.documentOriginal.size() - 1);
-        mainWindow.documentTranslation.remove(mainWindow.documentTranslation.size() - 1);
+      if (documentOriginal.get(documentOriginal.size() - 1) == null
+          || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
+          && (documentTranslation.get(documentTranslation.size() - 1) == null
+          || documentTranslation.get(documentTranslation.size() - 1).equals(""))) {
+        documentOriginal.remove(documentOriginal.size() - 1);
+        documentTranslation.remove(documentTranslation.size() - 1);
       } else {
         limpiar = false;
       }
     }
-    mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
-    if (mainWindow.identLabel > (mainWindow.documentOriginal.size() - 1)) {
-      mainWindow.identLabel = mainWindow.documentOriginal.size() - 1;
+    mainWindow.topArrays = documentOriginal.size() - 1;
+    if (mainWindow.identLabel > (documentOriginal.size() - 1)) {
+      mainWindow.identLabel = documentOriginal.size() - 1;
     }
   }
-  
-  
+
 }
