@@ -26,6 +26,8 @@
 package bitext2tmx.ui;
 
 import static bitext2tmx.util.Localization.getString;
+import static bitext2tmx.util.StringUtil.formatText;
+import static bitext2tmx.util.StringUtil.restoreText;
 
 import bitext2tmx.engine.BitextModel;
 import bitext2tmx.engine.Segment;
@@ -54,7 +56,7 @@ import javax.swing.table.TableColumnModel;
 @SuppressWarnings("serial")
 final class AlignmentsView extends DockablePanel {
 
-  private final MainWindow windowMain;
+  private final MainWindow mainWindow;
 
   BitextModel          bitextModel;
   JTable               table;
@@ -63,7 +65,7 @@ final class AlignmentsView extends DockablePanel {
   public AlignmentsView( final MainWindow parent ) {
     super( "AlignmentTableView" );
 
-    windowMain = parent;
+    mainWindow = parent;
 
     getDockKey().setName(getString( "VW.ALIGNMENTS.TITLE" ) );
     getDockKey().setTooltip(getString( "VW.ALIGNMENTS.TOOLTIP" ) );
@@ -76,11 +78,79 @@ final class AlignmentsView extends DockablePanel {
   }
 
   private void onTableClicked() {
-    windowMain.onTableClicked();
+    mainWindow.positionTextArea = 0;
+    if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
+      mainWindow.documentOriginal.set(mainWindow.identAnt,
+              restoreText(mainWindow.editLeftSegment.getText()));
+      mainWindow.documentTranslation.set(mainWindow.identAnt,
+              restoreText(mainWindow.editRightSegment.getText()));
+    }
+    mainWindow.editLeftSegment.setText(formatText(getValueAt(getSelectedRow(),
+            1).toString()));
+    mainWindow.editRightSegment.setText(formatText(getValueAt(getSelectedRow(),
+            2).toString()));
+    mainWindow.identLabel = mainWindow.viewAlignments.getSelectedRow();
+    mainWindow.identAnt = mainWindow.identLabel;
+    if (mainWindow.identLabel == mainWindow.topArrays) {
+      mainWindow.viewControls.setTranslationJoinEnabled(false);
+      mainWindow.viewControls.setOriginalJoinEnabled(false);
+    } else {
+      mainWindow.viewControls.setTranslationJoinEnabled(true);
+      mainWindow.viewControls.setOriginalJoinEnabled(true);
+    }
+    mainWindow.updateAlignmentsView();
   }
 
-  private void onTablePressed( final KeyEvent event ) {
-    windowMain.onTablePressed( event );
+  private void onTablePressed(final KeyEvent event) {
+    int fila;
+    if (mainWindow.viewAlignments.getSelectedRow() != -1) {
+      fila = mainWindow.viewAlignments.getSelectedRow();
+      mainWindow.positionTextArea = 0;
+    } else {
+      fila = 1;
+    }
+    if (fila < mainWindow.viewAlignments.getRowCount() - 1) {
+      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
+        if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
+          mainWindow.documentOriginal.set(mainWindow.identAnt,
+                  restoreText(mainWindow.editLeftSegment.getText()));
+          mainWindow.documentTranslation.set(mainWindow.identAnt,
+                  restoreText(mainWindow.editRightSegment.getText()));
+        }
+        mainWindow.editLeftSegment.setText(formatText(getValueAt(fila + 1, 1)
+                .toString()));
+        mainWindow.editRightSegment.setText(formatText(getValueAt(fila + 1, 2)
+                .toString()));
+        mainWindow.identLabel = fila + 1;
+      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
+        mainWindow.identLabel = fila - 1;
+        if (fila == 0) {
+          fila = 1;
+          mainWindow.identLabel = 0;
+        }
+        if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
+          mainWindow.documentOriginal.set(mainWindow.identAnt,
+                  restoreText(mainWindow.editLeftSegment.getText()));
+          mainWindow.documentTranslation.set(mainWindow.identAnt,
+                  restoreText(mainWindow.editRightSegment.getText()));
+        }
+        mainWindow.editLeftSegment.setText(formatText(getValueAt(fila - 1, 1)
+                .toString()));
+        mainWindow.editRightSegment.setText(formatText(getValueAt(fila - 1, 2)
+                .toString()));
+      }
+      if (mainWindow.identLabel == mainWindow.topArrays) {
+        mainWindow.viewControls.setTranslationJoinEnabled(false);
+        mainWindow.viewControls.setOriginalJoinEnabled(false);
+      } else {
+        mainWindow.viewControls.setTranslationJoinEnabled(true);
+        mainWindow.viewControls.setOriginalJoinEnabled(true);
+      }
+      mainWindow.identAnt = mainWindow.identLabel;
+    }
+    mainWindow.updateAlignmentsView();
   }
 
   public final void setFonts( final Font font ) {
@@ -240,5 +310,51 @@ final class AlignmentsView extends DockablePanel {
 
     add( scrollPane );
     updateUI();
+  }
+
+  /**
+   * Update the row in table with mods.
+   *
+   * <p>This function updates the rows in the table with the
+   * modifications performed, adds rows or removes them.
+   */
+  protected void updateView() {
+    if (!mainWindow.documentOriginal.isEmpty()
+            && !mainWindow.documentTranslation.isEmpty()) {
+      mainWindow.matchArrays();
+    }
+    for (int cont = 0; cont < mainWindow.viewAlignments.getRowCount(); cont++) {
+      setModelValueAt("", cont, 0);
+      setModelValueAt("", cont, 1);
+      setModelValueAt("", cont, 2);
+    }
+    if ((getRowCount() > mainWindow.documentOriginal.size())
+            && (mainWindow.documentOriginal.size() > 25)) {
+      while (getRowCount() != mainWindow.documentOriginal.size()) {
+        removeSegment(getRowCount() - 1);
+        setPreferredSize(805, 15, -1);
+      }
+    } else if (getRowCount() < mainWindow.documentOriginal.size()) {
+      while (getRowCount() != mainWindow.documentOriginal.size()) {
+        Segment nullSegment = new Segment(null, null, null);
+        addModelSegment(nullSegment);
+        setPreferredSize(805, 15, 1);
+      }
+    }
+    for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
+      setModelValueAt(Integer.toString(cont + 1), cont, 0);
+      setModelValueAt(mainWindow.documentOriginal.get(cont), cont, 1);
+    }
+    for (int cont = 0; cont < mainWindow.documentTranslation.size(); cont++) {
+      setModelValueAt(mainWindow.documentTranslation.get(cont), cont, 2);
+    }
+    if (mainWindow.identLabel == mainWindow.topArrays) {
+      setRowSelectionInterval(mainWindow.topArrays, mainWindow.topArrays);
+    }
+    repaint();
+    mainWindow.editLeftSegment.setText(formatText(getValueAt(mainWindow.identLabel,
+            1).toString()));
+    mainWindow.editRightSegment.setText(formatText(getValueAt(mainWindow.identLabel,
+            2).toString()));
   }
 }

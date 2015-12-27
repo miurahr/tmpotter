@@ -325,7 +325,7 @@ final class MainWindowMenuHandlers {
       boolean res = TranslationAligner.align(mainWindow.documentOriginal,
               mainWindow.documentTranslation);
       if (res) {
-        matchArrays(mainWindow);
+        mainWindow.matchArrays();
         for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
           if (mainWindow.documentOriginal.get(cont) == null
                   || (mainWindow.documentOriginal.get(cont).equals(""))
@@ -369,38 +369,6 @@ final class MainWindowMenuHandlers {
     mainWindow.updateAlignmentsView();
     mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
     mainWindow.identLabel = 0;
-  }
-
-  /**
-   * Function IgualarArrays: adds rows to the smallest array and deletes blank
-   * rows.
-   */
-  void matchArrays(MainWindow mainWindow) {
-    boolean limpiar = true;
-    Document documentOriginal = mainWindow.documentOriginal;
-    Document documentTranslation = mainWindow.documentTranslation;
-    
-    while (documentOriginal.size() > documentTranslation.size()) {
-      documentTranslation.add(documentTranslation.size(), "");
-    }
-    while (documentTranslation.size() > documentOriginal.size()) {
-      documentOriginal.add(documentOriginal.size(), "");
-    }
-    while (limpiar) {
-      if (documentOriginal.get(documentOriginal.size() - 1) == null
-          || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
-          && (documentTranslation.get(documentTranslation.size() - 1) == null
-          || documentTranslation.get(documentTranslation.size() - 1).equals(""))) {
-        documentOriginal.remove(documentOriginal.size() - 1);
-        documentTranslation.remove(documentTranslation.size() - 1);
-      } else {
-        limpiar = false;
-      }
-    }
-    mainWindow.topArrays = documentOriginal.size() - 1;
-    if (mainWindow.identLabel > (documentOriginal.size() - 1)) {
-      mainWindow.identLabel = documentOriginal.size() - 1;
-    }
   }
 
   public void menuItemFileSaveAsActionPerformed() {

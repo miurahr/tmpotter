@@ -91,7 +91,7 @@ public final class MainWindow extends JFrame implements WindowListener {
   protected final ArrayList arrayListLang;
 
   protected int topArrays;    //  =  0;
-  private int positionTextArea;  //  =  0;
+  protected int positionTextArea;  //  =  0;
   protected int identChanges = -1;
   protected int identLabel;  //  =  0;
   protected int identAnt;     //  =  0;
@@ -149,19 +149,15 @@ public final class MainWindow extends JFrame implements WindowListener {
     if (frameSize.width > screenSize.width) {
       frameSize.width = screenSize.width;
     }
-
     this.setLocation((screenSize.width - frameSize.width) / 2,
             (screenSize.height - frameSize.height) / 2);
-
     setFonts(null);
-
   }
 
   protected ImageIcon getDesktopIcon(final String iconName) {
     if (Platform.isMacOsx()) {
       return (mainWindowMenu.getIcon("desktop/osx/" + iconName));
     }
-
     return (mainWindowMenu.getIcon("desktop/" + iconName));
   }
 
@@ -175,7 +171,6 @@ public final class MainWindow extends JFrame implements WindowListener {
       System.out.println("Error loading icon: " + e);
     }
   }
-
 
   private void makeMenus() {
     menuBar.add(mainWindowMenu.getMenuFile());
@@ -206,8 +201,7 @@ public final class MainWindow extends JFrame implements WindowListener {
         documentOriginal.join(identLabel);
       } else {
         documentTranslation.join(identLabel);
-      }
-      updateAlignmentsView();
+      } 
     }
   }
 
@@ -235,7 +229,6 @@ public final class MainWindow extends JFrame implements WindowListener {
     } else {
       documentTranslation.delete(identLabel);
     }
-    updateAlignmentsView();
   }
 
   /**
@@ -268,7 +261,6 @@ public final class MainWindow extends JFrame implements WindowListener {
     } else {
       documentTranslation.split(identLabel, Changes.getPosition());
     }
-    updateAlignmentsView();
   }
 
   /**
@@ -278,89 +270,53 @@ public final class MainWindow extends JFrame implements WindowListener {
    * modifications performed, adds rows or removes them.
    */
   protected void updateAlignmentsView() {
-    if (!documentOriginal.isEmpty() && !documentTranslation.isEmpty()) {
-      handler.matchArrays(this);
-    }
-
-    for (int cont = 0; cont < viewAlignments.getRowCount(); cont++) {
-      viewAlignments.setModelValueAt("", cont, 0);
-      viewAlignments.setModelValueAt("", cont, 1);
-      viewAlignments.setModelValueAt("", cont, 2);
-    }
-
-    if ((viewAlignments.getRowCount() > documentOriginal.size())
-            && (documentOriginal.size() > 25)) {
-      while (viewAlignments.getRowCount() != documentOriginal.size()) {
-        viewAlignments.removeSegment(viewAlignments.getRowCount() - 1);
-        viewAlignments.setPreferredSize(805, 15, -1);
-      }
-    } else if (viewAlignments.getRowCount() < documentOriginal.size()) {
-      while (viewAlignments.getRowCount() != documentOriginal.size()) {
-        Segment nullSegment = new Segment(null, null, null);
-        viewAlignments.addModelSegment(nullSegment);
-        viewAlignments.setPreferredSize(805, 15, 1);
-      }
-    }
-
-    for (int cont = 0; cont < documentOriginal.size(); cont++) {
-      viewAlignments.setModelValueAt(Integer.toString(cont + 1), cont, 0);
-      viewAlignments.setModelValueAt(documentOriginal.get(cont), cont, 1);
-    }
-
-    for (int cont = 0; cont < documentTranslation.size(); cont++) {
-      viewAlignments.setModelValueAt(documentTranslation.get(cont), cont, 2);
-    }
-
-    if (identLabel == topArrays) {
-      viewAlignments.setRowSelectionInterval(topArrays, topArrays);
-    }
-
-    viewAlignments.repaint();
-
-    editLeftSegment.setText(formatText(viewAlignments.getValueAt(
-            identLabel, 1).toString()));
-    editRightSegment.setText(formatText(viewAlignments.getValueAt(
-            identLabel, 2).toString()));
+    viewAlignments.updateView();
   }
 
   //  Accessed by ControlView
   final void onOriginalJoin() {
     identChanges++;
     join(true);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
   final void onOriginalDelete() {
     identChanges++;
     delete(true);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
   final void onOriginalSplit() {
     identChanges++;
     split(true);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
   final void onTranslationJoin() {
     identChanges++;
     join(false);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
   final void onTranslationDelete() {
     identChanges++;
     delete(false);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
-  final void onTranslationSplit() {
+  final void onTranslationSplitCv() {
     identChanges++;
     split(false);
+    updateAlignmentsView();
   }
 
   //  Accessed by ControlView
-  final void onUndo() {
+  final void onUndoCv() {
     handler.undoChanges();
     arrayListChanges.remove(identChanges);
     identChanges--;
@@ -368,96 +324,6 @@ public final class MainWindow extends JFrame implements WindowListener {
     if (identChanges == -1) {
       viewControls.setUndoEnabled(false);
     }
-  }
-
-  //  Accessed by AlignmentsView
-  final void onTableClicked() {
-    // if (e.getClickCount() == 1 || e.getClickCount() == 2) {
-    positionTextArea = 0;
-
-    if (identAnt < documentOriginal.size()) {
-      //  ToDo: replace with docking editors call
-      documentOriginal.set(identAnt, restoreText(editLeftSegment.getText()));
-      documentTranslation.set(identAnt, restoreText(editRightSegment.getText()));
-    }
-
-    editLeftSegment.setText(formatText(viewAlignments
-            .getValueAt(viewAlignments.getSelectedRow(), 1).toString()));
-    editRightSegment.setText(formatText(viewAlignments
-            .getValueAt(viewAlignments.getSelectedRow(), 2).toString()));
-
-    identLabel = viewAlignments.getSelectedRow();
-    identAnt = identLabel;
-
-    if (identLabel == topArrays) {
-      viewControls.setTranslationJoinEnabled(false);
-      viewControls.setOriginalJoinEnabled(false);
-    } else {
-      viewControls.setTranslationJoinEnabled(true);
-      viewControls.setOriginalJoinEnabled(true);
-    }
-    // }
-
-    updateAlignmentsView();
-  }
-
-  //  Accessed by AlignmentsView
-  final void onTablePressed(final KeyEvent event) {
-    int fila;
-
-    if (viewAlignments.getSelectedRow() != -1) {
-      fila = viewAlignments.getSelectedRow();
-      positionTextArea = 0;
-    } else {
-      fila = 1;
-    }
-
-    if (fila < viewAlignments.getRowCount() - 1) {
-      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
-              || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-        if (identAnt < documentOriginal.size()) {
-          documentOriginal.set(identAnt,
-                  restoreText(editLeftSegment.getText()));
-          documentTranslation.set(identAnt,
-                  restoreText(editRightSegment.getText()));
-        }
-
-        editLeftSegment.setText(formatText(viewAlignments
-                .getValueAt(fila + 1, 1).toString()));
-        editRightSegment.setText(formatText(viewAlignments
-                .getValueAt(fila + 1, 2).toString()));
-
-        identLabel = fila + 1;
-      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
-              || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
-        identLabel = fila - 1;
-
-        if (fila == 0) {
-          fila = 1;
-          identLabel = 0;
-        }
-
-        if (identAnt < documentOriginal.size()) {
-          documentOriginal.set(identAnt, restoreText(editLeftSegment.getText()));
-          documentTranslation.set(identAnt, restoreText(editRightSegment.getText()));
-        }
-
-        editLeftSegment.setText(formatText(viewAlignments.getValueAt(fila - 1, 1).toString()));
-        editRightSegment.setText(formatText(viewAlignments.getValueAt(fila - 1, 2).toString()));
-      }
-
-      if (identLabel == topArrays) {
-        viewControls.setTranslationJoinEnabled(false);
-        viewControls.setOriginalJoinEnabled(false);
-      } else {
-        viewControls.setTranslationJoinEnabled(true);
-        viewControls.setOriginalJoinEnabled(true);
-      }
-
-      identAnt = identLabel;
-    }
-
-    updateAlignmentsView();
   }
 
   //  Accessed by SegmentEditor
@@ -635,6 +501,36 @@ public final class MainWindow extends JFrame implements WindowListener {
 
   @Override
   public final void windowOpened(final WindowEvent evt) {
+  }
+
+  /**
+   * Function IgualarArrays: adds rows to the smallest array and deletes blank
+   * rows.
+   */
+  void matchArrays() {
+    boolean limpiar = true;
+    while (documentOriginal.size() > documentTranslation.size()) {
+      documentTranslation.add(documentTranslation.size(), "");
+    }
+    while (documentTranslation.size() > documentOriginal.size()) {
+      documentOriginal.add(documentOriginal.size(), "");
+    }
+    while (limpiar) {
+      if (documentOriginal.get(documentOriginal.size() - 1) == null
+          || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
+          && (documentTranslation.get(documentTranslation.size() - 1) == null
+          || documentTranslation.get(documentTranslation.size() - 1)
+                  .equals(""))) {
+        documentOriginal.remove(documentOriginal.size() - 1);
+        documentTranslation.remove(documentTranslation.size() - 1);
+      } else {
+        limpiar = false;
+      }
+    }
+    topArrays = documentOriginal.size() - 1;
+    if (identLabel > (documentOriginal.size() - 1)) {
+      identLabel = documentOriginal.size() - 1;
+    }
   }
 
 }

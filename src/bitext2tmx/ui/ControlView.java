@@ -44,7 +44,7 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 final class ControlView extends DockablePanel implements ActionListener {
-  private final MainWindow windowMain;
+  private final MainWindow mainWindow;
 
   private final JButton  buttonOriginalDelete    = new JButton();
   private final JButton  buttonOriginalJoin      = new JButton();
@@ -66,7 +66,7 @@ final class ControlView extends DockablePanel implements ActionListener {
   public ControlView( final MainWindow windowMain ) {
     super( "SegmentButtonsView" );
 
-    this.windowMain = windowMain;
+    this.mainWindow = windowMain;
 
     getDockKey().setName(getString("CV_DOCK_TITLE"));
     getDockKey().setTooltip(getString("CV_DOCK_TOOLTIP"));
@@ -197,45 +197,45 @@ final class ControlView extends DockablePanel implements ActionListener {
   }
 
   private void onUndo()            {
-    windowMain.onUndo();
+    mainWindow.onUndoCv();
   }
   
   private void onRemoveBlankRows() {
-    windowMain.onRemoveBlankRows();
+    mainWindow.onRemoveBlankRows();
   }
 
   private void onTuSplit() {
-    windowMain.onTuSplit();
+    mainWindow.onTuSplit();
     buttonUndo.setEnabled( true );
   }
 
   private void onOriginalJoin() {
-    windowMain.onOriginalJoin();
+    mainWindow.onOriginalJoin();
     buttonUndo.setEnabled( true );
   }
 
   private void onOriginalDelete() {
-    windowMain.onOriginalDelete();
+    mainWindow.onOriginalDelete();
     buttonUndo.setEnabled( true );
   }
 
   private void onOriginalSplit() {
-    windowMain.onOriginalSplit();
+    mainWindow.onOriginalSplit();
     buttonUndo.setEnabled( true );
   }
 
   private void onTranslationJoin() {
-    windowMain.onTranslationJoin();
+    mainWindow.onTranslationJoin();
     buttonUndo.setEnabled( true );
   }
 
   private void onTranslationDelete() {
-    windowMain.onTranslationDelete();
+    mainWindow.onTranslationDelete();
     buttonUndo.setEnabled( true );
   }
 
   private void onTranslationSplit() {
-    windowMain.onTranslationSplit();
+    mainWindow.onTranslationSplitCv();
     buttonUndo.setEnabled( true );
   }
 
