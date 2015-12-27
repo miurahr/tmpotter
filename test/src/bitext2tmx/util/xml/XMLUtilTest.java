@@ -54,12 +54,10 @@ public class XMLUtilTest extends TestCase {
    */
   public void testGetValidXMLText() {
     System.out.println("getValidXMLText");
-    String plaintext = "";
-    String expResult = "";
+    String plaintext = "hoge<tag>fuga";
+    String expResult = "hoge&lt;tag&gt;fuga";
     String result = XMLUtil.getValidXMLText(plaintext);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -67,12 +65,10 @@ public class XMLUtilTest extends TestCase {
    */
   public void testRemoveXMLInvalidChars() {
     System.out.println("removeXMLInvalidChars");
-    String str = "";
-    String expResult = "";
+    String str = "test\u000Btest";
+    String expResult = "test test";
     String result = XMLUtil.removeXMLInvalidChars(str);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -94,43 +90,4 @@ public class XMLUtilTest extends TestCase {
     assertFalse(XMLUtil.isValidXMLChar(0x110000));
   }
 
-  /**
-   * Test of escapeXMLChars method, of class XMLUtil.
-   */
-  public void testEscapeXMLChars() {
-    System.out.println("escapeXMLChars");
-    int cp = 0;
-    String expResult = "";
-    String result = XMLUtil.escapeXMLChars(cp);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of makeValidXML method, of class XMLUtil.
-   */
-  public void testMakeValidXML() {
-    System.out.println("makeValidXML");
-    String plaintext = "";
-    String expResult = "";
-    String result = XMLUtil.makeValidXML(plaintext);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of fixChars method, of class XMLUtil.
-   */
-  public void testFixChars() {
-    System.out.println("fixChars");
-    String str = "";
-    String expResult = "";
-    String result = XMLUtil.fixChars(str);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-  
 }

@@ -23,9 +23,7 @@
 
 package bitext2tmx.util;
 
-import bitext2tmx.core.TranslationAligner;
-import java.io.BufferedWriter;
-import java.io.OutputStream;
+import java.io.File;
 import junit.framework.TestCase;
 
 /**
@@ -83,12 +81,20 @@ public class UtilitiesTest extends TestCase {
    */
   public void testSaveUTF8() {
     System.out.println("saveUTF8");
-    String dir = "";
-    String filename = "";
-    String output = "";
-    Utilities.saveUtf8(dir, filename, output);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    String dir = "test/data/";
+    String filename = "save_utf8_result.txt";
+    String output = "\u3401\u3402";
+    String expectedFN = "save_utf8_expected.txt";
+    try {
+      Utilities.saveUtf8(dir, filename, output);
+      File target = new File(dir+filename);
+      File expected = new File(dir+expectedFN); 
+      assertTrue(TestUtil.compareFile(target, expected));
+      target.delete();
+    } catch (Exception ex) {
+      System.out.println(ex);
+      fail();
+    }
   }
   
   /**

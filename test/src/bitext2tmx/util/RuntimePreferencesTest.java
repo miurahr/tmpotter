@@ -35,41 +35,26 @@ import junit.framework.TestCase;
  */
 public class RuntimePreferencesTest extends TestCase {
   
-  public RuntimePreferencesTest(String testName) {
-    super(testName);
-  }
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  /**
-   * Test of isSegmentByLineBreak method, of class RuntimePreferences.
-   */
-  public void testIsSegmentByLineBreak() {
-    System.out.println("isSegmentByLineBreak");
-    boolean expResult = false;
-    boolean result = RuntimePreferences.isSegmentByLineBreak();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
   /**
    * Test of setSegmentByLineBreak method, of class RuntimePreferences.
    */
-  public void testSetSegmentByLineBreak() {
+  public void testSetSegmentByLineBreak_setTrue() {
+    System.out.println("setSegmentByLineBreak");
+    boolean segmentRule = true;
+    RuntimePreferences.setSegmentByLineBreak(segmentRule);
+    boolean result = RuntimePreferences.isSegmentByLineBreak();
+    assertTrue(result);
+  }
+  
+  /**
+   * Test of setSegmentByLineBreak method, of class RuntimePreferences.
+   */
+  public void testSetSegmentByLineBreak_setFalse() {
     System.out.println("setSegmentByLineBreak");
     boolean segmentRule = false;
     RuntimePreferences.setSegmentByLineBreak(segmentRule);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    boolean result = RuntimePreferences.isSegmentByLineBreak();
+    assertFalse(result);
   }
 
   /**
@@ -77,22 +62,10 @@ public class RuntimePreferencesTest extends TestCase {
    */
   public void testSetUserHome() {
     System.out.println("setUserHome");
-    String home = "";
+    String home = "hoge";
     RuntimePreferences.setUserHome(home);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    String result = RuntimePreferences.getUserHome();
+    assertEquals(home, result);
   }
 
-  /**
-   * Test of getUserHome method, of class RuntimePreferences.
-   */
-  public void testGetUserHome() {
-    System.out.println("getUserHome");
-    String expResult = "";
-    String result = RuntimePreferences.getUserHome();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-  
 }
