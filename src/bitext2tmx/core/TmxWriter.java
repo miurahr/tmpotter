@@ -25,6 +25,8 @@ package bitext2tmx.core;
 
 import static bitext2tmx.util.xml.XMLUtil.getValidXMLText;
 
+import bitext2tmx.util.Language;
+import bitext2tmx.util.TmxWriter2;
 import bitext2tmx.util.Utilities;
 
 import java.io.BufferedWriter;
@@ -33,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,8 +47,41 @@ import java.util.logging.Logger;
 public class TmxWriter {
 
   /**
+   * Write TMX file.
+   * 
+   * @param outFile filename for output
+   * @param originalDocument original document object
+   * @param langOriginal original document language
+   * @param translationDocument translation document object
+   * @param langTranslation translation language
+   * @param encoding encoding to output, recommend UTF-8
+   * @throws Exception when file write error
+   */
+  public static void writeTmx( final File outFile,
+          Document originalDocument, String langOriginal,
+          Document translationDocument, String langTranslation,
+          String encoding) throws Exception {
+    Language sourceLanguage = new Language(langOriginal);
+    Language targetLanguage = new Language(langTranslation);
+    
+    TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
+            targetLanguage,  true, false, false);
+    try {
+      HashMap<String, String> prop = new HashMap<>();
+      for (int i = 0; i < originalDocument.size(); i++) {
+        TmxEntry te = new TmxEntry();
+        te.source = originalDocument.get(i);
+        te.translation = translationDocument.get(i);
+        wr.writeEntry(te.source, te.translation, te, prop);
+      }
+    } finally {
+      wr.close();
+    }
+  }
+
+  /**
    *
-   * @param outFileName file name to be written
+   * @param outFile file name to be written
    * @param originalDocument Document to be written as source
    * @param langOriginal  language tag for source
    * @param translationDocument Document to be written as translation
@@ -53,7 +89,7 @@ public class TmxWriter {
    * @param encoding character encoding to be written to TMX
    * @throws java.io.IOException may happen while writing file
    */
-  public static void writeBitext( final File outFileName,
+  public static void writeBitext( final File outFile,
           Document originalDocument, String langOriginal,
           Document translationDocument, String langTranslation,
           String encoding) throws IOException {
@@ -66,7 +102,7 @@ public class TmxWriter {
 
     String tmxEncoding = encoding;
     try {
-      fw = new FileOutputStream(outFileName);
+      fw = new FileOutputStream(outFile);
       osw = new OutputStreamWriter(fw, tmxEncoding);
       bw = new BufferedWriter( osw );
       pw = new PrintWriter( bw );
