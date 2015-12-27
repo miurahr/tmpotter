@@ -70,8 +70,7 @@ import javax.swing.UIManager;
  * 
  */
 @SuppressWarnings("serial")
-public final class MainWindow extends JFrame implements ActionListener,
-        WindowListener {
+public final class MainWindow extends JFrame implements WindowListener {
   protected final AlignmentsView viewAlignments = new AlignmentsView(this);
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
@@ -643,48 +642,6 @@ public final class MainWindow extends JFrame implements ActionListener,
 
   @Override
   public final void windowOpened(final WindowEvent evt) {
-  }
-
-  /**
-   * class action listener implementation.
-   *
-   * @param action   gotten
-   */
-  @Override
-  public final void actionPerformed(final ActionEvent action) {
-    final Object actor = action.getSource();
-
-    if (actor instanceof JMenuItem) {
-      if (actor == mainWindowMenu.menuItemFileOpen) {
-        handler.menuItemFileOpenActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemFileTextOpen) {
-        handler.menuItemFileTextOpenActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemFileSave) {
-        handler.menuItemFileSaveActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemFileSaveAs) {
-        handler.menuItemFileSaveAsActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemFileClose) {
-        handler.menuItemFileCloseActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemFileQuit) {
-        handler.menuItemFileQuitActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemSettingsFonts) {
-        handler.settingsFontsMenuItemActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemLafGtk) {
-        handler.menuItemLafGtkActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemLafLiquid) {
-        handler.menuItemLafLiquidActionPerformed();
-      } else if (actor == mainWindowMenu.menuLafMetal) {
-        handler.menuLafMetalActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemLafNimbus) {
-        handler.menuItemLafNimbusActionPerfomed();
-      } else if (actor == mainWindowMenu.menuItemLafSystem) {
-        handler.menuItemLafSystemActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemHelpManual) {
-        handler.menuItemHelpManualActionPerformed();
-      } else if (actor == mainWindowMenu.menuItemHelpAbout) {
-        handler.menuItemHelpAboutActionPerformed();
-      }
-    }
   }
 
 }

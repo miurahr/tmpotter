@@ -71,11 +71,11 @@ final class MainWindowMenuHandlers {
     this.mainWindowMenu = mainWindow.mainWindowMenu;
   }
 
-  final void menuItemHelpAboutActionPerformed() {
+  public void menuItemHelpAboutActionPerformed() {
     new About(mainWindow).setVisible(true);
   }
 
-  void menuItemHelpManualActionPerformed() {
+  public void menuItemHelpManualActionPerformed() {
     final Manual dlg = new Manual();
     dlg.setVisible(true);
   }
@@ -245,7 +245,7 @@ final class MainWindowMenuHandlers {
    * Open dialog to select the files we want to align/convert.
    *
    */
-  void menuItemFileOpenActionPerformed() {
+  public void menuItemFileOpenActionPerformed() {
     final OpenTmx dlg = new OpenTmx(null, "", false);
     dlg.setPath(mainWindow.userHome);
     dlg.setModal(true);
@@ -284,7 +284,7 @@ final class MainWindowMenuHandlers {
    * Open dialog to select the files we want to align/convert.
    *
    */
-  void menuItemFileTextOpenActionPerformed() {
+  public void menuItemFileTextOpenActionPerformed() {
     String originalEncoding;
     String translateEncoding;
     final OpenTexts dlg = new OpenTexts();
@@ -397,12 +397,12 @@ final class MainWindowMenuHandlers {
     }
   }
 
-  final void menuItemFileSaveAsActionPerformed() {
+  public void menuItemFileSaveAsActionPerformed() {
     saveBitext();
   }
 
   //  ToDo: implement proper functionality; not used currently
-  final void menuItemFileSaveActionPerformed() {
+  public void menuItemFileSaveActionPerformed() {
     saveBitext();
   }
 
@@ -497,7 +497,7 @@ final class MainWindowMenuHandlers {
    * <p>Leaves the text
    * as it was so that it can be processed later.
    */
-  void menuItemFileCloseActionPerformed() {
+  public void menuItemFileCloseActionPerformed() {
     clear();
     mainWindow.viewControls.enableButtons(false);
     mainWindow.viewControls.setUndoEnabled(false);
@@ -539,7 +539,7 @@ final class MainWindowMenuHandlers {
    *
    * @return boolean - OS X Aqua integration only
    */
-  boolean menuItemFileQuitActionPerformed() {
+  public boolean menuItemFileQuitActionPerformed() {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -555,34 +555,34 @@ final class MainWindowMenuHandlers {
    * <p>Display the fonts dialog to allow selection of fonts for
    * origianl/translation tables/editors and main window
    */
-  void settingsFontsMenuItemActionPerformed() {
+  public void settingsFontsMenuItemActionPerformed() {
     FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.mainWindowFonts.getFonts());
     dlgFonts.setVisible(true);
   }
 
   enum LnfType {GTK, LIQUID, METAL, NIMBUS, SYSTEM}
 
-  void menuItemLafGtkActionPerformed() {
+  public void menuItemLafGtkActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.GTK);
   }
 
-  void menuItemLafLiquidActionPerformed() {
+  public void menuItemLafLiquidActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.LIQUID);
   }
 
-  void menuLafMetalActionPerformed() {
+  public void menuLafMetalActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.METAL);
   }
 
-  void menuItemLafNimbusActionPerfomed() {
+  public void menuItemLafNimbusActionPerfomed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.NIMBUS);
   }
 
-  void menuItemLafSystemActionPerformed() {
+  public void menuItemLafSystemActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.SYSTEM);
   }
 
-  final void onChangeLnF(LnfType type) {
+  private final void onChangeLnF(LnfType type) {
     switch (type) {
       case GTK:
         try {

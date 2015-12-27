@@ -67,6 +67,11 @@ final class MainWindowMenus implements ActionListener, MenuListener {
    */
   protected final MainWindow mainWindow;
 
+  /**
+   * MainWindow menu handler instance.
+   */
+  protected final MainWindowMenuHandlers mainWindowMenuHandler;
+
   ImageIcon getIcon(final String iconName) {
     return Icons.getIcon(iconName);
   }
@@ -81,10 +86,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     CHECKBOX, ITEM, MENU, RADIOBUTTON
   }
 
-  /**
-   * MainWindow menu handler instance.
-   */
-  protected final MainWindowMenuHandlers mainWindowMenuHandler;
   JMenuItem menuItemLafNimbus;
   JMenuItem menuItemHelpManual;
   JMenuItem menuItemFileSave;
@@ -120,7 +121,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     this.mainWindow = mainWindow;
     this.mainWindowMenuHandler = mainWindowMenuHandler;
     makeMenusComponents();
-
   }
 
   /**
@@ -352,7 +352,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     if (!Platform.isMacOsx() && icon != null) {
       menuItem.setIcon(icon);
     }
-    menuItem.addActionListener(mainWindow);
+    menuItem.addActionListener(this);
     if (strKey != null) {
       setLocalizedText(menuItem, getString(strKey));
     }
