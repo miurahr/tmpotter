@@ -71,6 +71,12 @@ final class MainWindowMenuHandlers {
     this.mainWindowMenu = mainWindow.mainWindowMenu;
   }
 
+  // proxy for aqua
+  public boolean displayAbout() {
+    menuItemHelpAboutActionPerformed();
+    return true;
+  }
+  
   public void menuItemHelpAboutActionPerformed() {
     new About(mainWindow).setVisible(true);
   }
@@ -539,14 +545,18 @@ final class MainWindowMenuHandlers {
    *
    * @return boolean - OS X Aqua integration only
    */
-  public boolean menuItemFileQuitActionPerformed() {
+  public boolean quit(){
+    menuItemFileQuitActionPerformed();
+    return true;
+  }
+  
+  public void menuItemFileQuitActionPerformed() {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         mainWindow.dispose();
       }
     });
-    return true;
   }
 
   /**

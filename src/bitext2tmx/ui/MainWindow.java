@@ -32,20 +32,16 @@ import static bitext2tmx.util.StringUtil.restoreText;
 import bitext2tmx.core.Document;
 import bitext2tmx.engine.Segment;
 import bitext2tmx.engine.SegmentChanges;
-import bitext2tmx.ui.dialogs.FontSelector;
 import bitext2tmx.util.Platform;
 import bitext2tmx.util.Utilities;
 import bitext2tmx.util.gui.AquaAdapter;
 
 import com.vlsolutions.swing.docking.DockingDesktop;
-import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -58,11 +54,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 
 /**
@@ -133,8 +126,8 @@ public final class MainWindow extends JFrame implements WindowListener {
 
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
     try {
-      AquaAdapter.connect(this, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
-      AquaAdapter.connect(this, "quit", AquaAdapter.AquaEvent.QUIT);
+      AquaAdapter.connect(handler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
+      AquaAdapter.connect(handler, "quit", AquaAdapter.AquaEvent.QUIT);
     } catch (final NoClassDefFoundError e) {
       System.out.println(e);
     }
@@ -143,7 +136,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     addWindowListener(new WindowAdapter() {
       @Override
       public final void windowClosing(final WindowEvent event) {
-        handler.menuItemFileQuitActionPerformed();
+        handler.quit();
       }
     });
 
