@@ -172,6 +172,9 @@
           <exclude name="**/util/xml/*.java"/>
           <exclude name="**/util/Base64.java"/>
           <exclude name="**/*Test*"/>
+          <exclude name="**/segmentation/*.java"/>
+          <exclude name="**/segmentation/**/*.java"/>
+          <exclude name="**/gen/**"/>
         </patternset>
       </fileset>
       <formatter type="plain"/>

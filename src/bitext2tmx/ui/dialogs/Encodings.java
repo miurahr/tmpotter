@@ -50,7 +50,8 @@ import javax.swing.JPanel;
 /**
 * Ask encodings.
 *
-* @author 
+* @author Raymond Martin
+* @author Hiroshi Miura
 */
 @SuppressWarnings("serial")
 public final class Encodings extends JDialog implements ActionListener {

@@ -59,27 +59,14 @@ public class ProjectPropertiesTest {
    * Test of getSourceLanguage method, of class ProjectProperties.
    */
   @Test
-  public void testGetSourceLanguage() {
+  public void testSetSourceLanguage_Language() {
     System.out.println("getSourceLanguage");
     ProjectProperties instance = new ProjectProperties();
-    Language expResult = null;
-    Language result = instance.getSourceLanguage();
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of setSourceLanguage method, of class ProjectProperties.
-   */
-  @Test
-  public void testSetSourceLanguage_Language() {
-    System.out.println("setSourceLanguage");
-    Language sourceLanguage = null;
-    ProjectProperties instance = new ProjectProperties();
+    Language sourceLanguage = new Language("en");
     instance.setSourceLanguage(sourceLanguage);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    Language expResult = sourceLanguage;
+    Language result = instance.getSourceLanguage();
+    assertTrue(expResult.equals(result));
   }
 
   /**
@@ -88,38 +75,26 @@ public class ProjectPropertiesTest {
   @Test
   public void testSetSourceLanguage_String() {
     System.out.println("setSourceLanguage");
-    String sourceLanguage = "";
+    String sourceLanguage = "en";
     ProjectProperties instance = new ProjectProperties();
     instance.setSourceLanguage(sourceLanguage);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    Language expResult = new Language(sourceLanguage);
+    Language result = instance.getSourceLanguage();
+    assertTrue(expResult.equals(result));
   }
 
   /**
    * Test of getTargetLanguage method, of class ProjectProperties.
    */
   @Test
-  public void testGetTargetLanguage() {
+  public void testSetTargetLanguage_Language() {
     System.out.println("getTargetLanguage");
     ProjectProperties instance = new ProjectProperties();
-    Language expResult = null;
+    Language targetLanguage = new Language("JA");
+    instance.setTargetLanguage(targetLanguage);
+    Language expResult = targetLanguage;
     Language result = instance.getTargetLanguage();
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of setTargetLanguage method, of class ProjectProperties.
-   */
-  @Test
-  public void testSetTargetLanguage_Language() {
-    System.out.println("setTargetLanguage");
-    Language targetLanguage = null;
-    ProjectProperties instance = new ProjectProperties();
-    instance.setTargetLanguage(targetLanguage);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -128,25 +103,23 @@ public class ProjectPropertiesTest {
   @Test
   public void testSetTargetLanguage_String() {
     System.out.println("setTargetLanguage");
-    String targetLanguage = "";
+    String targetLanguage = "JA";
     ProjectProperties instance = new ProjectProperties();
     instance.setTargetLanguage(targetLanguage);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    Language expResult = new Language(targetLanguage);
+    Language result = instance.getTargetLanguage();
+    assertTrue(expResult.equals(result));
   }
 
   /**
    * Test of verifySingleLangCode method, of class ProjectProperties.
    */
   @Test
-  public void testVerifySingleLangCode() {
+  public void testVerifySingleLangCode_True() {
     System.out.println("verifySingleLangCode");
-    String code = "";
-    boolean expResult = false;
+    String code = "EN";
     boolean result = ProjectProperties.verifySingleLangCode(code);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertTrue(result);
   }
   
 }

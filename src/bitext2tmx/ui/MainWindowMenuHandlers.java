@@ -28,8 +28,8 @@ package bitext2tmx.ui;
 import static bitext2tmx.util.Localization.getString;
 
 import bitext2tmx.core.Document;
-import bitext2tmx.core.TextReader;
 import bitext2tmx.core.ProjectProperties;
+import bitext2tmx.core.TextReader;
 import bitext2tmx.core.TmxReader;
 import bitext2tmx.core.TmxWriter;
 import bitext2tmx.core.TranslationAligner;
@@ -313,7 +313,7 @@ final class MainWindowMenuHandlers {
       mainWindow.filePathTranslation = dlg.getTargetPath();
       mainWindow.stringTranslation = dlg.getTarget();
       mainWindow.stringLangTranslation = dlg.getTargetLocale();
-      Segmenter.srx = Preferences.getSRX();
+      Segmenter.srx = Preferences.getSrx();
       try {
         mainWindow.documentOriginal =
                 TextReader.read(mainWindow.stringOriginal,
@@ -517,7 +517,7 @@ final class MainWindowMenuHandlers {
    *
    * @return boolean - OS X Aqua integration only
    */
-  public boolean quit(){
+  public boolean quit() {
     menuItemFileQuitActionPerformed();
     return true;
   }
@@ -542,7 +542,7 @@ final class MainWindowMenuHandlers {
     dlgFonts.setVisible(true);
   }
 
-  enum LnfType {GTK, LIQUID, METAL, NIMBUS, SYSTEM}
+  enum LnfType { GTK, LIQUID, METAL, NIMBUS, SYSTEM }
 
   public void menuItemLafGtkActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.GTK);

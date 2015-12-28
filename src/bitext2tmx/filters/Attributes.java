@@ -1,12 +1,13 @@
-/**
- * ************************************************************************
- * bitext2tmx - Bitext Aligner/TMX Editor.
- * 
- *  Copyright (C) 2005-2009  Raymond: Martin
- *            (C) 2015 Hiroshi Miura
- * 
- *  Copyright (C) 2000-2006 Keith Godfrey and Maxym Mykhalchuk
+/* *************************************************************************
  *
+ *  bitext2tmx - Bitext Aligner/TMX Editor
+ *
+ *  Copyright (C) 2006-2009 Raymond: Martin et al
+ *  Copyright (C) 2015 Hiroshi Miura
+ *
+ *  Part of this come from OmegaT.
+ *
+ *  Copyright (C) 2000-2006 Keith Godfrey and Maxym Mykhalchuk
  *
  *  This file is part of bitext2tmx.
  *
@@ -23,7 +24,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with bitext2tmx.  If not, see http://www.gnu.org/licenses/.
  *
- **************************************************************************/
+ * *************************************************************************/
 
 package bitext2tmx.filters;
 

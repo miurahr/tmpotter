@@ -61,8 +61,9 @@ public class MappingRulesModel extends AbstractTableModel {
         return maprule.getLanguage();
       case 1:
         return maprule.getPattern();
+      default:
+        return null;
     }
-    return null;
   }
 
   public int getRowCount() {
@@ -88,6 +89,14 @@ public class MappingRulesModel extends AbstractTableModel {
     return true;
   }
 
+  /**
+   * Set value at (row, column).
+   * 
+   * @param aValue value to set
+   * @param rowIndex where to set in row
+   * @param columnIndex where to set in column
+   */
+  @Override
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     MapRule maprule = srx.getMappingRules().get(rowIndex);
     switch (columnIndex) {
@@ -101,15 +110,25 @@ public class MappingRulesModel extends AbstractTableModel {
           fireException(pse);
         }
         break;
+      default:
+        // Do nothing.
     }
   }
 
+  /**
+   * Get column as class.
+   *
+   * @param columnIndex to get
+   * @return class to represent column
+   */
+  @Override
   public Class<?> getColumnClass(int columnIndex) {
     return String.class;
   }
 
   /**
    * Adds a new empty mapping rule.
+   * @return  row number
    */
   public int addRow() {
     int rows = srx.getMappingRules().size();

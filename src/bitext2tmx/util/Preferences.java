@@ -75,11 +75,11 @@ public class Preferences {
           
   //Singleton
   static {
-    m_loaded = false;
-    m_preferenceMap = new HashMap<>(64);
-    m_nameList = new ArrayList<>(32);
-    m_valList = new ArrayList<>(32);
-    m_changed = false;
+    loaded = false;
+    preferenceMap = new HashMap<>(64);
+    nameList = new ArrayList<>(32);
+    valList = new ArrayList<>(32);
+    changed = false;
     doLoad();
   }
 
@@ -96,14 +96,14 @@ public class Preferences {
     if (key == null || key.equals("")) {
       return "";
     }
-    if (!m_loaded) {
+    if (!loaded) {
       doLoad();
     }
-    Integer num = m_preferenceMap.get(key);
+    Integer num = preferenceMap.get(key);
     String val = "";
     if (num != null) {
       // mapping exists - recover defaultValue
-      val = m_valList.get(num);
+      val = valList.get(num);
     }
     return val;
   }
@@ -122,10 +122,10 @@ public class Preferences {
     if (key == null) {
       exists = false;
     }
-    if (!m_loaded) {
+    if (!loaded) {
       doLoad();
     }
-    Integer num = m_preferenceMap.get(key);
+    Integer num = preferenceMap.get(key);
     if (num != null) {
       exists = true;
     }
@@ -216,21 +216,21 @@ public class Preferences {
    *            preference value as a string
    */
   public static void setPreference(String name, String value) {
-    m_changed = true;
+    changed = true;
     if (!StringUtil.isEmpty(name) && value != null) {
-      if (!m_loaded) {
+      if (!loaded) {
         doLoad();
       }
-      Integer num = m_preferenceMap.get(name);
+      Integer num = preferenceMap.get(name);
       if (num == null) {
         // defaultValue doesn't exist - add it
-        num = m_valList.size();
-        m_preferenceMap.put(name, num);
-        m_valList.add(value);
-        m_nameList.add(name);
+        num = valList.size();
+        preferenceMap.put(name, num);
+        valList.add(value);
+        nameList.add(name);
       } else {
         // mapping exists - reset defaultValue to new
-        m_valList.set(num, value);
+        valList.set(num, value);
       }
     }
   }
@@ -244,21 +244,21 @@ public class Preferences {
    *            preference value as enum
    */
   public static void setPreference(String name, Enum<?> value) {
-    m_changed = true;
+    changed = true;
     if (!StringUtil.isEmpty(name) && value != null) {
-      if (!m_loaded) {
+      if (!loaded) {
         doLoad();
       }
-      Integer num = m_preferenceMap.get(name);
+      Integer num = preferenceMap.get(name);
       if (num == null) {
         // defaultValue doesn't exist - add it
-        num = m_valList.size();
-        m_preferenceMap.put(name, num);
-        m_valList.add(value.name());
-        m_nameList.add(name);
+        num = valList.size();
+        preferenceMap.put(name, num);
+        valList.add(value.name());
+        nameList.add(name);
       } else {
         // mapping exists - reset defaultValue to new
-        m_valList.set(num, value.name());
+        valList.set(num, value.name());
       }
     }
   }
@@ -293,7 +293,7 @@ public class Preferences {
    */
   public static void save() {
     try {
-      if (m_changed) {
+      if (changed) {
         doSave();
       }
     } catch (IOException e) {
@@ -308,14 +308,16 @@ public class Preferences {
    * DOING.
    */
   static void doLoad() {
+    File prefsFile = getPreferencesFile();
+    doLoadReal(prefsFile);
+  }
+
+  protected static void doLoadReal(File prefsFile) {
     // mark as loaded - if the load fails, there's no use
     // trying again later
-    m_loaded = true;
-
+    loaded = true;
     XMLStreamReader xml = new XMLStreamReader();
     xml.killEmptyBlocks();
-
-    File prefsFile = getPreferencesFile();
 
     try {
       if (prefsFile == null) {
@@ -378,7 +380,7 @@ public class Preferences {
     String pref;
     String val;
     
-    m_preferenceMap.clear();
+    preferenceMap.clear();
     // advance to omegat tag
     if (xml.advanceToTag("bitext2tmx") == null) {
       return;
@@ -415,9 +417,9 @@ public class Preferences {
       }
       if (pref != null && val != null) {
         // valid match - record these
-        m_preferenceMap.put(pref, m_valList.size());
-        m_nameList.add(pref);
-        m_valList.add(val);
+        preferenceMap.put(pref, valList.size());
+        nameList.add(pref);
+        valList.add(val);
       }
     }
   }
@@ -440,30 +442,39 @@ public class Preferences {
             Utilities.getConfigDir() + FILE_PREFERENCES), "UTF-8"));
     try {
       out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-      out.write("<omegat>\n");
+      out.write("<bitext2tmx>\n");
       out.write("  <preference version=\"1.0\">\n");
 
-      for (int i = 0; i < m_nameList.size(); i++) {
-        String name = m_nameList.get(i);
-        String val = XMLUtil.makeValidXML(m_valList.get(i));
+      for (int i = 0; i < nameList.size(); i++) {
+        String name = nameList.get(i);
+        String val = XMLUtil.makeValidXML(valList.get(i));
         out.write("    <" + name + ">");
         out.write(val);
         out.write("</" + name + ">\n");
       }
       out.write("  </preference>\n");
-      out.write("</omegat>\n");
+      out.write("</bitext2tmx>\n");
     } finally {
       out.close();
     }
-    m_changed = false;
+    changed = false;
   }
   
-  
-  public static SRX getSRX() {
+  /**
+   * Get SRX object.
+   *
+   * @return SRX object.
+   */
+  public static SRX getSrx() {
     return srx;
   }
 
-  public static void setSRX(SRX newSrx) {
+  /**
+   * Set SRX object.
+   *
+   * @param newSrx to set
+   */
+  public static void setSrx(SRX newSrx) {
     srx = newSrx;
 
     File srxFile = new File(Utilities.getConfigDir() + SRX.CONF_SENTSEG);
@@ -474,14 +485,14 @@ public class Preferences {
     }
   }
 
-  private static boolean m_loaded;
-  private static boolean m_changed;
+  private static boolean loaded;
+  private static boolean changed;
 
   // use a hash map for fast lookup of data
   // use array lists for orderly recovery of it for saving to disk
-  private static List<String> m_nameList;
-  private static List<String> m_valList;
-  private static Map<String, Integer> m_preferenceMap;
+  private static List<String> nameList;
+  private static List<String> valList;
+  private static Map<String, Integer> preferenceMap;
   
   private static SRX srx;
 }

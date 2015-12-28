@@ -23,8 +23,8 @@
 
 package bitext2tmx.core;
 
-import bitext2tmx.segmentation.Segmenter;
 import bitext2tmx.segmentation.SRX;
+import bitext2tmx.segmentation.Segmenter;
 import bitext2tmx.util.Language;
 import bitext2tmx.util.Localization;
 import bitext2tmx.util.Preferences;
@@ -64,7 +64,7 @@ public class TextReader {
     } else {
       isr = new InputStreamReader(fis, encoding);
     }
-    Segmenter.srx = Preferences.getSRX();
+    Segmenter.srx = Preferences.getSrx();
     if (Segmenter.srx == null) {
       Segmenter.srx = SRX.getDefault();
     }

@@ -24,14 +24,13 @@
 package bitext2tmx.util;
 
 import bitext2tmx.segmentation.SRX;
+
 import java.io.File;
 import java.io.PrintWriter;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -41,66 +40,84 @@ import static org.junit.Assert.*;
  * @author miurahr
  */
 public class PreferencesTest {
-  
-  public PreferencesTest() {
-  }
-  
+  private static File prefs;
+
   @BeforeClass
   public static void setUpClass() {
+    File tmpDir = FileUtil.createTempDir();
+    try {
+      assertTrue(tmpDir.isDirectory());
+      Utilities.setConfigDir(tmpDir.getAbsolutePath());
+      prefs = new File(tmpDir, Preferences.FILE_PREFERENCES);
+      // Write test data.
+      PrintWriter out = new PrintWriter(prefs, "UTF-8");
+      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+      out.println("<bitext2tmx>");
+      out.println("<preference version=\"1.0\">");
+      out.println("   <source_lang>EN-US</source_lang>");
+      out.println("   <target_lang>JA</target_lang>");
+      out.println("   <success>true</success>");
+      out.println("   <screen_size>640</screen_size>");
+      out.println("   <fail>false</fail>");
+      out.println("</preference>");
+      out.println("</bitext2tmx>");
+      out.close();
+      Preferences.doLoad();
+    } catch (Exception ex) {
+      // FIXME
+    }
   }
   
   @AfterClass
   public static void tearDownClass() {
+    // cleanup
+    prefs.delete();
   }
   
-  @Before
-  public void setUp() {
-  }
-  
-  @After
-  public void tearDown() {
-  }
-
   /**
    * Test of getPreference method, of class Preferences.
    */
   @Test
   public void testGetPreference() {
     System.out.println("getPreference");
-    String key = "";
-    String expResult = "";
+    String key = "source_lang";
+    String expResult = "EN-US";
     String result = Preferences.getPreference(key);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
    * Test of existsPreference method, of class Preferences.
    */
   @Test
-  public void testExistsPreference() {
+  public void testExistsPreference_False() {
     System.out.println("existsPreference");
-    String key = "";
+    String key = "hoge";
     boolean expResult = false;
     boolean result = Preferences.existsPreference(key);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
+  /**
+   * Test of existsPreference method, of class Preferences.
+   */
+  @Test
+  public void testExistsPreference_True() {
+    System.out.println("existsPreference");
+    String key = "source_lang";
+    boolean expResult = true;
+    boolean result = Preferences.existsPreference(key);
+    assertEquals(expResult, result);
+  }
   /**
    * Test of isPreference method, of class Preferences.
    */
   @Test
   public void testIsPreference() {
     System.out.println("isPreference");
-    String key = "";
-    boolean expResult = false;
+    String key = "success";
     boolean result = Preferences.isPreference(key);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertTrue(result);
   }
 
   /**
@@ -109,13 +126,10 @@ public class PreferencesTest {
   @Test
   public void testIsPreferenceDefault() {
     System.out.println("isPreferenceDefault");
-    String key = "";
+    String key = "fuga";
     boolean defaultValue = false;
-    boolean expResult = false;
     boolean result = Preferences.isPreferenceDefault(key, defaultValue);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertFalse(result);
   }
 
   /**
@@ -124,13 +138,11 @@ public class PreferencesTest {
   @Test
   public void testGetPreferenceDefault_String_String() {
     System.out.println("getPreferenceDefault");
-    String key = "";
-    String defaultValue = "";
-    String expResult = "";
+    String key = "foo";
+    String defaultValue = "boo";
+    String expResult = "boo";
     String result = Preferences.getPreferenceDefault(key, defaultValue);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -139,13 +151,11 @@ public class PreferencesTest {
   @Test
   public void testGetPreferenceDefault_String_int() {
     System.out.println("getPreferenceDefault");
-    String key = "";
-    int defaultValue = 0;
-    int expResult = 0;
+    String key = "screen_size";
+    int defaultValue = 1024;
+    int expResult = 640;
     int result = Preferences.getPreferenceDefault(key, defaultValue);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -154,82 +164,11 @@ public class PreferencesTest {
   @Test
   public void testSetPreference_String_String() {
     System.out.println("setPreference");
-    String name = "";
-    String value = "";
+    String name = "new";
+    String value = "one";
     Preferences.setPreference(name, value);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of setPreference method, of class Preferences.
-   */
-  @Test
-  public void testSetPreference_String_Enum() {
-    System.out.println("setPreference");
-    String name = "";
-    Enum value = null;
-    Preferences.setPreference(name, value);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of setPreference method, of class Preferences.
-   */
-  @Test
-  public void testSetPreference_String_boolean() {
-    System.out.println("setPreference");
-    String name = "";
-    boolean boolvalue = false;
-    Preferences.setPreference(name, boolvalue);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of setPreference method, of class Preferences.
-   */
-  @Test
-  public void testSetPreference_String_int() {
-    System.out.println("setPreference");
-    String name = "";
-    int intvalue = 0;
-    Preferences.setPreference(name, intvalue);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of save method, of class Preferences.
-   */
-  @Test
-  public void testSave() {
-    System.out.println("save");
-    Preferences.save();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of doLoad method, of class Preferences.
-   */
-  @Test
-  public void testDoLoad() {
-    System.out.println("doLoad");
-    Preferences.doLoad();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
-   * Test of getSRX method, of class Preferences.
-   */
-  @Test
-  public void testGetSRX() {
-    System.out.println("getSRX");
-    SRX result = Preferences.getSRX();
-    assertNotNull(result);
+    String result = Preferences.getPreference(name);
+    assertEquals(value, result);
   }
 
   /**
@@ -239,7 +178,7 @@ public class PreferencesTest {
   public void testSetSRX() {
     System.out.println("setSRX");
     SRX newSrx = SRX.getDefault();
-    Preferences.setSRX(newSrx);
+    Preferences.setSrx(newSrx);
   }
   
   
@@ -264,7 +203,7 @@ public class PreferencesTest {
       // Write anything that is malformed XML, to force a parsing error.
       PrintWriter out = new PrintWriter(prefs, "UTF-8");
       out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-      out.println("<omegat>");
+      out.println("<bitext2tmx>");
       out.println("<preference version=\"1.0\">");
       out.close();
       assertFalse(out.checkError());
@@ -277,7 +216,7 @@ public class PreferencesTest {
       File backup = null;
       for (File f : tmpDir.listFiles()) {
         String name = f.getName();
-        if (name.startsWith("omegat.prefs") && name.endsWith(".bak")) {
+        if (name.startsWith("bitext2tmx.prefs") && name.endsWith(".bak")) {
           backup = f;
           break;
         }

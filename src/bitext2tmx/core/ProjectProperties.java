@@ -28,8 +28,6 @@ import bitext2tmx.util.Language;
 import bitext2tmx.util.Preferences;
 import bitext2tmx.util.StringUtil;
 
-import java.io.File;
-
 
 /**
  * Storage for project properties.
@@ -38,11 +36,9 @@ import java.io.File;
 public final class ProjectProperties {
 
   /**
-   * Default constructor to initialize fields (to get no NPEs).
-   * 
-   * @throws java.lang.Exception when file is not exist.
+   * Default constructor to initialize fields.
    */
-  public ProjectProperties() throws Exception {
+  public ProjectProperties() {
     String sourceLocale = Preferences.getPreference(Preferences.SOURCE_LOCALE);
     if (!StringUtil.isEmpty(sourceLocale)) {
       setSourceLanguage(sourceLocale);

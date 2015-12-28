@@ -214,6 +214,14 @@ public class FileUtil {
     return dir.delete();
   }
 
+  /**
+   * Compare File contents whether same or not (for test).
+   * 
+   * @param target file to test
+   * @param expected file to be
+   * @return true if contents are same
+   * @throws Exception when file does not exist
+   */
   public static boolean compareFile(File target, File expected) throws Exception {
     String line;
     FileInputStream fin;
