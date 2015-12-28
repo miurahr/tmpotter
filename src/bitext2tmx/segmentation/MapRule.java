@@ -51,13 +51,13 @@ import java.util.regex.PatternSyntaxException;
 public class MapRule implements Serializable, Cloneable {
 
   /**
-   * creates a new empty MapRule
+   * creates a new empty MapRule.
    */
   public MapRule() {
   }
 
   /**
-   * creates an initialized MapRule
+   * creates an initialized MapRule.
    */
   public MapRule(String language, String pattern, List<Rule> rules) {
     this.setLanguage(language);
