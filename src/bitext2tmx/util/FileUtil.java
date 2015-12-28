@@ -214,6 +214,25 @@ public class FileUtil {
     return dir.delete();
   }
 
+  public static boolean compareFile(File target, File expected) throws Exception {
+    String line;
+    FileInputStream fin;
+    BufferedReader in;
+    fin = new FileInputStream(target);
+    in = new BufferedReader(new InputStreamReader(fin));
+    StringBuilder tsb = new StringBuilder();
+    while ((line = in.readLine()) != null) {
+      tsb.append(line);
+    }
+    FileInputStream expectedIn = new FileInputStream(expected);
+    BufferedReader expectedInput = new BufferedReader(new InputStreamReader(expectedIn));
+    StringBuilder esb = new StringBuilder();
+    while ((line = expectedInput.readLine()) != null) {
+      esb.append(line);
+    }
+    return esb.toString().equals(tsb.toString());
+  }
+
   public interface ICollisionCallback {
 
     public boolean isCanceled();

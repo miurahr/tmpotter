@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-#######################################################################
-#
-#  bitext2tmx - Bitext Aligner/Editor to TMX (ant build script)
-#
-#  Copyright (C) 2006-2009 Raymond: Martin et al.
-#                2015 Hiroshi Miura
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#
-#######################################################################
-# Some portion are derived from OmegaT build scripts
-#
-# Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
-#               2008-2010 Didier Briel, Alex Buloichik
-#               2012 Didier Briel
-#               2013 Didier Briel, Aaron Madlon-Kay
-#               2014 Didier Briel
-#               2015 Aaron Madlon-Kay, Didier Briel
-#######################################################################
+/**************************************************************************
+ *
+ *  bitext2tmx - Bitext Aligner/TMX Editor (ant build script)
+ *
+ *  Copyright (C) 2006-2009 Raymond: Martin et al.
+ *  Copyright (C) 2015 Hiroshi Miura
+ *
+ *  This file is part of bitext2tmx.
+ *
+ *  Some portion are derived from OmegaT build scripts
+ *
+ *  Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
+ *                2008-2010 Didier Briel, Alex Buloichik
+ *                2012 Didier Briel
+ *                2013 Didier Briel, Aaron Madlon-Kay
+ *                2014 Didier Briel
+ *                2015 Aaron Madlon-Kay, Didier Briel
+ *
+ *  bitext2tmx is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  bitext2tmx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with bitext2tmx.  If not, see http://www.gnu.org/licenses/.
+ *
+ **************************************************************************/
 -->
 
 <project name="bitext2tmx" default="default" basedir=".">
@@ -39,67 +40,6 @@
   <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
       classpath="test/lib/checkstyle-6.13-all.jar"/>
   <import file="nbproject/build-impl.xml"/>
-
-  <!--
-
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
-
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
-      -post-clean:               called after cleaning build products
-
-    (Targets beginning with '-' are not intended to be called on their own.)
-
-    Example of inserting an obfuscator after compilation could look like this:
-
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
-
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
-
-
-    Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
-
-      -init-macrodef-javac:     defines macro for javac compilation
-      -init-macrodef-junit:     defines macro for junit execution
-      -init-macrodef-debug:     defines macro for class debugging
-      -init-macrodef-java:      defines macro for class execution
-      -do-jar:                  JAR building
-      run:                      execution of project 
-      -javadoc-build:           Javadoc generation
-      test-report:              JUnit report generation
-
-    An example of overriding the target for project execution could look like this:
-
-        <target name="run" depends="JavaApplication1-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
-
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
-    properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
-
-    -->
 
   <target name="-pre-init">
     <fileset dir="lib" id="all-jars-fileset">
@@ -146,11 +86,10 @@
   <!-- Copies all files to dist -->
   <target name="release">
     <mkdir dir="dist"/>
-    <copy todir="dist">
-        <fileset dir="release" includes="*" excludes="readme.txt"/>
-    </copy>
+    <copy todir="dist" file="LICENSE.txt"/>
     <!--
     <copy todir="dist">
+        <fileset dir="release" includes="*" excludes="readme.txt"/>
         <fileset dir="release/linux-specific"/>
         <fileset dir="release/win32-specific" includes="bitext2tmx.bat"/>
     </copy>

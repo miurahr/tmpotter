@@ -267,6 +267,14 @@ public class Utilities {
     return configDirectory;
   }
 
+      
+  /**
+   * Set the config dir path. This method is for unit testing purposes only. DO
+   * NOT CALL IT UNLESS YOU KNOW WHAT YOU'RE DOING.
+   */
+  static void setConfigDir(String path) {
+    configDirectory = path;
+  }
 
   // Caching install dir
   private static String strInstallDir = null;

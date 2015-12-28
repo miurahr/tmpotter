@@ -23,11 +23,10 @@
 
 package bitext2tmx.core;
 
+import bitext2tmx.segmentation.Segmenter;
 import bitext2tmx.segmentation.SRX;
 import bitext2tmx.util.Language;
 import bitext2tmx.util.Localization;
-import bitext2tmx.util.RuntimePreferences;
-import bitext2tmx.segmentation.Segmenter;
 import bitext2tmx.util.Preferences;
 
 import java.io.BufferedReader;
@@ -58,7 +57,6 @@ public class TextReader {
           String encoding) throws IOException {
     final FileInputStream fis;
     final InputStreamReader isr;
-    String result;
     
     fis = new FileInputStream(filePath);
     if (encoding.equals(Localization.getString("ENCODING.DEFAULT"))) {
@@ -70,7 +68,7 @@ public class TextReader {
     if (Segmenter.srx == null) {
       Segmenter.srx = SRX.getDefault();
     }
-    result = copyCleanString(new BufferedReader(isr));
+    String result = copyCleanString(new BufferedReader(isr));
     Language lang = new Language(language);
     Document res = new Document(Segmenter.segment(lang, result, null, null));
     return res;

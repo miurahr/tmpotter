@@ -89,7 +89,7 @@ public class UtilitiesTest extends TestCase {
       Utilities.saveUtf8(dir, filename, output);
       File target = new File(dir+filename);
       File expected = new File(dir+expectedFN); 
-      assertTrue(TestUtil.compareFile(target, expected));
+      assertTrue(FileUtil.compareFile(target, expected));
       target.delete();
     } catch (Exception ex) {
       System.out.println(ex);
