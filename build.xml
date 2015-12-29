@@ -3,12 +3,12 @@
 <!--
 /**************************************************************************
  *
- *  bitext2tmx - Bitext Aligner/TMX Editor (ant build script)
+ *  tmpotter - Bitext Aligner/TMX Editor (ant build script)
  *
  *  Copyright (C) 2006-2009 Raymond: Martin et al.
  *  Copyright (C) 2015 Hiroshi Miura
  *
- *  This file is part of bitext2tmx.
+ *  This file is part of tmpotter.
  *
  *  Some portion are derived from OmegaT build scripts
  *
@@ -19,24 +19,24 @@
  *                2014 Didier Briel
  *                2015 Aaron Madlon-Kay, Didier Briel
  *
- *  bitext2tmx is free software; you can redistribute it and/or modify
+ *  tmpotter is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  bitext2tmx is distributed in the hope that it will be useful,
+ *  tmpotter is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  * 
  *  You should have received a copy of the GNU General Public License
- *  along with bitext2tmx.  If not, see http://www.gnu.org/licenses/.
+ *  along with tmpotter.  If not, see http://www.gnu.org/licenses/.
  *
  **************************************************************************/
 -->
 
-<project name="bitext2tmx" default="default" basedir=".">
-  <description>Builds, tests, and runs bitext2tmx</description>
+<project name="tmpotter" default="default" basedir=".">
+  <description>Builds, tests, and runs tmpotter</description>
   <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
       classpath="test/lib/checkstyle-6.13-all.jar"/>
   <import file="nbproject/build-impl.xml"/>
@@ -56,9 +56,9 @@
       <format property="build.date" pattern="yyMMdd" />
     </tstamp>
 
-    <property file="src/bitext2tmx/Version.properties"/>
+    <property file="src/tmpotter/Version.properties"/>
     <property name="devel"          value="false" />
-    <property name="applicationjar" value="bitext2tmx.jar" />
+    <property name="applicationjar" value="tmpotter.jar" />
   </target>
 
   <target name="manifest" description="Create manifest">
@@ -68,7 +68,7 @@
       <attribute name="Build"          value="${build.date}" />
       <attribute name="ApplicationJar" value="${applicationjar}" />
       <attribute name="Devel"          value="${devel}" />
-      <attribute name="Main-Class"     value="bitext2tmx.Bitext2tmx" />
+      <attribute name="Main-Class"     value="tmpotter.Main" />
       <attribute name="Class-Path"     value="${all-jars-path}" />
       <attribute name="License" value="GNU General Public License version 3 or later"/>
     </manifest>
@@ -91,7 +91,7 @@
     <copy todir="dist">
         <fileset dir="release" includes="*" excludes="readme.txt"/>
         <fileset dir="release/linux-specific"/>
-        <fileset dir="release/win32-specific" includes="bitext2tmx.bat"/>
+        <fileset dir="release/win32-specific" includes="tmpotter.bat"/>
     </copy>
     <copy todir="dist"
           file="release/readme.txt">
@@ -108,7 +108,7 @@
   </target>
 
   <!-- Set the repo.revision property from the first valid source in this order:
-     1. src/bitext2tmx/Version.properties
+     1. src/tmpotter/Version.properties
      2. This git SHA1
   -->
   <target name="get-revision" depends="get-source-revision,get-git-revision">
@@ -148,16 +148,16 @@
     <mkdir dir="dist2"/>
     <!-- Create temporary Version.properties with current revision -->
     <tempfile property="temp.version.props" destdir="dist2" deleteonexit="true"/>
-    <copy file="src/bitext2tmx/Version.properties" tofile="${temp.version.props}"/>
+    <copy file="src/tmpotter/Version.properties" tofile="${temp.version.props}"/>
     <propertyfile file="${temp.version.props}">
       <entry key="revision" value="${repo.revision}"/>
     </propertyfile>
     <!-- Build zip -->
-    <zip destfile="dist2/bitext2tmx_${version}_${revision}_Source.zip">
+    <zip destfile="dist2/tmpotter_${version}_${revision}_Source.zip">
       <fileset dir="."
           includes="doc/** lib/** nbproject/** release/** src/** test/** build.xml"
-          excludes="**/nbproject/private/** **/build/** **/dist/** src/bitext2tmx/Version.properties" />
-      <zipfileset file="${temp.version.props}" fullpath="src/bitext2tmx/Version.properties"/>
+          excludes="**/nbproject/private/** **/build/** **/dist/** src/tmpotter/Version.properties" />
+      <zipfileset file="${temp.version.props}" fullpath="src/tmpotter/Version.properties"/>
     </zip>
   </target>
 
