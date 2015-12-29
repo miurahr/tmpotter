@@ -556,7 +556,7 @@ final class MainWindowMenuHandlers {
     onChangeLnF(MainWindowMenuHandlers.LnfType.METAL);
   }
 
-  public void menuItemLafNimbusActionPerfomed() {
+  public void menuItemLafNimbusActionPerformed() {
     onChangeLnF(MainWindowMenuHandlers.LnfType.NIMBUS);
   }
 

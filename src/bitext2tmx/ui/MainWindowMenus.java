@@ -78,9 +78,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     return Icons.getIcon(iconName);
   }
 
-  private void onLinebreakToggle() {
-  }
-  
   /**
    * Used by makeMenuComponent to select componenet type.
    */
@@ -92,7 +89,6 @@ final class MainWindowMenus implements ActionListener, MenuListener {
   JMenuItem menuItemHelpManual;
   JMenuItem menuItemFileSave;
   JMenuItem menuItemSettingsFonts;
-  JMenuItem menuCallbackSettingsLinebreak;
   JMenuItem menuItemFileQuit;
   JMenuItem menuItemFileOpen;
   //  Settings menu
