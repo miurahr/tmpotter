@@ -23,22 +23,19 @@
 package bitext2tmx.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.PrintWriter;
-import java.util.List;
-import static junit.framework.Assert.assertTrue;
+
+import junit.framework.TestCase;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 
 /**
  *
  * @author miurahr
  */
-public class FileUtilTest {
+public class FileUtilTest extends TestCase {
   private static File tmpDir;
   private static File target;
   
