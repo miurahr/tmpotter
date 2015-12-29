@@ -49,11 +49,19 @@ public class AppConstants {
   private static final String REVISION = ResourceBundle
           .getBundle("org/tmpotter/Version")
           .getString(__REVISION_KEY);
-  public static final String COPYRIGHT   = "Copyright (C) 2005-2009,2015";
+  public static final String COPYRIGHT   = "Copyright (C) 2015";
   public static final String LICENSE     = 
           "Released as Free Software under GPL v3 and later";
   public static final String AUTHORS     = 
-          "Susana Santos Antón, Raymond: Martin, Hiroshi Miura et al.";
+          "Hiroshi Miura";
+  public static final String CONTRIBUTORS =
+          "TMPotter used components of OmegaT and bitext2tmx.\n"
+          + "OmegaT: Alex Buloichik, Thomas Cordonnier,\n"
+          + " Aaron Madlon-Kay, Zoltan Bartko,\n"
+          + " Didier Briel, Maxym Mykhalchuk, "
+          + "Keith Godfrey\n"
+          + "bitext2tmx: Susana Santos Antón,\n"
+          + " Raymond: Martin et al.";
   public static final String BUILDCLASSPATH = "build"
           + File.separator + "classes";
   public static final int READ_AHEAD_LIMIT = 65536;

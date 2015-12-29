@@ -36,7 +36,9 @@ import org.tmpotter.ui.MainWindow;
 import org.tmpotter.util.AppConstants;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -50,6 +52,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 
 
@@ -85,8 +88,16 @@ public final class About extends JDialog {
 
     label1.setText(AppConstants.getDisplayNameAndVersion() );
     label2.setText(AppConstants.getApplicationDescription() );
-    label3.setText(AppConstants.COPYRIGHT );
-    label4.setText(AppConstants.AUTHORS );
+    label3.setText(AppConstants.COPYRIGHT + " " + AppConstants.AUTHORS );
+    contributor.setText(AppConstants.CONTRIBUTORS);
+
+    Font font = new Font("Free Serif", Font.BOLD,14);
+    label1.setFont(font);
+    label2.setFont(font);
+    label3.setFont(font);
+
+    Color c = new Color(180,180,180,100);
+    contributor.setBackground(c);
 
     final GridBagConstraints gbc = new GridBagConstraints();
 
@@ -108,14 +119,14 @@ public final class About extends JDialog {
     getContentPane().add( label3, gbc );
 
     gbc.gridy = 3;
-    getContentPane().add( label4, gbc );
+    getContentPane().add(contributor, gbc);
 
     labelIcon.setIcon( Icons.getIcon( "icon-medium.png" ) );
     panelButtons.add( labelIcon, BorderLayout.WEST );
 
-    gbc.gridy     = 5;
+    gbc.gridy     = 7;
     gbc.anchor    = GridBagConstraints.SOUTHWEST;
-    gbc.insets    = new Insets( 5, 25, 5, 10 );
+    gbc.insets    = new Insets( 5, 30, 5, 10 );
 
     getContentPane().add( labelIcon, gbc );
 
@@ -132,7 +143,7 @@ public final class About extends JDialog {
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setBounds( ( screenSize.width - 400 ) / 2,
-        ( screenSize.height - 200 ) / 2, 400, 200 );
+        ( screenSize.height - 200 ) / 2, 400, 300 );
   }
 
   private void onClose() {
@@ -144,7 +155,7 @@ public final class About extends JDialog {
   private final JLabel   label1       = new JLabel();
   private final JLabel   label2       = new JLabel();
   private final JLabel   label3       = new JLabel();
-  private final JLabel   label4       = new JLabel();
+  private final JTextArea   contributor  = new JTextArea();
   private final JLabel   labelIcon    = new JLabel();
   private final JButton  buttonClose  = new JButton();
   private final JPanel   panelButtons = new JPanel();
