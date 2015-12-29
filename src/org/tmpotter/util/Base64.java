@@ -1,9 +1,9 @@
 /**************************************************************************
  *
- *  tmpotter - Bitext Aligner/TMX Editor
+ *  TMPotter - Bi-text Aligner/TMX Editor
  *
  *  This file is come from OmegaT project.
- *  This file is part of tmpotter.
+ *  This file is part of TMPotter.
  *
  *  This file is in Public Domain.
  *

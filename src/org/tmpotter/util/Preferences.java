@@ -1,39 +1,39 @@
-/**************************************************************************
+/* *************************************************************************
  *
- *  tmpotter - Bitext Aligner/TMX Editor
+ *  TMPotter - Bi-text Aligner/TMX Editor
  *
  *  Copyright (C) 2015 Hiroshi Miura
  *
- *  This file is part of tmpotter.
- *
  *  This file come from OmegaT project
  * 
- * Copyright (C) 2000-2006 Keith Godfrey, Maxym Mykhalchuk, and Henry Pijffers
- *              2007 Zoltan Bartko
- *              2008-2009 Didier Briel
- *              2010 Wildrich Fourie, Antonio Vilei, Didier Briel
- *              2011 John Moran, Didier Briel
- *              2012 Martin Fleurke, Wildrich Fourie, Didier Briel, Thomas Cordonnier,
- *                   Aaron Madlon-Kay
- *              2013 Aaron Madlon-Kay, Zoltan Bartko
- *              2014 Piotr Kulik, Aaron Madlon-Kay
- *              2015 Aaron Madlon-Kay, Yu Tang, Didier Briel
+ *  Copyright (C) 2000-2006 Keith Godfrey, Maxym Mykhalchuk, and Henry Pijffers
+ *                2007 Zoltan Bartko
+ *                2008-2009 Didier Briel
+ *                2010 Wildrich Fourie, Antonio Vilei, Didier Briel
+ *                2011 John Moran, Didier Briel
+ *                2012 Martin Fleurke, Wildrich Fourie, Didier Briel, Thomas Cordonnier,
+ *                     Aaron Madlon-Kay
+ *                2013 Aaron Madlon-Kay, Zoltan Bartko
+ *                2014 Piotr Kulik, Aaron Madlon-Kay
+ *                2015 Aaron Madlon-Kay, Yu Tang, Didier Briel
  *
  *
- *  tmpotter is free software; you can redistribute it and/or modify
+ *  This file is part of TMPotter.
+ *
+ *  TMPotter is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  tmpotter is distributed in the hope that it will be useful,
+ *  TMPotter is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  * 
  *  You should have received a copy of the GNU General Public License
- *  along with tmpotter.  If not, see http://www.gnu.org/licenses/.
+ *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
- **************************************************************************/
+ * *************************************************************************/
 
 package org.tmpotter.util;
 

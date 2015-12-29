@@ -3,14 +3,13 @@
 <!--
 /**************************************************************************
  *
- *  tmpotter - Bitext Aligner/TMX Editor (ant build script)
+ *  TMPotter - Bitext Aligner/TMX Editor (ant build script)
  *
- *  Copyright (C) 2006-2009 Raymond: Martin et al.
  *  Copyright (C) 2015 Hiroshi Miura
  *
  *  This file is part of tmpotter.
  *
- *  Some portion are derived from OmegaT build scripts
+ *  Some portion are derived from OmegaT and bitext2tmx
  *
  *  Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
  *                2008-2010 Didier Briel, Alex Buloichik
@@ -18,6 +17,8 @@
  *                2013 Didier Briel, Aaron Madlon-Kay
  *                2014 Didier Briel
  *                2015 Aaron Madlon-Kay, Didier Briel
+ *
+ *  Copyright (C) 2006-2009 Raymond: Martin et al.
  *
  *  tmpotter is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
