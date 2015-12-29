@@ -541,7 +541,7 @@ final class MainWindowMenuHandlers {
    * <p>Display the fonts dialog to allow selection of fonts for
    * origianl/translation tables/editors and main window
    */
-  public void settingsFontsMenuItemActionPerformed() {
+  public void menuItemSettingsFontsActionPerformed() {
     FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.mainWindowFonts.getFonts());
     dlgFonts.setVisible(true);
   }
