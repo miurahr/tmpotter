@@ -1,4 +1,4 @@
-/* *************************************************************************
+/**************************************************************************
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
@@ -19,5 +19,27 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
- * ************************************************************************/
+ **************************************************************************/
 
+package org.tmpotter.util;
+
+import junit.framework.TestCase;
+
+/**
+ *
+ * @author miurahr
+ */
+public class RuntimePreferencesTest extends TestCase {
+
+  /**
+   * Test of setUserHome method, of class RuntimePreferences.
+   */
+  public void testSetUserHome() {
+    System.out.println("setUserHome");
+    String home = "hoge";
+    RuntimePreferences.setUserHome(home);
+    String result = RuntimePreferences.getUserHome();
+    assertEquals(home, result);
+  }
+
+}

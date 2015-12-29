@@ -19,5 +19,37 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
- * ************************************************************************/
+ * *************************************************************************/
 
+package org.tmpotter.filters;
+
+import java.io.File;
+
+/**
+ * Bi-Text loader.
+ * 
+ * <p> TBD
+ * 
+ * @author Hiroshi Miura
+ */
+public class TextHandler implements IImportFilter {
+  @Override
+  public boolean isCombinedFileFormat() {
+    return false;
+  }
+
+  @Override
+  public String getFileFormatName() {
+    return "bi-text";
+  }
+  
+  @Override
+  public void load(File sourceFile, File targetFile) throws Exception {
+
+  }
+  
+  @Override
+  public void load(File sourceFile, String encoding ) throws Exception {
+    
+  }
+}
