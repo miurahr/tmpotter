@@ -66,8 +66,7 @@ class SegmentEditor extends DockablePanel {
     getDockKey().setAutoHideEnabled(false);
     getDockKey().setMaximizeEnabled(false);
     getDockKey().setFloatEnabled(false);
-    getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    //getDockKey().setIcon( Icons.getIcon( "icon-small.png" ) );
+    getDockKey().setIcon( Icons.getIcon( "icon-small.png" ) );
 
     textPane.addKeyListener( new KeyAdapter() {
       @Override

@@ -63,10 +63,10 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements WindowListener {
-  protected final AlignmentsView viewAlignments = new AlignmentsView(this);
+  protected final ControlView viewControls = new ControlView(this);
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
-  protected final ControlView viewControls = new ControlView(this);
+  protected final AlignmentsView viewAlignments = new AlignmentsView(this);
 
   protected MainWindowMenuHandlers handler;
   protected MainWindowMenus mainWindowMenu;

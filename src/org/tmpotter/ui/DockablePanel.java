@@ -50,7 +50,7 @@ class DockablePanel extends JPanel implements Dockable {
     //  Use default autohide position
     dockKey = new DockKey(key);
     dockKey.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    dockKey.setFloatEnabled(true);
+    dockKey.setFloatEnabled(false);
   }
 
   /**

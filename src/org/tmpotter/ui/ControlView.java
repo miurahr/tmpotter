@@ -61,9 +61,8 @@ final class ControlView extends DockablePanel implements ActionListener {
 
   private final JButton  buttonUndo              = new JButton();
 
-  private final JPanel panelButtons       = new JPanel( new GridLayout( 2, 1 ) );
-  private final JPanel panelButtonsTop    = new JPanel( new GridLayout( 1, 2 ) );
-  private final JPanel panelButtonsBottom = new JPanel();
+  private final JPanel panelButtons       = new JPanel( new GridLayout( 1, 3 ));
+  private final JPanel panelButtonsCenter = new JPanel();
   private final JPanel panelButtonsLeft   = new JPanel();
   private final JPanel panelButtonsRight  = new JPanel();
 
@@ -72,12 +71,11 @@ final class ControlView extends DockablePanel implements ActionListener {
 
     this.mainWindow = windowMain;
 
-    getDockKey().setName(getString("CV_DOCK_TITLE"));
-    getDockKey().setTooltip(getString("CV_DOCK_TOOLTIP"));
-    getDockKey().setCloseEnabled(true);
-    getDockKey().setAutoHideEnabled(true);
-    getDockKey().setResizeWeight(1.0F);  // takes all resizing
-    //getDockKey().setIcon( Icons.getIcon( "icon-small.png") );
+    getDockKey().setName(null);
+    getDockKey().setCloseEnabled(false);
+    getDockKey().setAutoHideEnabled(false);
+    getDockKey().setFloatEnabled(false);
+    getDockKey().setMaximizeEnabled(false);
     setLayout(new BorderLayout());
 
     setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));
@@ -88,7 +86,7 @@ final class ControlView extends DockablePanel implements ActionListener {
     setLocalizedText(buttonTuSplit, getString("BTN.SPLIT.TU"));
     buttonTuSplit.setToolTipText(getString( "BTN.SPLIT.TU.TOOLTIP" ) );
     buttonTuSplit.addActionListener( this );
-    buttonTuSplit.setEnabled( false );
+    buttonTuSplit.setEnabled(false);
 
     setLocalizedText(buttonTranslationJoin, getString( "BTN.JOIN.TRANSLATION" ) );
     buttonTranslationJoin.addActionListener( this );
@@ -121,23 +119,19 @@ final class ControlView extends DockablePanel implements ActionListener {
 
     enableButtons( false );
 
-    panelButtonsBottom  .add( buttonUndo,              null );
-    panelButtonsBottom  .add( buttonRemoveBlankRows,   null );
-    panelButtonsBottom  .add( buttonTuSplit,           null );
+    panelButtonsCenter  .add( buttonUndo,              null );
+    panelButtonsCenter  .add( buttonRemoveBlankRows,   null );
+    panelButtonsCenter  .add( buttonTuSplit,           null );
     panelButtonsLeft    .add( buttonOriginalJoin,      null );
-    panelButtonsLeft    .add(buttonOriginalDelete,    null );
+    panelButtonsLeft    .add( buttonOriginalDelete,    null );
     panelButtonsLeft    .add( buttonOriginalSplit,     null );
     panelButtonsRight   .add( buttonTranslationJoin,   null );
     panelButtonsRight   .add( buttonTranslationDelete, null );
     panelButtonsRight   .add( buttonTranslationSplit,  null );
 
-    panelButtonsTop.add( panelButtonsLeft );
-    panelButtonsTop.add( panelButtonsRight );
-
-    panelButtons.add( panelButtonsBottom );
-    panelButtons.add( panelButtonsTop );
-
-    panelButtons.setMinimumSize( new Dimension( 480, 120 ) );
+    panelButtons.add(panelButtonsLeft,   JPanel.LEFT_ALIGNMENT);
+    panelButtons.add(panelButtonsCenter, JPanel.CENTER_ALIGNMENT);
+    panelButtons.add(panelButtonsRight,  JPanel.RIGHT_ALIGNMENT);
 
     add( panelButtons, BorderLayout.CENTER );
   }

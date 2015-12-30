@@ -72,10 +72,11 @@ final class AlignmentsView extends DockablePanel {
 
     getDockKey().setName(getString( "VW.ALIGNMENTS.TITLE" ) );
     getDockKey().setTooltip(getString( "VW.ALIGNMENTS.TOOLTIP" ) );
-    getDockKey().setCloseEnabled( true );
-    getDockKey().setAutoHideEnabled( true );
+    getDockKey().setCloseEnabled(false);
+    getDockKey().setAutoHideEnabled(false);
+    getDockKey().setMaximizeEnabled(false);
     getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    //getDockKey().setIcon( Icons.getIcon( "icon-small.png") );
+    getDockKey().setIcon( Icons.getIcon( "icon-small.png") );
 
     setLayout( new BorderLayout() );
   }
@@ -270,11 +271,13 @@ final class AlignmentsView extends DockablePanel {
     column = table.getColumnModel().getColumn( 1 );
     column.setPreferredWidth( 600 );
     column.setHeaderValue(table.getColumnName( 1 ) );
+    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
 
     //  Translation
     column = table.getColumnModel().getColumn( 2 );
     column.setPreferredWidth( 600 );
     column.setHeaderValue(table.getColumnName( 2 ) );
+    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));    
 
     table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
     table.setAutoscrolls( true );
@@ -305,10 +308,6 @@ final class AlignmentsView extends DockablePanel {
 
     scrollPane = new JScrollPane( table );
     scrollPane.setColumnHeader( null );
-    //_scpnTable.setBounds( new Rectangle( 14, 0, 823, 394 ) );
-
-    // Unnecessary? Container gets header automatically, I think?
-    // this sets the scpn header from the table - won't scroll
     scrollPane.setColumnHeaderView(table.getTableHeader() );
 
     add( scrollPane );

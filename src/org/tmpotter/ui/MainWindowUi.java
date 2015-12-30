@@ -181,26 +181,25 @@ public class MainWindowUi {
     keyAlignmentTable.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
     DockKey keySegmentButtons = mainWindow.viewControls.getDockKey();
     keySegmentButtons.setAutoHideBorder(DockingConstants.HIDE_BOTTOM);
-    keyAlignmentTable.setFloatEnabled(true);
-    keyLeftSegment.setFloatEnabled(true);
-    keyRightSegment.setFloatEnabled(true);
-    keySegmentButtons.setFloatEnabled(true);
+    keyLeftSegment.setFloatEnabled(false);
+    keyRightSegment.setFloatEnabled(false);
+    keyAlignmentTable.setFloatEnabled(false);
+    keySegmentButtons.setFloatEnabled(false);
     keyAlignmentTable.setCloseEnabled(false);
     keyLeftSegment.setCloseEnabled(false);
     keyRightSegment.setCloseEnabled(false);
     keySegmentButtons.setCloseEnabled(false);
     keySegmentButtons.setResizeWeight(0.1F);
-    mainWindow.desktop.addDockable(mainWindow.viewAlignments);
-    mainWindow.desktop.split(mainWindow.viewAlignments,
+    mainWindow.desktop.addDockable(mainWindow.viewControls);
+    mainWindow.desktop.split(mainWindow.viewControls,
             mainWindow.editLeftSegment, DockingConstants.SPLIT_BOTTOM);
     mainWindow.desktop.split(mainWindow.editLeftSegment,
-            mainWindow.viewControls, DockingConstants.SPLIT_BOTTOM);
+            mainWindow.viewAlignments, DockingConstants.SPLIT_BOTTOM);
     mainWindow.desktop.split(mainWindow.editLeftSegment,
             mainWindow.editRightSegment, DockingConstants.SPLIT_RIGHT);
-    mainWindow.setSize(new Dimension(800, 600));
+    mainWindow.setSize(new Dimension(1024, 768));
     mainWindow.setMinimumSize(new Dimension(640, 480));
     mainWindow.setTitle(AppConstants.getDisplayNameAndVersion());
     mainWindow.getContentPane().add(mainWindow.panelStatusBar, BorderLayout.SOUTH);
   }
-  
 }
