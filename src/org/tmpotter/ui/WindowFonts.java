@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -31,22 +31,30 @@ package org.tmpotter.ui;
 import org.tmpotter.util.Platform;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 
 /**
  * Font setup for main window.
  * 
  * @author Hiroshi Miura
  */
-public class MainWindowFonts {
+public class WindowFonts {
   
   private Font fontTable;
   private Font fontTableHeader;
   private Font fontSourceEditor;
   private Font fontTranslationEditor;
-  private Font fontUserInterface;
+  private Font uiFont;
+  private final MainWindow mainWindow;
+  private final MainMenu mainMenu;
 
-  public MainWindowFonts(MainWindow mainWindow, MainWindowMenus mainWindowMenu) {
+  /**
+   * Constructor.
+   * @param mainWindow main frame owner
+   * @param mainMenu main menu component
+   */
+  public WindowFonts(MainWindow mainWindow, MainMenu mainMenu) {
+    this.mainWindow = mainWindow;
+    this.mainMenu = mainMenu;
   }
   
   /**
@@ -55,35 +63,34 @@ public class MainWindowFonts {
    * <p>Acts as delegate for
    * setUserInterfaceFont()
    *
-   * @param font UI font to be set
+   * @param uiFont UI font to be set
    */
-  private final void setUserInterfaceFonts(final Font font,
-          MainWindowMenus mainWindowMenu) {
-    mainWindowMenu.menuItemFile.setFont(font);
-    mainWindowMenu.menuItemFileOpen.setFont(font);
-    mainWindowMenu.menuItemFileTextOpen.setFont(font);
-    mainWindowMenu.menuItemFileSave.setFont(font);
-    mainWindowMenu.menuItemFileSaveAs.setFont(font);
-    mainWindowMenu.menuItemFileClose.setFont(font);
+  private void setUiFonts(final Font uiFont) {
+    mainMenu.menuItemFile.setFont(uiFont);
+    mainMenu.menuItemFileOpen.setFont(uiFont);
+    mainMenu.menuItemFileTextOpen.setFont(uiFont);
+    mainMenu.menuItemFileSave.setFont(uiFont);
+    mainMenu.menuItemFileSaveAs.setFont(uiFont);
+    mainMenu.menuItemFileClose.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainWindowMenu.menuItemFileQuit.setFont(font);
+      mainMenu.menuItemFileQuit.setFont(uiFont);
     }
-    mainWindowMenu.menuSettings.setFont(font);
-    mainWindowMenu.menuItemSettingsFonts.setFont(font);
+    mainMenu.menuSettings.setFont(uiFont);
+    mainMenu.menuItemSettingsFonts.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainWindowMenu.menuLaf.setFont(font);
-      mainWindowMenu.menuItemLafLiquid.setFont(font);
-      mainWindowMenu.menuLafMetal.setFont(font);
-      mainWindowMenu.menuItemLafNimbus.setFont(font);
-      mainWindowMenu.menuItemLafSystem.setFont(font);
+      mainMenu.menuLaf.setFont(uiFont);
+      mainMenu.menuItemLafLiquid.setFont(uiFont);
+      mainMenu.menuLafMetal.setFont(uiFont);
+      mainMenu.menuItemLafNimbus.setFont(uiFont);
+      mainMenu.menuItemLafSystem.setFont(uiFont);
       if (!Platform.isWindows()) {
-        mainWindowMenu.menuItemLafGtk.setFont(font);
+        mainMenu.menuItemLafGtk.setFont(uiFont);
       }
     }
-    mainWindowMenu.menuHelp.setFont(font);
-    mainWindowMenu.menuItemHelpManual.setFont(font);
+    mainMenu.menuHelp.setFont(uiFont);
+    mainMenu.menuItemHelpManual.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainWindowMenu.menuItemHelpAbout.setFont(font);
+      mainMenu.menuItemHelpAbout.setFont(uiFont);
     }
   }
 
@@ -137,7 +144,7 @@ public class MainWindowFonts {
    *
    * @param font set editor font to display
    */
-  public final void setSourceEditorFont(final Font font, MainWindow mainWindow) {
+  public final void setSourceEditorFont(final Font font) {
     fontSourceEditor = font;
     if (fontSourceEditor == null) {
       final String strFontName = "Dialog";
@@ -154,8 +161,8 @@ public class MainWindowFonts {
    *
    * @return Font
    */
-  public final Font getUserInterfaceFont() {
-    return fontUserInterface;
+  public final Font getUiFont() {
+    return uiFont;
   }
 
   /**
@@ -199,7 +206,7 @@ public class MainWindowFonts {
    * @return Font[]
    */
   public final Font[] getFonts() {
-    final Font[] afnt = {fontUserInterface, fontTable, fontTableHeader,
+    final Font[] afnt = {uiFont, fontTable, fontTableHeader,
       fontSourceEditor, fontTranslationEditor};
     return afnt;
   }
@@ -217,7 +224,7 @@ public class MainWindowFonts {
       final int iFontSize = 11;
       fontTable = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
-    mainWindow.viewAlignments.setTableFont(fontTable);
+    mainWindow.tmView.setTableFont(fontTable);
   }
 
   /**
@@ -225,16 +232,15 @@ public class MainWindowFonts {
    *
    * @param font UI font
    */
-  public final void setUserInterfaceFont(final Font font,
-          MainWindow mainWindow) {
-    fontUserInterface = font;
-    if (fontUserInterface == null) {
+  public final void setUiFont(final Font font) {
+    uiFont = font;
+    if (uiFont == null) {
       final String strFontName = "Serif";
       final String strFontStyle = "Plain";
       final int iFontSize = 11;
-      fontUserInterface = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
+      uiFont = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
     }
-    setUserInterfaceFonts(fontUserInterface, mainWindow.mainWindowMenu);
+    setUiFonts(uiFont);
   }
 
   /**

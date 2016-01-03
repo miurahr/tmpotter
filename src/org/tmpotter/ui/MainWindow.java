@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -30,8 +30,6 @@ package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
 
-import com.vlsolutions.swing.docking.DockingDesktop;
-
 import org.tmpotter.core.Document;
 import org.tmpotter.engine.SegmentChanges;
 import org.tmpotter.util.Platform;
@@ -48,13 +46,12 @@ import java.awt.event.WindowListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 
 /**
@@ -63,23 +60,15 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements WindowListener {
-  protected final ControlView viewControls = new ControlView(this);
+  protected final TmToolBar toolBar = new TmToolBar(this);
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
-  protected final AlignmentsView viewAlignments = new AlignmentsView(this);
+  protected final TmView tmView = new TmView(this);
 
-  protected MainWindowMenuHandlers handler;
-  protected MainWindowMenus mainWindowMenu;
-  protected MainWindowFonts mainWindowFonts;
-
-  protected DockingDesktop desktop;
-
-  //  Menubar
-  protected final JMenuBar menuBar = new JMenuBar();
-
-  //  Statusbar
-  protected JPanel panelStatusBar;
-  protected JLabel labelStatusBar;
+  protected MenuHandler handler;
+  protected MainMenu mainMenu;
+  protected WindowFonts windowFonts;
+  protected UiComponents uiComponents;
 
   protected Document documentOriginal;
   protected Document documentTranslation;
@@ -104,6 +93,8 @@ public final class MainWindow extends JFrame implements WindowListener {
   protected File filePathOriginal;
   protected File filePathTranslation;
 
+  private static final Logger LOG = Logger.getLogger(MainWindow.class.getName());
+
 
   /**
    * Main window class.
@@ -114,15 +105,31 @@ public final class MainWindow extends JFrame implements WindowListener {
     this.arrayListChanges = new ArrayList<>();
     this.arrayListLang = new ArrayList();
 
-    handler = new MainWindowMenuHandlers(this);
-    mainWindowMenu = new MainWindowMenus(this, handler);
-    mainWindowFonts = new MainWindowFonts(this, mainWindowMenu);
+    handler = new MenuHandler(this);
+    mainMenu = new MainMenu(this, handler);
+    windowFonts = new WindowFonts(this, mainMenu);
+    uiComponents = new UiComponents(this);
 
-    MainWindowUi.initDockingUi(this);
     makeMenus();
-    MainWindowUi.makeUi(this);
-    setWindowIcon();
+    makeUi();
+    setMacProxy();
+    setCloseHandler();
+    setFrameSize();
+    setFonts();
+  }
 
+  protected ImageIcon getDesktopIcon(final String iconName) {
+    if (Platform.isMacOsx()) {
+      return (mainMenu.getIcon("desktop/osx/" + iconName));
+    }
+    return (mainMenu.getIcon("desktop/" + iconName));
+  }
+
+  private void makeUi() {
+    uiComponents.makeUi();
+  }
+
+  private void setMacProxy() {
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
     try {
       AquaAdapter.connect(handler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
@@ -130,7 +137,16 @@ public final class MainWindow extends JFrame implements WindowListener {
     } catch (final NoClassDefFoundError e) {
       System.out.println(e);
     }
+  }
 
+  private void makeMenus() {
+    uiComponents.menuBar.add(mainMenu.getMenuFile());
+    uiComponents.menuBar.add(mainMenu.getMenuSettings());
+    uiComponents.menuBar.add(mainMenu.getMenuHelp());
+    setJMenuBar(uiComponents.menuBar);
+  }
+
+  private void setCloseHandler() {
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
@@ -138,7 +154,9 @@ public final class MainWindow extends JFrame implements WindowListener {
         handler.quit();
       }
     });
+  }
 
+  private void setFrameSize() {
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     final Dimension frameSize = this.getSize();
 
@@ -150,32 +168,6 @@ public final class MainWindow extends JFrame implements WindowListener {
     }
     this.setLocation((screenSize.width - frameSize.width) / 2,
             (screenSize.height - frameSize.height) / 2);
-    setFonts(null);
-  }
-
-  protected ImageIcon getDesktopIcon(final String iconName) {
-    if (Platform.isMacOsx()) {
-      return (mainWindowMenu.getIcon("desktop/osx/" + iconName));
-    }
-    return (mainWindowMenu.getIcon("desktop/" + iconName));
-  }
-
-  /**
-   * Set root window icon.
-   */
-  private void setWindowIcon() {
-    try {
-      //setIconImage( Icons.getIcon( "icon-small.png" ).getImage() ); 
-    } catch (final Exception e) {
-      System.out.println("Error loading icon: " + e);
-    }
-  }
-
-  private void makeMenus() {
-    menuBar.add(mainWindowMenu.getMenuFile());
-    menuBar.add(mainWindowMenu.getMenuSettings());
-    menuBar.add(mainWindowMenu.getMenuHelp());
-    setJMenuBar(menuBar);
   }
 
   /**
@@ -268,50 +260,50 @@ public final class MainWindow extends JFrame implements WindowListener {
    * <p>This function updates the rows in the table with the
    * modifications performed, adds rows or removes them.
    */
-  protected void updateAlignmentsView() {
-    viewAlignments.updateView();
+  protected void updateTmView() {
+    tmView.updateView();
   }
 
   //  Accessed by ControlView
   final void onOriginalJoin() {
     identChanges++;
     join(true);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
   final void onOriginalDelete() {
     identChanges++;
     delete(true);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
   final void onOriginalSplit() {
     identChanges++;
     split(true);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
   final void onTranslationJoin() {
     identChanges++;
     join(false);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
   final void onTranslationDelete() {
     identChanges++;
     delete(false);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
   final void onTranslationSplitCv() {
     identChanges++;
     split(false);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   //  Accessed by ControlView
@@ -321,7 +313,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges--;
 
     if (identChanges == -1) {
-      viewControls.setUndoEnabled(false);
+      toolBar.setUndoEnabled(false);
     }
   }
 
@@ -330,7 +322,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     positionTextArea = position;
   }
 
-  //  Accessed by ControlView currently
+  //  Accessed by toolbar currently
   final void onRemoveBlankRows() {
     int maxTamArrays = 0;
     int cont = 0;
@@ -364,8 +356,8 @@ public final class MainWindow extends JFrame implements WindowListener {
       SegmentChanges changes = new SegmentChanges(3, 0, false, "", 0);
       arrayListChanges.add(identChanges, changes);
       changes.setNumEliminada(numEliminadas, lineasLimpiar);
-      viewControls.setUndoEnabled(true);
-      updateAlignmentsView();
+      toolBar.setUndoEnabled(true);
+      updateTmView();
     }
   }
 
@@ -374,11 +366,9 @@ public final class MainWindow extends JFrame implements WindowListener {
     int izq;
     int cont;
     SegmentChanges changes;
-    //  Done in _vwControls
-    //_btnUndo.setEnabled( true );
     identChanges++;
 
-    izq = viewAlignments.getSelectedColumn();
+    izq = tmView.getSelectedColumn();
 
     documentOriginal.add(documentOriginal.size(),
             documentOriginal.get(documentOriginal.size() - 1));
@@ -418,7 +408,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     }
 
     arrayListChanges.add(identChanges, changes);
-    updateAlignmentsView();
+    updateTmView();
   }
 
   /**
@@ -431,32 +421,36 @@ public final class MainWindow extends JFrame implements WindowListener {
    * @param font to be configured
    */
   public final void setFonts(final Font font) {
-    mainWindowFonts.setUserInterfaceFont(font, this);
-    mainWindowFonts.setTableFont(font, this);
-    mainWindowFonts.setTableHeaderFont(font);
-    mainWindowFonts.setSourceEditorFont(font, this);
-    mainWindowFonts.setTargetEditorFont(font, this);
-    viewControls.setFonts(font);
+    windowFonts.setUiFont(font);
+    windowFonts.setTableFont(font, this);
+    windowFonts.setTableHeaderFont(font);
+    windowFonts.setSourceEditorFont(font);
+    windowFonts.setTargetEditorFont(font, this);
+    toolBar.setFonts(font);
+  }
+
+  private final void setFonts() {
+    setFonts(null);
   }
 
   public final void setTableFont(final Font font) {
-    mainWindowFonts.setTableFont(font, this);
+    windowFonts.setTableFont(font, this);
   }
 
   public final void setUserInterfaceFont(final Font font) {
-    mainWindowFonts.setUserInterfaceFont(font, this);
+    windowFonts.setUiFont(font);
   }
 
   public final void setTableHeaderFont(final Font font) {
-    mainWindowFonts.setTableHeaderFont(font);
+    windowFonts.setTableHeaderFont(font);
   }
 
   public final void setSourceEditorFont(final Font font) {
-    mainWindowFonts.setSourceEditorFont(font, this);
+    windowFonts.setSourceEditorFont(font);
   }
 
   public final void setTargetEditorFont(final Font font) {
-    mainWindowFonts.setTargetEditorFont(font, this);
+    windowFonts.setTargetEditorFont(font, this);
   }
 
   /**

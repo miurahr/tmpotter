@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -56,7 +56,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -68,14 +67,12 @@ import javax.swing.table.TableColumn;
  *
  * @author Hiroshi Miura
  */
-final class MainWindowMenuHandlers {
+final class MenuHandler {
 
   private final MainWindow mainWindow;
-  private final MainWindowMenus mainWindowMenu;
 
-  public MainWindowMenuHandlers(final MainWindow mainWindow) {
+  public MenuHandler(final MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    this.mainWindowMenu = mainWindow.mainWindowMenu;
   }
 
   // proxy for aqua
@@ -128,7 +125,7 @@ final class MainWindowMenuHandlers {
         } else {
           mainWindow.documentTranslation.split(mainWindow.identLabel, position);
         }
-        mainWindow.updateAlignmentsView();
+        mainWindow.updateTmView();
         break;
       }
       case 1:
@@ -156,7 +153,7 @@ final class MainWindowMenuHandlers {
           }
           mainWindow.documentTranslation.set(mainWindow.documentTranslation.size() - 1, "");
         }
-        mainWindow.updateAlignmentsView();
+        mainWindow.updateTmView();
         break;
       }
       case 3: {
@@ -184,7 +181,7 @@ final class MainWindowMenuHandlers {
           }
           cont2--;
         }
-        mainWindow.updateAlignmentsView();
+        mainWindow.updateTmView();
         break;
       }
       case 4: {
@@ -199,7 +196,7 @@ final class MainWindowMenuHandlers {
           mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
           mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
         }
-        mainWindow.updateAlignmentsView();
+        mainWindow.updateTmView();
         break;
       }
       default:
@@ -251,7 +248,7 @@ final class MainWindowMenuHandlers {
         documentTranslation.set(identLabel, ultChanges.getFrase());
       }
     }
-    mainWindow.updateAlignmentsView();
+    mainWindow.updateTmView();
   }
 
   /**
@@ -265,12 +262,11 @@ final class MainWindowMenuHandlers {
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
       mainWindow.userHome = dlg.getPath();
-      String originalEncoding = (String) dlg.getLangEncComboBox().getSelectedItem();
       mainWindow.filePathOriginal = dlg.getFilePath();
       mainWindow.filePathTranslation = mainWindow.filePathOriginal;
       mainWindow.stringLangOriginal = dlg.getSourceLocale();
       mainWindow.stringLangTranslation = dlg.getTargetLocale();
-      mainWindow.viewAlignments.buildDisplay();
+      mainWindow.tmView.buildDisplay();
       try {
         ProjectProperties prop = new ProjectProperties();
         prop.setSourceLanguage(mainWindow.stringLangOriginal);
@@ -283,12 +279,12 @@ final class MainWindowMenuHandlers {
       } catch (Exception ex) {
         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
       }
-      initializeAlignmentsView(mainWindow);
-      mainWindow.updateAlignmentsView();
-      mainWindow.viewControls.enableButtons(true);
-      mainWindow.viewControls.setUndoEnabled(false);
-      mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(true);
+      initializeTmView(mainWindow);
+      mainWindow.updateTmView();
+      mainWindow.toolBar.enableButtons(true);
+      mainWindow.toolBar.setUndoEnabled(false);
+      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
       dlg.dispose();
     }
   }
@@ -310,7 +306,7 @@ final class MainWindowMenuHandlers {
       mainWindow.filePathOriginal = dlg.getSourcePath();
       mainWindow.stringOriginal = dlg.getSource();
       mainWindow.stringLangOriginal = dlg.getSourceLocale();
-      mainWindow.viewAlignments.buildDisplay();
+      mainWindow.tmView.buildDisplay();
       mainWindow.documentOriginal = new Document();
       mainWindow.documentTranslation = new Document();
       translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
@@ -344,12 +340,12 @@ final class MainWindowMenuHandlers {
           }
         }
       }
-      initializeAlignmentsView(mainWindow);
-      mainWindow.updateAlignmentsView();
-      mainWindow.viewControls.enableButtons(true);
-      mainWindow.viewControls.setUndoEnabled(false);
-      mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(true);
+      initializeTmView(mainWindow);
+      mainWindow.updateTmView();
+      mainWindow.toolBar.enableButtons(true);
+      mainWindow.toolBar.setUndoEnabled(false);
+      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
       dlg.dispose();
     }
   }
@@ -365,16 +361,16 @@ final class MainWindowMenuHandlers {
    * with one line for each left and right line
    *
    */
-  protected void initializeAlignmentsView(MainWindow mainWindow) {
+  protected void initializeTmView(MainWindow mainWindow) {
     TableColumn col;
-    col = mainWindow.viewAlignments.getColumnModel().getColumn(1);
+    col = mainWindow.tmView.getColumnModel().getColumn(1);
     col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
             + mainWindow.filePathOriginal.getName());
-    col = mainWindow.viewAlignments.getColumnModel().getColumn(2);
+    col = mainWindow.tmView.getColumnModel().getColumn(2);
     col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
             + mainWindow.filePathTranslation.getName());
-    mainWindow.viewAlignments.setColumnHeaderView();
-    mainWindow.updateAlignmentsView();
+    mainWindow.tmView.setColumnHeaderView();
+    mainWindow.updateTmView();
     mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
     mainWindow.identLabel = 0;
   }
@@ -481,11 +477,11 @@ final class MainWindowMenuHandlers {
    */
   public void menuItemFileCloseActionPerformed() {
     clear();
-    mainWindow.viewControls.enableButtons(false);
-    mainWindow.viewControls.setUndoEnabled(false);
-    mainWindow.mainWindowMenu.menuItemFileSave.setEnabled(false);
-    mainWindow.mainWindowMenu.menuItemFileSaveAs.setEnabled(false);
-    mainWindow.mainWindowMenu.menuItemFileClose.setEnabled(false);
+    mainWindow.toolBar.enableButtons(false);
+    mainWindow.toolBar.setUndoEnabled(false);
+    mainWindow.mainMenu.menuItemFileSave.setEnabled(false);
+    mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(false);
+    mainWindow.mainMenu.menuItemFileClose.setEnabled(false);
   }
 
   /**
@@ -509,8 +505,8 @@ final class MainWindowMenuHandlers {
     mainWindow.identAnt = 0;
     mainWindow.filePathTranslation = null;
     mainWindow.filePathOriginal = null;
-    mainWindow.viewControls.setUndoEnabled(false);
-    mainWindow.viewAlignments.clear();
+    mainWindow.toolBar.setUndoEnabled(false);
+    mainWindow.tmView.clear();
     mainWindow.topArrays = 0;
     mainWindow.editLeftSegment.setText("");
     mainWindow.editRightSegment.setText("");
@@ -542,30 +538,30 @@ final class MainWindowMenuHandlers {
    * origianl/translation tables/editors and main window
    */
   public void menuItemSettingsFontsActionPerformed() {
-    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.mainWindowFonts.getFonts());
+    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.windowFonts.getFonts());
     dlgFonts.setVisible(true);
   }
 
   enum LnfType { GTK, LIQUID, METAL, NIMBUS, SYSTEM }
 
   public void menuItemLafGtkActionPerformed() {
-    onChangeLnF(MainWindowMenuHandlers.LnfType.GTK);
+    onChangeLnF(MenuHandler.LnfType.GTK);
   }
 
   public void menuItemLafLiquidActionPerformed() {
-    onChangeLnF(MainWindowMenuHandlers.LnfType.LIQUID);
+    onChangeLnF(MenuHandler.LnfType.LIQUID);
   }
 
   public void menuLafMetalActionPerformed() {
-    onChangeLnF(MainWindowMenuHandlers.LnfType.METAL);
+    onChangeLnF(MenuHandler.LnfType.METAL);
   }
 
   public void menuItemLafNimbusActionPerformed() {
-    onChangeLnF(MainWindowMenuHandlers.LnfType.NIMBUS);
+    onChangeLnF(MenuHandler.LnfType.NIMBUS);
   }
 
   public void menuItemLafSystemActionPerformed() {
-    onChangeLnF(MainWindowMenuHandlers.LnfType.SYSTEM);
+    onChangeLnF(MenuHandler.LnfType.SYSTEM);
   }
 
   private final void onChangeLnF(LnfType type) {

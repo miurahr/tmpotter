@@ -45,11 +45,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXPanel;
 
 
 /**
@@ -57,27 +59,18 @@ import javax.swing.table.TableColumnModel;
  *
  */
 @SuppressWarnings("serial")
-final class AlignmentsView extends DockablePanel {
+final class TmView extends JXPanel {
 
   private final MainWindow mainWindow;
 
   BitextModel          bitextModel;
-  JTable               table;
+  JXTable              table;
   private JScrollPane  scrollPane;
 
-  public AlignmentsView( final MainWindow parent ) {
-    super( "AlignmentTableView" );
-
+  public TmView( final MainWindow parent ) {
+    super();
     mainWindow = parent;
-
-    getDockKey().setName(getString( "VW.ALIGNMENTS.TITLE" ) );
-    getDockKey().setTooltip(getString( "VW.ALIGNMENTS.TOOLTIP" ) );
-    getDockKey().setCloseEnabled(false);
-    getDockKey().setAutoHideEnabled(false);
-    getDockKey().setMaximizeEnabled(false);
-    getDockKey().setResizeWeight( 1.0f );  // takes all resizing
-    getDockKey().setIcon( Icons.getIcon( "icon-small.png") );
-
+    setName(getString( "VW.ALIGNMENTS.TITLE" ) );
     setLayout( new BorderLayout() );
   }
 
@@ -93,27 +86,27 @@ final class AlignmentsView extends DockablePanel {
             1).toString()));
     mainWindow.editRightSegment.setText(formatText(getValueAt(getSelectedRow(),
             2).toString()));
-    mainWindow.identLabel = mainWindow.viewAlignments.getSelectedRow();
+    mainWindow.identLabel = mainWindow.tmView.getSelectedRow();
     mainWindow.identAnt = mainWindow.identLabel;
     if (mainWindow.identLabel == mainWindow.topArrays) {
-      mainWindow.viewControls.setTranslationJoinEnabled(false);
-      mainWindow.viewControls.setOriginalJoinEnabled(false);
+      mainWindow.toolBar.setTranslationJoinEnabled(false);
+      mainWindow.toolBar.setOriginalJoinEnabled(false);
     } else {
-      mainWindow.viewControls.setTranslationJoinEnabled(true);
-      mainWindow.viewControls.setOriginalJoinEnabled(true);
+      mainWindow.toolBar.setTranslationJoinEnabled(true);
+      mainWindow.toolBar.setOriginalJoinEnabled(true);
     }
-    mainWindow.updateAlignmentsView();
+    updateView();
   }
 
   private void onTablePressed(final KeyEvent event) {
     int fila;
-    if (mainWindow.viewAlignments.getSelectedRow() != -1) {
-      fila = mainWindow.viewAlignments.getSelectedRow();
+    if (mainWindow.tmView.getSelectedRow() != -1) {
+      fila = mainWindow.tmView.getSelectedRow();
       mainWindow.positionTextArea = 0;
     } else {
       fila = 1;
     }
-    if (fila < mainWindow.viewAlignments.getRowCount() - 1) {
+    if (fila < mainWindow.tmView.getRowCount() - 1) {
       if ((event.getKeyCode() == KeyEvent.VK_DOWN)
               || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
         if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
@@ -146,15 +139,15 @@ final class AlignmentsView extends DockablePanel {
                 .toString()));
       }
       if (mainWindow.identLabel == mainWindow.topArrays) {
-        mainWindow.viewControls.setTranslationJoinEnabled(false);
-        mainWindow.viewControls.setOriginalJoinEnabled(false);
+        mainWindow.toolBar.setTranslationJoinEnabled(false);
+        mainWindow.toolBar.setOriginalJoinEnabled(false);
       } else {
-        mainWindow.viewControls.setTranslationJoinEnabled(true);
-        mainWindow.viewControls.setOriginalJoinEnabled(true);
+        mainWindow.toolBar.setTranslationJoinEnabled(true);
+        mainWindow.toolBar.setOriginalJoinEnabled(true);
       }
       mainWindow.identAnt = mainWindow.identLabel;
     }
-    mainWindow.updateAlignmentsView();
+    updateView();
   }
 
   public final void setFonts( final Font font ) {
@@ -224,6 +217,9 @@ final class AlignmentsView extends DockablePanel {
   }
 
   public final Object getValueAt( final int row, final int column ) {
+    if (row < 0 && column < 0 ) {
+      return null;
+    }
     return ( table.getValueAt( row, column ) );
   }
 
@@ -253,12 +249,11 @@ final class AlignmentsView extends DockablePanel {
 
     removeAll();
     repaint();
-    updateUI();
   }
 
   final void buildDisplay() {
     bitextModel = new BitextModel();
-    table   = new JTable( bitextModel );
+    table   = new JXTable( bitextModel );
 
     TableColumn column;
 
@@ -311,7 +306,6 @@ final class AlignmentsView extends DockablePanel {
     scrollPane.setColumnHeaderView(table.getTableHeader() );
 
     add( scrollPane );
-    updateUI();
   }
 
   /**
@@ -325,7 +319,7 @@ final class AlignmentsView extends DockablePanel {
             && !mainWindow.documentTranslation.isEmpty()) {
       mainWindow.matchArrays();
     }
-    for (int cont = 0; cont < mainWindow.viewAlignments.getRowCount(); cont++) {
+    for (int cont = 0; cont < mainWindow.tmView.getRowCount(); cont++) {
       setModelValueAt("", cont, 0);
       setModelValueAt("", cont, 1);
       setModelValueAt("", cont, 2);

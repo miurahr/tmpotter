@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -33,7 +33,6 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.util.Platform;
-import org.tmpotter.util.RuntimePreferences;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,8 +51,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -63,9 +60,9 @@ import javax.swing.event.MenuListener;
  *
  * @author Hiroshi Miura
  */
-final class MainWindowMenus implements ActionListener, MenuListener {
+final class MainMenu implements ActionListener, MenuListener {
   private static final Logger LOGGER =
-          Logger.getLogger(MainWindowMenus.class.getName());
+          Logger.getLogger(MainMenu.class.getName());
   
   /**
    * MainWindow instance.
@@ -75,7 +72,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
   /**
    * MainWindow menu handler instance.
    */
-  protected final MainWindowMenuHandlers mainWindowMenuHandler;
+  protected final MenuHandler menuHandler;
 
   ImageIcon getIcon(final String iconName) {
     return Icons.getIcon(iconName);
@@ -115,12 +112,12 @@ final class MainWindowMenus implements ActionListener, MenuListener {
    * Menus initilizer/setter/getter.
    * 
    * @param mainWindow main window object
-   * @param mainWindowMenuHandler menu handler object
+   * @param menuHandler menu handler object
    */
-  public MainWindowMenus(final MainWindow mainWindow,
-          final MainWindowMenuHandlers mainWindowMenuHandler) {
+  public MainMenu(final MainWindow mainWindow,
+          final MenuHandler menuHandler) {
     this.mainWindow = mainWindow;
-    this.mainWindowMenuHandler = mainWindowMenuHandler;
+    this.menuHandler = menuHandler;
     makeMenusComponents();
   }
 
@@ -141,7 +138,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     String methodName = action + "MenuSelected";
     Method method = null;
     try {
-      method = mainWindowMenuHandler.getClass().getMethod(methodName, JMenu.class);
+      method = menuHandler.getClass().getMethod(methodName, JMenu.class);
     } catch (NoSuchMethodException ex) {
       // method not declared
       return;
@@ -149,7 +146,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
 
     // Call ...MenuMenuSelected method.
     try {
-      method.invoke(mainWindowMenuHandler, menu);
+      method.invoke(menuHandler, menu);
     } catch (IllegalAccessException ex) {
       throw new IncompatibleClassChangeError(
               "Error invoke method handler for main menu");
@@ -178,10 +175,10 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     String methodName = action + "ActionPerformed";
     Method method = null;
     try {
-      method = mainWindowMenuHandler.getClass().getMethod(methodName);
+      method = menuHandler.getClass().getMethod(methodName);
     } catch (NoSuchMethodException ignore) {
       try {
-        method = mainWindowMenuHandler.getClass()
+        method = menuHandler.getClass()
                 .getMethod(methodName, Integer.TYPE);
       } catch (NoSuchMethodException ex) {
         throw new IncompatibleClassChangeError(
@@ -193,7 +190,7 @@ final class MainWindowMenus implements ActionListener, MenuListener {
     Object[] args = method.getParameterTypes()
             .length == 0 ? null : new Object[]{evt.getModifiers()};
     try {
-      method.invoke(mainWindowMenuHandler, args);
+      method.invoke(menuHandler, args);
     } catch (IllegalAccessException ex) {
       throw new IncompatibleClassChangeError(
               "Error invoke method handler for main menu");

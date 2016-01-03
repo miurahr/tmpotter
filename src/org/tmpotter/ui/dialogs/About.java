@@ -31,6 +31,11 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import static org.tmpotter.util.Localization.getString;
 
+import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTextArea;
+
 import org.tmpotter.ui.Icons;
 import org.tmpotter.ui.MainWindow;
 import org.tmpotter.util.AppConstants;
@@ -48,12 +53,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
 
 
 /**
@@ -152,12 +152,12 @@ public final class About extends JDialog {
   }
 
   // Variables declaration
-  private final JLabel   label1       = new JLabel();
-  private final JLabel   label2       = new JLabel();
-  private final JLabel   label3       = new JLabel();
-  private final JTextArea   contributor  = new JTextArea();
-  private final JLabel   labelIcon    = new JLabel();
-  private final JButton  buttonClose  = new JButton();
-  private final JPanel   panelButtons = new JPanel();
+  private final JXLabel label1 = new JXLabel();
+  private final JXLabel label2 = new JXLabel();
+  private final JXLabel label3 = new JXLabel();
+  private final JXTextArea   contributor  = new JXTextArea();
+  private final JXLabel labelIcon = new JXLabel();
+  private final JXButton  buttonClose  = new JXButton();
+  private final JXPanel   panelButtons = new JXPanel();
   // End of variables declaration
 }

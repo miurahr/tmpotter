@@ -28,6 +28,8 @@
 
 package org.tmpotter.ui;
 
+import org.jdesktop.swingx.JXPanel;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -46,7 +48,7 @@ import javax.swing.JTextPane;
  *
  */
 @SuppressWarnings("serial")
-class SegmentEditor extends DockablePanel {
+class SegmentEditor extends JXPanel {
   private final JTextPane textPane =  new JTextPane();
   private final MainWindow windowMain;
 
@@ -56,17 +58,8 @@ class SegmentEditor extends DockablePanel {
    * @param windowMain main window object.
    */
   public SegmentEditor( final MainWindow windowMain ) {
-    super( "SegmentEditor", "SegmentEditor", false );
-
+    super(false);
     this.windowMain = windowMain;
-
-    getDockKey().setName( "Segment Editor" );
-    getDockKey().setTooltip( "Segment Editor" );
-    getDockKey().setCloseEnabled(false);
-    getDockKey().setAutoHideEnabled(false);
-    getDockKey().setMaximizeEnabled(false);
-    getDockKey().setFloatEnabled(false);
-    getDockKey().setIcon( Icons.getIcon( "icon-small.png" ) );
 
     textPane.addKeyListener( new KeyAdapter() {
       @Override
