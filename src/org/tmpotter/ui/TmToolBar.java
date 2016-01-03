@@ -32,7 +32,6 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -40,6 +39,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 
 /**
@@ -47,7 +47,7 @@ import javax.swing.JPanel;
  *
  */
 @SuppressWarnings("serial")
-final class ControlView extends DockablePanel implements ActionListener {
+final class TmToolBar extends JToolBar implements ActionListener {
   private final MainWindow mainWindow;
 
   private final JButton  buttonOriginalDelete    = new JButton();
@@ -66,16 +66,11 @@ final class ControlView extends DockablePanel implements ActionListener {
   private final JPanel panelButtonsLeft   = new JPanel();
   private final JPanel panelButtonsRight  = new JPanel();
 
-  public ControlView( final MainWindow windowMain ) {
+  public TmToolBar( final MainWindow windowMain ) {
     super( "SegmentButtonsView" );
 
     this.mainWindow = windowMain;
 
-    getDockKey().setName(null);
-    getDockKey().setCloseEnabled(false);
-    getDockKey().setAutoHideEnabled(false);
-    getDockKey().setFloatEnabled(false);
-    getDockKey().setMaximizeEnabled(false);
     setLayout(new BorderLayout());
 
     setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));

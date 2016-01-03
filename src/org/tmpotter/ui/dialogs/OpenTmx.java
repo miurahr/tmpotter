@@ -32,9 +32,12 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 
 import static org.tmpotter.util.Localization.getString;
 
-import org.tmpotter.util.AppConstants;
+import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXComboBox;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+
 import org.tmpotter.util.Localization;
-import org.tmpotter.util.Utilities;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -52,9 +55,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
@@ -65,16 +66,14 @@ import javax.swing.JTextField;
  */
 @SuppressWarnings("serial")
 public class OpenTmx extends JDialog implements ActionListener {
-  private final JPanel  panel = new JPanel();
+  private final JXPanel  panel = new JXPanel();
 
-  private final JLabel      labelTmxFile  = new JLabel();
-  private final JTextField  fieldTmxFile  = new JTextField();
-  private final JButton     buttonTmxFile = new JButton();
+  private final JXLabel labelTmxFile = new JXLabel();
+  private final JTextField fieldTmxFile = new JTextField();
+  private final JXButton buttonTmxFile = new JXButton();
 
-  private final JButton  buttonOk     = new JButton();
-  private final JButton  buttonCancel = new JButton();
-
-  private final JLabel  labelEncoding            = new JLabel();
+  private final JXButton buttonOk = new JXButton();
+  private final JXButton buttonCancel = new JXButton();
 
   private File     filePath;
   private boolean  closed;
@@ -95,17 +94,13 @@ public class OpenTmx extends JDialog implements ActionListener {
     return ( closed );
   }
 
-  private final JComboBox  comboSourceLang    = new JComboBox();
-  private final JComboBox  comboTranslationLang = new JComboBox();
-  private final JLabel     labelSourceLang    = new JLabel();
-  private final JLabel     labelTranslationLang = new JLabel();
-  
+  private final JXComboBox comboSourceLang = new JXComboBox();
+  private final JXComboBox comboTranslationLang = new JXComboBox();
+  private final JXLabel labelSourceLang = new JXLabel();
+  private final JXLabel labelTranslationLang = new JXLabel();
   
   public File userPathFile = new File( System.getProperty( "user.dir" ) );
 
-  private final JComboBox comboEncoding    = new JComboBox( AppConstants
-          .straEncodings );
-  private final int numEncodings = AppConstants.straEncodings.length;
   private String   originalDoc;
   
   private final String [] idiom = Localization.getLanguageList();
@@ -173,17 +168,6 @@ public class OpenTmx extends JDialog implements ActionListener {
     //labelSourceLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
     labelSourceLang.setBounds( new Rectangle( 5, 55, 100, 16 ) );
 
-    comboEncoding.removeItemAt( numEncodings - 1 );
-    comboEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
-    comboEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
-    comboEncoding.setSelectedIndex( 0 );
-    //comboEncoding.setBounds( new Rectangle( 530, 30, 100, 22 ) );
-    comboEncoding.setBounds( new Rectangle( 250, 75, 100, 22 )); 
-        
-    labelEncoding.setText( getString( "LBL.ENCODING" ) );
-    //labelEncoding.setBounds( new Rectangle( 530, 10, 100, 16 ) );
-    labelEncoding.setBounds(new Rectangle( 250, 55, 100, 16 ));
-
     comboTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
     comboTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
     //comboTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
@@ -199,13 +183,11 @@ public class OpenTmx extends JDialog implements ActionListener {
 
     panel.add(comboSourceLang, null );
     panel.add(comboTranslationLang, null );
-    panel.add(comboEncoding, null );
 
     panel.add( buttonCancel, null );
     panel.add( buttonOk, null );
 
     panel.add( labelTmxFile, null);
-    panel.add( labelEncoding, null);
     panel.add( labelSourceLang, null);
     panel.add( labelTranslationLang, null);
 
@@ -215,11 +197,7 @@ public class OpenTmx extends JDialog implements ActionListener {
     setBounds( ( screenSize.width - 420 ) / 2,
         ( screenSize.height - 180 ) / 2, 420, 180 );
   }
-  
-  public final JComboBox getLangEncComboBox() {
-    return ( comboEncoding );
-  }
-  
+
   public final File getFilePath() {
     return ( filePath );
   }
@@ -231,7 +209,7 @@ public class OpenTmx extends JDialog implements ActionListener {
   public final String getTargetLocale() {
     return ( translationLang ); 
   }
-  
+
   private void onTmxFile() {
     final JFileChooser fc = new JFileChooser();
     fc.setCurrentDirectory( filePath );
