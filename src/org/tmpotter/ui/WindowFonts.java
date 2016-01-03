@@ -88,7 +88,6 @@ public class WindowFonts {
       }
     }
     mainMenu.menuHelp.setFont(uiFont);
-    mainMenu.menuItemHelpManual.setFont(uiFont);
     if (!Platform.isMacOsx()) {
       mainMenu.menuItemHelpAbout.setFont(uiFont);
     }

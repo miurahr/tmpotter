@@ -32,8 +32,8 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
-import org.tmpotter.engine.BitextModel;
-import org.tmpotter.engine.Segment;
+import org.tmpotter.core.BitextModel;
+import org.tmpotter.core.Segment;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

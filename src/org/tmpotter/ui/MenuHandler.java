@@ -37,15 +37,13 @@ import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
-import org.tmpotter.core.TranslationAligner;
-import org.tmpotter.engine.SegmentChanges;
+import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.dialogs.FontSelector;
 import org.tmpotter.ui.dialogs.OpenTexts;
 import org.tmpotter.ui.dialogs.OpenTmx;
-import org.tmpotter.ui.help.Manual;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
 
@@ -83,11 +81,6 @@ final class MenuHandler {
   
   public void menuItemHelpAboutActionPerformed() {
     new About(mainWindow).setVisible(true);
-  }
-
-  public void menuItemHelpManualActionPerformed() {
-    final Manual dlg = new Manual();
-    dlg.setVisible(true);
   }
 
   /**
@@ -326,20 +319,7 @@ final class MenuHandler {
                 getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      boolean res = TranslationAligner.align(mainWindow.documentOriginal,
-              mainWindow.documentTranslation);
-      if (res) {
-        mainWindow.matchArrays();
-        for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
-          if (mainWindow.documentOriginal.get(cont) == null
-                  || (mainWindow.documentOriginal.get(cont).equals(""))
-                  && (mainWindow.documentTranslation.get(cont) == null
-                  || mainWindow.documentTranslation.get(cont).equals(""))) {
-            mainWindow.documentOriginal.remove(cont);
-            mainWindow.documentTranslation.remove(cont);
-          }
-        }
-      }
+      mainWindow.matchArrays();
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);

@@ -26,7 +26,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.engine;
+package org.tmpotter.core;
 
 
 /**

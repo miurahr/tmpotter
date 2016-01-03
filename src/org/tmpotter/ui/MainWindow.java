@@ -31,7 +31,7 @@ package org.tmpotter.ui;
 import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.core.Document;
-import org.tmpotter.engine.SegmentChanges;
+import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.AquaAdapter;
