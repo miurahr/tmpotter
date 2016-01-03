@@ -86,7 +86,6 @@ final class MainMenu implements ActionListener, MenuListener {
   }
 
   JMenuItem menuItemLafNimbus;
-  JMenuItem menuItemHelpManual;
   JMenuItem menuItemFileSave;
   JMenuItem menuItemSettingsFonts;
   JMenuItem menuItemFileQuit;
@@ -250,9 +249,6 @@ final class MainMenu implements ActionListener, MenuListener {
             "Help", "MNU.HELP");
     menuItemHelpAbout = makeMenuComponent(MenuComponentType.ITEM, null,
             getIcon("icon-small.png"), "About", "MNI.HELP.ABOUT");
-    menuItemHelpManual = makeMenuComponent(MenuComponentType.ITEM,
-            KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
-            getIcon("help-contents.png"), "Manual", "MNI.HELP.MANUAL");
     menuItemFile.add(menuItemFileOpen);
     menuItemFile.addSeparator();
     menuItemFile.add(menuItemFileTextOpen);
@@ -294,7 +290,6 @@ final class MainMenu implements ActionListener, MenuListener {
       menuSettings.add(menuLaf);
     }
     menuSettings.add(menuLaf);
-    menuHelp.add(menuItemHelpManual);
     if (!Platform.isMacOsx()) {
       menuHelp.addSeparator();
       menuHelp.add(menuItemHelpAbout);
