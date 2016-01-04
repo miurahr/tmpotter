@@ -96,8 +96,8 @@ public final class About extends JDialog {
     label2.setFont(font);
     label3.setFont(font);
 
-    Color c = new Color(180,180,180,100);
-    contributor.setBackground(c);
+    Color cl = new Color(180,180,180,100);
+    contributor.setBackground(cl);
 
     final GridBagConstraints gbc = new GridBagConstraints();
 

@@ -32,6 +32,9 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
+
 import org.tmpotter.core.BitextModel;
 import org.tmpotter.core.Segment;
 
@@ -49,9 +52,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXPanel;
 
 
 /**

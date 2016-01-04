@@ -28,11 +28,11 @@
 
 package org.tmpotter.ui;
 
-import org.jdesktop.swingx.MultiSplitLayout;
-import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
+import org.jdesktop.swingx.MultiSplitLayout;
 
 import org.tmpotter.util.AppConstants;
 
@@ -61,6 +61,11 @@ public class UiComponents {
   //  Menubar
   protected final JMenuBar menuBar = new JMenuBar();
 
+  /**
+   * Create UI components.
+   *
+   * @param mainWindow parent frame
+   */
   public UiComponents(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
     controlPane = new JXPanel();

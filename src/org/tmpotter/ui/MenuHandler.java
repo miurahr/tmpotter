@@ -34,10 +34,10 @@ import com.vlsolutions.swing.docking.ui.DockingUISettings;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
-import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
