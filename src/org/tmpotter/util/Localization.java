@@ -23,15 +23,19 @@
 
 package org.tmpotter.util;
 
+
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.ResourceBundle.Control;
 
 /**
  *  Localization: localization functionality.
  */
 public final class Localization {
   //  Init the bundle
-  private static ResourceBundle _bundle = ResourceBundle.getBundle("org/tmpotter/Bundle");
+  private static Control control = new Utf8ResourceBundleControl();
+  private static ResourceBundle _bundle = ResourceBundle
+          .getBundle("org/tmpotter/Bundle", control);
 
   private static final ArrayList<String> languageList = new ArrayList<>();
   private static final ArrayList<String> langId = new ArrayList<>();
@@ -99,6 +103,8 @@ public final class Localization {
   
   /**
    * Returns resource bundle.
+   *
+   * @return bundle object
    */
   public static ResourceBundle getResourceBundle() {
     return _bundle;
@@ -114,8 +120,8 @@ public final class Localization {
   /**
    *  l10n: return localized string for given key.
    *
-   *  @param  String key
-   *  @return String translated string
+   * @param strKey String to retrieve resource
+   * @return String translated string
    */
   public static final String getString( final String strKey ) {
     return ( _bundle.getString( strKey ) );
