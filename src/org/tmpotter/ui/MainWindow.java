@@ -348,7 +348,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     }
 
     JOptionPane.showMessageDialog(this, getString("MSG.ERASED") + " "
-            + lineasLimpiar + " " + getString("MSG.BLANK.ROWS"));
+            + lineasLimpiar + " " + getString("MSG.BLANK_ROWS"));
 
     if (lineasLimpiar > 0) {
       identChanges++;

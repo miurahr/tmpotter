@@ -228,8 +228,8 @@ public class OpenTmx extends JDialog implements ActionListener {
         
       } else {
         JOptionPane.showMessageDialog(panel,
-            getString( "MSG_ERROR_FILE_NOTFOUND" ),
-            getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+            getString( "MSG.ERROR.FILE_NOTFOUND" ),
+            getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
         fieldTmxFile.setText( "" );
       }
     }
@@ -251,8 +251,8 @@ public class OpenTmx extends JDialog implements ActionListener {
         setVisible(false);
       }
     } catch ( final IOException ex ) {
-      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE.NOTFOUND" ),
-          getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
+          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
       fieldTmxFile.setText("");
     }
     
