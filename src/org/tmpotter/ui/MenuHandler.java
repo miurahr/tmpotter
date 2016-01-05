@@ -30,8 +30,6 @@ package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
 
-import com.vlsolutions.swing.docking.ui.DockingUISettings;
-
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.SegmentChanges;
@@ -549,7 +547,6 @@ final class MenuHandler {
       case GTK:
         try {
           UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
           SwingUtilities.updateComponentTreeUI(mainWindow);
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
@@ -559,7 +556,6 @@ final class MenuHandler {
         try {
           UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
           com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations(false);
-          DockingUISettings.getInstance().updateUI();
           SwingUtilities.updateComponentTreeUI(mainWindow);
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
@@ -568,7 +564,6 @@ final class MenuHandler {
       case METAL:
         try {
           UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
           SwingUtilities.updateComponentTreeUI(mainWindow);
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
@@ -578,7 +573,6 @@ final class MenuHandler {
       case NIMBUS:
         try {
           UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-          DockingUISettings.getInstance().updateUI();
           SwingUtilities.updateComponentTreeUI(mainWindow);
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
@@ -588,7 +582,6 @@ final class MenuHandler {
       default:
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          DockingUISettings.getInstance().updateUI();
           SwingUtilities.updateComponentTreeUI(mainWindow);
         } catch (final Exception e) {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
