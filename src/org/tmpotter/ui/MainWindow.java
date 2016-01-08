@@ -55,12 +55,12 @@ import javax.swing.JOptionPane;
 
 
 /**
- * Main window class,.
+ * Main window class.
  * 
  */
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements WindowListener {
-  protected final TmToolBar toolBar = new TmToolBar(this);
+  protected final ToolBar toolBar = new ToolBar(this);
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
   protected final TmView tmView = new TmView(this);
@@ -311,7 +311,7 @@ public final class MainWindow extends JFrame implements WindowListener {
   }
 
   //  Accessed by ControlView
-  final void onTranslationSplitCv() {
+  final void onTranslationSplit() {
     identChanges++;
     split(false);
     updateTmView();
@@ -320,7 +320,7 @@ public final class MainWindow extends JFrame implements WindowListener {
   }
 
   //  Accessed by ControlView
-  final void onUndoCv() {
+  final void onUndo() {
     handler.undoChanges();
     arrayListChanges.remove(identChanges);
     identChanges--;

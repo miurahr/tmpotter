@@ -286,29 +286,32 @@ final class MainMenu implements ActionListener, MenuListener {
     menuItemRedo = makeMenuComponent(MenuComponentType.ITEM,
 	    null, null, "Redo", "MNI.EDIT.REDO");
     menuItemOriginalDelete = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalDelete", "BTN.DELETE.ORIGINAL");
+	    null, null, "OriginalDelete", "MNI.EDIT.DELETE.ORIGINAL");
     menuItemOriginalJoin = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalJoin", "BTN.JOIN.ORIGINAL");
+	    null, null, "OriginalJoin", "MNI.EDIT.JOIN.ORIGINAL");
     menuItemOriginalSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalSplit", "BTN.SPLIT.ORIGINAL" );
+	    null, null, "OriginalSplit", "MNI.EDIT.SPLIT.ORIGINAL" );
     menuItemTranslationDelete = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationDelete", "BTN.DELETE.TRANSLATION" );
+	    null, null, "TranslationDelete", "MNI.EDIT.DELETE.TRANSLATION" );
     menuItemTranslationJoin = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationJoin", "BTN.JOIN.TRANSLATION" );
+	    null, null, "TranslationJoin", "MNI.EDIT.JOIN.TRANSLATION" );
     menuItemTranslationSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationSplit", "BTN.SPLIT.TRANSLATION" );
+	    null, null, "TranslationSplit", "MNI.EDIT.SPLIT.TRANSLATION" );
     menuItemRemoveBlankRows = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "RemoveBlankRow", "BTN.DELETE.BLANK.ROWS");
+	    null, null, "RemoveBlankRow", "MNI.EDIT.DELETE.BLANK.ROWS");
     menuItemTuSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TuSplit", "BTN.SPLIT.TU");
+	    null, null, "TuSplit", "MNI.EDIT.SPLIT.TU");
     menuEdit.add(menuItemUndo);
     menuEdit.add(menuItemRedo);
+    menuEdit.addSeparator();
     menuEdit.add(menuItemOriginalDelete);
     menuEdit.add(menuItemOriginalJoin);
     menuEdit.add(menuItemOriginalSplit);
+    menuEdit.addSeparator();
     menuEdit.add(menuItemTranslationDelete);
     menuEdit.add(menuItemTranslationJoin);
     menuEdit.add(menuItemTranslationSplit);
+    menuEdit.addSeparator();
     menuEdit.add(menuItemRemoveBlankRows);
     menuEdit.add(menuItemTuSplit);
   }

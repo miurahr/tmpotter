@@ -514,10 +514,43 @@ final class MenuHandler {
   }
 
   public void menuItemUndoActionPerformed() {
-    mainWindow.onUndoCv();
+    mainWindow.onUndo();
   }
 
   public void menuItemRedoActionPerformed() {
+    
+  }
+
+  public void menuItemOriginalDeleteActionPerformed() {
+    mainWindow.onOriginalDelete();
+  }
+
+  public void menuItemOriginalJoinActionPerformed() {
+    mainWindow.onOriginalJoin();
+  }
+
+  public void menuItemOriginalSplitActionPerformed() {
+    mainWindow.onOriginalSplit();
+  }
+
+  public void menuItemTranslationDeleteActionPerformed() {
+    mainWindow.onTranslationDelete();
+  }
+
+  public void menuItemTranslationJoinActionPerformed() {
+    mainWindow.onTranslationJoin();
+  }
+
+  public void menuItemTranslationSplitActionPerformed() {
+    mainWindow.onTranslationSplit();
+  }
+
+  public void menuItemRemoveBlankRowsActionPerformed() {
+    mainWindow.onRemoveBlankRows();
+  }
+
+  public void menuItemTuSplitActionPerformed() {
+    mainWindow.onTuSplit();
   }
 
   public void menuItemOriginalDeleteActionPerformed() {

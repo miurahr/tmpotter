@@ -47,7 +47,7 @@ import javax.swing.JToolBar;
  *
  */
 @SuppressWarnings("serial")
-final class TmToolBar extends JToolBar implements ActionListener {
+final class ToolBar extends JToolBar implements ActionListener {
   private final MainWindow mainWindow;
 
   private final JButton  buttonOriginalDelete    = new JButton();
@@ -66,8 +66,8 @@ final class TmToolBar extends JToolBar implements ActionListener {
   private final JPanel panelButtonsLeft   = new JPanel();
   private final JPanel panelButtonsRight  = new JPanel();
 
-  public TmToolBar( final MainWindow windowMain ) {
-    super( "SegmentButtonsView" );
+  public ToolBar( final MainWindow windowMain ) {
+    super( "ToolBar" );
 
     this.mainWindow = windowMain;
 
@@ -205,13 +205,13 @@ final class TmToolBar extends JToolBar implements ActionListener {
       } else if ( actor == buttonTranslationJoin )  {
         mainWindow.onTranslationJoin();
       } else if ( actor == buttonTranslationSplit ) {
-        mainWindow.onTranslationSplitCv();
+        mainWindow.onTranslationSplit();
       } else if ( actor == buttonRemoveBlankRows )  {
         mainWindow.onRemoveBlankRows();
       } else if ( actor == buttonTuSplit )     {
         mainWindow.onTuSplit();
       } else if ( actor == buttonUndo )     {
-        mainWindow.onUndoCv();
+        mainWindow.onUndo();
       }
     }
   }
