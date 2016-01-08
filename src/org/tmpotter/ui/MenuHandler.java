@@ -273,6 +273,7 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
       mainWindow.mainMenu.menuItemFileSave.setEnabled(true);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
@@ -322,6 +323,7 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
       mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
@@ -457,6 +459,7 @@ final class MenuHandler {
   public void menuItemFileCloseActionPerformed() {
     clear();
     mainWindow.toolBar.enableButtons(false);
+    mainWindow.mainMenu.enableEditMenus(false);
     mainWindow.toolBar.setUndoEnabled(false);
     mainWindow.mainMenu.menuItemFileSave.setEnabled(false);
     mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(false);

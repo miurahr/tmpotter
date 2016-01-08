@@ -103,7 +103,7 @@ final class MainMenu implements ActionListener, MenuListener {
   JMenuItem menuItemTranslationDelete;
   JMenuItem menuItemTranslationJoin;
   JMenuItem menuItemTranslationSplit;
-  JMenuItem menuItemRemoveBlankRow;
+  JMenuItem menuItemRemoveBlankRows;
   JMenuItem menuItemTuSplit;
 
   //  Settings menu
@@ -235,6 +235,7 @@ final class MainMenu implements ActionListener, MenuListener {
     makeSettingsMenuComponents();
     makeHelpMenuComponents();
     setActionCommands();
+    enableEditMenus(false);
   }
 
   private void makeFileMenuComponents() {
@@ -296,7 +297,7 @@ final class MainMenu implements ActionListener, MenuListener {
 	    null, null, "TranslationJoin", "BTN.JOIN.TRANSLATION" );
     menuItemTranslationSplit = makeMenuComponent(MenuComponentType.ITEM,
 	    null, null, "TranslationSplit", "BTN.SPLIT.TRANSLATION" );
-    menuItemRemoveBlankRow = makeMenuComponent(MenuComponentType.ITEM,
+    menuItemRemoveBlankRows = makeMenuComponent(MenuComponentType.ITEM,
 	    null, null, "RemoveBlankRow", "BTN.DELETE.BLANK.ROWS");
     menuItemTuSplit = makeMenuComponent(MenuComponentType.ITEM,
 	    null, null, "TuSplit", "BTN.SPLIT.TU");
@@ -308,7 +309,7 @@ final class MainMenu implements ActionListener, MenuListener {
     menuEdit.add(menuItemTranslationDelete);
     menuEdit.add(menuItemTranslationJoin);
     menuEdit.add(menuItemTranslationSplit);
-    menuEdit.add(menuItemRemoveBlankRow);
+    menuEdit.add(menuItemRemoveBlankRows);
     menuEdit.add(menuItemTuSplit);
   }
 
@@ -404,6 +405,21 @@ final class MainMenu implements ActionListener, MenuListener {
     @SuppressWarnings(value = "unchecked")
     T res = (T) menuItem;
     return res;
+  }
+
+    final void enableEditMenus( boolean enabled ) {
+    menuItemRemoveBlankRows.setEnabled( enabled );
+    menuItemTuSplit.setEnabled( enabled );
+    menuItemOriginalJoin.setEnabled( enabled );
+    menuItemOriginalDelete.setEnabled( enabled );
+    menuItemOriginalSplit.setEnabled( enabled );
+    menuItemTranslationJoin.setEnabled( enabled );
+    menuItemTranslationDelete.setEnabled( enabled );
+    menuItemTranslationSplit.setEnabled( enabled );
+  }
+
+  public final void setUndoEnabled( boolean enabled ) {
+    menuItemUndo.setEnabled(enabled);
   }
 
   /**

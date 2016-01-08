@@ -270,6 +270,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     join(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -277,6 +279,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     delete(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -284,6 +288,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     split(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -291,6 +297,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     join(false);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -298,6 +306,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     delete(false);
     updateTmView();
+    toolBar.setUndoEnabled( true );
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -305,6 +315,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     split(false);
     updateTmView();
+    toolBar.setUndoEnabled( true );
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -315,6 +327,7 @@ public final class MainWindow extends JFrame implements WindowListener {
 
     if (identChanges == -1) {
       toolBar.setUndoEnabled(false);
+      mainMenu.setUndoEnabled(false);
     }
   }
 
@@ -358,6 +371,7 @@ public final class MainWindow extends JFrame implements WindowListener {
       arrayListChanges.add(identChanges, changes);
       changes.setNumEliminada(numEliminadas, lineasLimpiar);
       toolBar.setUndoEnabled(true);
+      mainMenu.menuItemUndo.setEnabled(true);
       updateTmView();
     }
   }
@@ -410,6 +424,9 @@ public final class MainWindow extends JFrame implements WindowListener {
 
     arrayListChanges.add(identChanges, changes);
     updateTmView();
+    toolBar.buttonUndo.setEnabled(true);
+    mainMenu.menuItemUndo.setEnabled(true);
+
   }
 
   /**
