@@ -315,8 +315,7 @@ final class TmView extends JXPanel {
       }
     } else if (getRowCount() < mainWindow.documentOriginal.size()) {
       while (getRowCount() != mainWindow.documentOriginal.size()) {
-        Segment nullSegment = new Segment(null, null, null);
-        addModelSegment(nullSegment);
+        addModelSegment(new Segment(null, null, null));
         setPreferredSize(805, 15, 1);
       }
     }
@@ -335,5 +334,6 @@ final class TmView extends JXPanel {
             1).toString()));
     mainWindow.editRightSegment.setText(formatText(getValueAt(mainWindow.identLabel,
             2).toString()));
+    updateUI();
   }
 }
