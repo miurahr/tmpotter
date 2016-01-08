@@ -230,7 +230,7 @@ final class MenuHandler {
           documentOriginal.add(documentOriginal.size(), "");
         }
       } else {
-        int cont = documentTranslation.size() - 1;
+        int cont;
         documentTranslation.add(documentTranslation.size(),
                 documentTranslation.get(documentTranslation.size() - 1));
         for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
@@ -274,6 +274,7 @@ final class MenuHandler {
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
       mainWindow.toolBar.setUndoEnabled(false);
+      mainWindow.mainMenu.menuItemFileSave.setEnabled(true);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
       mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
       dlg.dispose();
