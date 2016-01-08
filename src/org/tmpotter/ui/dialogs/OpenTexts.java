@@ -305,8 +305,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
           comboTranslationLang.setEnabled( true );
         } else {
           JOptionPane.showMessageDialog(panel,
-              getString( "MSG_ERROR_FILE_NOTFOUND" ),
-              getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+              getString( "MSG.ERROR.FILE_NOTFOUND" ),
+              getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
           fieldOriginal.setText( "" );
         }
       }
@@ -331,8 +331,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
           fieldTranslation.setText( translationFilePath.getPath() );
         } else {
           JOptionPane.showMessageDialog(panel,
-                  getString( "MSG_ERROR_FILE_NOTFOUND" ),
-                  getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+                  getString( "MSG.ERROR.FILE_NOTFOUND" ),
+                  getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
 
           fieldTranslation.setText( "" );
         }
@@ -365,8 +365,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
         setVisible( false );
       }
     } catch ( final IOException ex ) {
-      JOptionPane.showMessageDialog(panel, getString( "MSG_ERROR_FILE_NOTFOUND" ),
-          getString( "MSG_ERROR" ), JOptionPane.ERROR_MESSAGE );
+      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
+          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
 
       if ( errorOrig ) {
         fieldOriginal.setText( "" );
@@ -425,5 +425,3 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
 }
-
-

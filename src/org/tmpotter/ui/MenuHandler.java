@@ -315,7 +315,7 @@ final class MenuHandler {
                         mainWindow.stringLangTranslation, translateEncoding);
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
-                getString("MSG.ERROR.FILE.READ"), JOptionPane.ERROR_MESSAGE);
+                getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
       mainWindow.matchArrays();
@@ -416,7 +416,7 @@ final class MenuHandler {
             final Object[] options = {getString("BTN.SAVE"),
                     getString("BTN.CANCEL")};
             selected = JOptionPane.showOptionDialog(mainWindow,
-                    getString("MSG.FILE.EXISTS"), getString("MSG.WARNING"),
+                    getString("MSG.FILE_EXISTS"), getString("MSG.WARNING"),
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[0]);
             if (selected == 0) {

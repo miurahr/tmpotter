@@ -27,8 +27,13 @@
 
 package org.tmpotter.util.xml;
 
+import static org.tmpotter.util.Localization.getString;
+import static org.tmpotter.util.StringUtil.format;
+
 import org.tmpotter.util.DefaultEntityFilter;
 import org.tmpotter.util.TranslationException;
+import org.tmpotter.util.StringUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,8 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static org.tmpotter.util.Localization.getString;
-import org.tmpotter.util.StringUtil;
 
 /**
  * A reader for XML stream.
@@ -97,8 +100,9 @@ public class XMLStreamReader {
         // make sure XML file is proper
         XMLBlock blk = getNextBlock();
         if (blk == null) {
-            throw new IOException(getString("XSR_ERROR_NONVALID_XML") + "\n"
-                    + getString("XSR_ERROR_UNABLE_INIT_READ_XML"));
+            throw new IOException("XSR-001:" 
+                    + getString("XSR.ERROR.NONVALID_XML") + "\n"
+                    + getString("XSR.ERROR.UNABLE_INIT_READ_XML"));
         }
         if (blk.getTagName().equals("xml")) {
             String ver = blk.getAttribute("version");
@@ -106,15 +110,16 @@ public class XMLStreamReader {
             if (ver == null || ver.equals("")) {
                 // no version declared - assume it's readable
             } else if (!ver.equals("1.0")) {
-                throw new IOException(getString("XSR_ERROR_NONVALID_XML")
-                        + "\n"
-                        + StringUtil.format(getString("XSR_ERROR_UNSUPPORTED_XML_VERSION"), ver));
+                throw new IOException("XSR-002:"
+                    + getString("XSR.ERROR.NONVALID_XML") + "\n"
+                    + format(getString("XSR.ERROR.UNSUPPORTED_XML_VERSION"),
+                            ver));
             }
             m_headBlock = blk;
         } else {
             // not a valid XML file
-            throw new IOException(getString("XSR_ERROR_NONVALID_XML") + "\n"
-                    + getString("XSR_ERROR_NONVALID_XML"));
+            throw new IOException("XSR-003:"
+                    + getString("XSR.ERROR.NONVALID_XML"));
         }
     }
 
@@ -456,8 +461,9 @@ public class XMLStreamReader {
 
                 default:
                     err = true;
-                    msg = StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                            String.valueOf(Character.toChars(cp)), state);
+                    msg = "XSR-004:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state);
                 }
                 break;
 
@@ -467,7 +473,7 @@ public class XMLStreamReader {
                     state = state_comment;
                 } else {
                     err = true;
-                    msg = getString("XSR_ERROR_CONFUSED");
+                    msg = "XSR-005:" + getString("XSR.ERROR.CONFUSED");
                 }
                 break;
 
@@ -536,7 +542,8 @@ public class XMLStreamReader {
 
                 default:
                     err = true;
-                    msg = StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
+                    msg = "XSR-006:"
+			    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
                             String.valueOf(Character.toChars(cp)), state);
                 }
                 break;
@@ -620,9 +627,11 @@ public class XMLStreamReader {
             if (err) {
                 // TODO construct error message with correct state data
                 // for now, just throw a parse error
-                String str = getString("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
+                String str = "XSR-007:"
+			+ getString("XSR.ERROR.TAG_NAME") + blk.getTagName()
+			+ " ";
                 if (blk.isComment()) {
-                    str += getString("XSR_ERROR_COMMENT_TAG");
+                    str += getString("XSR.ERROR.COMMENT_TAG");
                 }
                 if (blk.numAttributes() > 0) {
                     str += blk.getAttribute(0).name;
@@ -638,14 +647,14 @@ public class XMLStreamReader {
     private void throwErrorInGetNextTag(XMLBlock blk, String msg) throws TranslationException {
         // TODO construct error message with correct state data
         // for now, just throw a parse error
-        String data = getString("XSR_ERROR_TAG_NAME") + blk.getTagName() + " ";
+        String data = getString("XSR.ERROR.TAG_NAME") + blk.getTagName() + " ";
         if (blk.isStandalone())
-            data += getString("XSR_ERROR_EMPTY_TAG");
+            data += getString("XSR.ERROR.EMPTY_TAG");
         else if (blk.isClose())
-            data += getString("XSR_ERROR_CLOSE_TAG");
+            data += getString("XSR.ERROR.CLOSE_TAG");
         if (blk.numAttributes() > 0)
-            data += getString("XSR_ERROR_LOADED") + blk.numAttributes()
-                    + getString("XSR_ERROR_ATTRIBUTES");
+            data += getString("XSR.ERROR.LOADED") + blk.numAttributes()
+                    + getString("XSR.ERROR.ATTRIBUTES");
         throw new TranslationException(msg + data);
     }
 
@@ -703,9 +712,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-008:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -737,9 +746,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-009:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -756,9 +765,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-010:"
+                            + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -774,9 +783,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-011:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -805,9 +814,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-012:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -815,7 +824,8 @@ public class XMLStreamReader {
                 if (cp != '>') {
                     // parse error - got '?' followed by something
                     // unexpected
-                    throwErrorInGetNextTag(blk, getString("XSR_ERROR_FLOATING_QUESTION_MARK"));
+                    throwErrorInGetNextTag(blk, "XSR-013:"
+			    + getString("XSR.ERROR.FLOATING_QUESTION_MARK"));
                 } else
                     state = state_finish;
                 break;
@@ -834,9 +844,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-014:"
+                            + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -850,9 +860,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-015:"
+			    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -912,9 +922,9 @@ public class XMLStreamReader {
                     break;
 
                 default:
-                    throwErrorInGetNextTag(blk,
-                            StringUtil.format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                    String.valueOf(Character.toChars(cp)), state));
+                    throwErrorInGetNextTag(blk, "XSR-016:"
+                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state));
                 }
                 break;
 
@@ -1063,7 +1073,8 @@ public class XMLStreamReader {
             blk = getNextBlock();
             if (blk == null) {
                 // stream ended without finding match
-                throw new TranslationException(getString("XSR_ERROR_END_OF_STREAM"));
+                throw new TranslationException("XSR-017:"
+			+ getString("XSR.ERROR.END_OF_STREAM"));
             }
 
             if (blk.isTag() && blk.getTagName().equals(block.getTagName())) {
@@ -1129,7 +1140,8 @@ public class XMLStreamReader {
         while (cp != ';') {
             val.appendCodePoint(cp);
             if (cp == 0) {
-                throw new TranslationException(getString("XSR_ERROR_UNTERMINATED_ESCAPE_CHAR"));
+                throw new TranslationException("XSR-019:"
+			+ getString("XSR.ERROR.UNTERMINATED_ESCAPE_CHAR"));
             }
             cp = getNextCharCache();
             if (ctr++ > 13) {
@@ -1165,19 +1177,23 @@ public class XMLStreamReader {
             try {
                 cp = Integer.valueOf(valString, 16);
             } catch (NumberFormatException ex) {
-                throw new TranslationException(StringUtil.format(getString("XSR_ERROR_BAD_BINARY_CHAR"), val), ex);
+                throw new TranslationException("XSR-020:"
+			+ format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val), ex);
             }
             if (!XMLUtil.isValidXMLChar(cp)) {
-                throw new TranslationException(StringUtil.format(getString("XSR_ERROR_BAD_BINARY_CHAR"), val));
+                throw new TranslationException("XSR-021:"
+			+ format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val));
             }
         } else {
             try {
                 cp = Integer.valueOf(valString, 10);
             } catch (NumberFormatException ex) {
-                throw new TranslationException(StringUtil.format(getString("XSR_ERROR_BAD_DECIMAL_CHAR"), val), ex);
+                throw new TranslationException("XSR-022:"
+			+ format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val), ex);
             }
             if (!XMLUtil.isValidXMLChar(cp)) {
-                throw new TranslationException(StringUtil.format(getString("XSR_ERROR_BAD_DECIMAL_CHAR"), val));
+                throw new TranslationException("XSR-023:"
+			+ format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val));
             }
         }
 

@@ -149,7 +149,7 @@ public class TmxReader2 {
     this.useSlash = useSlash;
 
     // log the parsing attempt
-    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR_INFO_READING_FILE",
+    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.INFO.READING_FILE",
             file.getAbsolutePath());
 
     boolean allFound = true;
@@ -186,9 +186,9 @@ public class TmxReader2 {
     }
 
     if (!allFound) {
-      LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR_WARNING_SOURCE_NOT_FOUND", "");
+      LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.WARNING.SOURCE_NOT_FOUND", "");
     }
-    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR_INFO_READING_COMPLETE", "");
+    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.INFO.READING_COMPLETE", "");
   }
 
   protected void parseHeader(StartElement element, final Language sourceLanguage) {
@@ -197,22 +197,22 @@ public class TmxReader2 {
 
     // log some details
     LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR_INFO_CREATION_TOOL", getAttributeValue(element,
+            "TMXR.INFO.CREATION_TOOL", getAttributeValue(element,
                     "creationtool"));
     LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR_INFO_CREATION_TOOL_VERSION", getAttributeValue(element,
+            "TMXR.INFO.CREATION_TOOL_VERSION", getAttributeValue(element,
                     "creationtoolversion"));
     LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR_INFO_SEG_TYPE", getAttributeValue(element, "segtype"));
+            "TMXR.INFO.SEG_TYPE", getAttributeValue(element, "segtype"));
     LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR_INFO_SOURCE_LANG", getAttributeValue(element, "srclang"));
+            "TMXR.INFO.SOURCE_LANG", getAttributeValue(element, "srclang"));
 
         // give a warning if the TMX source language is
     // different from the project source language
     String tmxSourceLanguage = getAttributeValue(element, "srclang");
     if (!tmxSourceLanguage.equalsIgnoreCase(sourceLanguage.getLanguage())) {
       LOG.logrb(Level.WARNING, "TMXReader2", "parseHeader",
-              "TMXR_WARNING_INCORRECT_SOURCE_LANG", tmxSourceLanguage,
+              "TMXR.WARNING.INCORRECT_SOURCE_LANG", tmxSourceLanguage,
               sourceLanguage);
     }
 
@@ -502,7 +502,7 @@ public class TmxReader2 {
           if (tagN == null) {
             // check error of TMX reading
             LOG.logrb(Level.SEVERE, "TMXReader2", "parseSegExtLevel2",
-                    "TMX_ERROR_READING_LEVEL2", "");
+                    "TMX.ERROR.READING_LEVEL2", "");
             segContent.setLength(0);
             // wait for end seg
             while (true) {

@@ -27,6 +27,8 @@
 
 package org.tmpotter.segmentation;
 
+import static org.tmpotter.util.Localization.getString;
+
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
 
@@ -73,7 +75,7 @@ public class SRX implements Serializable, Cloneable {
     try {
       SRX_JAXB_CONTEXT = JAXBContext.newInstance(Srx.class);
     } catch (LinkageError ex) {
-      throw new ExceptionInInitializerError(Localization.getString("STARTUP_JAXB_LINKAGE_ERROR"));
+      throw new ExceptionInInitializerError(ex.getMessage());
     } catch (JAXBException ex) {
       if (ex.getMessage() != null) {
         throw new ExceptionInInitializerError(ex.getMessage());
@@ -162,7 +164,7 @@ public class SRX implements Serializable, Cloneable {
           sb.append("\n");
         }
         LOG.logrb(Level.SEVERE, "SRX", "loadSRX",
-                "CORE_SRX_EXC_LOADING_SEG_RULES", sb.toString());
+                "SRX.ERROR.LOADING_SEG_RULES", sb.toString());
         res = new SRX();
         res.initDefaults();
         return res;
@@ -181,7 +183,7 @@ public class SRX implements Serializable, Cloneable {
     } catch (Exception e) {
       // silently ignoring FNF
       if (!(e instanceof FileNotFoundException)) {
-        LOG.log(Level.INFO, "IO Error in loadSRX ", e);
+        LOG.log(Level.INFO, getString("SRX.ERROR.FILE_NOT_FOUND"), e);
       }
       res = new SRX();
       res.initDefaults();

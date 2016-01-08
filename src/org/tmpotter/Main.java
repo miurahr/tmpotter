@@ -111,7 +111,7 @@ public class Main {
             | IllegalAccessException 
             | InstantiationException 
             | UnsupportedLookAndFeelException cnfe) {
-      LOG.logrb(Level.INFO, "Main", "setLnF", "MW-LOOK-AND-FEEL-EXCEPTION", "", cnfe);
+      LOG.logrb(Level.INFO, "Main", "setLnF", "MW.ERROR.LOOK_AND_FEEL_EXCEPTION", "", cnfe);
     }
   }
 

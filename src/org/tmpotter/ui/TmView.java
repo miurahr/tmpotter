@@ -70,7 +70,6 @@ final class TmView extends JXPanel {
   public TmView( final MainWindow parent ) {
     super();
     mainWindow = parent;
-    setName(getString( "VW.ALIGNMENTS.TITLE" ) );
     setLayout( new BorderLayout() );
   }
 

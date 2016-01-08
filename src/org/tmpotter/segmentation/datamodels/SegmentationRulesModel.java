@@ -160,7 +160,7 @@ public class SegmentationRulesModel extends AbstractTableModel {
     fireTableRowsUpdated(row, row + 1);
   }
 
-    //
+  //
   // Managing Listeners of Errorneous Input
   //
   /**
