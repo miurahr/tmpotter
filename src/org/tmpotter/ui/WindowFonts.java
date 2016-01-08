@@ -66,7 +66,7 @@ public class WindowFonts {
    * @param uiFont UI font to be set
    */
   private void setUiFonts(final Font uiFont) {
-    mainMenu.menuItemFile.setFont(uiFont);
+    mainMenu.menuFile.setFont(uiFont);
     mainMenu.menuItemFileOpen.setFont(uiFont);
     mainMenu.menuItemFileTextOpen.setFont(uiFont);
     mainMenu.menuItemFileSave.setFont(uiFont);
@@ -78,9 +78,9 @@ public class WindowFonts {
     mainMenu.menuSettings.setFont(uiFont);
     mainMenu.menuItemSettingsFonts.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuLaf.setFont(uiFont);
+      mainMenu.menuItemLaf.setFont(uiFont);
       mainMenu.menuItemLafLiquid.setFont(uiFont);
-      mainMenu.menuLafMetal.setFont(uiFont);
+      mainMenu.menuItemLafMetal.setFont(uiFont);
       mainMenu.menuItemLafNimbus.setFont(uiFont);
       mainMenu.menuItemLafSystem.setFont(uiFont);
       if (!Platform.isWindows()) {

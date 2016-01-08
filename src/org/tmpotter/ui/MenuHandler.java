@@ -510,6 +510,13 @@ final class MenuHandler {
     });
   }
 
+  
+  public void menuItemUndoActionPerformed() {
+  }
+
+  public void menuItemRedoActionPerformed() {
+  }
+
   /**
    * Display fonts dialog.
    *

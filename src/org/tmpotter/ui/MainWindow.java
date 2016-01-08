@@ -141,6 +141,7 @@ public final class MainWindow extends JFrame implements WindowListener {
 
   private void makeMenus() {
     uiComponents.menuBar.add(mainMenu.getMenuFile());
+    uiComponents.menuBar.add(mainMenu.getMenuEdit());
     uiComponents.menuBar.add(mainMenu.getMenuSettings());
     uiComponents.menuBar.add(mainMenu.getMenuHelp());
     setJMenuBar(uiComponents.menuBar);
