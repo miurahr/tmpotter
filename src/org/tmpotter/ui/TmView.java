@@ -150,10 +150,6 @@ final class TmView extends JXPanel {
     updateView();
   }
 
-  public final void setFonts( final Font font ) {
-    //_tpnOriginal.setFont( f );
-  }
-
   public final void setTableFont( final Font font ) {
     if ( table != null ) {
       int size = font.getSize();
@@ -165,8 +161,6 @@ final class TmView extends JXPanel {
       }
 
       table.setFont( font );
-    } else {
-      // System.out.println( " table does not exist yet!" );
     }
   }
 
@@ -211,11 +205,6 @@ final class TmView extends JXPanel {
     bitextModel.addSegment( segment );
   }
 
-  //  FixMe: called before table exists!
-  public final void repaint() {
-    //_tbl.repaint();
-  }
-
   public final Object getValueAt( final int row, final int column ) {
     if (row < 0 && column < 0 ) {
       return null;
@@ -236,19 +225,14 @@ final class TmView extends JXPanel {
   }
 
   final void clear() {
-    bitextModel = null;
-
-    if ( scrollPane != null ) {
-      scrollPane.removeAll();
-      scrollPane = null;
-    }
-
-    if ( table != null ) {
-      table = null;
-    }
-
+    table.removeAll();
+    table.revalidate();
+    scrollPane.remove(table);
+    scrollPane.revalidate();
+    remove(scrollPane);
+    revalidate();
     removeAll();
-    repaint();
+    repaint(100);
   }
 
   final void buildDisplay() {
@@ -284,18 +268,18 @@ final class TmView extends JXPanel {
     table.setColumnSelectionAllowed( false );
     table.setAutoCreateColumnsFromModel( false );
     table.setSelectionBackground( new Color( 220, 235, 250 ) );
-    //  ToDo: make user configurable
-    //_tbl.setShowGrid( false );
-    //  ToDo: make user configurable
-    table.setShowHorizontalLines( false );
+    table.setShowGrid(true);
+    table.setShowHorizontalLines(true);
 
     table.addKeyListener( new KeyAdapter() {
+      @Override
       public final void keyPressed( final KeyEvent event ) {
         onTablePressed( event );
       }
     });
 
     table.addMouseListener( new MouseAdapter() {
+      @Override
       public final void mouseClicked( final MouseEvent event ) {
         onTableClicked();
       }
@@ -347,7 +331,7 @@ final class TmView extends JXPanel {
     if (mainWindow.identLabel == mainWindow.topArrays) {
       setRowSelectionInterval(mainWindow.topArrays, mainWindow.topArrays);
     }
-    repaint();
+    repaint(100);
     mainWindow.editLeftSegment.setText(formatText(getValueAt(mainWindow.identLabel,
             1).toString()));
     mainWindow.editRightSegment.setText(formatText(getValueAt(mainWindow.identLabel,
