@@ -47,7 +47,7 @@ import javax.swing.JToolBar;
  *
  */
 @SuppressWarnings("serial")
-final class TmToolBar extends JToolBar implements ActionListener {
+final class ToolBar extends JToolBar implements ActionListener {
   private final MainWindow mainWindow;
 
   private final JButton  buttonOriginalDelete    = new JButton();
@@ -59,15 +59,15 @@ final class TmToolBar extends JToolBar implements ActionListener {
   private final JButton  buttonRemoveBlankRows   = new JButton();
   private final JButton  buttonTuSplit           = new JButton();
 
-  private final JButton  buttonUndo              = new JButton();
+  protected final JButton  buttonUndo              = new JButton();
 
   private final JPanel panelButtons       = new JPanel( new GridLayout( 1, 3 ));
   private final JPanel panelButtonsCenter = new JPanel();
   private final JPanel panelButtonsLeft   = new JPanel();
   private final JPanel panelButtonsRight  = new JPanel();
 
-  public TmToolBar( final MainWindow windowMain ) {
-    super( "SegmentButtonsView" );
+  public ToolBar( final MainWindow windowMain ) {
+    super( "ToolBar" );
 
     this.mainWindow = windowMain;
 
@@ -189,72 +189,29 @@ final class TmToolBar extends JToolBar implements ActionListener {
     buttonTranslationSplit   .setActionCommand(getString( "BTN.SPLIT" ) );
   }
 
-  private void onUndo()            {
-    mainWindow.onUndoCv();
-  }
-  
-  private void onRemoveBlankRows() {
-    mainWindow.onRemoveBlankRows();
-  }
-
-  private void onTuSplit() {
-    mainWindow.onTuSplit();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onOriginalJoin() {
-    mainWindow.onOriginalJoin();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onOriginalDelete() {
-    mainWindow.onOriginalDelete();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onOriginalSplit() {
-    mainWindow.onOriginalSplit();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onTranslationJoin() {
-    mainWindow.onTranslationJoin();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onTranslationDelete() {
-    mainWindow.onTranslationDelete();
-    buttonUndo.setEnabled( true );
-  }
-
-  private void onTranslationSplit() {
-    mainWindow.onTranslationSplitCv();
-    buttonUndo.setEnabled( true );
-  }
-
   @Override
   public final void actionPerformed( final ActionEvent action ) {
     final Object actor = action.getSource();
 
     if ( actor instanceof JButton ) {
       if ( actor == buttonOriginalDelete ) {
-        onOriginalDelete();
+        mainWindow.onOriginalDelete();
       } else if ( actor == buttonOriginalJoin ) {
-        onOriginalJoin();
+        mainWindow.onOriginalJoin();
       } else if ( actor == buttonOriginalSplit ) {
-        onOriginalSplit();
+        mainWindow.onOriginalSplit();
       } else if ( actor == buttonTranslationDelete ) {
-        onTranslationDelete();
+        mainWindow.onTranslationDelete();
       } else if ( actor == buttonTranslationJoin )  {
-        onTranslationJoin();
+        mainWindow.onTranslationJoin();
       } else if ( actor == buttonTranslationSplit ) {
-        onTranslationSplit();
+        mainWindow.onTranslationSplit();
       } else if ( actor == buttonRemoveBlankRows )  {
-        onRemoveBlankRows();
+        mainWindow.onRemoveBlankRows();
       } else if ( actor == buttonTuSplit )     {
-        onTuSplit();
+        mainWindow.onTuSplit();
       } else if ( actor == buttonUndo )     {
-        onUndo();
+        mainWindow.onUndo();
       }
     }
   }

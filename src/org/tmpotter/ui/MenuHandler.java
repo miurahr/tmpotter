@@ -273,6 +273,7 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
       mainWindow.mainMenu.menuItemFileSave.setEnabled(true);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
@@ -322,6 +323,7 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
       mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
@@ -457,6 +459,7 @@ final class MenuHandler {
   public void menuItemFileCloseActionPerformed() {
     clear();
     mainWindow.toolBar.enableButtons(false);
+    mainWindow.mainMenu.enableEditMenus(false);
     mainWindow.toolBar.setUndoEnabled(false);
     mainWindow.mainMenu.menuItemFileSave.setEnabled(false);
     mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(false);
@@ -508,6 +511,70 @@ final class MenuHandler {
         mainWindow.dispose();
       }
     });
+  }
+
+  public void menuItemUndoActionPerformed() {
+    mainWindow.onUndo();
+  }
+
+  public void menuItemRedoActionPerformed() {
+    
+  }
+
+  public void menuItemOriginalDeleteActionPerformed() {
+    mainWindow.onOriginalDelete();
+  }
+
+  public void menuItemOriginalJoinActionPerformed() {
+    mainWindow.onOriginalJoin();
+  }
+
+  public void menuItemOriginalSplitActionPerformed() {
+    mainWindow.onOriginalSplit();
+  }
+
+  public void menuItemTranslationDeleteActionPerformed() {
+    mainWindow.onTranslationDelete();
+  }
+
+  public void menuItemTranslationJoinActionPerformed() {
+    mainWindow.onTranslationJoin();
+  }
+
+  public void menuItemTranslationSplitActionPerformed() {
+    mainWindow.onTranslationSplit();
+  }
+
+  public void menuItemRemoveBlankRowsActionPerformed() {
+    mainWindow.onRemoveBlankRows();
+  }
+
+  public void menuItemTuSplitActionPerformed() {
+    mainWindow.onTuSplit();
+  }
+
+  public void menuItemOriginalDeleteActionPerformed() {
+    mainWindow.onOriginalDelete();
+  }
+
+  public void menuItemOriginalJoinActionPerformed() {
+    mainWindow.onOriginalJoin();
+  }
+
+  public void menuItemOriginalSplitActionPerformed() {
+    mainWindow.onOriginalSplit();
+  }
+
+  public void menuItemTranslationDeleteActionPerformed() {
+    mainWindow.onTranslationDelete();
+  }
+
+  public void menuItemTranslationJoinActionPerformed() {
+    mainWindow.onTranslationJoin();
+  }
+
+  public void menuItemTranslationSplitActionPerformed() {
+    mainWindow.onTranslationSplitCv();
   }
 
   /**

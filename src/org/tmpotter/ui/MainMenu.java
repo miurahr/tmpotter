@@ -85,28 +85,41 @@ final class MainMenu implements ActionListener, MenuListener {
     CHECKBOX, ITEM, MENU, RADIOBUTTON
   }
 
-  JMenuItem menuItemLafNimbus;
+  //  File menu
+  JMenu menuFile;
+  JMenuItem menuItemFileTextOpen;
+  JMenuItem menuItemFileClose;
+  JMenuItem menuItemFileSaveAs;
   JMenuItem menuItemFileSave;
-  JMenuItem menuItemSettingsFonts;
   JMenuItem menuItemFileQuit;
   JMenuItem menuItemFileOpen;
+  //  Edit menu
+  JMenu menuEdit;
+  JMenuItem menuItemUndo;
+  JMenuItem menuItemRedo;
+  JMenuItem menuItemOriginalDelete;
+  JMenuItem menuItemOriginalJoin;
+  JMenuItem menuItemOriginalSplit;
+  JMenuItem menuItemTranslationDelete;
+  JMenuItem menuItemTranslationJoin;
+  JMenuItem menuItemTranslationSplit;
+  JMenuItem menuItemRemoveBlankRows;
+  JMenuItem menuItemTuSplit;
+
   //  Settings menu
   JMenu menuSettings;
-  JMenuItem menuItemHelpAbout;
+  JMenuItem menuItemSettingsFonts;
   //  Look and Feel submenu
-  JMenu menuLaf;
-  JMenuItem menuItemFileClose;
+  JMenu menuItemLaf;
+  JMenuItem menuItemLafMetal;
+  JMenuItem menuItemLafGtk;
   JMenuItem menuItemLafSystem;
-  //  File menu
-  JMenu menuItemFile;
   JMenuItem menuItemLafLiquid;
-  JMenuItem menuItemFileSaveAs;
+  JMenuItem menuItemLafNimbus;
   //  Help menu
   JMenu menuHelp;
-  JMenuItem menuLafMetal;
-  JMenuItem menuItemLafGtk;
-  JMenuItem menuItemFileTextOpen;
-  
+  JMenuItem menuItemHelpAbout;
+ 
   /**
    * Menus initilizer/setter/getter.
    * 
@@ -201,9 +214,13 @@ final class MainMenu implements ActionListener, MenuListener {
   }
 
   public final JMenu getMenuFile() {
-    return menuItemFile;
+    return menuFile;
   }
-  
+
+  public final JMenu getMenuEdit() {
+    return menuEdit;
+  }
+
   public final JMenu getMenuSettings() {
     return menuSettings;
   }
@@ -213,7 +230,16 @@ final class MainMenu implements ActionListener, MenuListener {
   }
 
   private void makeMenusComponents() {
-    menuItemFile = makeMenuComponent(MenuComponentType.MENU,
+    makeFileMenuComponents();
+    makeEditMenuComponents();
+    makeSettingsMenuComponents();
+    makeHelpMenuComponents();
+    setActionCommands();
+    enableEditMenus(false);
+  }
+
+  private void makeFileMenuComponents() {
+    menuFile = makeMenuComponent(MenuComponentType.MENU,
             null, null, "File", "MNU.FILE");
     menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('O', KeyEvent.CTRL_MASK, false),
@@ -238,6 +264,59 @@ final class MainMenu implements ActionListener, MenuListener {
             KeyStroke.getKeyStroke('Q', KeyEvent.CTRL_MASK, false),
             getIcon("application-exit.png"), "Quit",
             "MNI.FILE.EXIT");
+    menuFile.add(menuItemFileOpen);
+    menuFile.addSeparator();
+    menuFile.add(menuItemFileTextOpen);
+    menuFile.addSeparator();
+    menuFile.add(menuItemFileSave);
+    menuFile.add(menuItemFileSaveAs);
+    menuFile.addSeparator();
+    menuFile.add(menuItemFileClose);
+    if (!Platform.isMacOsx()) {
+      menuFile.addSeparator();
+      menuFile.add(menuItemFileQuit);
+    }
+  }
+
+  private void makeEditMenuComponents() {
+    menuEdit = makeMenuComponent(MenuComponentType.MENU, null, null,
+	    "Edit", "MNU.EDIT");
+    menuItemUndo = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "Undo", "MNI.EDIT.UNDO");
+    menuItemRedo = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "Redo", "MNI.EDIT.REDO");
+    menuItemOriginalDelete = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "OriginalDelete", "MNI.EDIT.DELETE.ORIGINAL");
+    menuItemOriginalJoin = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "OriginalJoin", "MNI.EDIT.JOIN.ORIGINAL");
+    menuItemOriginalSplit = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "OriginalSplit", "MNI.EDIT.SPLIT.ORIGINAL" );
+    menuItemTranslationDelete = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "TranslationDelete", "MNI.EDIT.DELETE.TRANSLATION" );
+    menuItemTranslationJoin = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "TranslationJoin", "MNI.EDIT.JOIN.TRANSLATION" );
+    menuItemTranslationSplit = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "TranslationSplit", "MNI.EDIT.SPLIT.TRANSLATION" );
+    menuItemRemoveBlankRows = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "RemoveBlankRow", "MNI.EDIT.DELETE.BLANK.ROWS");
+    menuItemTuSplit = makeMenuComponent(MenuComponentType.ITEM,
+	    null, null, "TuSplit", "MNI.EDIT.SPLIT.TU");
+    menuEdit.add(menuItemUndo);
+    menuEdit.add(menuItemRedo);
+    menuEdit.addSeparator();
+    menuEdit.add(menuItemOriginalDelete);
+    menuEdit.add(menuItemOriginalJoin);
+    menuEdit.add(menuItemOriginalSplit);
+    menuEdit.addSeparator();
+    menuEdit.add(menuItemTranslationDelete);
+    menuEdit.add(menuItemTranslationJoin);
+    menuEdit.add(menuItemTranslationSplit);
+    menuEdit.addSeparator();
+    menuEdit.add(menuItemRemoveBlankRows);
+    menuEdit.add(menuItemTuSplit);
+  }
+
+  private void makeSettingsMenuComponents() {
     menuSettings = makeMenuComponent(MenuComponentType.MENU, null, null,
             "Settings", "MNU.SETTINGS");
     menuItemSettingsFonts = makeMenuComponent(MenuComponentType.ITEM,
@@ -245,56 +324,46 @@ final class MainMenu implements ActionListener, MenuListener {
             "MNI.SETTINGS.FONTS");
     menuItemSettingsFonts.setToolTipText(getString(
             "MNI.SETTINGS.FONTS.TOOLTIP"));
-    menuHelp = makeMenuComponent(MenuComponentType.MENU, null, null,
-            "Help", "MNU.HELP");
-    menuItemHelpAbout = makeMenuComponent(MenuComponentType.ITEM, null,
-            getIcon("icon-small.png"), "About", "MNI.HELP.ABOUT");
-    menuItemFile.add(menuItemFileOpen);
-    menuItemFile.addSeparator();
-    menuItemFile.add(menuItemFileTextOpen);
-    menuItemFile.addSeparator();
-    menuItemFile.add(menuItemFileSave);
-    menuItemFile.add(menuItemFileSaveAs);
-    menuItemFile.addSeparator();
-    menuItemFile.add(menuItemFileClose);
-    if (!Platform.isMacOsx()) {
-      menuItemFile.addSeparator();
-      menuItemFile.add(menuItemFileQuit);
-    }
     menuSettings.add(menuItemSettingsFonts);
     if (!Platform.isMacOsx()) {
-      menuLaf = makeMenuComponent(MenuComponentType.MENU, null, null,
+      menuItemLaf = makeMenuComponent(MenuComponentType.MENU, null, null,
               "Look and Feel", null);
       menuItemLafLiquid = makeMenuComponent(MenuComponentType.ITEM, null, null,
               "Liquid", null);
-      menuLafMetal = makeMenuComponent(MenuComponentType.ITEM, null, null,
+      menuItemLafMetal = makeMenuComponent(MenuComponentType.ITEM, null, null,
               "Metal", null);
       menuItemLafNimbus = makeMenuComponent(MenuComponentType.ITEM, null, null,
               "Nimbus", null);
       menuItemLafSystem = makeMenuComponent(MenuComponentType.ITEM, null, null,
               "System", null);
       menuItemLafLiquid.setMnemonic('L');
-      menuLafMetal.setMnemonic('M');
+      menuItemLafMetal.setMnemonic('M');
       menuItemLafNimbus.setMnemonic('N');
       menuItemLafSystem.setMnemonic('Y');
       if (!Platform.isWindows()) {
         menuItemLafGtk = makeMenuComponent(MenuComponentType.ITEM, null, null,
                 "Gtk", null);
         menuItemLafGtk.setMnemonic('G');
-        menuLaf.add(menuItemLafGtk);
+        menuItemLaf.add(menuItemLafGtk);
       }
-      menuLaf.add(menuItemLafLiquid);
-      menuLaf.add(menuLafMetal);
-      menuLaf.add(menuItemLafNimbus);
-      menuLaf.add(menuItemLafSystem);
-      menuSettings.add(menuLaf);
+      menuItemLaf.add(menuItemLafLiquid);
+      menuItemLaf.add(menuItemLafMetal);
+      menuItemLaf.add(menuItemLafNimbus);
+      menuItemLaf.add(menuItemLafSystem);
+      menuSettings.add(menuItemLaf);
     }
-    menuSettings.add(menuLaf);
+    menuSettings.add(menuItemLaf);
+  }
+
+  private void makeHelpMenuComponents() {
+    menuHelp = makeMenuComponent(MenuComponentType.MENU, null, null,
+            "Help", "MNU.HELP");
+    menuItemHelpAbout = makeMenuComponent(MenuComponentType.ITEM, null,
+            getIcon("icon-small.png"), "About", "MNI.HELP.ABOUT");
     if (!Platform.isMacOsx()) {
       menuHelp.addSeparator();
       menuHelp.add(menuItemHelpAbout);
     }
-    setActionCommands();
   }
 
   /**
@@ -339,6 +408,21 @@ final class MainMenu implements ActionListener, MenuListener {
     @SuppressWarnings(value = "unchecked")
     T res = (T) menuItem;
     return res;
+  }
+
+    final void enableEditMenus( boolean enabled ) {
+    menuItemRemoveBlankRows.setEnabled( enabled );
+    menuItemTuSplit.setEnabled( enabled );
+    menuItemOriginalJoin.setEnabled( enabled );
+    menuItemOriginalDelete.setEnabled( enabled );
+    menuItemOriginalSplit.setEnabled( enabled );
+    menuItemTranslationJoin.setEnabled( enabled );
+    menuItemTranslationDelete.setEnabled( enabled );
+    menuItemTranslationSplit.setEnabled( enabled );
+  }
+
+  public final void setUndoEnabled( boolean enabled ) {
+    menuItemUndo.setEnabled(enabled);
   }
 
   /**

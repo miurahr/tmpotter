@@ -55,12 +55,12 @@ import javax.swing.JOptionPane;
 
 
 /**
- * Main window class,.
+ * Main window class.
  * 
  */
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements WindowListener {
-  protected final TmToolBar toolBar = new TmToolBar(this);
+  protected final ToolBar toolBar = new ToolBar(this);
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
   protected final TmView tmView = new TmView(this);
@@ -141,6 +141,7 @@ public final class MainWindow extends JFrame implements WindowListener {
 
   private void makeMenus() {
     uiComponents.menuBar.add(mainMenu.getMenuFile());
+    uiComponents.menuBar.add(mainMenu.getMenuEdit());
     uiComponents.menuBar.add(mainMenu.getMenuSettings());
     uiComponents.menuBar.add(mainMenu.getMenuHelp());
     setJMenuBar(uiComponents.menuBar);
@@ -269,6 +270,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     join(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -276,6 +279,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     delete(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -283,6 +288,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     split(true);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -290,6 +297,8 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     join(false);
     updateTmView();
+    toolBar.setUndoEnabled(true);
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
@@ -297,23 +306,28 @@ public final class MainWindow extends JFrame implements WindowListener {
     identChanges++;
     delete(false);
     updateTmView();
+    toolBar.setUndoEnabled( true );
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
-  final void onTranslationSplitCv() {
+  final void onTranslationSplit() {
     identChanges++;
     split(false);
     updateTmView();
+    toolBar.setUndoEnabled( true );
+    mainMenu.setUndoEnabled(true);
   }
 
   //  Accessed by ControlView
-  final void onUndoCv() {
+  final void onUndo() {
     handler.undoChanges();
     arrayListChanges.remove(identChanges);
     identChanges--;
 
     if (identChanges == -1) {
       toolBar.setUndoEnabled(false);
+      mainMenu.setUndoEnabled(false);
     }
   }
 
@@ -357,6 +371,7 @@ public final class MainWindow extends JFrame implements WindowListener {
       arrayListChanges.add(identChanges, changes);
       changes.setNumEliminada(numEliminadas, lineasLimpiar);
       toolBar.setUndoEnabled(true);
+      mainMenu.menuItemUndo.setEnabled(true);
       updateTmView();
     }
   }
@@ -409,6 +424,9 @@ public final class MainWindow extends JFrame implements WindowListener {
 
     arrayListChanges.add(identChanges, changes);
     updateTmView();
+    toolBar.buttonUndo.setEnabled(true);
+    mainMenu.menuItemUndo.setEnabled(true);
+
   }
 
   /**
