@@ -40,18 +40,21 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.tmpotter.core.Segment;
+import static org.tmpotter.util.StringUtil.formatText;
+import static org.tmpotter.util.StringUtil.restoreText;
 
 
 /**
@@ -59,24 +62,24 @@ import javax.swing.JOptionPane;
  * 
  */
 @SuppressWarnings("serial")
-public final class MainWindow extends JFrame implements WindowListener {
-  protected final ToolBar toolBar = new ToolBar(this);
+public final class MainWindow extends JFrame implements ModelMediator, WindowListener {
+  protected final ToolBar toolBar = new ToolBar();
   protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
   protected final SegmentEditor editRightSegment = new SegmentEditor(this);
-  protected final TmView tmView = new TmView(this);
+  protected final TmView tmView = new TmView();
 
-  protected MenuHandler handler;
-  protected MainMenu mainMenu;
-  protected WindowFonts windowFonts;
-  protected UiComponents uiComponents;
+  protected MenuHandler menuHandler = new MenuHandler(this);
+  protected MainMenu mainMenu = new MainMenu(this);
+  protected WindowFonts windowFonts = new WindowFonts(this);
+  protected AppComponents uiComponents = new AppComponents(this);
 
   protected Document documentOriginal;
   protected Document documentTranslation;
 
-  protected final ArrayList arrayListBitext;
+  protected final ArrayList arrayListBitext = new ArrayList();;
 
-  protected final ArrayList<SegmentChanges> arrayListChanges;
-  protected final ArrayList arrayListLang;
+  protected final ArrayList<SegmentChanges> arrayListChanges = new ArrayList<>();;
+  protected final ArrayList arrayListLang = new ArrayList();;
 
   protected int topArrays;    //  =  0;
   protected int positionTextArea;  //  =  0;
@@ -101,14 +104,8 @@ public final class MainWindow extends JFrame implements WindowListener {
    * 
    */
   public MainWindow() {
-    this.arrayListBitext = new ArrayList();
-    this.arrayListChanges = new ArrayList<>();
-    this.arrayListLang = new ArrayList();
-
-    handler = new MenuHandler(this);
-    mainMenu = new MainMenu(this, handler);
-    windowFonts = new WindowFonts(this, mainMenu);
-    uiComponents = new UiComponents(this);
+    tmView.setModelMediator(this);
+    toolBar.setModelMediator(this);
 
     makeMenus();
     makeUi();
@@ -132,8 +129,8 @@ public final class MainWindow extends JFrame implements WindowListener {
   private void setMacProxy() {
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
     try {
-      AquaAdapter.connect(handler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
-      AquaAdapter.connect(handler, "quit", AquaAdapter.AquaEvent.QUIT);
+      AquaAdapter.connect(menuHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
+      AquaAdapter.connect(menuHandler, "quit", AquaAdapter.AquaEvent.QUIT);
     } catch (final NoClassDefFoundError e) {
       System.out.println(e);
     }
@@ -152,7 +149,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     addWindowListener(new WindowAdapter() {
       @Override
       public final void windowClosing(final WindowEvent event) {
-        handler.quit();
+        menuHandler.quit();
       }
     });
   }
@@ -261,12 +258,129 @@ public final class MainWindow extends JFrame implements WindowListener {
    * <p>This function updates the rows in the table with the
    * modifications performed, adds rows or removes them.
    */
-  protected void updateTmView() {
-    tmView.updateView();
+  @Override
+  public void updateTmView() {
+    if (!documentOriginal.isEmpty()
+            && !documentTranslation.isEmpty()) {
+      matchArrays();
+    }
+    for (int cont = 0; cont < tmView.getRowCount(); cont++) {
+      tmView.setModelValueAt("", cont, 0);
+      tmView.setModelValueAt("", cont, 1);
+      tmView.setModelValueAt("", cont, 2);
+    }
+    if ((tmView.getRowCount() > documentOriginal.size())
+            && (documentOriginal.size() > 25)) {
+      while (tmView.getRowCount() != documentOriginal.size()) {
+        tmView.removeSegment(tmView.getRowCount() - 1);
+        tmView.setPreferredSize(805, 15, -1);
+      }
+    } else if (tmView.getRowCount() < documentOriginal.size()) {
+      while (tmView.getRowCount() != documentOriginal.size()) {
+        tmView.addModelSegment(new Segment(null, null, null));
+        tmView.setPreferredSize(805, 15, 1);
+      }
+    }
+    for (int cont = 0; cont < documentOriginal.size(); cont++) {
+      tmView.setModelValueAt(Integer.toString(cont + 1), cont, 0);
+      tmView.setModelValueAt(documentOriginal.get(cont), cont, 1);
+    }
+    for (int cont = 0; cont < documentTranslation.size(); cont++) {
+      tmView.setModelValueAt(documentTranslation.get(cont), cont, 2);
+    }
+    if (identLabel == topArrays) {
+      tmView.setRowSelectionInterval(topArrays, topArrays);
+    }
+    tmView.repaint(100);
+    editLeftSegment.setText(formatText(tmView.getValueAt(identLabel, 1).toString()));
+    editRightSegment.setText(formatText(tmView.getValueAt(identLabel, 2).toString()));
+    tmView.updateUI();
   }
 
-  //  Accessed by ControlView
-  final void onOriginalJoin() {
+  @Override
+  public void onTableClicked() {
+    positionTextArea = 0;
+    if (identAnt < documentOriginal.size()) {
+      documentOriginal.set(identAnt,
+              restoreText(editLeftSegment.getText()));
+      documentTranslation.set(identAnt,
+              restoreText(editRightSegment.getText()));
+    }
+    editLeftSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
+            1).toString()));
+    editRightSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
+            2).toString()));
+    identLabel = tmView.getSelectedRow();
+    identAnt = identLabel;
+    if (identLabel == topArrays) {
+      toolBar.setTranslationJoinEnabled(false);
+      toolBar.setOriginalJoinEnabled(false);
+    } else {
+      toolBar.setTranslationJoinEnabled(true);
+      toolBar.setOriginalJoinEnabled(true);
+    }
+    updateTmView();
+  }
+
+  @Override
+  public void onTablePressed(final KeyEvent event) {
+    int fila;
+    if (tmView.getSelectedRow() != -1) {
+      fila = tmView.getSelectedRow();
+      positionTextArea = 0;
+    } else {
+      fila = 1;
+    }
+    if (fila < tmView.getRowCount() - 1) {
+      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
+        if (identAnt < documentOriginal.size()) {
+          documentOriginal.set(identAnt,
+                  restoreText(editLeftSegment.getText()));
+          documentTranslation.set(identAnt,
+                  restoreText(editRightSegment.getText()));
+        }
+        editLeftSegment.setText(formatText(tmView.getValueAt(fila + 1, 1)
+                .toString()));
+        editRightSegment.setText(formatText(tmView.getValueAt(fila + 1, 2)
+                .toString()));
+        identLabel = fila + 1;
+      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
+              || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
+        identLabel = fila - 1;
+        if (fila == 0) {
+          fila = 1;
+          identLabel = 0;
+        }
+        if (identAnt < documentOriginal.size()) {
+          documentOriginal.set(identAnt,
+                  restoreText(editLeftSegment.getText()));
+          documentTranslation.set(identAnt,
+                  restoreText(editRightSegment.getText()));
+        }
+        editLeftSegment.setText(formatText(tmView.getValueAt(fila - 1, 1)
+                .toString()));
+        editRightSegment.setText(formatText(tmView.getValueAt(fila - 1, 2)
+                .toString()));
+      }
+      if (identLabel == topArrays) {
+        toolBar.setTranslationJoinEnabled(false);
+        toolBar.setOriginalJoinEnabled(false);
+      } else {
+        toolBar.setTranslationJoinEnabled(true);
+        toolBar.setOriginalJoinEnabled(true);
+      }
+      identAnt = identLabel;
+    }
+    updateTmView();
+  }
+
+  
+  /**
+   * Join on Original.
+   */
+  @Override
+  public final void onOriginalJoin() {
     identChanges++;
     join(true);
     updateTmView();
@@ -274,8 +388,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     mainMenu.setUndoEnabled(true);
   }
 
-  //  Accessed by ControlView
-  final void onOriginalDelete() {
+  /**
+   * Delete on original document.
+   */
+  @Override
+  public final void onOriginalDelete() {
     identChanges++;
     delete(true);
     updateTmView();
@@ -283,8 +400,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     mainMenu.setUndoEnabled(true);
   }
 
-  //  Accessed by ControlView
-  final void onOriginalSplit() {
+  /**
+   * Split on original document.
+   */
+  @Override
+  public final void onOriginalSplit() {
     identChanges++;
     split(true);
     updateTmView();
@@ -292,8 +412,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     mainMenu.setUndoEnabled(true);
   }
 
-  //  Accessed by ControlView
-  final void onTranslationJoin() {
+  /**
+   * join on translation document.
+   */
+  @Override
+  public final void onTranslationJoin() {
     identChanges++;
     join(false);
     updateTmView();
@@ -301,8 +424,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     mainMenu.setUndoEnabled(true);
   }
 
-  //  Accessed by ControlView
-  final void onTranslationDelete() {
+  /**
+   * delete on translation document.
+   */
+  @Override
+  public final void onTranslationDelete() {
     identChanges++;
     delete(false);
     updateTmView();
@@ -310,8 +436,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     mainMenu.setUndoEnabled(true);
   }
 
-  //  Accessed by ControlView
-  final void onTranslationSplit() {
+  /**
+   * split on translation document.
+   */
+  @Override
+  public final void onTranslationSplit() {
     identChanges++;
     split(false);
     updateTmView();
@@ -320,8 +449,8 @@ public final class MainWindow extends JFrame implements WindowListener {
   }
 
   //  Accessed by ControlView
-  final void onUndo() {
-    handler.undoChanges();
+  public void onUndo() {
+    menuHandler.undoChanges();
     arrayListChanges.remove(identChanges);
     identChanges--;
 
@@ -331,13 +460,20 @@ public final class MainWindow extends JFrame implements WindowListener {
     }
   }
 
-  //  Accessed by SegmentEditor
+  /**
+   * Set position.
+   * @param position indicate where in int
+   */
+  @Override
   public final void setTextAreaPosition(int position) {
     positionTextArea = position;
   }
 
-  //  Accessed by toolbar currently
-  final void onRemoveBlankRows() {
+  /**
+   * remove blank rows in TMView.
+   */
+  @Override
+  public final void onRemoveBlankRows() {
     int maxTamArrays = 0;
     int cont = 0;
     int lineasLimpiar = 0;
@@ -376,8 +512,11 @@ public final class MainWindow extends JFrame implements WindowListener {
     }
   }
 
-  //  Accessed by ControlView currently
-  final void onTuSplit() {
+  /**
+   * Split on TU.
+   */
+  @Override
+  public final void onTuSplit() {
     int izq;
     int cont;
     SegmentChanges changes;
@@ -447,7 +586,7 @@ public final class MainWindow extends JFrame implements WindowListener {
     toolBar.setFonts(font);
   }
 
-  private final void setFonts() {
+  private void setFonts() {
     setFonts(null);
   }
 
@@ -494,7 +633,7 @@ public final class MainWindow extends JFrame implements WindowListener {
   @Override
   public final void windowClosing(final WindowEvent evt) {
     if (evt.getSource() == this) {
-      handler.menuItemFileQuitActionPerformed();
+      menuHandler.menuItemFileQuitActionPerformed();
     }
   }
 

@@ -553,30 +553,6 @@ final class MenuHandler {
     mainWindow.onTuSplit();
   }
 
-  public void menuItemOriginalDeleteActionPerformed() {
-    mainWindow.onOriginalDelete();
-  }
-
-  public void menuItemOriginalJoinActionPerformed() {
-    mainWindow.onOriginalJoin();
-  }
-
-  public void menuItemOriginalSplitActionPerformed() {
-    mainWindow.onOriginalSplit();
-  }
-
-  public void menuItemTranslationDeleteActionPerformed() {
-    mainWindow.onTranslationDelete();
-  }
-
-  public void menuItemTranslationJoinActionPerformed() {
-    mainWindow.onTranslationJoin();
-  }
-
-  public void menuItemTranslationSplitActionPerformed() {
-    mainWindow.onTranslationSplitCv();
-  }
-
   /**
    * Display fonts dialog.
    *

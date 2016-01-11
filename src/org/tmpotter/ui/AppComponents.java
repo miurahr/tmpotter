@@ -49,7 +49,7 @@ import javax.swing.JMenuBar;
  *
  * @author Hiroshi Miura
  */
-public class UiComponents {
+public class AppComponents {
   private final MainWindow mainWindow;
   JXMultiSplitPane msp;
   JXPanel controlPane;
@@ -66,7 +66,7 @@ public class UiComponents {
    *
    * @param mainWindow parent frame
    */
-  public UiComponents(MainWindow mainWindow) {
+  public AppComponents(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
     controlPane = new JXPanel();
     editPane = new JXPanel();

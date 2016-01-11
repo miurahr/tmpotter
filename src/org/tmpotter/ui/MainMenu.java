@@ -69,11 +69,6 @@ final class MainMenu implements ActionListener, MenuListener {
    */
   protected final MainWindow mainWindow;
 
-  /**
-   * MainWindow menu handler instance.
-   */
-  protected final MenuHandler menuHandler;
-
   ImageIcon getIcon(final String iconName) {
     return Icons.getIcon(iconName);
   }
@@ -126,10 +121,8 @@ final class MainMenu implements ActionListener, MenuListener {
    * @param mainWindow main window object
    * @param menuHandler menu handler object
    */
-  public MainMenu(final MainWindow mainWindow,
-          final MenuHandler menuHandler) {
+  public MainMenu(final MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    this.menuHandler = menuHandler;
     makeMenusComponents();
   }
 
@@ -150,7 +143,7 @@ final class MainMenu implements ActionListener, MenuListener {
     String methodName = action + "MenuSelected";
     Method method = null;
     try {
-      method = menuHandler.getClass().getMethod(methodName, JMenu.class);
+      method = mainWindow.menuHandler.getClass().getMethod(methodName, JMenu.class);
     } catch (NoSuchMethodException ex) {
       // method not declared
       return;
@@ -158,7 +151,7 @@ final class MainMenu implements ActionListener, MenuListener {
 
     // Call ...MenuMenuSelected method.
     try {
-      method.invoke(menuHandler, menu);
+      method.invoke(mainWindow.menuHandler, menu);
     } catch (IllegalAccessException ex) {
       throw new IncompatibleClassChangeError(
               "Error invoke method handler for main menu");
@@ -187,10 +180,10 @@ final class MainMenu implements ActionListener, MenuListener {
     String methodName = action + "ActionPerformed";
     Method method = null;
     try {
-      method = menuHandler.getClass().getMethod(methodName);
+      method = mainWindow.menuHandler.getClass().getMethod(methodName);
     } catch (NoSuchMethodException ignore) {
       try {
-        method = menuHandler.getClass()
+        method = mainWindow.menuHandler.getClass()
                 .getMethod(methodName, Integer.TYPE);
       } catch (NoSuchMethodException ex) {
         throw new IncompatibleClassChangeError(
@@ -202,7 +195,7 @@ final class MainMenu implements ActionListener, MenuListener {
     Object[] args = method.getParameterTypes()
             .length == 0 ? null : new Object[]{evt.getModifiers()};
     try {
-      method.invoke(menuHandler, args);
+      method.invoke(mainWindow.menuHandler, args);
     } catch (IllegalAccessException ex) {
       throw new IncompatibleClassChangeError(
               "Error invoke method handler for main menu");
@@ -280,27 +273,27 @@ final class MainMenu implements ActionListener, MenuListener {
 
   private void makeEditMenuComponents() {
     menuEdit = makeMenuComponent(MenuComponentType.MENU, null, null,
-	    "Edit", "MNU.EDIT");
+        "Edit", "MNU.EDIT");
     menuItemUndo = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "Undo", "MNI.EDIT.UNDO");
+        null, null, "Undo", "MNI.EDIT.UNDO");
     menuItemRedo = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "Redo", "MNI.EDIT.REDO");
+        null, null, "Redo", "MNI.EDIT.REDO");
     menuItemOriginalDelete = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalDelete", "MNI.EDIT.DELETE.ORIGINAL");
+        null, null, "OriginalDelete", "MNI.EDIT.DELETE.ORIGINAL");
     menuItemOriginalJoin = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalJoin", "MNI.EDIT.JOIN.ORIGINAL");
+        null, null, "OriginalJoin", "MNI.EDIT.JOIN.ORIGINAL");
     menuItemOriginalSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "OriginalSplit", "MNI.EDIT.SPLIT.ORIGINAL" );
+        null, null, "OriginalSplit", "MNI.EDIT.SPLIT.ORIGINAL" );
     menuItemTranslationDelete = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationDelete", "MNI.EDIT.DELETE.TRANSLATION" );
+        null, null, "TranslationDelete", "MNI.EDIT.DELETE.TRANSLATION" );
     menuItemTranslationJoin = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationJoin", "MNI.EDIT.JOIN.TRANSLATION" );
+        null, null, "TranslationJoin", "MNI.EDIT.JOIN.TRANSLATION" );
     menuItemTranslationSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TranslationSplit", "MNI.EDIT.SPLIT.TRANSLATION" );
+        null, null, "TranslationSplit", "MNI.EDIT.SPLIT.TRANSLATION" );
     menuItemRemoveBlankRows = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "RemoveBlankRow", "MNI.EDIT.DELETE.BLANK.ROWS");
+        null, null, "RemoveBlankRow", "MNI.EDIT.DELETE.BLANK.ROWS");
     menuItemTuSplit = makeMenuComponent(MenuComponentType.ITEM,
-	    null, null, "TuSplit", "MNI.EDIT.SPLIT.TU");
+        null, null, "TuSplit", "MNI.EDIT.SPLIT.TU");
     menuEdit.add(menuItemUndo);
     menuEdit.add(menuItemRedo);
     menuEdit.addSeparator();
@@ -410,7 +403,7 @@ final class MainMenu implements ActionListener, MenuListener {
     return res;
   }
 
-    final void enableEditMenus( boolean enabled ) {
+  final void enableEditMenus( boolean enabled ) {
     menuItemRemoveBlankRows.setEnabled( enabled );
     menuItemTuSplit.setEnabled( enabled );
     menuItemOriginalJoin.setEnabled( enabled );

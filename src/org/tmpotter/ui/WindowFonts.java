@@ -45,16 +45,13 @@ public class WindowFonts {
   private Font fontTranslationEditor;
   private Font uiFont;
   private final MainWindow mainWindow;
-  private final MainMenu mainMenu;
 
   /**
    * Constructor.
    * @param mainWindow main frame owner
-   * @param mainMenu main menu component
    */
-  public WindowFonts(MainWindow mainWindow, MainMenu mainMenu) {
+  public WindowFonts(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    this.mainMenu = mainMenu;
   }
   
   /**
@@ -66,30 +63,30 @@ public class WindowFonts {
    * @param uiFont UI font to be set
    */
   private void setUiFonts(final Font uiFont) {
-    mainMenu.menuFile.setFont(uiFont);
-    mainMenu.menuItemFileOpen.setFont(uiFont);
-    mainMenu.menuItemFileTextOpen.setFont(uiFont);
-    mainMenu.menuItemFileSave.setFont(uiFont);
-    mainMenu.menuItemFileSaveAs.setFont(uiFont);
-    mainMenu.menuItemFileClose.setFont(uiFont);
+    mainWindow.mainMenu.menuFile.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileOpen.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileTextOpen.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileSave.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileSaveAs.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileClose.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemFileQuit.setFont(uiFont);
+      mainWindow.mainMenu.menuItemFileQuit.setFont(uiFont);
     }
-    mainMenu.menuSettings.setFont(uiFont);
-    mainMenu.menuItemSettingsFonts.setFont(uiFont);
+    mainWindow.mainMenu.menuSettings.setFont(uiFont);
+    mainWindow.mainMenu.menuItemSettingsFonts.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemLaf.setFont(uiFont);
-      mainMenu.menuItemLafLiquid.setFont(uiFont);
-      mainMenu.menuItemLafMetal.setFont(uiFont);
-      mainMenu.menuItemLafNimbus.setFont(uiFont);
-      mainMenu.menuItemLafSystem.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLaf.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafLiquid.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafMetal.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafNimbus.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafSystem.setFont(uiFont);
       if (!Platform.isWindows()) {
-        mainMenu.menuItemLafGtk.setFont(uiFont);
+        mainWindow.mainMenu.menuItemLafGtk.setFont(uiFont);
       }
     }
-    mainMenu.menuHelp.setFont(uiFont);
+    mainWindow.mainMenu.menuHelp.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemHelpAbout.setFont(uiFont);
+      mainWindow.mainMenu.menuItemHelpAbout.setFont(uiFont);
     }
   }
 
