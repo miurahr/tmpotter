@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -38,6 +38,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -50,16 +52,17 @@ import javax.swing.JTextPane;
 @SuppressWarnings("serial")
 class SegmentEditor extends JXPanel {
   private final JTextPane textPane =  new JTextPane();
-  private final MainWindow windowMain;
+  private ModelMediator modelMediator;
+
+  private static final Logger LOG = Logger.getLogger(SegmentEditor.class.getName());
 
   /**
    * Constructor.
    * 
    * @param windowMain main window object.
    */
-  public SegmentEditor( final MainWindow windowMain ) {
+  public SegmentEditor() {
     super(false);
-    this.windowMain = windowMain;
 
     textPane.addKeyListener( new KeyAdapter() {
       @Override
@@ -94,6 +97,10 @@ class SegmentEditor extends JXPanel {
     add( scpn, gbc );
   }
 
+  public void setModelMediator(ModelMediator mediator) {
+    this.modelMediator = mediator;
+  }
+
   public final String getText() {
     return ( textPane.getText() );
   }
@@ -112,7 +119,7 @@ class SegmentEditor extends JXPanel {
     if ( textPane != null ) {
       textPane.setFont( font );
     } else {
-      System.out.println( " _ed _tpn does not exist yet!" );
+      LOG.log(Level.INFO, "segment editor pane does not exist yet!");
     }
   }
 
@@ -125,11 +132,11 @@ class SegmentEditor extends JXPanel {
   }
 
   private void onKeyReleased() {
-    windowMain.setTextAreaPosition( textPane.getSelectionStart() );
+    modelMediator.setTextAreaPosition( textPane.getSelectionStart() );
   }
 
   private void onClicked() {
-    windowMain.setTextAreaPosition( textPane.getSelectionStart() );
+    modelMediator.setTextAreaPosition( textPane.getSelectionStart() );
   }
 }
 

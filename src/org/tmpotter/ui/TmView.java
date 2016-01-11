@@ -61,92 +61,19 @@ import javax.swing.table.TableColumnModel;
 @SuppressWarnings("serial")
 final class TmView extends JXPanel {
 
-  private final MainWindow mainWindow;
+  private ModelMediator modelMediator;
 
   BitextModel          bitextModel;
   JXTable              table;
   private JScrollPane  scrollPane;
 
-  public TmView( final MainWindow parent ) {
+  public TmView() {
     super();
-    mainWindow = parent;
     setLayout( new BorderLayout() );
   }
 
-  private void onTableClicked() {
-    mainWindow.positionTextArea = 0;
-    if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
-      mainWindow.documentOriginal.set(mainWindow.identAnt,
-              restoreText(mainWindow.editLeftSegment.getText()));
-      mainWindow.documentTranslation.set(mainWindow.identAnt,
-              restoreText(mainWindow.editRightSegment.getText()));
-    }
-    mainWindow.editLeftSegment.setText(formatText(getValueAt(getSelectedRow(),
-            1).toString()));
-    mainWindow.editRightSegment.setText(formatText(getValueAt(getSelectedRow(),
-            2).toString()));
-    mainWindow.identLabel = mainWindow.tmView.getSelectedRow();
-    mainWindow.identAnt = mainWindow.identLabel;
-    if (mainWindow.identLabel == mainWindow.topArrays) {
-      mainWindow.toolBar.setTranslationJoinEnabled(false);
-      mainWindow.toolBar.setOriginalJoinEnabled(false);
-    } else {
-      mainWindow.toolBar.setTranslationJoinEnabled(true);
-      mainWindow.toolBar.setOriginalJoinEnabled(true);
-    }
-    updateView();
-  }
-
-  private void onTablePressed(final KeyEvent event) {
-    int fila;
-    if (mainWindow.tmView.getSelectedRow() != -1) {
-      fila = mainWindow.tmView.getSelectedRow();
-      mainWindow.positionTextArea = 0;
-    } else {
-      fila = 1;
-    }
-    if (fila < mainWindow.tmView.getRowCount() - 1) {
-      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
-              || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-        if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
-          mainWindow.documentOriginal.set(mainWindow.identAnt,
-                  restoreText(mainWindow.editLeftSegment.getText()));
-          mainWindow.documentTranslation.set(mainWindow.identAnt,
-                  restoreText(mainWindow.editRightSegment.getText()));
-        }
-        mainWindow.editLeftSegment.setText(formatText(getValueAt(fila + 1, 1)
-                .toString()));
-        mainWindow.editRightSegment.setText(formatText(getValueAt(fila + 1, 2)
-                .toString()));
-        mainWindow.identLabel = fila + 1;
-      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
-              || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
-        mainWindow.identLabel = fila - 1;
-        if (fila == 0) {
-          fila = 1;
-          mainWindow.identLabel = 0;
-        }
-        if (mainWindow.identAnt < mainWindow.documentOriginal.size()) {
-          mainWindow.documentOriginal.set(mainWindow.identAnt,
-                  restoreText(mainWindow.editLeftSegment.getText()));
-          mainWindow.documentTranslation.set(mainWindow.identAnt,
-                  restoreText(mainWindow.editRightSegment.getText()));
-        }
-        mainWindow.editLeftSegment.setText(formatText(getValueAt(fila - 1, 1)
-                .toString()));
-        mainWindow.editRightSegment.setText(formatText(getValueAt(fila - 1, 2)
-                .toString()));
-      }
-      if (mainWindow.identLabel == mainWindow.topArrays) {
-        mainWindow.toolBar.setTranslationJoinEnabled(false);
-        mainWindow.toolBar.setOriginalJoinEnabled(false);
-      } else {
-        mainWindow.toolBar.setTranslationJoinEnabled(true);
-        mainWindow.toolBar.setOriginalJoinEnabled(true);
-      }
-      mainWindow.identAnt = mainWindow.identLabel;
-    }
-    updateView();
+  public void setModelMediator(ModelMediator mediator) {
+    this.modelMediator = mediator;
   }
 
   public final void setTableFont( final Font font ) {
@@ -273,14 +200,14 @@ final class TmView extends JXPanel {
     table.addKeyListener( new KeyAdapter() {
       @Override
       public final void keyPressed( final KeyEvent event ) {
-        onTablePressed( event );
+        modelMediator.onTablePressed( event );
       }
     });
 
     table.addMouseListener( new MouseAdapter() {
       @Override
       public final void mouseClicked( final MouseEvent event ) {
-        onTableClicked();
+        modelMediator.onTableClicked();
       }
     });
 
@@ -289,51 +216,5 @@ final class TmView extends JXPanel {
     scrollPane.setColumnHeaderView(table.getTableHeader() );
 
     add( scrollPane );
-  }
-
-  /**
-   * Update the row in table with mods.
-   *
-   * <p>This function updates the rows in the table with the
-   * modifications performed, adds rows or removes them.
-   */
-  protected void updateView() {
-    if (!mainWindow.documentOriginal.isEmpty()
-            && !mainWindow.documentTranslation.isEmpty()) {
-      mainWindow.matchArrays();
-    }
-    for (int cont = 0; cont < mainWindow.tmView.getRowCount(); cont++) {
-      setModelValueAt("", cont, 0);
-      setModelValueAt("", cont, 1);
-      setModelValueAt("", cont, 2);
-    }
-    if ((getRowCount() > mainWindow.documentOriginal.size())
-            && (mainWindow.documentOriginal.size() > 25)) {
-      while (getRowCount() != mainWindow.documentOriginal.size()) {
-        removeSegment(getRowCount() - 1);
-        setPreferredSize(805, 15, -1);
-      }
-    } else if (getRowCount() < mainWindow.documentOriginal.size()) {
-      while (getRowCount() != mainWindow.documentOriginal.size()) {
-        addModelSegment(new Segment(null, null, null));
-        setPreferredSize(805, 15, 1);
-      }
-    }
-    for (int cont = 0; cont < mainWindow.documentOriginal.size(); cont++) {
-      setModelValueAt(Integer.toString(cont + 1), cont, 0);
-      setModelValueAt(mainWindow.documentOriginal.get(cont), cont, 1);
-    }
-    for (int cont = 0; cont < mainWindow.documentTranslation.size(); cont++) {
-      setModelValueAt(mainWindow.documentTranslation.get(cont), cont, 2);
-    }
-    if (mainWindow.identLabel == mainWindow.topArrays) {
-      setRowSelectionInterval(mainWindow.topArrays, mainWindow.topArrays);
-    }
-    repaint(100);
-    mainWindow.editLeftSegment.setText(formatText(getValueAt(mainWindow.identLabel,
-            1).toString()));
-    mainWindow.editRightSegment.setText(formatText(getValueAt(mainWindow.identLabel,
-            2).toString()));
-    updateUI();
   }
 }

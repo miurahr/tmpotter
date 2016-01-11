@@ -31,30 +31,29 @@ package org.tmpotter.ui;
 import org.tmpotter.util.Platform;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 
 /**
  * Font setup for main window.
  * 
  * @author Hiroshi Miura
  */
-public class WindowFonts {
+public class WindowFontManager {
   
   private Font fontTable;
   private Font fontTableHeader;
   private Font fontSourceEditor;
   private Font fontTranslationEditor;
   private Font uiFont;
+  
   private final MainWindow mainWindow;
-  private final MainMenu mainMenu;
 
   /**
    * Constructor.
    * @param mainWindow main frame owner
-   * @param mainMenu main menu component
    */
-  public WindowFonts(MainWindow mainWindow, MainMenu mainMenu) {
+  public WindowFontManager(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    this.mainMenu = mainMenu;
   }
   
   /**
@@ -66,30 +65,30 @@ public class WindowFonts {
    * @param uiFont UI font to be set
    */
   private void setUiFonts(final Font uiFont) {
-    mainMenu.menuFile.setFont(uiFont);
-    mainMenu.menuItemFileOpen.setFont(uiFont);
-    mainMenu.menuItemFileTextOpen.setFont(uiFont);
-    mainMenu.menuItemFileSave.setFont(uiFont);
-    mainMenu.menuItemFileSaveAs.setFont(uiFont);
-    mainMenu.menuItemFileClose.setFont(uiFont);
+    mainWindow.mainMenu.menuFile.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileOpen.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileTextOpen.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileSave.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileSaveAs.setFont(uiFont);
+    mainWindow.mainMenu.menuItemFileClose.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemFileQuit.setFont(uiFont);
+      mainWindow.mainMenu.menuItemFileQuit.setFont(uiFont);
     }
-    mainMenu.menuSettings.setFont(uiFont);
-    mainMenu.menuItemSettingsFonts.setFont(uiFont);
+    mainWindow.mainMenu.menuSettings.setFont(uiFont);
+    mainWindow.mainMenu.menuItemSettingsFonts.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemLaf.setFont(uiFont);
-      mainMenu.menuItemLafLiquid.setFont(uiFont);
-      mainMenu.menuItemLafMetal.setFont(uiFont);
-      mainMenu.menuItemLafNimbus.setFont(uiFont);
-      mainMenu.menuItemLafSystem.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLaf.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafLiquid.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafMetal.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafNimbus.setFont(uiFont);
+      mainWindow.mainMenu.menuItemLafSystem.setFont(uiFont);
       if (!Platform.isWindows()) {
-        mainMenu.menuItemLafGtk.setFont(uiFont);
+        mainWindow.mainMenu.menuItemLafGtk.setFont(uiFont);
       }
     }
-    mainMenu.menuHelp.setFont(uiFont);
+    mainWindow.mainMenu.menuHelp.setFont(uiFont);
     if (!Platform.isMacOsx()) {
-      mainMenu.menuItemHelpAbout.setFont(uiFont);
+      mainWindow.mainMenu.menuItemHelpAbout.setFont(uiFont);
     }
   }
 
@@ -178,7 +177,7 @@ public class WindowFonts {
    *
    * @param font to be set to Editor
    */
-  public final void setTargetEditorFont(final Font font, MainWindow mainWindow) {
+  public final void setTargetEditorFont(final Font font) {
     fontTranslationEditor = font;
     if (fontTranslationEditor == null) {
       final String strFontName = "Dialog";
@@ -215,7 +214,7 @@ public class WindowFonts {
    *
    * @param font to be set to table
    */
-  public final void setTableFont(final Font font, MainWindow mainWindow) {
+  public final void setTableFont(final Font font) {
     fontTable = font;
     if (fontTable == null) {
       final String strFontName = "Dialog";
@@ -274,6 +273,34 @@ public class WindowFonts {
       fontTableHeader = new Font(strFontName, getFontStyle(strFontStyle),
               iFontSize);
     }
+  }
+
+  /**
+   * Font family names accessor.
+   *
+   * @return String[] font family names
+   */
+  public final String[] getFontFamilyNames() {
+    GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    return graphics.getAvailableFontFamilyNames();
+  }
+
+  /**
+   * Fonts mutator Delegates actual setting of fonts to specific methods.
+   *
+   * <p> Passing in null causes default values to be used - used at startup or for
+   * reset Passing in a font causes all UI elements to be the same - used with
+   * the 'All' window area when selected in the fonts dialog
+   *
+   * @param font to be configured
+   */
+  public final void setFonts(final Font font) {
+    setUiFont(font);
+    setTableFont(font);
+    setTableHeaderFont(font);
+    setSourceEditorFont(font);
+    setTargetEditorFont(font);
+    mainWindow.toolBar.setFonts(font);
   }
   
 }

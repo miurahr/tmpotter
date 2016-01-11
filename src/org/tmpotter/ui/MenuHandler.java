@@ -66,9 +66,12 @@ import javax.swing.table.TableColumn;
 final class MenuHandler {
 
   private final MainWindow mainWindow;
-
-  public MenuHandler(final MainWindow mainWindow) {
+  private final TmData tmData;
+  private File userHome = new File(System.getProperty("user.home"));
+  
+  public MenuHandler(final MainWindow mainWindow, TmData tmData) {
     this.mainWindow = mainWindow;
+    this.tmData = tmData;
   }
 
   // proxy for aqua
@@ -87,36 +90,35 @@ final class MenuHandler {
    */
   void undoChanges() {
     String cad;
-    SegmentChanges ultChanges = new SegmentChanges();
+    SegmentChanges ultChanges;
     int tam = 0;
-    ultChanges = mainWindow.arrayListChanges.get(mainWindow.identChanges);
-    mainWindow.identLabel = ultChanges.getIdent_linea();
+    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.identLabel = ultChanges.getIdent_linea();
     int operacion = ultChanges.getKind();
     int position;
     boolean izq = ultChanges.getSource();
-    mainWindow.identAnt = mainWindow.identLabel;
+    tmData.setIdentAntAsLabel();
     switch (operacion) {
       case 0: {
         final String cadaux = ultChanges.getFrase();
         if (izq) {
-          cad = mainWindow.documentOriginal.get(mainWindow.identLabel);
+          cad = tmData.getDocumentOriginal(tmData.identLabel);
           if (!cad.equals("")) {
             cad = cad.trim();
           }
           position = cad.indexOf(cadaux) + cadaux.length();
         } else {
-          cad = mainWindow.documentTranslation.get(mainWindow.identLabel);
+          cad = tmData.getDocumentTranslation(tmData.identLabel);
           if (!cad.equals("")) {
             cad = cad.trim();
           }
           position = cad.indexOf(cadaux) + cadaux.length();
         }
         if (ultChanges.getSource()) {
-          mainWindow.documentOriginal.split(mainWindow.identLabel, position);
+          tmData.documentOriginal.split(tmData.identLabel, position);
         } else {
-          mainWindow.documentTranslation.split(mainWindow.identLabel, position);
+          tmData.documentTranslation.split(tmData.identLabel, position);
         }
-        mainWindow.updateTmView();
         break;
       }
       case 1:
@@ -126,25 +128,24 @@ final class MenuHandler {
           // El complementario de Split es Unir
         // The complement of Split is Join
         int cont;
-        cont = mainWindow.identLabel + 1;
+        cont = tmData.identLabel + 1;
         if (izq) {
           cad = ultChanges.getFrase();
-          mainWindow.documentOriginal.set(mainWindow.identLabel, cad.trim());
-          while (cont < mainWindow.topArrays) {
-            mainWindow.documentOriginal.set(cont, mainWindow.documentOriginal.get(cont + 1));
+          tmData.documentOriginal.set(tmData.identLabel, cad.trim());
+          while (cont < mainWindow.tmData.topArrays) {
+            tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont + 1));
             cont++;
           }
-          mainWindow.documentOriginal.set(mainWindow.documentOriginal.size() - 1, "");
+          tmData.documentOriginal.set(tmData.documentOriginal.size() - 1, "");
         } else {
           cad = ultChanges.getFrase();
-          mainWindow.documentTranslation.set(mainWindow.identLabel, cad.trim());
-          while (cont < mainWindow.topArrays) {
-            mainWindow.documentTranslation.set(cont, mainWindow.documentTranslation.get(cont + 1));
+          tmData.documentTranslation.set(tmData.identLabel, cad.trim());
+          while (cont < mainWindow.tmData.topArrays) {
+            tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont + 1));
             cont++;
           }
-          mainWindow.documentTranslation.set(mainWindow.documentTranslation.size() - 1, "");
+          tmData.documentTranslation.set(tmData.documentTranslation.size() - 1, "");
         }
-        mainWindow.updateTmView();
         break;
       }
       case 3: {
@@ -152,47 +153,46 @@ final class MenuHandler {
         int[] filasEliminadas;
         filasEliminadas = ultChanges.getNumEliminada();
         while (tam > 0) {
-          mainWindow.documentTranslation.add(mainWindow.documentTranslation.size(), "");
-          mainWindow.documentOriginal.add(mainWindow.documentOriginal.size(), "");
-          mainWindow.topArrays = mainWindow.documentTranslation.size() - 1;
+          tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
+          tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
+          tmData.topArrays = tmData.documentTranslation.size() - 1;
           tam--;
         }
-        int cont2 = mainWindow.documentOriginal.size() - 1;
+        int cont2 = tmData.documentOriginal.size() - 1;
         tam = ultChanges.getTam();
         while (cont2 >= tam && tam > 0) {
           if (cont2 == filasEliminadas[tam - 1]) {
-            mainWindow.documentTranslation.set(cont2, "");
-            mainWindow.documentOriginal.set(cont2, "");
+            tmData.documentTranslation.set(cont2, "");
+            tmData.documentOriginal.set(cont2, "");
             tam--;
           } else {
-            mainWindow.documentTranslation.set(cont2,
-                    mainWindow.documentTranslation.get(cont2 - tam));
-            mainWindow.documentOriginal.set(cont2,
-                    mainWindow.documentOriginal.get(cont2 - tam));
+            tmData.documentTranslation.set(cont2,
+                    tmData.documentTranslation.get(cont2 - tam));
+            tmData.documentOriginal.set(cont2,
+                    tmData.documentOriginal.get(cont2 - tam));
           }
           cont2--;
         }
-        mainWindow.updateTmView();
         break;
       }
       case 4: {
         if (izq) {
-          mainWindow.documentTranslation.set(mainWindow.identLabel,
-                  mainWindow.documentTranslation.get(mainWindow.identLabel + 1));
-          mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
-          mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+          tmData.documentTranslation.set(tmData.identLabel,
+                  tmData.documentTranslation.get(tmData.identLabel + 1));
+          tmData.documentOriginal.remove(tmData.identLabel + 1);
+          tmData.documentTranslation.remove(tmData.identLabel + 1);
         } else {
-          mainWindow.documentOriginal.set(mainWindow.identLabel,
-                  mainWindow.documentOriginal.get(mainWindow.identLabel + 1));
-          mainWindow.documentOriginal.remove(mainWindow.identLabel + 1);
-          mainWindow.documentTranslation.remove(mainWindow.identLabel + 1);
+          tmData.documentOriginal.set(tmData.identLabel,
+                  tmData.documentOriginal.get(tmData.identLabel + 1));
+          tmData.documentOriginal.remove(tmData.identLabel + 1);
+          tmData.documentTranslation.remove(tmData.identLabel + 1);
         }
-        mainWindow.updateTmView();
         break;
       }
       default:
         break;
     }
+    mainWindow.updateTmView();
   }
 
   /**
@@ -200,17 +200,17 @@ final class MenuHandler {
    */
   private void undoDelete() {
     SegmentChanges ultChanges =
-            mainWindow.arrayListChanges.get(mainWindow.identChanges);
-    mainWindow.identLabel = ultChanges.getIdent_linea();
+            tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.identLabel = ultChanges.getIdent_linea();
     boolean izq = ultChanges.getSource();
     
-    final Document documentOriginal = mainWindow.documentOriginal;
-    final Document documentTranslation = mainWindow.documentTranslation;
-    final int identLabel = mainWindow.identLabel;
+    final Document documentOriginal = tmData.documentOriginal;
+    final Document documentTranslation = tmData.documentTranslation;
+    final int identLabel = tmData.identLabel;
     
     if (izq) {
-      if (mainWindow.identLabel == documentOriginal.size()) {
-        documentOriginal.add(mainWindow.identLabel,
+      if (tmData.identLabel == documentOriginal.size()) {
+        documentOriginal.add(tmData.identLabel,
                 ultChanges.getFrase());
         if (documentOriginal.size() != documentTranslation.size()) {
           documentTranslation.add(documentTranslation.size(), "");
@@ -248,25 +248,25 @@ final class MenuHandler {
    */
   public void menuItemFileOpenActionPerformed() {
     final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(mainWindow.userHome);
+    dlg.setPath(userHome);
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      mainWindow.userHome = dlg.getPath();
-      mainWindow.filePathOriginal = dlg.getFilePath();
-      mainWindow.filePathTranslation = mainWindow.filePathOriginal;
-      mainWindow.stringLangOriginal = dlg.getSourceLocale();
-      mainWindow.stringLangTranslation = dlg.getTargetLocale();
+      userHome = dlg.getPath();
+      tmData.filePathOriginal = dlg.getFilePath();
+      tmData.filePathTranslation = tmData.filePathOriginal;
+      tmData.stringLangOriginal = dlg.getSourceLocale();
+      tmData.stringLangTranslation = dlg.getTargetLocale();
       mainWindow.tmView.buildDisplay();
       try {
         ProjectProperties prop = new ProjectProperties();
-        prop.setSourceLanguage(mainWindow.stringLangOriginal);
-        prop.setTargetLanguage(mainWindow.stringLangTranslation);
-        TmxReader reader = new TmxReader(prop, mainWindow.filePathOriginal);
-        mainWindow.documentOriginal =
-                reader.getOriginalDocument(mainWindow.documentOriginal);
-        mainWindow.documentTranslation = 
-                reader.getTranslationDocument(mainWindow.documentTranslation);
+        prop.setSourceLanguage(tmData.stringLangOriginal);
+        prop.setTargetLanguage(tmData.stringLangTranslation);
+        TmxReader reader = new TmxReader(prop, tmData.filePathOriginal);
+        tmData.documentOriginal =
+                reader.getOriginalDocument(tmData.documentOriginal);
+        tmData.documentTranslation = 
+                reader.getTranslationDocument(tmData.documentTranslation);
       } catch (Exception ex) {
         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -290,36 +290,36 @@ final class MenuHandler {
     String originalEncoding;
     String translateEncoding;
     final OpenTexts dlg = new OpenTexts();
-    dlg.setPath(mainWindow.userHome);
+    dlg.setPath(userHome);
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      mainWindow.userHome = dlg.getPath();
+      userHome = dlg.getPath();
       originalEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
-      mainWindow.filePathOriginal = dlg.getSourcePath();
-      mainWindow.stringOriginal = dlg.getSource();
-      mainWindow.stringLangOriginal = dlg.getSourceLocale();
+      tmData.filePathOriginal = dlg.getSourcePath();
+      tmData.stringOriginal = dlg.getSource();
+      tmData.stringLangOriginal = dlg.getSourceLocale();
       mainWindow.tmView.buildDisplay();
-      mainWindow.documentOriginal = new Document();
-      mainWindow.documentTranslation = new Document();
+      tmData.documentOriginal = new Document();
+      tmData.documentTranslation = new Document();
       translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
-      mainWindow.filePathTranslation = dlg.getTargetPath();
-      mainWindow.stringTranslation = dlg.getTarget();
-      mainWindow.stringLangTranslation = dlg.getTargetLocale();
+      tmData.filePathTranslation = dlg.getTargetPath();
+      tmData.stringTranslation = dlg.getTarget();
+      tmData.stringLangTranslation = dlg.getTargetLocale();
       Segmenter.srx = Preferences.getSrx();
       try {
-        mainWindow.documentOriginal =
-                TextReader.read(mainWindow.stringOriginal,
-                        mainWindow.stringLangOriginal, originalEncoding);
-        mainWindow.documentTranslation =
-                TextReader.read(mainWindow.stringTranslation,
-                        mainWindow.stringLangTranslation, translateEncoding);
+        tmData.documentOriginal =
+                TextReader.read(tmData.stringOriginal,
+                        tmData.stringLangOriginal, originalEncoding);
+        tmData.documentTranslation =
+                TextReader.read(tmData.stringTranslation,
+                        tmData.stringLangTranslation, translateEncoding);
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      mainWindow.matchArrays();
+      tmData.matchArrays();
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
@@ -346,14 +346,14 @@ final class MenuHandler {
     TableColumn col;
     col = mainWindow.tmView.getColumnModel().getColumn(1);
     col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-            + mainWindow.filePathOriginal.getName());
+            + tmData.filePathOriginal.getName());
     col = mainWindow.tmView.getColumnModel().getColumn(2);
     col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-            + mainWindow.filePathTranslation.getName());
+            + tmData.filePathTranslation.getName());
     mainWindow.tmView.setColumnHeaderView();
     mainWindow.updateTmView();
-    mainWindow.topArrays = mainWindow.documentOriginal.size() - 1;
-    mainWindow.identLabel = 0;
+    tmData.topArrays = tmData.documentOriginal.size() - 1;
+    tmData.identLabel = 0;
   }
 
   public void menuItemFileSaveAsActionPerformed() {
@@ -370,33 +370,33 @@ final class MenuHandler {
    *
    */
   private void saveBitext() {
-    for (int cont = 0; cont < (mainWindow.documentOriginal.size() - 1); cont++) {
-      if (mainWindow.documentOriginal.get(cont).equals("")
-              && mainWindow.documentTranslation.get(cont).equals("")) {
-        mainWindow.documentOriginal.remove(cont);
-        mainWindow.documentTranslation.remove(cont);
+    for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
+      if (tmData.documentOriginal.get(cont).equals("")
+              && tmData.documentTranslation.get(cont).equals("")) {
+        tmData.documentOriginal.remove(cont);
+        tmData.documentTranslation.remove(cont);
       }
     }
     try {
-      String outFileName = mainWindow.filePathOriginal.getName();
+      String outFileName = tmData.filePathOriginal.getName();
       String outFileNameBase = outFileName.substring(0,
-              mainWindow.filePathOriginal.getName().length() - 4);
+              tmData.filePathOriginal.getName().length() - 4);
       boolean save = false;
       boolean cancel = false;
-      mainWindow.userHome = new File(RuntimePreferences.getUserHome());
-      File outFile = new File(outFileNameBase.concat(mainWindow
+      userHome = new File(RuntimePreferences.getUserHome());
+      File outFile = new File(outFileNameBase.concat(tmData
               .stringLangTranslation + ".tmx"));
       while (!save && !cancel) {
         final JFileChooser fc = new JFileChooser();
         boolean nameOfUser = false;
         while (!nameOfUser) {
           fc.setLocation(230, 300);
-          fc.setCurrentDirectory(mainWindow.userHome);
+          fc.setCurrentDirectory(userHome);
           fc.setDialogTitle(getString("DLG.SAVEAS"));
           fc.setMultiSelectionEnabled(false);
           fc.setSelectedFile(outFile);
           fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-          mainWindow.userHome = fc.getCurrentDirectory();
+          userHome = fc.getCurrentDirectory();
           int returnVal;
           returnVal = fc.showSaveDialog(mainWindow);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -438,13 +438,13 @@ final class MenuHandler {
           dlgEnc.dispose();
         }
       }
-      TmxWriter.writeBitext(outFile, mainWindow.documentOriginal,
-              mainWindow.stringLangOriginal, mainWindow.documentTranslation,
-              mainWindow.stringLangTranslation, encoding);
+      TmxWriter.writeBitext(outFile, tmData.documentOriginal,
+              tmData.stringLangOriginal, tmData.documentTranslation,
+              tmData.stringLangTranslation, encoding);
     } catch (IOException ex) {
       JOptionPane.showMessageDialog(mainWindow,
-              (String) mainWindow.arrayListLang.get(21),
-              (String) mainWindow.arrayListLang.get(18),
+              (String) tmData.arrayListLang.get(21),
+              (String) tmData.arrayListLang.get(18),
               JOptionPane.ERROR_MESSAGE);
       mainWindow.dispose();
     }
@@ -472,24 +472,9 @@ final class MenuHandler {
    * <p>Initialize values to start the validation of the following alignment
    */
   private void clear() {
-    mainWindow.documentOriginal.clean();
-    mainWindow.documentTranslation.clean();
-    int cont = mainWindow.arrayListBitext.size() - 1;
-    while (!mainWindow.arrayListBitext.isEmpty()) {
-      mainWindow.arrayListBitext.remove(cont--);
-    }
-    cont = mainWindow.arrayListChanges.size() - 1;
-    while (!mainWindow.arrayListChanges.isEmpty()) {
-      mainWindow.arrayListChanges.remove(cont--);
-    }
-    mainWindow.identChanges = -1;
-    mainWindow.identLabel = 0;
-    mainWindow.identAnt = 0;
-    mainWindow.filePathTranslation = null;
-    mainWindow.filePathOriginal = null;
+    tmData.clear();
     mainWindow.toolBar.setUndoEnabled(false);
     mainWindow.tmView.clear();
-    mainWindow.topArrays = 0;
     mainWindow.editLeftSegment.setText("");
     mainWindow.editRightSegment.setText("");
   }
@@ -553,30 +538,6 @@ final class MenuHandler {
     mainWindow.onTuSplit();
   }
 
-  public void menuItemOriginalDeleteActionPerformed() {
-    mainWindow.onOriginalDelete();
-  }
-
-  public void menuItemOriginalJoinActionPerformed() {
-    mainWindow.onOriginalJoin();
-  }
-
-  public void menuItemOriginalSplitActionPerformed() {
-    mainWindow.onOriginalSplit();
-  }
-
-  public void menuItemTranslationDeleteActionPerformed() {
-    mainWindow.onTranslationDelete();
-  }
-
-  public void menuItemTranslationJoinActionPerformed() {
-    mainWindow.onTranslationJoin();
-  }
-
-  public void menuItemTranslationSplitActionPerformed() {
-    mainWindow.onTranslationSplitCv();
-  }
-
   /**
    * Display fonts dialog.
    *
@@ -584,7 +545,7 @@ final class MenuHandler {
    * origianl/translation tables/editors and main window
    */
   public void menuItemSettingsFontsActionPerformed() {
-    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.windowFonts.getFonts());
+    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.fontManager);
     dlgFonts.setVisible(true);
   }
 
@@ -610,7 +571,7 @@ final class MenuHandler {
     onChangeLnF(MenuHandler.LnfType.SYSTEM);
   }
 
-  private final void onChangeLnF(LnfType type) {
+  private void onChangeLnF(LnfType type) {
     switch (type) {
       case GTK:
         try {

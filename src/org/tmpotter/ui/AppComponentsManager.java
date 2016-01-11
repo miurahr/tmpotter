@@ -49,7 +49,7 @@ import javax.swing.JMenuBar;
  *
  * @author Hiroshi Miura
  */
-public class UiComponents {
+public class AppComponentsManager {
   private final MainWindow mainWindow;
   JXMultiSplitPane msp;
   JXPanel controlPane;
@@ -66,7 +66,7 @@ public class UiComponents {
    *
    * @param mainWindow parent frame
    */
-  public UiComponents(MainWindow mainWindow) {
+  public AppComponentsManager(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
     controlPane = new JXPanel();
     editPane = new JXPanel();
@@ -120,5 +120,13 @@ public class UiComponents {
    */
   protected void updateStatusBar() {
     tableRows.setText("" + mainWindow.tmView.getRowCount());
+  }
+
+  void makeMenus(MainWindow mainWindow) {
+    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuFile());
+    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuEdit());
+    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuSettings());
+    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuHelp());
+    mainWindow.setJMenuBar(mainWindow.appComponentsManager.menuBar);
   }
 }

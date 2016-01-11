@@ -48,7 +48,7 @@ import javax.swing.JToolBar;
  */
 @SuppressWarnings("serial")
 final class ToolBar extends JToolBar implements ActionListener {
-  private final MainWindow mainWindow;
+  private ModelMediator modelMediator;
 
   private final JButton  buttonOriginalDelete    = new JButton();
   private final JButton  buttonOriginalJoin      = new JButton();
@@ -66,11 +66,16 @@ final class ToolBar extends JToolBar implements ActionListener {
   private final JPanel panelButtonsLeft   = new JPanel();
   private final JPanel panelButtonsRight  = new JPanel();
 
-  public ToolBar( final MainWindow windowMain ) {
+  public ToolBar(  ) {
     super( "ToolBar" );
+    createToolBar();
+  }
+  
+  public void setModelMediator(ModelMediator mediator) {
+    this.modelMediator = mediator;
+  }
 
-    this.mainWindow = windowMain;
-
+  private void createToolBar() {
     setLayout(new BorderLayout());
 
     setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));
@@ -195,23 +200,23 @@ final class ToolBar extends JToolBar implements ActionListener {
 
     if ( actor instanceof JButton ) {
       if ( actor == buttonOriginalDelete ) {
-        mainWindow.onOriginalDelete();
+        modelMediator.onOriginalDelete();
       } else if ( actor == buttonOriginalJoin ) {
-        mainWindow.onOriginalJoin();
+        modelMediator.onOriginalJoin();
       } else if ( actor == buttonOriginalSplit ) {
-        mainWindow.onOriginalSplit();
+        modelMediator.onOriginalSplit();
       } else if ( actor == buttonTranslationDelete ) {
-        mainWindow.onTranslationDelete();
+        modelMediator.onTranslationDelete();
       } else if ( actor == buttonTranslationJoin )  {
-        mainWindow.onTranslationJoin();
+        modelMediator.onTranslationJoin();
       } else if ( actor == buttonTranslationSplit ) {
-        mainWindow.onTranslationSplit();
+        modelMediator.onTranslationSplit();
       } else if ( actor == buttonRemoveBlankRows )  {
-        mainWindow.onRemoveBlankRows();
+        modelMediator.onRemoveBlankRows();
       } else if ( actor == buttonTuSplit )     {
-        mainWindow.onTuSplit();
+        modelMediator.onTuSplit();
       } else if ( actor == buttonUndo )     {
-        mainWindow.onUndo();
+        modelMediator.onUndo();
       }
     }
   }
