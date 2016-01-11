@@ -64,8 +64,8 @@ import static org.tmpotter.util.StringUtil.restoreText;
 @SuppressWarnings("serial")
 public final class MainWindow extends JFrame implements ModelMediator, WindowListener {
   protected final ToolBar toolBar = new ToolBar();
-  protected final SegmentEditor editLeftSegment = new SegmentEditor(this);
-  protected final SegmentEditor editRightSegment = new SegmentEditor(this);
+  protected final SegmentEditor editLeftSegment = new SegmentEditor();
+  protected final SegmentEditor editRightSegment = new SegmentEditor();
   protected final TmView tmView = new TmView();
 
   protected MenuHandler menuHandler = new MenuHandler(this);
@@ -106,6 +106,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   public MainWindow() {
     tmView.setModelMediator(this);
     toolBar.setModelMediator(this);
+    editLeftSegment.setModelMediator(this);
+    editRightSegment.setModelMediator(this);
 
     makeMenus();
     makeUi();
