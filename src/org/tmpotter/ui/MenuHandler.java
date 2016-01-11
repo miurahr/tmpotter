@@ -91,23 +91,23 @@ final class MenuHandler {
     String cad;
     SegmentChanges ultChanges;
     int tam = 0;
-    ultChanges = tmData.arrayListChanges.get(tmData.identChanges);
+    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
     tmData.identLabel = ultChanges.getIdent_linea();
     int operacion = ultChanges.getKind();
     int position;
     boolean izq = ultChanges.getSource();
-    tmData.identAnt = tmData.identLabel;
+    tmData.setIdentAntAsLabel();
     switch (operacion) {
       case 0: {
         final String cadaux = ultChanges.getFrase();
         if (izq) {
-          cad = tmData.documentOriginal.get(tmData.identLabel);
+          cad = tmData.getDocumentOriginal(tmData.identLabel);
           if (!cad.equals("")) {
             cad = cad.trim();
           }
           position = cad.indexOf(cadaux) + cadaux.length();
         } else {
-          cad = tmData.documentTranslation.get(tmData.identLabel);
+          cad = tmData.getDocumentTranslation(tmData.identLabel);
           if (!cad.equals("")) {
             cad = cad.trim();
           }
@@ -118,7 +118,6 @@ final class MenuHandler {
         } else {
           tmData.documentTranslation.split(tmData.identLabel, position);
         }
-        mainWindow.updateTmView();
         break;
       }
       case 1:
@@ -146,7 +145,6 @@ final class MenuHandler {
           }
           tmData.documentTranslation.set(tmData.documentTranslation.size() - 1, "");
         }
-        mainWindow.updateTmView();
         break;
       }
       case 3: {
@@ -174,7 +172,6 @@ final class MenuHandler {
           }
           cont2--;
         }
-        mainWindow.updateTmView();
         break;
       }
       case 4: {
@@ -189,12 +186,12 @@ final class MenuHandler {
           tmData.documentOriginal.remove(tmData.identLabel + 1);
           tmData.documentTranslation.remove(tmData.identLabel + 1);
         }
-        mainWindow.updateTmView();
         break;
       }
       default:
         break;
     }
+    mainWindow.updateTmView();
   }
 
   /**
@@ -202,7 +199,7 @@ final class MenuHandler {
    */
   private void undoDelete() {
     SegmentChanges ultChanges =
-            tmData.arrayListChanges.get(tmData.identChanges);
+            tmData.arrayListChanges.get(tmData.getIdentChanges());
     tmData.identLabel = ultChanges.getIdent_linea();
     boolean izq = ultChanges.getSource();
     
@@ -321,7 +318,7 @@ final class MenuHandler {
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      mainWindow.matchArrays();
+      tmData.matchArrays();
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
@@ -474,24 +471,9 @@ final class MenuHandler {
    * <p>Initialize values to start the validation of the following alignment
    */
   private void clear() {
-    tmData.documentOriginal.clean();
-    tmData.documentTranslation.clean();
-    int cont = tmData.arrayListBitext.size() - 1;
-    while (!tmData.arrayListBitext.isEmpty()) {
-      tmData.arrayListBitext.remove(cont--);
-    }
-    cont = tmData.arrayListChanges.size() - 1;
-    while (!tmData.arrayListChanges.isEmpty()) {
-      tmData.arrayListChanges.remove(cont--);
-    }
-    tmData.identChanges = -1;
-    tmData.identLabel = 0;
-    tmData.identAnt = 0;
-    tmData.filePathTranslation = null;
-    tmData.filePathOriginal = null;
+    tmData.clear();
     mainWindow.toolBar.setUndoEnabled(false);
     mainWindow.tmView.clear();
-    tmData.topArrays = 0;
     mainWindow.editLeftSegment.setText("");
     mainWindow.editRightSegment.setText("");
   }
