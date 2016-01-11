@@ -560,7 +560,7 @@ final class MenuHandler {
    * origianl/translation tables/editors and main window
    */
   public void menuItemSettingsFontsActionPerformed() {
-    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.windowFonts.getFonts());
+    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.fontManager);
     dlgFonts.setVisible(true);
   }
 

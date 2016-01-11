@@ -33,6 +33,7 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.ui.MainWindow;
+import org.tmpotter.ui.WindowFontManager;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -65,16 +66,20 @@ import javax.swing.event.ChangeListener;
 @SuppressWarnings("serial")
 public final class FontSelector extends JDialog {
 
+  private final MainWindow windowMain;
+  private final WindowFontManager fontManager;
+
   /**
    * Show font selector.
    *
-   * @param wndB2T frame
-   * @param afnt font list
+   * @param mainWindow frame
    */
-  public FontSelector( final MainWindow wndB2T, final Font[] afnt) {
-    super( wndB2T, true );
+  public FontSelector( final MainWindow mainWindow, WindowFontManager fontManager) {
+    super( mainWindow, true );
 
-    windowMain = wndB2T;
+    windowMain = mainWindow;
+    this.fontManager = fontManager;
+    Font[] afnt = fontManager.getFonts();
 
     initialize();
 
@@ -110,7 +115,7 @@ public final class FontSelector extends JDialog {
     final GridBagConstraints    gridBagConstraints;
 
     buttonPanel         = new JPanel();
-    fontComboBox        = new JComboBox( windowMain.getFontFamilyNames() );
+    fontComboBox        = new JComboBox( fontManager.getFontFamilyNames() );
     fontLabel           = new JLabel();
     sizeSpinner         = new JSpinner();
     sizeLabel           = new JLabel();
@@ -461,29 +466,29 @@ public final class FontSelector extends JDialog {
     switch ( comboFontDisplayArea.getSelectedIndex() ) {
       //  Table
       case 0:
-        windowMain.setTableFont( getSelectedFont());
+        fontManager.setTableFont( getSelectedFont());
         break;
       //  Table Header
       case 1:
-        windowMain.setTableHeaderFont( getSelectedFont() );
+        fontManager.setTableHeaderFont( getSelectedFont() );
         break;
       //  Source Editor
       case 2:
-        windowMain.setSourceEditorFont( getSelectedFont() );
+        fontManager.setSourceEditorFont( getSelectedFont() );
         break;
       //  Target Editor
       case 3:
-        windowMain.setTargetEditorFont( getSelectedFont() );
+        fontManager.setTargetEditorFont( getSelectedFont() );
         break;
       //  Windows, Dialogs, Menus, etc.
       case 4:
-        windowMain.setUserInterfaceFont( getSelectedFont() );
+        fontManager.setUiFont( getSelectedFont() );
         setFonts( getSelectedFont() );
         break;
       //  All GUI components  
       case 5:
       default:
-        windowMain.setFonts(getSelectedFont() );
+        fontManager.setFonts(getSelectedFont() );
         setFonts( getSelectedFont() );
     }
   }
@@ -496,8 +501,6 @@ public final class FontSelector extends JDialog {
     setVisible( false );
     dispose();
   }
-
-  private final MainWindow windowMain;
 
   private JPanel           buttonPanel;
   private JComboBox        fontComboBox;

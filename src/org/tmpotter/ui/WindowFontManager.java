@@ -31,26 +31,28 @@ package org.tmpotter.ui;
 import org.tmpotter.util.Platform;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 
 /**
  * Font setup for main window.
  * 
  * @author Hiroshi Miura
  */
-public class WindowFonts {
+public class WindowFontManager {
   
   private Font fontTable;
   private Font fontTableHeader;
   private Font fontSourceEditor;
   private Font fontTranslationEditor;
   private Font uiFont;
+  
   private final MainWindow mainWindow;
 
   /**
    * Constructor.
    * @param mainWindow main frame owner
    */
-  public WindowFonts(MainWindow mainWindow) {
+  public WindowFontManager(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
   }
   
@@ -175,7 +177,7 @@ public class WindowFonts {
    *
    * @param font to be set to Editor
    */
-  public final void setTargetEditorFont(final Font font, MainWindow mainWindow) {
+  public final void setTargetEditorFont(final Font font) {
     fontTranslationEditor = font;
     if (fontTranslationEditor == null) {
       final String strFontName = "Dialog";
@@ -212,7 +214,7 @@ public class WindowFonts {
    *
    * @param font to be set to table
    */
-  public final void setTableFont(final Font font, MainWindow mainWindow) {
+  public final void setTableFont(final Font font) {
     fontTable = font;
     if (fontTable == null) {
       final String strFontName = "Dialog";
@@ -271,6 +273,34 @@ public class WindowFonts {
       fontTableHeader = new Font(strFontName, getFontStyle(strFontStyle),
               iFontSize);
     }
+  }
+
+  /**
+   * Font family names accessor.
+   *
+   * @return String[] font family names
+   */
+  public final String[] getFontFamilyNames() {
+    GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    return graphics.getAvailableFontFamilyNames();
+  }
+
+  /**
+   * Fonts mutator Delegates actual setting of fonts to specific methods.
+   *
+   * <p> Passing in null causes default values to be used - used at startup or for
+   * reset Passing in a font causes all UI elements to be the same - used with
+   * the 'All' window area when selected in the fonts dialog
+   *
+   * @param font to be configured
+   */
+  public final void setFonts(final Font font) {
+    setUiFont(font);
+    setTableFont(font);
+    setTableHeaderFont(font);
+    setSourceEditorFont(font);
+    setTargetEditorFont(font);
+    mainWindow.toolBar.setFonts(font);
   }
   
 }

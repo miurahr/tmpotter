@@ -29,8 +29,11 @@
 package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
+import static org.tmpotter.util.StringUtil.formatText;
+import static org.tmpotter.util.StringUtil.restoreText;
 
 import org.tmpotter.core.Document;
+import org.tmpotter.core.Segment;
 import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.Utilities;
@@ -52,9 +55,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.tmpotter.core.Segment;
-import static org.tmpotter.util.StringUtil.formatText;
-import static org.tmpotter.util.StringUtil.restoreText;
+
 
 
 /**
@@ -70,16 +71,17 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
 
   protected MenuHandler menuHandler = new MenuHandler(this);
   protected MainMenu mainMenu = new MainMenu(this);
-  protected WindowFonts windowFonts = new WindowFonts(this);
-  protected AppComponents uiComponents = new AppComponents(this);
+  protected WindowFontManager fontManager = new WindowFontManager(this);
+  protected AppComponentsManager appComponentsManager = new AppComponentsManager(this);
+  protected ModelManager modelManager = new ModelManager(this);
 
   protected Document documentOriginal;
   protected Document documentTranslation;
 
-  protected final ArrayList arrayListBitext = new ArrayList();;
+  protected final ArrayList arrayListBitext = new ArrayList();
 
-  protected final ArrayList<SegmentChanges> arrayListChanges = new ArrayList<>();;
-  protected final ArrayList arrayListLang = new ArrayList();;
+  protected final ArrayList<SegmentChanges> arrayListChanges = new ArrayList<>();
+  protected final ArrayList arrayListLang = new ArrayList();
 
   protected int topArrays;    //  =  0;
   protected int positionTextArea;  //  =  0;
@@ -109,12 +111,12 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     editLeftSegment.setModelMediator(this);
     editRightSegment.setModelMediator(this);
 
-    makeMenus();
-    makeUi();
+    appComponentsManager.makeMenus(this);
+    appComponentsManager.makeUi();
     setMacProxy();
     setCloseHandler();
     setFrameSize();
-    setFonts();
+    fontManager.setFonts(null);
   }
 
   protected ImageIcon getDesktopIcon(final String iconName) {
@@ -125,7 +127,7 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   }
 
   private void makeUi() {
-    uiComponents.makeUi();
+    appComponentsManager.makeUi();
   }
 
   private void setMacProxy() {
@@ -136,14 +138,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     } catch (final NoClassDefFoundError e) {
       System.out.println(e);
     }
-  }
-
-  private void makeMenus() {
-    uiComponents.menuBar.add(mainMenu.getMenuFile());
-    uiComponents.menuBar.add(mainMenu.getMenuEdit());
-    uiComponents.menuBar.add(mainMenu.getMenuSettings());
-    uiComponents.menuBar.add(mainMenu.getMenuHelp());
-    setJMenuBar(uiComponents.menuBar);
   }
 
   private void setCloseHandler() {
@@ -570,59 +564,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
 
   }
 
-  /**
-   * Fonts mutator Delegates actual setting of fonts to specific methods.
-   *
-   * <p> Passing in null causes default values to be used - used at startup or for
-   * reset Passing in a font causes all UI elements to be the same - used with
-   * the 'All' window area when selected in the fonts dialog
-   *
-   * @param font to be configured
-   */
-  public final void setFonts(final Font font) {
-    windowFonts.setUiFont(font);
-    windowFonts.setTableFont(font, this);
-    windowFonts.setTableHeaderFont(font);
-    windowFonts.setSourceEditorFont(font);
-    windowFonts.setTargetEditorFont(font, this);
-    toolBar.setFonts(font);
-  }
-
-  private void setFonts() {
-    setFonts(null);
-  }
-
-  public final void setTableFont(final Font font) {
-    windowFonts.setTableFont(font, this);
-  }
-
-  public final void setUserInterfaceFont(final Font font) {
-    windowFonts.setUiFont(font);
-  }
-
-  public final void setTableHeaderFont(final Font font) {
-    windowFonts.setTableHeaderFont(font);
-  }
-
-  public final void setSourceEditorFont(final Font font) {
-    windowFonts.setSourceEditorFont(font);
-  }
-
-  public final void setTargetEditorFont(final Font font) {
-    windowFonts.setTargetEditorFont(font, this);
-  }
-
-  /**
-   * Font family names accessor.
-   *
-   * @return String[] font family names
-   */
-  public final String[] getFontFamilyNames() {
-    GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    return graphics.getAvailableFontFamilyNames();
-  }
-
-
   //  WindowListener Overrides
   @Override
   public final void windowActivated(final WindowEvent evt) {
@@ -684,5 +625,4 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
       identLabel = documentOriginal.size() - 1;
     }
   }
-
 }
