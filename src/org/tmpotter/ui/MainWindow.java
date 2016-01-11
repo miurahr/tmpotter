@@ -45,10 +45,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import java.io.File;
-import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -70,10 +66,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   protected TmData tmData = new TmData();
   protected MenuHandler menuHandler;
 
-  protected File userHome = new File(System.getProperty("user.home"));
-
-  private static final Logger LOG = Logger.getLogger(MainWindow.class.getName());
-
 
   /**
    * Main window class.
@@ -88,17 +80,12 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
 
     appComponentsManager.makeMenus(this);
     appComponentsManager.makeUi();
-    setMacProxy();
+    if (Platform.isMacOsx()) {
+      setMacProxy();
+    }
     setCloseHandler();
     setMainFrameSize();
     fontManager.setFonts(null);
-  }
-
-  protected ImageIcon getDesktopIcon(final String iconName) {
-    if (Platform.isMacOsx()) {
-      return (mainMenu.getIcon("desktop/osx/" + iconName));
-    }
-    return (mainMenu.getIcon("desktop/" + iconName));
   }
 
   private void setMacProxy() {
@@ -219,10 +206,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
       if ((event.getKeyCode() == KeyEvent.VK_DOWN)
               || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
         if (tmData.identAnt < tmData.documentOriginal.size()) {
-          tmData.documentOriginal.set(tmData.identAnt,
-                  restoreText(editLeftSegment.getText()));
-          tmData.documentTranslation.set(tmData.identAnt,
-                  restoreText(editRightSegment.getText()));
+          tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
+          tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
         }
         editLeftSegment.setText(formatText(tmView.getValueAt(fila + 1, 1)
                 .toString()));
@@ -245,7 +230,7 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
         editRightSegment.setText(formatText(tmView.getValueAt(fila - 1, 2)
                 .toString()));
       }
-      if (tmData.identLabel == tmData.topArrays) {
+      if (tmData.isIdentTop()) {
         toolBar.setTranslationJoinEnabled(false);
         toolBar.setOriginalJoinEnabled(false);
       } else {
@@ -257,7 +242,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     updateTmView();
   }
 
-  
   /**
    * Join on Original.
    */
@@ -331,6 +315,7 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   }
 
   //  Accessed by ControlView
+  @Override
   public void onUndo() {
     menuHandler.undoChanges();
     tmData.arrayListChanges.remove(tmData.getIdentChanges());
@@ -407,10 +392,10 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     izq = tmView.getSelectedColumn();
 
     tmData.incrementChanges();
-    tmData.documentOriginal.add(tmData.documentOriginal.size(),
-            tmData.documentOriginal.get(tmData.documentOriginal.size() - 1));
+    tmData.documentOriginal.add(tmData.getDocumentOriginalSize(),
+            tmData.getDocumentOriginal(tmData.getDocumentOriginalSize() - 1));
     tmData.documentTranslation.add(tmData.documentTranslation.size(),
-            tmData.documentTranslation.get(tmData.documentTranslation.size() - 1));
+            tmData.getDocumentTranslation(tmData.getDocumentTranslationSize() - 1));
 
     if (izq == 1) {
       // Columna izq.

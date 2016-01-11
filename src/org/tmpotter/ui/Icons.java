@@ -23,6 +23,7 @@
 
 package org.tmpotter.ui;
 
+import org.tmpotter.util.Platform;
 import org.tmpotter.util.ResourceUtil;
 
 import java.awt.Image;
@@ -72,5 +73,12 @@ public class Icons {
       return new ImageIcon(image);
     }
     return new ImageIcon(ICONS.get(iconName));
+  }
+
+  protected ImageIcon getDesktopIcon(final String iconName, MainWindow mainWindow) {
+    if (Platform.isMacOsx()) {
+      return mainWindow.mainMenu.getIcon("desktop/osx/" + iconName);
+    }
+    return mainWindow.mainMenu.getIcon("desktop/" + iconName);
   }
 }

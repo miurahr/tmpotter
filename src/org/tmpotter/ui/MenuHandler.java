@@ -67,6 +67,7 @@ final class MenuHandler {
 
   private final MainWindow mainWindow;
   private final TmData tmData;
+  private File userHome = new File(System.getProperty("user.home"));
   
   public MenuHandler(final MainWindow mainWindow, TmData tmData) {
     this.mainWindow = mainWindow;
@@ -247,11 +248,11 @@ final class MenuHandler {
    */
   public void menuItemFileOpenActionPerformed() {
     final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(mainWindow.userHome);
+    dlg.setPath(userHome);
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      mainWindow.userHome = dlg.getPath();
+      userHome = dlg.getPath();
       tmData.filePathOriginal = dlg.getFilePath();
       tmData.filePathTranslation = tmData.filePathOriginal;
       tmData.stringLangOriginal = dlg.getSourceLocale();
@@ -289,11 +290,11 @@ final class MenuHandler {
     String originalEncoding;
     String translateEncoding;
     final OpenTexts dlg = new OpenTexts();
-    dlg.setPath(mainWindow.userHome);
+    dlg.setPath(userHome);
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      mainWindow.userHome = dlg.getPath();
+      userHome = dlg.getPath();
       originalEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
       tmData.filePathOriginal = dlg.getSourcePath();
       tmData.stringOriginal = dlg.getSource();
@@ -382,7 +383,7 @@ final class MenuHandler {
               tmData.filePathOriginal.getName().length() - 4);
       boolean save = false;
       boolean cancel = false;
-      mainWindow.userHome = new File(RuntimePreferences.getUserHome());
+      userHome = new File(RuntimePreferences.getUserHome());
       File outFile = new File(outFileNameBase.concat(tmData
               .stringLangTranslation + ".tmx"));
       while (!save && !cancel) {
@@ -390,12 +391,12 @@ final class MenuHandler {
         boolean nameOfUser = false;
         while (!nameOfUser) {
           fc.setLocation(230, 300);
-          fc.setCurrentDirectory(mainWindow.userHome);
+          fc.setCurrentDirectory(userHome);
           fc.setDialogTitle(getString("DLG.SAVEAS"));
           fc.setMultiSelectionEnabled(false);
           fc.setSelectedFile(outFile);
           fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-          mainWindow.userHome = fc.getCurrentDirectory();
+          userHome = fc.getCurrentDirectory();
           int returnVal;
           returnVal = fc.showSaveDialog(mainWindow);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -570,7 +571,7 @@ final class MenuHandler {
     onChangeLnF(MenuHandler.LnfType.SYSTEM);
   }
 
-  private final void onChangeLnF(LnfType type) {
+  private void onChangeLnF(LnfType type) {
     switch (type) {
       case GTK:
         try {
