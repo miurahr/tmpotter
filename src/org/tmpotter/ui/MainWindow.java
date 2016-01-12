@@ -47,6 +47,7 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.tmpotter.core.Document;
 
 
 /**
@@ -317,7 +318,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   //  Accessed by ControlView
   @Override
   public void onUndo() {
-    menuHandler.undoChanges();
     tmData.arrayListChanges.remove(tmData.getIdentChanges());
     int currentChange = tmData.decrementChanges();
 
@@ -466,4 +466,184 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   @Override
   public final void windowOpened(final WindowEvent evt) {
   }
+
+  @Override
+  public final void tmDataClear() {
+    tmData.clear();
+  }
+
+  @Override
+  public final void tmViewClear() {
+    tmView.clear();
+  }
+
+  @Override
+  public final void editSegmentClear() {
+    editLeftSegment.setText("");
+    editRightSegment.setText("");
+  }
+
+  @Override
+  public final void setUndoEnabled(boolean enable) {
+    toolBar.setUndoEnabled(enable);
+    mainMenu.menuItemUndo.setEnabled(enable);
+  }
+
+  /**
+   * Undo last change.
+   *
+   */
+  @Override
+  public void undoChanges() {
+    String cad;
+    SegmentChanges ultChanges;
+    int tam = 0;
+    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.identLabel = ultChanges.getIdent_linea();
+    int operacion = ultChanges.getKind();
+    int position;
+    boolean izq = ultChanges.getSource();
+    tmData.setIdentAntAsLabel();
+    switch (operacion) {
+      case 0:
+        {
+          final String cadaux = ultChanges.getFrase();
+          if (izq) {
+            cad = tmData.getDocumentOriginal(tmData.identLabel);
+            if (!cad.equals("")) {
+              cad = cad.trim();
+            }
+            position = cad.indexOf(cadaux) + cadaux.length();
+          } else {
+            cad = tmData.getDocumentTranslation(tmData.identLabel);
+            if (!cad.equals("")) {
+              cad = cad.trim();
+            }
+            position = cad.indexOf(cadaux) + cadaux.length();
+          }
+          if (ultChanges.getSource()) {
+            tmData.documentOriginal.split(tmData.identLabel, position);
+          } else {
+            tmData.documentTranslation.split(tmData.identLabel, position);
+          }
+          break;
+        }
+      case 1:
+        undoDelete();
+        break;
+      case 2:
+        {
+          // El complementario de Split es Unir
+          // The complement of Split is Join
+          int cont;
+          cont = tmData.identLabel + 1;
+          if (izq) {
+            cad = ultChanges.getFrase();
+            tmData.documentOriginal.set(tmData.identLabel, cad.trim());
+            while (cont < tmData.topArrays) {
+              tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont + 1));
+              cont++;
+            }
+            tmData.documentOriginal.set(tmData.documentOriginal.size() - 1, "");
+          } else {
+            cad = ultChanges.getFrase();
+            tmData.documentTranslation.set(tmData.identLabel, cad.trim());
+            while (cont < tmData.topArrays) {
+              tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont + 1));
+              cont++;
+            }
+            tmData.documentTranslation.set(tmData.documentTranslation.size() - 1, "");
+          }
+          break;
+        }
+      case 3:
+        {
+          tam = ultChanges.getTam();
+          int[] filasEliminadas;
+          filasEliminadas = ultChanges.getNumEliminada();
+          while (tam > 0) {
+            tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
+            tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
+            tmData.topArrays = tmData.documentTranslation.size() - 1;
+            tam--;
+          }
+          int cont2 = tmData.documentOriginal.size() - 1;
+          tam = ultChanges.getTam();
+          while (cont2 >= tam && tam > 0) {
+            if (cont2 == filasEliminadas[tam - 1]) {
+              tmData.documentTranslation.set(cont2, "");
+              tmData.documentOriginal.set(cont2, "");
+              tam--;
+            } else {
+              tmData.documentTranslation.set(cont2, tmData.documentTranslation.get(cont2 - tam));
+              tmData.documentOriginal.set(cont2, tmData.documentOriginal.get(cont2 - tam));
+            }
+            cont2--;
+          }
+          break;
+        }
+      case 4:
+        {
+          if (izq) {
+            tmData.documentTranslation.set(tmData.identLabel,
+                tmData.documentTranslation.get(tmData.identLabel + 1));
+            tmData.documentOriginal.remove(tmData.identLabel + 1);
+            tmData.documentTranslation.remove(tmData.identLabel + 1);
+          } else {
+            tmData.documentOriginal.set(tmData.identLabel,
+                tmData.documentOriginal.get(tmData.identLabel + 1));
+            tmData.documentOriginal.remove(tmData.identLabel + 1);
+            tmData.documentTranslation.remove(tmData.identLabel + 1);
+          }
+          break;
+        }
+      default:
+        break;
+    }
+    updateTmView();
+  }
+
+  /**
+   * Undoes the last delete.
+   */
+  private void undoDelete() {
+    SegmentChanges ultChanges =
+            tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.identLabel = ultChanges.getIdent_linea();
+    boolean izq = ultChanges.getSource();
+
+    if (izq) {
+      if (tmData.identLabel == tmData.documentOriginal.size()) {
+        tmData.documentOriginal.add(tmData.identLabel,
+                ultChanges.getFrase());
+        if (tmData.documentOriginal.size() != tmData.documentTranslation.size()) {
+          tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
+        }
+      } else {
+        tmData.documentOriginal.add(tmData.documentOriginal.size(),
+                tmData.documentOriginal.get(tmData.documentOriginal.size() - 1));
+        for (int cont = tmData.documentOriginal.size() - 1; cont > tmData.identLabel; cont--) {
+          tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont - 1));
+        }
+        tmData.documentOriginal.set(tmData.identLabel, ultChanges.getFrase());
+      }
+    } else {
+      if (tmData.identLabel == tmData.documentTranslation.size()) {
+        tmData.documentTranslation.add(tmData.identLabel, ultChanges.getFrase());
+        if (tmData.documentOriginal.size() != tmData.documentTranslation.size()) {
+          tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
+        }
+      } else {
+        int cont;
+        tmData.documentTranslation.add(tmData.documentTranslation.size(),
+                tmData.documentTranslation.get(tmData.documentTranslation.size() - 1));
+        for (cont = tmData.documentTranslation.size() - 1; cont > tmData.identLabel; cont--) {
+          tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont - 1));
+        }
+        tmData.documentTranslation.set(tmData.identLabel, ultChanges.getFrase());
+      }
+    }
+    updateTmView();
+  }
+
 }

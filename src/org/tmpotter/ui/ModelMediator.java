@@ -59,4 +59,14 @@ public interface ModelMediator {
   void onTableClicked();
 
   void onTablePressed(final KeyEvent event);
+
+  void tmDataClear();
+
+  void tmViewClear();
+
+  void editSegmentClear();
+
+  void setUndoEnabled(boolean enable);
+
+  void undoChanges();
 }
