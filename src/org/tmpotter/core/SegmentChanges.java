@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -34,7 +34,7 @@ package org.tmpotter.core;
  * 
  */
 public class SegmentChanges {
-  int kind;
+  OperationKind kind;
   int pos;
   boolean source;
   String phrase;
@@ -46,7 +46,7 @@ public class SegmentChanges {
    * Constructor.
    */
   public SegmentChanges() {
-    kind        = 0;
+    kind        = OperationKind.JOIN;
     pos         = 0;
     source      = false;
     phrase       = "";
@@ -62,7 +62,7 @@ public class SegmentChanges {
    * @param phrase frase
    * @param index ident line
    */
-  public SegmentChanges( int kind, int position, boolean source, 
+  public SegmentChanges( OperationKind kind, int position, boolean source, 
       String phrase, int index )  {
     this.kind        = kind;
     this.pos         = position;
@@ -76,7 +76,7 @@ public class SegmentChanges {
    * 
    * @return kind
    */
-  public int     getKind()         {
+  public OperationKind getKind() {
     return ( kind );
   }
   
@@ -85,7 +85,7 @@ public class SegmentChanges {
    * 
    * @return position
    */
-  public int     getPosition()          {
+  public int getPosition() {
     return  ( pos );
   }
   
@@ -137,12 +137,12 @@ public class SegmentChanges {
   }
 
   /**
-   * Setter for Tipo.
+   * Setter for OperationKind.
    * 
-   * @param ktipo to be set
+   * @param kind to set
    */
-  public void setTipo( int ktipo )         {
-    kind   = ktipo;
+  public void setKind( OperationKind kind )         {
+    this.kind   = kind;
   }
   
   /**
@@ -193,4 +193,6 @@ public class SegmentChanges {
       numEliminada[cont] = keliminadas[cont];
     }
   }
+
+  public enum OperationKind { JOIN, SPLIT, DELETE, REMOVE, TUSPLIT }
 }

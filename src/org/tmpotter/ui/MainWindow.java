@@ -141,30 +141,9 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     if (!tmData.isSomeDocumentEmpty()) {
       tmData.matchArrays();
     }
-    for (int cont = 0; cont < tmView.getRowCount(); cont++) {
-      tmView.setModelValueAt("", cont, 0);
-      tmView.setModelValueAt("", cont, 1);
-      tmView.setModelValueAt("", cont, 2);
-    }
-    if ((tmView.getRowCount() > tmData.getDocumentOriginalSize())
-            && (tmData.getDocumentOriginalSize() > 25)) {
-      while (tmView.getRowCount() != tmData.getDocumentOriginalSize()) {
-        tmView.removeSegment(tmView.getRowCount() - 1);
-        tmView.setPreferredSize(805, 15, -1);
-      }
-    } else if (tmView.getRowCount() < tmData.getDocumentOriginalSize()) {
-      while (tmView.getRowCount() != tmData.getDocumentOriginalSize()) {
-        tmView.addModelSegment(new Segment(null, null, null));
-        tmView.setPreferredSize(805, 15, 1);
-      }
-    }
-    for (int cont = 0; cont < tmData.getDocumentOriginalSize(); cont++) {
-      tmView.setModelValueAt(Integer.toString(cont + 1), cont, 0);
-      tmView.setModelValueAt(tmData.getDocumentOriginal(cont), cont, 1);
-    }
-    for (int cont = 0; cont < tmData.getDocumentTranslationSize(); cont++) {
-      tmView.setModelValueAt(tmData.getDocumentTranslation(cont), cont, 2);
-    }
+    tmView.clearAllView();
+    tmView.adjustOriginalView(tmData.getDocumentOriginalSize());
+    tmView.setViewData(tmData);
     if (tmData.isIdentTop()) {
       tmView.setRowSelectionInterval(tmData.topArrays, tmData.topArrays);
     }
@@ -371,7 +350,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     if (lineasLimpiar > 0) {
       tmData.incrementChanges();
 
-      SegmentChanges changes = new SegmentChanges(3, 0, false, "", 0);
+      SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
+          0, false, "", 0);
       tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
       changes.setNumEliminada(numEliminadas, lineasLimpiar);
       toolBar.setUndoEnabled(true);
@@ -385,51 +365,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
    */
   @Override
   public final void onTuSplit() {
-    int izq;
-    int cont;
-    SegmentChanges changes;
-
-    izq = tmView.getSelectedColumn();
-
-    tmData.incrementChanges();
-    tmData.documentOriginal.add(tmData.getDocumentOriginalSize(),
-            tmData.getDocumentOriginal(tmData.getDocumentOriginalSize() - 1));
-    tmData.documentTranslation.add(tmData.documentTranslation.size(),
-            tmData.getDocumentTranslation(tmData.getDocumentTranslationSize() - 1));
-
-    if (izq == 1) {
-      // Columna izq.
-      // Left column.
-      changes = new SegmentChanges(4, 0, true, "", tmData.identLabel);
-
-      for (cont = tmData.documentTranslation.size() - 1; cont > tmData.identLabel; cont--) {
-        tmData.setDocumentTranslation(cont, tmData.getDocumentTranslation(cont - 1));
-
-        if (cont > (tmData.identLabel + 1)) {
-          tmData.setDocumentOriginal(cont, tmData.getDocumentOriginal(cont - 1));
-        } else {
-          tmData.setDocumentOriginal(cont, "");
-        }
-      }
-
-      tmData.documentTranslation.set(tmData.identLabel, "");
-    } else {
-      changes = new SegmentChanges(4, 0, false, "", tmData.identLabel);
-
-      for (cont = tmData.documentOriginal.size() - 1; cont > tmData.identLabel; cont--) {
-        tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont - 1));
-
-        if (cont > (tmData.identLabel + 1)) {
-          tmData.setDocumentTranslation(cont, tmData.getDocumentTranslation(cont - 1));
-        } else {
-          tmData.setDocumentTranslation(cont, "");
-        }
-      }
-
-      tmData.setDocumentOriginal(tmData.identLabel, "");
-    }
-
-    tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
+    int izq = tmView.getSelectedColumn();
+    tmData.tuSplit(izq);
     updateTmView();
     toolBar.buttonUndo.setEnabled(true);
     mainMenu.menuItemUndo.setEnabled(true);
@@ -495,153 +432,39 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
    */
   @Override
   public void undoChanges() {
-    String cad;
     SegmentChanges ultChanges;
-    int tam = 0;
     ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
     tmData.identLabel = ultChanges.getIdent_linea();
-    int operacion = ultChanges.getKind();
-    int position;
-    boolean izq = ultChanges.getSource();
+    SegmentChanges.OperationKind operationKind = ultChanges.getKind();
     tmData.setIdentAntAsLabel();
-    switch (operacion) {
-      case 0:
+    switch (operationKind) {
+      case JOIN:
         {
-          final String cadaux = ultChanges.getFrase();
-          if (izq) {
-            cad = tmData.getDocumentOriginal(tmData.identLabel);
-            if (!cad.equals("")) {
-              cad = cad.trim();
-            }
-            position = cad.indexOf(cadaux) + cadaux.length();
-          } else {
-            cad = tmData.getDocumentTranslation(tmData.identLabel);
-            if (!cad.equals("")) {
-              cad = cad.trim();
-            }
-            position = cad.indexOf(cadaux) + cadaux.length();
-          }
-          if (ultChanges.getSource()) {
-            tmData.documentOriginal.split(tmData.identLabel, position);
-          } else {
-            tmData.documentTranslation.split(tmData.identLabel, position);
-          }
+          tmData.undoJoin();
           break;
         }
-      case 1:
-        undoDelete();
+      case DELETE:
+        tmData.undoDelete();
+        updateTmView();
         break;
-      case 2:
+      case SPLIT:
         {
-          // El complementario de Split es Unir
-          // The complement of Split is Join
-          int cont;
-          cont = tmData.identLabel + 1;
-          if (izq) {
-            cad = ultChanges.getFrase();
-            tmData.documentOriginal.set(tmData.identLabel, cad.trim());
-            while (cont < tmData.topArrays) {
-              tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont + 1));
-              cont++;
-            }
-            tmData.documentOriginal.set(tmData.documentOriginal.size() - 1, "");
-          } else {
-            cad = ultChanges.getFrase();
-            tmData.documentTranslation.set(tmData.identLabel, cad.trim());
-            while (cont < tmData.topArrays) {
-              tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont + 1));
-              cont++;
-            }
-            tmData.documentTranslation.set(tmData.documentTranslation.size() - 1, "");
-          }
+          tmData.undoSplit();
           break;
         }
-      case 3:
+      case REMOVE:
         {
-          tam = ultChanges.getTam();
-          int[] filasEliminadas;
-          filasEliminadas = ultChanges.getNumEliminada();
-          while (tam > 0) {
-            tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
-            tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
-            tmData.topArrays = tmData.documentTranslation.size() - 1;
-            tam--;
-          }
-          int cont2 = tmData.documentOriginal.size() - 1;
-          tam = ultChanges.getTam();
-          while (cont2 >= tam && tam > 0) {
-            if (cont2 == filasEliminadas[tam - 1]) {
-              tmData.documentTranslation.set(cont2, "");
-              tmData.documentOriginal.set(cont2, "");
-              tam--;
-            } else {
-              tmData.documentTranslation.set(cont2, tmData.documentTranslation.get(cont2 - tam));
-              tmData.documentOriginal.set(cont2, tmData.documentOriginal.get(cont2 - tam));
-            }
-            cont2--;
-          }
+          tmData.undoRemove();
           break;
         }
-      case 4:
+      case TUSPLIT:
         {
-          if (izq) {
-            tmData.documentTranslation.set(tmData.identLabel,
-                tmData.documentTranslation.get(tmData.identLabel + 1));
-            tmData.documentOriginal.remove(tmData.identLabel + 1);
-            tmData.documentTranslation.remove(tmData.identLabel + 1);
-          } else {
-            tmData.documentOriginal.set(tmData.identLabel,
-                tmData.documentOriginal.get(tmData.identLabel + 1));
-            tmData.documentOriginal.remove(tmData.identLabel + 1);
-            tmData.documentTranslation.remove(tmData.identLabel + 1);
-          }
+          boolean izq = ultChanges.getSource();
+          tmData.undoTuSplit(izq);
           break;
         }
       default:
         break;
-    }
-    updateTmView();
-  }
-
-  /**
-   * Undoes the last delete.
-   */
-  private void undoDelete() {
-    SegmentChanges ultChanges =
-            tmData.arrayListChanges.get(tmData.getIdentChanges());
-    tmData.identLabel = ultChanges.getIdent_linea();
-    boolean izq = ultChanges.getSource();
-
-    if (izq) {
-      if (tmData.identLabel == tmData.documentOriginal.size()) {
-        tmData.documentOriginal.add(tmData.identLabel,
-                ultChanges.getFrase());
-        if (tmData.documentOriginal.size() != tmData.documentTranslation.size()) {
-          tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
-        }
-      } else {
-        tmData.documentOriginal.add(tmData.documentOriginal.size(),
-                tmData.documentOriginal.get(tmData.documentOriginal.size() - 1));
-        for (int cont = tmData.documentOriginal.size() - 1; cont > tmData.identLabel; cont--) {
-          tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont - 1));
-        }
-        tmData.documentOriginal.set(tmData.identLabel, ultChanges.getFrase());
-      }
-    } else {
-      if (tmData.identLabel == tmData.documentTranslation.size()) {
-        tmData.documentTranslation.add(tmData.identLabel, ultChanges.getFrase());
-        if (tmData.documentOriginal.size() != tmData.documentTranslation.size()) {
-          tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
-        }
-      } else {
-        int cont;
-        tmData.documentTranslation.add(tmData.documentTranslation.size(),
-                tmData.documentTranslation.get(tmData.documentTranslation.size() - 1));
-        for (cont = tmData.documentTranslation.size() - 1; cont > tmData.identLabel; cont--) {
-          tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont - 1));
-        }
-        tmData.documentTranslation.set(tmData.identLabel, ultChanges.getFrase());
-      }
     }
     updateTmView();
   }
