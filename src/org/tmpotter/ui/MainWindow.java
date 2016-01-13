@@ -32,12 +32,13 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
-import org.tmpotter.core.Segment;
 import org.tmpotter.core.SegmentChanges;
+import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.AquaAdapter;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -47,7 +48,6 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.tmpotter.core.Document;
 
 
 /**
@@ -79,8 +79,15 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     editRightSegment.setModelMediator(this);
     menuHandler = new MenuHandler(this, tmData);
 
-    appComponentsManager.makeMenus(this);
     appComponentsManager.makeUi();
+    setJMenuBar(appComponentsManager.menuBar);
+    getContentPane().add(toolBar, BorderLayout.NORTH);
+    getContentPane().add(appComponentsManager.msp);
+    getContentPane().add(appComponentsManager.panelStatusBar, BorderLayout.SOUTH);
+    setSize(new Dimension(1024, 768));
+    setMinimumSize(new Dimension(640, 480));
+    setTitle(AppConstants.getDisplayNameAndVersion());
+
     if (Platform.isMacOsx()) {
       setMacProxy();
     }
@@ -464,5 +471,4 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     }
     updateTmView();
   }
-
 }

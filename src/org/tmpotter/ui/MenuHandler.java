@@ -32,7 +32,6 @@ import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
-import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
