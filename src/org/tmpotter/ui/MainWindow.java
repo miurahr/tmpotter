@@ -132,12 +132,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
    */
   @Override
   public void updateTmView() {
-    updateTmView2();
-    editLeftSegment.setText(formatText(tmView.getValueAt(tmData.identLabel, 1).toString()));
-    editRightSegment.setText(formatText(tmView.getValueAt(tmData.identLabel, 2).toString()));
-  }
-
-  private void updateTmView2() {
     if (!tmData.isSomeDocumentEmpty()) {
       tmData.matchArrays();
     }
@@ -149,6 +143,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     }
     tmView.repaint(100);
     tmView.updateUI();
+    editLeftSegment.setText(formatText(tmView.getValueAt(tmData.identLabel, 1).toString()));
+    editRightSegment.setText(formatText(tmView.getValueAt(tmData.identLabel, 2).toString()));
   }
 
   @Override
