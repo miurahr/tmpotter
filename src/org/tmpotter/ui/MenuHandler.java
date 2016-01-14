@@ -199,7 +199,7 @@ final class MenuHandler {
     mainWindow.tmView.setColumnHeaderView();
     mainWindow.updateTmView();
     tmData.topArrays = tmData.documentOriginal.size() - 1;
-    tmData.identLabel = 0;
+    tmData.indexCurrent = 0;
   }
 
   public void menuItemFileSaveAsActionPerformed() {

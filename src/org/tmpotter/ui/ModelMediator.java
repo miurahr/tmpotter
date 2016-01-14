@@ -24,6 +24,7 @@
 package org.tmpotter.ui;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * Model mediator for TM view and segment editors.

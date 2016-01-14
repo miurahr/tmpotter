@@ -223,8 +223,7 @@ final class TmView extends JXPanel {
   }
 
   void adjustOriginalView(int size) {
-      if ((getRowCount() > size)
-            && (size > 25)) {
+    if ((getRowCount() > size) && (size > 25)) {
       while (getRowCount() != size) {
         removeSegment(getRowCount() - 1);
         setPreferredSize(805, 15, -1);
@@ -236,6 +235,7 @@ final class TmView extends JXPanel {
       }
     }
   }
+
   void setViewData(TmData tmData) {
     for (int cont = 0; cont < tmData.getDocumentOriginalSize(); cont++) {
       setModelValueAt(Integer.toString(cont + 1), cont, 0);

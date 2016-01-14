@@ -28,6 +28,8 @@
 
 package org.tmpotter.core;
 
+import org.tmpotter.ui.TmData;
+
 
 /**
  *  Action when segument changing.
@@ -36,7 +38,7 @@ package org.tmpotter.core;
 public class SegmentChanges {
   OperationKind kind;
   int pos;
-  boolean source;
+  TmData.Side source;
   String phrase;
   int indexLine;
   int [] numEliminada;
@@ -48,7 +50,7 @@ public class SegmentChanges {
   public SegmentChanges() {
     kind        = OperationKind.JOIN;
     pos         = 0;
-    source      = false;
+    source      = TmData.Side.TRANSLATION;
     phrase       = "";
     indexLine = -1;
   }
@@ -62,7 +64,7 @@ public class SegmentChanges {
    * @param phrase frase
    * @param index ident line
    */
-  public SegmentChanges( OperationKind kind, int position, boolean source, 
+  public SegmentChanges( OperationKind kind, int position, TmData.Side source, 
       String phrase, int index )  {
     this.kind        = kind;
     this.pos         = position;
@@ -112,7 +114,7 @@ public class SegmentChanges {
    * 
    * @return source
    */
-  public boolean getSource()       {
+  public TmData.Side getSource()       {
     return ( source );
   }
   
@@ -159,7 +161,7 @@ public class SegmentChanges {
    * 
    * @param source to set boolean
    */
-  public void setSource( boolean source ) {
+  public void setSource( TmData.Side source ) {
     this.source = source;
   }
   
