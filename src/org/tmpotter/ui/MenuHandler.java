@@ -99,31 +99,7 @@ final class MenuHandler {
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
       userHome = dlg.getPath();
-      tmData.filePathOriginal = dlg.getFilePath();
-      tmData.filePathTranslation = tmData.filePathOriginal;
-      tmData.stringLangOriginal = dlg.getSourceLocale();
-      tmData.stringLangTranslation = dlg.getTargetLocale();
-      mainWindow.tmView.buildDisplay();
-      try {
-        ProjectProperties prop = new ProjectProperties();
-        prop.setSourceLanguage(tmData.stringLangOriginal);
-        prop.setTargetLanguage(tmData.stringLangTranslation);
-        TmxReader reader = new TmxReader(prop, tmData.filePathOriginal);
-        tmData.documentOriginal =
-                reader.getOriginalDocument(tmData.documentOriginal);
-        tmData.documentTranslation = 
-                reader.getTranslationDocument(tmData.documentTranslation);
-      } catch (Exception ex) {
-        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      initializeTmView(mainWindow);
-      mainWindow.updateTmView();
-      mainWindow.toolBar.enableButtons(true);
-      mainWindow.mainMenu.enableEditMenus(true);
-      mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.mainMenu.menuItemFileSave.setEnabled(true);
-      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
+      modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       dlg.dispose();
     }
   }

@@ -33,6 +33,8 @@ import java.io.File;
  */
 public interface ModelMediator {
 
+  void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+
   //for TMView
   void updateTmView();
 

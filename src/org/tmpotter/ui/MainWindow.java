@@ -28,7 +28,6 @@
 
 package org.tmpotter.ui;
 
-import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
@@ -45,9 +44,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.TableColumn;
+import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.core.TmxReader;
+import static org.tmpotter.util.Localization.getString;
 
 
 /**
@@ -78,6 +84,7 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     editLeftSegment.setModelMediator(this);
     editRightSegment.setModelMediator(this);
     menuHandler = new MenuHandler(this, tmData);
+    menuHandler.setModelMediator(this);
 
     appComponentsManager.makeUi();
     setJMenuBar(appComponentsManager.menuBar);
@@ -130,7 +137,61 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
             (screenSize.height - frameSize.height) / 2);
   }
 
-  
+
+  public void onOpenFile(File filePathOriginal,
+      String stringLangOriginal, String stringLangTranslation) {
+      tmData.filePathOriginal = filePathOriginal;
+      tmData.filePathTranslation = tmData.filePathOriginal;
+      tmData.stringLangOriginal = stringLangOriginal;
+      tmData.stringLangTranslation = stringLangTranslation;
+      tmView.buildDisplay();
+      try {
+        ProjectProperties prop = new ProjectProperties();
+        prop.setSourceLanguage(tmData.stringLangOriginal);
+        prop.setTargetLanguage(tmData.stringLangTranslation);
+        TmxReader reader = new TmxReader(prop, tmData.filePathOriginal);
+        tmData.documentOriginal =
+                reader.getOriginalDocument(tmData.documentOriginal);
+        tmData.documentTranslation = 
+                reader.getTranslationDocument(tmData.documentTranslation);
+      } catch (Exception ex) {
+        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      initializeTmView();
+      updateTmView();
+      toolBar.enableButtons(true);
+      mainMenu.enableEditMenus(true);
+      toolBar.setUndoEnabled(false);
+      mainMenu.menuItemFileSave.setEnabled(true);
+      mainMenu.menuItemFileSaveAs.setEnabled(true);
+      mainMenu.menuItemFileClose.setEnabled(true);
+  }
+
+  /**
+   * Initialize alignment view.
+   *
+   * <p>
+   * Extracts from the TMX those lines having information which is useful for
+   * alignment, and puts them in the corresponding ArrayList's The left part in
+   * _alstOriginal corresponds to source text lines and the right part in
+   * _alstTranslation corresponds to the target text lines. Initialize the table
+   * with one line for each left and right line
+   *
+   */
+  protected void initializeTmView() {
+    TableColumn col;
+    col = tmView.getColumnModel().getColumn(1);
+    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
+            + tmData.filePathOriginal.getName());
+    col = tmView.getColumnModel().getColumn(2);
+    col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
+            + tmData.filePathTranslation.getName());
+    tmView.setColumnHeaderView();
+    updateTmView();
+    tmData.topArrays = tmData.documentOriginal.size() - 1;
+    tmData.indexCurrent = 0;
+  }
+
   /**
    * Update the row in table with mods.
    * 
