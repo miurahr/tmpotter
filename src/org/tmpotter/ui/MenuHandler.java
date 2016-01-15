@@ -30,10 +30,6 @@ package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
 
-import org.tmpotter.core.Document;
-import org.tmpotter.core.ProjectProperties;
-import org.tmpotter.core.TextReader;
-import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
@@ -44,11 +40,8 @@ import org.tmpotter.ui.dialogs.OpenTmx;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
 
-
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -67,8 +60,7 @@ final class MenuHandler {
   private final MainWindow mainWindow;
   private ModelMediator modelMediator;
   private final TmData tmData;
-  private File userHome = new File(System.getProperty("user.home"));
-  
+
   public MenuHandler(final MainWindow mainWindow, TmData tmData) {
     this.mainWindow = mainWindow;
     this.tmData = tmData;
@@ -94,11 +86,11 @@ final class MenuHandler {
    */
   public void menuItemFileOpenActionPerformed() {
     final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(userHome);
+    dlg.setPath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      userHome = dlg.getPath();
+      RuntimePreferences.setUserHome(dlg.getPath());
       modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       dlg.dispose();
     }
@@ -109,39 +101,27 @@ final class MenuHandler {
    *
    */
   public void menuItemFileTextOpenActionPerformed() {
-    String originalEncoding;
-    String translateEncoding;
     final OpenTexts dlg = new OpenTexts();
-    dlg.setPath(userHome);
+    dlg.setPath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      userHome = dlg.getPath();
-      originalEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
-      tmData.filePathOriginal = dlg.getSourcePath();
-      tmData.stringOriginal = dlg.getSource();
-      tmData.stringLangOriginal = dlg.getSourceLocale();
+      RuntimePreferences.setUserHome(dlg.getPath());
+      String originalPath = dlg.getSource();
+      String translationPath = dlg.getTarget();
+      modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(),
+          dlg.getSourceLocale(), (String) dlg.getSourceLangEncComboBox().getSelectedItem());
+      modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(),
+          dlg.getTargetLocale(), (String) dlg.getTargetLangEncComboBox().getSelectedItem());
       mainWindow.tmView.buildDisplay();
-      tmData.documentOriginal = new Document();
-      tmData.documentTranslation = new Document();
-      translateEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
-      tmData.filePathTranslation = dlg.getTargetPath();
-      tmData.stringTranslation = dlg.getTarget();
-      tmData.stringLangTranslation = dlg.getTargetLocale();
       Segmenter.srx = Preferences.getSrx();
       try {
-        tmData.documentOriginal =
-                TextReader.read(tmData.stringOriginal,
-                        tmData.stringLangOriginal, originalEncoding);
-        tmData.documentTranslation =
-                TextReader.read(tmData.stringTranslation,
-                        tmData.stringLangTranslation, translateEncoding);
+        modelMediator.loadDocumentsFromText(originalPath, translationPath);
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      tmData.matchArrays();
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
@@ -205,7 +185,6 @@ final class MenuHandler {
               tmData.filePathOriginal.getName().length() - 4);
       boolean save = false;
       boolean cancel = false;
-      userHome = new File(RuntimePreferences.getUserHome());
       File outFile = new File(outFileNameBase.concat(tmData
               .stringLangTranslation + ".tmx"));
       while (!save && !cancel) {
@@ -213,12 +192,12 @@ final class MenuHandler {
         boolean nameOfUser = false;
         while (!nameOfUser) {
           fc.setLocation(230, 300);
-          fc.setCurrentDirectory(userHome);
+          fc.setCurrentDirectory(RuntimePreferences.getUserHome());
           fc.setDialogTitle(getString("DLG.SAVEAS"));
           fc.setMultiSelectionEnabled(false);
           fc.setSelectedFile(outFile);
           fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-          userHome = fc.getCurrentDirectory();
+          RuntimePreferences.setUserHome(fc.getCurrentDirectory());
           int returnVal;
           returnVal = fc.showSaveDialog(mainWindow);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -265,8 +244,7 @@ final class MenuHandler {
               tmData.stringLangTranslation, encoding);
     } catch (IOException ex) {
       JOptionPane.showMessageDialog(mainWindow,
-              (String) tmData.arrayListLang.get(21),
-              (String) tmData.arrayListLang.get(18),
+              tmData.stringLangOriginal, tmData.stringLangTranslation,
               JOptionPane.ERROR_MESSAGE);
       mainWindow.dispose();
     }

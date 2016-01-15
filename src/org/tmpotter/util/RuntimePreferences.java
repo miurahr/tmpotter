@@ -28,29 +28,36 @@
 
 package org.tmpotter.util;
 
+import java.io.File;
+
 /**
  * Preference that remember only run time.
  * 
  * @author Hiroshi Miura
  */
 public class RuntimePreferences {
-  private static String userHome = "/";
+  private static File userHome = new File(System.getProperty("user.home"));
   
   /**
    * Set user home directory.
    * 
    * @param home user home directory
    */
-  public static void setUserHome(String home) {
+  public static void setUserHome(File home) {
     userHome = home;
   }
-  
+
   /**
    * Get user home directory.
    * 
    * @return string user home
    */
-  public static String getUserHome() {
+  public static File getUserHome() {
     return userHome;
   }
+
+  /**
+   * Privated constructor for global preference.
+   */
+  private RuntimePreferences() {}
 }

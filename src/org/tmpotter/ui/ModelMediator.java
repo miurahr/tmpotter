@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -25,6 +25,7 @@ package org.tmpotter.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Model mediator for TM view and segment editors.
@@ -34,6 +35,12 @@ import java.io.File;
 public interface ModelMediator {
 
   void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+
+  void setOriginalProperties(File filePath, String text, String lang, String encoding);
+
+  void setTargetProperties(File filePath, String text, String lang, String encoding);
+
+  void loadDocumentsFromText(String stringOriginal, String stringTarget) throws IOException;
 
   //for TMView
   void updateTmView();
