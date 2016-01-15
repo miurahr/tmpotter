@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -27,10 +27,6 @@
  * *************************************************************************/
 
 package org.tmpotter.ui;
-
-import static org.tmpotter.util.Localization.getString;
-import static org.tmpotter.util.StringUtil.formatText;
-import static org.tmpotter.util.StringUtil.restoreText;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -216,5 +212,37 @@ final class TmView extends JXPanel {
     scrollPane.setColumnHeaderView(table.getTableHeader() );
 
     add( scrollPane );
+  }
+
+  void clearAllView() {
+    for (int i = 0; i < getRowCount(); i++) {
+      setModelValueAt("", i, 0);
+      setModelValueAt("", i, 1);
+      setModelValueAt("", i, 2);
+    }
+  }
+
+  void adjustOriginalView(int size) {
+    if ((getRowCount() > size) && (size > 25)) {
+      while (getRowCount() != size) {
+        removeSegment(getRowCount() - 1);
+        setPreferredSize(805, 15, -1);
+      }
+    } else if (getRowCount() < size) {
+      while (getRowCount() != size) {
+        addModelSegment(new Segment(null, null, null));
+        setPreferredSize(805, 15, 1);
+      }
+    }
+  }
+
+  void setViewData(TmData tmData) {
+    for (int cont = 0; cont < tmData.getDocumentOriginalSize(); cont++) {
+      setModelValueAt(Integer.toString(cont + 1), cont, 0);
+      setModelValueAt(tmData.getDocumentOriginal(cont), cont, 1);
+    }
+    for (int cont = 0; cont < tmData.getDocumentTranslationSize(); cont++) {
+      setModelValueAt(tmData.getDocumentTranslation(cont), cont, 2);
+    }
   }
 }

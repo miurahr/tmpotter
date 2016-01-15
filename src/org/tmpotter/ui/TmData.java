@@ -39,9 +39,9 @@ public class TmData {
 
   protected int topArrays; //  =  0;
   protected final ArrayList<SegmentChanges> arrayListChanges = new ArrayList<>();
-  private int identChanges = -1;
-  protected int identLabel; //  =  0;
-  protected int identAnt; //  =  0;
+  private int indexChanges = -1;
+  protected int indexCurrent; //  =  0;
+  protected int indexPrevious; //  =  0;
   protected int positionTextArea; //  =  0;
   protected Document documentOriginal;
   protected Document documentTranslation;
@@ -60,20 +60,20 @@ public class TmData {
    *
    * @param textAreaIzq :TRUE if the left text (source text) has to be joined
    */
-  void join(final boolean textAreaIzq) {
-    if (identLabel != topArrays) {
-      final SegmentChanges Changes = new SegmentChanges(0, positionTextArea, textAreaIzq, "",
-          identLabel);
-      arrayListChanges.add(identChanges, Changes);
-      if (textAreaIzq) {
-        Changes.setFrase(documentOriginal.get(identLabel));
+  void join(Side textAreaIzq) {
+    if (indexCurrent != topArrays) {
+      final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.JOIN,
+          positionTextArea, textAreaIzq, "", indexCurrent);
+      arrayListChanges.add(indexChanges, Changes);
+      if (textAreaIzq == Side.ORIGINAL) {
+        Changes.setFrase(documentOriginal.get(indexCurrent));
       } else {
-        Changes.setFrase(documentTranslation.get(identLabel));
+        Changes.setFrase(documentTranslation.get(indexCurrent));
       }
-      if (textAreaIzq) {
-        documentOriginal.join(identLabel);
+      if (textAreaIzq == Side.ORIGINAL) {
+        documentOriginal.join(indexCurrent);
       } else {
-        documentTranslation.join(identLabel);
+        documentTranslation.join(indexCurrent);
       }
     }
   }
@@ -86,19 +86,19 @@ public class TmData {
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be deleted
    */
-  void delete(final boolean textAreaIzq) {
-    final SegmentChanges Changes = new SegmentChanges(1, positionTextArea, textAreaIzq, "",
-        identLabel);
-    arrayListChanges.add(identChanges, Changes);
-    if (textAreaIzq) {
-      Changes.setFrase(documentOriginal.get(identLabel));
+  void delete(Side textAreaIzq) {
+    final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.DELETE,
+        positionTextArea, textAreaIzq, "", indexCurrent);
+    arrayListChanges.add(indexChanges, Changes);
+    if (textAreaIzq == Side.ORIGINAL) {
+      Changes.setFrase(documentOriginal.get(indexCurrent));
     } else {
-      Changes.setFrase(documentTranslation.get(identLabel));
+      Changes.setFrase(documentTranslation.get(indexCurrent));
     }
-    if (textAreaIzq) {
-      documentOriginal.delete(identLabel);
+    if (textAreaIzq == Side.ORIGINAL) {
+      documentOriginal.delete(indexCurrent);
     } else {
-      documentTranslation.delete(identLabel);
+      documentTranslation.delete(indexCurrent);
     }
   }
 
@@ -110,27 +110,71 @@ public class TmData {
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be split
    */
-  void split(final boolean textAreaIzq) {
-    if (textAreaIzq) {
-      if (positionTextArea >= documentOriginal.get(identLabel).length()) {
+  void split(Side textAreaIzq) {
+    if (textAreaIzq == Side.ORIGINAL) {
+      if (positionTextArea >= documentOriginal.get(indexCurrent).length()) {
         positionTextArea = 0;
       }
-    } else if (positionTextArea >= documentTranslation.get(identLabel).length()) {
+    } else if (positionTextArea >= documentTranslation.get(indexCurrent).length()) {
       positionTextArea = 0;
     }
-    final SegmentChanges Changes = new SegmentChanges(2, positionTextArea, textAreaIzq, "",
-        identLabel);
-    arrayListChanges.add(identChanges, Changes);
-    if (textAreaIzq) {
-      Changes.setFrase(documentOriginal.get(identLabel));
+    final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.SPLIT,
+        positionTextArea, textAreaIzq, "", indexCurrent);
+    arrayListChanges.add(indexChanges, Changes);
+    if (textAreaIzq == Side.ORIGINAL) {
+      Changes.setFrase(documentOriginal.get(indexCurrent));
     } else {
-      Changes.setFrase(documentTranslation.get(identLabel));
+      Changes.setFrase(documentTranslation.get(indexCurrent));
     }
-    if (textAreaIzq) {
-      documentOriginal.split(identLabel, Changes.getPosition());
+    if (textAreaIzq == Side.ORIGINAL) {
+      documentOriginal.split(indexCurrent, Changes.getPosition());
     } else {
-      documentTranslation.split(identLabel, Changes.getPosition());
+      documentTranslation.split(indexCurrent, Changes.getPosition());
     }
+  }
+
+  void tuSplit(Side side) {
+    int cont;
+    SegmentChanges changes;
+
+    incrementChanges();
+    documentOriginal.duplicateLast();
+    documentTranslation.duplicateLast();
+
+    if (side==Side.ORIGINAL) {
+      // Left column.
+      changes = new SegmentChanges(SegmentChanges.OperationKind.TUSPLIT,
+          0, Side.ORIGINAL, "", indexCurrent);
+
+      for (cont = documentTranslation.size() - 1; cont > indexCurrent; cont--) {
+        documentTranslation.set(cont, getDocumentTranslation(cont - 1));
+
+        if (cont > (indexCurrent + 1)) {
+          setDocumentOriginal(cont, getDocumentOriginal(cont - 1));
+        } else {
+          setDocumentOriginal(cont, "");
+        }
+      }
+
+      documentTranslation.set(indexCurrent, "");
+    } else {
+      changes = new SegmentChanges(SegmentChanges.OperationKind.TUSPLIT,
+          0, Side.TRANSLATION, "", indexCurrent);
+
+      for (cont = documentOriginal.size() - 1; cont > indexCurrent; cont--) {
+        documentOriginal.set(cont, documentOriginal.get(cont - 1));
+
+        if (cont > (indexCurrent + 1)) {
+          setDocumentTranslation(cont, getDocumentTranslation(cont - 1));
+        } else {
+          setDocumentTranslation(cont, "");
+        }
+      }
+
+      setDocumentOriginal(indexCurrent, "");
+    }
+
+    arrayListChanges.add(getIdentChanges(), changes);
   }
 
   /**
@@ -138,40 +182,36 @@ public class TmData {
    * rows.
    */
   void matchArrays() {
-    boolean limpiar = true;
-    while (documentOriginal.size() > documentTranslation.size()) {
-      documentTranslation.add(documentTranslation.size(), "");
+    int origLen = documentOriginal.size();
+    int transLen = documentTranslation.size();
+    if (origLen > transLen) {
+      documentTranslation.padding("", origLen - transLen);
+    } else if (transLen > origLen) {
+      documentOriginal.padding("", transLen - origLen);
+    } else {
+      // same length, do nothing
     }
-    while (documentTranslation.size() > documentOriginal.size()) {
-      documentOriginal.add(documentOriginal.size(), "");
-    }
-    while (limpiar) {
-      if (documentOriginal.get(documentOriginal.size() - 1) == null
-          || (documentOriginal.get(documentOriginal.size() - 1).equals(""))
-          && (documentTranslation.get(documentTranslation.size() - 1) == null
-          || documentTranslation.get(documentTranslation.size() - 1).equals(""))) {
-        documentOriginal.remove(documentOriginal.size() - 1);
-        documentTranslation.remove(documentTranslation.size() - 1);
-      } else {
-        limpiar = false;
-      }
+
+    while (documentOriginal.getLast().equals("") && documentTranslation.getLast().equals("")) {
+      documentOriginal.removeLast();
+      documentTranslation.removeLast();
     }
     topArrays = documentOriginal.size() - 1;
-    if (identLabel > (documentOriginal.size() - 1)) {
-      identLabel = documentOriginal.size() - 1;
+    if (indexCurrent > topArrays) {
+      indexCurrent = topArrays;
     }
   }
 
   protected int getIdentChanges() {
-    return identChanges;
+    return indexChanges;
   }
 
   protected int incrementChanges() {
-    return identChanges++;
+    return indexChanges++;
   }
 
   protected int decrementChanges() {
-    return identChanges--;
+    return indexChanges--;
   }
 
   protected String getDocumentTranslation(int cont) {
@@ -207,28 +247,28 @@ public class TmData {
   }
 
   protected boolean isIdentTop() {
-    return (identLabel == topArrays);
+    return (indexCurrent == topArrays);
   }
   
   protected boolean isSomeDocumentEmpty() {
     return (documentOriginal.isEmpty() || documentTranslation.isEmpty());
   }
 
-  protected void setBothIdent(int ident) {
-    identLabel = ident;
-    identAnt = identLabel;
+  protected void setBothIndex(int ident) {
+    indexCurrent = ident;
+    indexPrevious = indexCurrent;
   }
 
   protected void setIdentAntAsLabel() {
-    identAnt = identLabel;
+    indexPrevious = indexCurrent;
   }
 
   protected void setOriginalDocumentAnt(String text) {
-    documentOriginal.set(identAnt, text);
+    documentOriginal.set(indexPrevious, text);
   }
 
   protected void setTranslationDocumentAnt(String text) {
-    documentTranslation.set(identAnt, text);
+    documentTranslation.set(indexPrevious, text);
   }
   
   protected void clear() {
@@ -242,11 +282,125 @@ public class TmData {
     while (!arrayListChanges.isEmpty()) {
       arrayListChanges.remove(cont--);
     }
-    identChanges = -1;
-    identLabel = 0;
-    identAnt = 0;
+    indexChanges = -1;
+    indexCurrent = 0;
+    indexPrevious = 0;
     filePathTranslation = null;
     filePathOriginal = null;
     topArrays = 0;
   }
+
+  void undoJoin() {
+    String cad;
+    SegmentChanges ultChanges;
+    ultChanges = arrayListChanges.get(getIdentChanges());
+    indexCurrent = ultChanges.getIdent_linea();
+    int position;
+    final String cadaux = ultChanges.getFrase();
+
+    if (ultChanges.getSource() == Side.ORIGINAL) {
+      cad = getDocumentOriginal(indexCurrent);
+      if (!cad.equals("")) {
+        cad = cad.trim();
+      }
+      position = cad.indexOf(cadaux) + cadaux.length();
+    } else {
+      cad = getDocumentTranslation(indexCurrent);
+      if (!cad.equals("")) {
+        cad = cad.trim();
+      }
+      position = cad.indexOf(cadaux) + cadaux.length();
+    }
+    if (ultChanges.getSource() == Side.ORIGINAL) {
+      documentOriginal.split(indexCurrent, position);
+    } else {
+      documentTranslation.split(indexCurrent, position);
+    }
+  }
+
+  /**
+   * Undoes the last delete.
+   */
+  void undoDelete() {
+    SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+    indexCurrent = ultChanges.getIdent_linea();
+    if (ultChanges.getSource() == Side.ORIGINAL) {
+      documentOriginal.add(indexCurrent, ultChanges.getFrase());
+      if (documentOriginal.size() != documentTranslation.size()) {
+        documentTranslation.add("");
+      }
+    } else {
+      documentTranslation.add(indexCurrent, ultChanges.getFrase());
+      if (documentOriginal.size() != documentTranslation.size()) {
+        documentOriginal.add("");
+      }
+    }
+  }
+
+  void undoSplit() {
+    // The complement of Split is Join
+    String cad;
+    int cont;
+    cont = indexCurrent + 1;
+    SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+    if (ultChanges.getSource() == Side.ORIGINAL) {
+      cad = ultChanges.getFrase();
+      documentOriginal.set(indexCurrent, cad.trim());
+      while (cont < topArrays) {
+        documentOriginal.set(cont, documentOriginal.get(cont + 1));
+        cont++;
+      }
+      documentOriginal.set(documentOriginal.size() - 1, "");
+    } else {
+      cad = ultChanges.getFrase();
+      documentTranslation.set(indexCurrent, cad.trim());
+      while (cont < topArrays) {
+        documentTranslation.set(cont, documentTranslation.get(cont + 1));
+        cont++;
+      }
+      documentTranslation.set(documentTranslation.size() - 1, "");
+    }
+  }
+
+  void undoRemove() {
+    SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+    int tam = ultChanges.getTam();
+    int[] filasEliminadas;
+    filasEliminadas = ultChanges.getNumEliminada();
+    while (tam > 0) {
+      documentTranslation.add(documentTranslation.size(), "");
+      documentOriginal.add(documentOriginal.size(), "");
+      topArrays = documentTranslation.size() - 1;
+      tam--;
+    }
+    int cont2 = documentOriginal.size() - 1;
+    tam = ultChanges.getTam();
+    while (cont2 >= tam && tam > 0) {
+      if (cont2 == filasEliminadas[tam - 1]) {
+        documentTranslation.set(cont2, "");
+        documentOriginal.set(cont2, "");
+        tam--;
+      } else {
+        documentTranslation.set(cont2, documentTranslation.get(cont2 - tam));
+        documentOriginal.set(cont2, documentOriginal.get(cont2 - tam));
+      }
+      cont2--;
+    }
+  }
+
+  void undoTuSplit(Side izq) {
+    if (izq == Side.ORIGINAL) {
+      documentTranslation.set(indexCurrent,
+          documentTranslation.get(indexCurrent + 1));
+      documentOriginal.remove(indexCurrent + 1);
+      documentTranslation.remove(indexCurrent + 1);
+    } else {
+      documentOriginal.set(indexCurrent,
+          documentOriginal.get(indexCurrent + 1));
+      documentOriginal.remove(indexCurrent + 1);
+      documentTranslation.remove(indexCurrent + 1);
+    }
+  }
+
+  public enum Side { ORIGINAL, TRANSLATION }
 }

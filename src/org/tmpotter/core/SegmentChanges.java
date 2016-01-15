@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -28,15 +28,17 @@
 
 package org.tmpotter.core;
 
+import org.tmpotter.ui.TmData;
+
 
 /**
  *  Action when segument changing.
  * 
  */
 public class SegmentChanges {
-  int kind;
+  OperationKind kind;
   int pos;
-  boolean source;
+  TmData.Side source;
   String phrase;
   int indexLine;
   int [] numEliminada;
@@ -46,9 +48,9 @@ public class SegmentChanges {
    * Constructor.
    */
   public SegmentChanges() {
-    kind        = 0;
+    kind        = OperationKind.JOIN;
     pos         = 0;
-    source      = false;
+    source      = TmData.Side.TRANSLATION;
     phrase       = "";
     indexLine = -1;
   }
@@ -62,7 +64,7 @@ public class SegmentChanges {
    * @param phrase frase
    * @param index ident line
    */
-  public SegmentChanges( int kind, int position, boolean source, 
+  public SegmentChanges( OperationKind kind, int position, TmData.Side source, 
       String phrase, int index )  {
     this.kind        = kind;
     this.pos         = position;
@@ -76,7 +78,7 @@ public class SegmentChanges {
    * 
    * @return kind
    */
-  public int     getKind()         {
+  public OperationKind getKind() {
     return ( kind );
   }
   
@@ -85,7 +87,7 @@ public class SegmentChanges {
    * 
    * @return position
    */
-  public int     getPosition()          {
+  public int getPosition() {
     return  ( pos );
   }
   
@@ -112,7 +114,7 @@ public class SegmentChanges {
    * 
    * @return source
    */
-  public boolean getSource()       {
+  public TmData.Side getSource()       {
     return ( source );
   }
   
@@ -137,12 +139,12 @@ public class SegmentChanges {
   }
 
   /**
-   * Setter for Tipo.
+   * Setter for OperationKind.
    * 
-   * @param ktipo to be set
+   * @param kind to set
    */
-  public void setTipo( int ktipo )         {
-    kind   = ktipo;
+  public void setKind( OperationKind kind )         {
+    this.kind   = kind;
   }
   
   /**
@@ -159,7 +161,7 @@ public class SegmentChanges {
    * 
    * @param source to set boolean
    */
-  public void setSource( boolean source ) {
+  public void setSource( TmData.Side source ) {
     this.source = source;
   }
   
@@ -193,4 +195,6 @@ public class SegmentChanges {
       numEliminada[cont] = keliminadas[cont];
     }
   }
+
+  public enum OperationKind { JOIN, SPLIT, DELETE, REMOVE, TUSPLIT }
 }

@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -56,12 +56,23 @@ public class Document {
     return documentSegments.remove(index);
   }
 
-  public void add(int index, String ele) {
-    documentSegments.add(index, ele);
+  /**
+   * Add text segment at index.
+   *
+   * @param index index to add
+   * @param element text segment
+   */
+  public void add(int index, String element) {
+    documentSegments.add(index, element);
   }
 
-  public void add(String ele) {
-    documentSegments.add(ele);
+  /**
+   * Add text segment at last of segments.
+   *
+   * @param element text to add
+   */
+  public void add(String element) {
+    documentSegments.add(element);
   }
 
   public String get(int index) {
@@ -71,7 +82,35 @@ public class Document {
   public void set(int index, String content) {
     documentSegments.set(index, content);
   }
+
+  public void duplicate(int index) {
+    documentSegments.add(index + 1, documentSegments.get(index));
+  }
+
+  public void duplicateLast() {
+    int index = documentSegments.size();
+    documentSegments.add(index, documentSegments.get(index - 1));
+  }
+
+  public String getLast() {
+    if (documentSegments.size() > 0) {
+      return documentSegments.get(documentSegments.size() - 1 );
+    } else {
+      return null;
+    }
+  }
+
+  public void removeLast() {
+    if (documentSegments.size() > 0) {
+      documentSegments.remove(documentSegments.size() - 1 );
+    }
+  }
   
+  public void padding(String pad, int length) {
+    for (int i = 0; i < length; i++) {
+      documentSegments.add(pad);
+    }
+  }
   /**
    * Clean up all strings.
    */

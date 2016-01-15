@@ -76,6 +76,10 @@ public class AppComponentsManager {
   }
 
   protected void makeUi() {
+    menuBar.add(mainWindow.mainMenu.getMenuFile());
+    menuBar.add(mainWindow.mainMenu.getMenuEdit());
+    menuBar.add(mainWindow.mainMenu.getMenuSettings());
+    menuBar.add(mainWindow.mainMenu.getMenuHelp());
     // Make Status Bar
     panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
     panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -107,12 +111,6 @@ public class AppComponentsManager {
     msp.add(mainWindow.editLeftSegment, "leftEdit");
     msp.add(mainWindow.editRightSegment, "rightEdit");
     msp.add(mainWindow.tmView, "view");
-    mainWindow.getContentPane().add(mainWindow.toolBar, BorderLayout.NORTH);
-    mainWindow.getContentPane().add(msp);
-    mainWindow.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
-    mainWindow.setSize(new Dimension(1024, 768));
-    mainWindow.setMinimumSize(new Dimension(640, 480));
-    mainWindow.setTitle(AppConstants.getDisplayNameAndVersion());
   }
 
   /**
@@ -120,13 +118,5 @@ public class AppComponentsManager {
    */
   protected void updateStatusBar() {
     tableRows.setText("" + mainWindow.tmView.getRowCount());
-  }
-
-  void makeMenus(MainWindow mainWindow) {
-    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuFile());
-    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuEdit());
-    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuSettings());
-    mainWindow.appComponentsManager.menuBar.add(mainWindow.mainMenu.getMenuHelp());
-    mainWindow.setJMenuBar(mainWindow.appComponentsManager.menuBar);
   }
 }

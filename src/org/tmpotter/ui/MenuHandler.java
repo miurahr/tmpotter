@@ -32,7 +32,6 @@ import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
-import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
@@ -66,12 +65,17 @@ import javax.swing.table.TableColumn;
 final class MenuHandler {
 
   private final MainWindow mainWindow;
+  private ModelMediator modelMediator;
   private final TmData tmData;
   private File userHome = new File(System.getProperty("user.home"));
   
   public MenuHandler(final MainWindow mainWindow, TmData tmData) {
     this.mainWindow = mainWindow;
     this.tmData = tmData;
+  }
+
+  public void setModelMediator(ModelMediator mediator) {
+    this.modelMediator = mediator;
   }
 
   // proxy for aqua
@@ -82,164 +86,6 @@ final class MenuHandler {
   
   public void menuItemHelpAboutActionPerformed() {
     new About(mainWindow).setVisible(true);
-  }
-
-  /**
-   * Undo last change.
-   *
-   */
-  void undoChanges() {
-    String cad;
-    SegmentChanges ultChanges;
-    int tam = 0;
-    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
-    tmData.identLabel = ultChanges.getIdent_linea();
-    int operacion = ultChanges.getKind();
-    int position;
-    boolean izq = ultChanges.getSource();
-    tmData.setIdentAntAsLabel();
-    switch (operacion) {
-      case 0: {
-        final String cadaux = ultChanges.getFrase();
-        if (izq) {
-          cad = tmData.getDocumentOriginal(tmData.identLabel);
-          if (!cad.equals("")) {
-            cad = cad.trim();
-          }
-          position = cad.indexOf(cadaux) + cadaux.length();
-        } else {
-          cad = tmData.getDocumentTranslation(tmData.identLabel);
-          if (!cad.equals("")) {
-            cad = cad.trim();
-          }
-          position = cad.indexOf(cadaux) + cadaux.length();
-        }
-        if (ultChanges.getSource()) {
-          tmData.documentOriginal.split(tmData.identLabel, position);
-        } else {
-          tmData.documentTranslation.split(tmData.identLabel, position);
-        }
-        break;
-      }
-      case 1:
-        undoDelete();
-        break;
-      case 2: {
-          // El complementario de Split es Unir
-        // The complement of Split is Join
-        int cont;
-        cont = tmData.identLabel + 1;
-        if (izq) {
-          cad = ultChanges.getFrase();
-          tmData.documentOriginal.set(tmData.identLabel, cad.trim());
-          while (cont < mainWindow.tmData.topArrays) {
-            tmData.documentOriginal.set(cont, tmData.documentOriginal.get(cont + 1));
-            cont++;
-          }
-          tmData.documentOriginal.set(tmData.documentOriginal.size() - 1, "");
-        } else {
-          cad = ultChanges.getFrase();
-          tmData.documentTranslation.set(tmData.identLabel, cad.trim());
-          while (cont < mainWindow.tmData.topArrays) {
-            tmData.documentTranslation.set(cont, tmData.documentTranslation.get(cont + 1));
-            cont++;
-          }
-          tmData.documentTranslation.set(tmData.documentTranslation.size() - 1, "");
-        }
-        break;
-      }
-      case 3: {
-        tam = ultChanges.getTam();
-        int[] filasEliminadas;
-        filasEliminadas = ultChanges.getNumEliminada();
-        while (tam > 0) {
-          tmData.documentTranslation.add(tmData.documentTranslation.size(), "");
-          tmData.documentOriginal.add(tmData.documentOriginal.size(), "");
-          tmData.topArrays = tmData.documentTranslation.size() - 1;
-          tam--;
-        }
-        int cont2 = tmData.documentOriginal.size() - 1;
-        tam = ultChanges.getTam();
-        while (cont2 >= tam && tam > 0) {
-          if (cont2 == filasEliminadas[tam - 1]) {
-            tmData.documentTranslation.set(cont2, "");
-            tmData.documentOriginal.set(cont2, "");
-            tam--;
-          } else {
-            tmData.documentTranslation.set(cont2,
-                    tmData.documentTranslation.get(cont2 - tam));
-            tmData.documentOriginal.set(cont2,
-                    tmData.documentOriginal.get(cont2 - tam));
-          }
-          cont2--;
-        }
-        break;
-      }
-      case 4: {
-        if (izq) {
-          tmData.documentTranslation.set(tmData.identLabel,
-                  tmData.documentTranslation.get(tmData.identLabel + 1));
-          tmData.documentOriginal.remove(tmData.identLabel + 1);
-          tmData.documentTranslation.remove(tmData.identLabel + 1);
-        } else {
-          tmData.documentOriginal.set(tmData.identLabel,
-                  tmData.documentOriginal.get(tmData.identLabel + 1));
-          tmData.documentOriginal.remove(tmData.identLabel + 1);
-          tmData.documentTranslation.remove(tmData.identLabel + 1);
-        }
-        break;
-      }
-      default:
-        break;
-    }
-    mainWindow.updateTmView();
-  }
-
-  /**
-   * Undoes the last delete.
-   */
-  private void undoDelete() {
-    SegmentChanges ultChanges =
-            tmData.arrayListChanges.get(tmData.getIdentChanges());
-    tmData.identLabel = ultChanges.getIdent_linea();
-    boolean izq = ultChanges.getSource();
-    
-    final Document documentOriginal = tmData.documentOriginal;
-    final Document documentTranslation = tmData.documentTranslation;
-    final int identLabel = tmData.identLabel;
-    
-    if (izq) {
-      if (tmData.identLabel == documentOriginal.size()) {
-        documentOriginal.add(tmData.identLabel,
-                ultChanges.getFrase());
-        if (documentOriginal.size() != documentTranslation.size()) {
-          documentTranslation.add(documentTranslation.size(), "");
-        }
-      } else {
-        documentOriginal.add(documentOriginal.size(),
-                documentOriginal.get(documentOriginal.size() - 1));
-        for (int cont = documentOriginal.size() - 1; cont > identLabel; cont--) {
-          documentOriginal.set(cont, documentOriginal.get(cont - 1));
-        }
-        documentOriginal.set(identLabel, ultChanges.getFrase());
-      }
-    } else {
-      if (identLabel == documentTranslation.size()) {
-        documentTranslation.add(identLabel, ultChanges.getFrase());
-        if (documentOriginal.size() != documentTranslation.size()) {
-          documentOriginal.add(documentOriginal.size(), "");
-        }
-      } else {
-        int cont;
-        documentTranslation.add(documentTranslation.size(),
-                documentTranslation.get(documentTranslation.size() - 1));
-        for (cont = documentTranslation.size() - 1; cont > identLabel; cont--) {
-          documentTranslation.set(cont, documentTranslation.get(cont - 1));
-        }
-        documentTranslation.set(identLabel, ultChanges.getFrase());
-      }
-    }
-    mainWindow.updateTmView();
   }
 
   /**
@@ -353,7 +199,7 @@ final class MenuHandler {
     mainWindow.tmView.setColumnHeaderView();
     mainWindow.updateTmView();
     tmData.topArrays = tmData.documentOriginal.size() - 1;
-    tmData.identLabel = 0;
+    tmData.indexCurrent = 0;
   }
 
   public void menuItemFileSaveAsActionPerformed() {
@@ -460,7 +306,6 @@ final class MenuHandler {
     clear();
     mainWindow.toolBar.enableButtons(false);
     mainWindow.mainMenu.enableEditMenus(false);
-    mainWindow.toolBar.setUndoEnabled(false);
     mainWindow.mainMenu.menuItemFileSave.setEnabled(false);
     mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(false);
     mainWindow.mainMenu.menuItemFileClose.setEnabled(false);
@@ -472,11 +317,10 @@ final class MenuHandler {
    * <p>Initialize values to start the validation of the following alignment
    */
   private void clear() {
-    tmData.clear();
-    mainWindow.toolBar.setUndoEnabled(false);
-    mainWindow.tmView.clear();
-    mainWindow.editLeftSegment.setText("");
-    mainWindow.editRightSegment.setText("");
+    modelMediator.tmDataClear();
+    modelMediator.setUndoEnabled(false);
+    modelMediator.tmViewClear();
+    modelMediator.editSegmentClear();
   }
 
   /**
@@ -499,7 +343,8 @@ final class MenuHandler {
   }
 
   public void menuItemUndoActionPerformed() {
-    mainWindow.onUndo();
+    modelMediator.undoChanges();
+    modelMediator.onUndo();
   }
 
   public void menuItemRedoActionPerformed() {
@@ -507,35 +352,35 @@ final class MenuHandler {
   }
 
   public void menuItemOriginalDeleteActionPerformed() {
-    mainWindow.onOriginalDelete();
+    modelMediator.onOriginalDelete();
   }
 
   public void menuItemOriginalJoinActionPerformed() {
-    mainWindow.onOriginalJoin();
+    modelMediator.onOriginalJoin();
   }
 
   public void menuItemOriginalSplitActionPerformed() {
-    mainWindow.onOriginalSplit();
+    modelMediator.onOriginalSplit();
   }
 
   public void menuItemTranslationDeleteActionPerformed() {
-    mainWindow.onTranslationDelete();
+    modelMediator.onTranslationDelete();
   }
 
   public void menuItemTranslationJoinActionPerformed() {
-    mainWindow.onTranslationJoin();
+    modelMediator.onTranslationJoin();
   }
 
   public void menuItemTranslationSplitActionPerformed() {
-    mainWindow.onTranslationSplit();
+    modelMediator.onTranslationSplit();
   }
 
   public void menuItemRemoveBlankRowsActionPerformed() {
-    mainWindow.onRemoveBlankRows();
+    modelMediator.onRemoveBlankRows();
   }
 
   public void menuItemTuSplitActionPerformed() {
-    mainWindow.onTuSplit();
+    modelMediator.onTuSplit();
   }
 
   /**

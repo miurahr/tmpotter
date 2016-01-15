@@ -236,18 +236,16 @@ final class MainMenu implements ActionListener, MenuListener {
             null, null, "File", "MNU.FILE");
     menuItemFileOpen = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('O', KeyEvent.CTRL_MASK, false),
-            getIcon("project_open.png"), "Open...", "MNI.FILE.OPEN");
+            getIcon("project_open.png"), "Open", "MNI.FILE.OPEN");
     menuItemFileTextOpen = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('T', KeyEvent.CTRL_MASK, false),
-            getIcon("project_open.png"), "Open Text...",
-            "MNI.TEXTFILE.OPEN");
+            getIcon("project_open.png"), "Open Text", "MNI.TEXTFILE.OPEN");
     menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('S', KeyEvent.CTRL_MASK, false),
             getIcon("filesave.png"), "Save", "MNI.FILE.SAVE");
     menuItemFileSave.setEnabled(false);
     menuItemFileSaveAs = makeMenuComponent(MenuComponentType.ITEM,
-            null, getIcon("filesave.png"), "Save As...",
-            "MNI.FILE.SAVEAS");
+            null, getIcon("filesave.png"), "Save As", "MNI.FILE.SAVEAS");
     menuItemFileSaveAs.setEnabled(false);
     menuItemFileClose = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('W', KeyEvent.CTRL_MASK, false),
@@ -255,8 +253,7 @@ final class MainMenu implements ActionListener, MenuListener {
     menuItemFileClose.setEnabled(false);
     menuItemFileQuit = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('Q', KeyEvent.CTRL_MASK, false),
-            getIcon("application-exit.png"), "Quit",
-            "MNI.FILE.EXIT");
+            getIcon("application-exit.png"), "Quit", "MNI.FILE.EXIT");
     menuFile.add(menuItemFileOpen);
     menuFile.addSeparator();
     menuFile.add(menuItemFileTextOpen);
@@ -419,8 +416,7 @@ final class MainMenu implements ActionListener, MenuListener {
   }
 
   /**
-   * Set 'actionCommand' for all menu items. TODO: change to key from resource
-   * bundle values
+   * Set 'actionCommand' for all menu items.
    */
   protected void setActionCommands() {
     try {

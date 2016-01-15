@@ -24,6 +24,7 @@
 package org.tmpotter.ui;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * Model mediator for TM view and segment editors.
@@ -59,4 +60,14 @@ public interface ModelMediator {
   void onTableClicked();
 
   void onTablePressed(final KeyEvent event);
+
+  void tmDataClear();
+
+  void tmViewClear();
+
+  void editSegmentClear();
+
+  void setUndoEnabled(boolean enable);
+
+  void undoChanges();
 }

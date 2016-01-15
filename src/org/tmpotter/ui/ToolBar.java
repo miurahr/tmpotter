@@ -216,6 +216,7 @@ final class ToolBar extends JToolBar implements ActionListener {
       } else if ( actor == buttonTuSplit )     {
         modelMediator.onTuSplit();
       } else if ( actor == buttonUndo )     {
+        modelMediator.undoChanges();
         modelMediator.onUndo();
       }
     }
