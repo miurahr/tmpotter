@@ -148,10 +148,10 @@ final class MenuHandler {
     TableColumn col;
     col = mainWindow.tmView.getColumnModel().getColumn(1);
     col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-            + tmData.filePathOriginal.getName());
+            + mainWindow.prop.getFilePathOriginal().getName());
     col = mainWindow.tmView.getColumnModel().getColumn(2);
     col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-            + tmData.filePathTranslation.getName());
+            + mainWindow.prop.getFilePathTranslation().getName());
     mainWindow.tmView.setColumnHeaderView();
     mainWindow.updateTmView();
     tmData.topArrays = tmData.documentOriginal.size() - 1;
@@ -180,9 +180,9 @@ final class MenuHandler {
       }
     }
     try {
-      String outFileName = tmData.filePathOriginal.getName();
+      String outFileName = mainWindow.prop.getFilePathOriginal().getName();
       String outFileNameBase = outFileName.substring(0,
-              tmData.filePathOriginal.getName().length() - 4);
+              mainWindow.prop.getFilePathOriginal().getName().length() - 4);
       boolean save = false;
       boolean cancel = false;
       File outFile = new File(outFileNameBase.concat(tmData
@@ -272,6 +272,7 @@ final class MenuHandler {
    */
   private void clear() {
     modelMediator.tmDataClear();
+    mainWindow.prop.clear();
     modelMediator.setUndoEnabled(false);
     modelMediator.tmViewClear();
     modelMediator.editSegmentClear();

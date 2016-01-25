@@ -28,12 +28,20 @@ import org.tmpotter.util.Language;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.StringUtil;
 
+import java.io.File;
+
 
 /**
  * Storage for project properties.
  *
  */
 public final class ProjectProperties {
+  private File filePathOriginal;
+  private File filePathTranslation;
+  private String targetEncoding;
+  private String originalEncoding;
+  private Language sourceLanguage;
+  private Language targetLanguage;
 
   /**
    * Default constructor to initialize fields.
@@ -52,6 +60,43 @@ public final class ProjectProperties {
     } else {
       setTargetLanguage("EN-GB");
     }
+  }
+
+  public void clear() {
+    filePathOriginal = null;
+    filePathTranslation = null;
+  }
+
+  public void setFilePathOriginal(File filePath) {
+    filePathOriginal = filePath;
+  }
+
+  public File getFilePathOriginal() {
+    return filePathOriginal;
+  }
+
+  public void setFilePathTranslation(File filePath) {
+    filePathTranslation = filePath;
+  }
+
+  public File getFilePathTranslation() {
+    return filePathTranslation;
+  }
+
+  public void setOriginalEncoding(String encoding) {
+    originalEncoding = encoding;
+  }
+
+  public String getOriginalEncoding() {
+    return originalEncoding;
+  }
+
+  public void setTranslationEncoding(String encoding) {
+    targetEncoding = encoding;
+  }
+
+  public String getTranslationEncoding() {
+    return targetEncoding;
   }
 
   public Language getSourceLanguage() {
@@ -136,6 +181,4 @@ public final class ProjectProperties {
     return false;
   }
 
-  private Language sourceLanguage;
-  private Language targetLanguage;
 }

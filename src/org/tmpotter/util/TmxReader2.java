@@ -139,6 +139,7 @@ public class TmxReader2 {
    * @param extTmxLevel2 frag to specify Tmx level2
    * @param useSlash use slash for after tag such as &lt;tag/&gt;
    * @param callback callback to accept result
+   * @throws java.lang.Exception
    */
   public void readTmx(File file, final Language sourceLanguage,
           final Language targetLanguage,
@@ -207,15 +208,15 @@ public class TmxReader2 {
     LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
             "TMXR.INFO.SOURCE_LANG", getAttributeValue(element, "srclang"));
 
-        // give a warning if the TMX source language is
+    // give a warning if the TMX source language is
     // different from the project source language
     String tmxSourceLanguage = getAttributeValue(element, "srclang");
     if (!tmxSourceLanguage.equalsIgnoreCase(sourceLanguage.getLanguage())) {
       LOG.logrb(Level.WARNING, "TMXReader2", "parseHeader",
               "TMXR.WARNING.INCORRECT_SOURCE_LANG", tmxSourceLanguage,
               sourceLanguage);
+      // TODO: Override source language by header's one
     }
-
   }
 
   protected void parseTu(StartElement element) throws Exception {

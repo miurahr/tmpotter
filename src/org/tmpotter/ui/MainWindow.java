@@ -34,9 +34,9 @@ import static org.tmpotter.util.StringUtil.restoreText;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
-import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.RuntimePreferences;
@@ -76,7 +76,9 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   protected WindowFontManager fontManager = new WindowFontManager(this);
   protected AppComponentsManager appComponentsManager = new AppComponentsManager(this);
   protected TmData tmData = new TmData();
+  protected ProjectProperties prop = new ProjectProperties();
   protected MenuHandler menuHandler;
+
 
 
   /**
@@ -143,47 +145,45 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   }
 
 
+  @Override
   public void onOpenFile(File filePathOriginal,
       String stringLangOriginal, String stringLangTranslation) {
-      tmData.filePathOriginal = filePathOriginal;
-      tmData.filePathTranslation = tmData.filePathOriginal;
-      tmData.stringLangOriginal = stringLangOriginal;
-      tmData.stringLangTranslation = stringLangTranslation;
-      tmView.buildDisplay();
-      try {
-        ProjectProperties prop = new ProjectProperties();
-        prop.setSourceLanguage(tmData.stringLangOriginal);
-        prop.setTargetLanguage(tmData.stringLangTranslation);
-        TmxReader reader = new TmxReader(prop, tmData.filePathOriginal);
-        tmData.documentOriginal =
-                reader.getOriginalDocument(tmData.documentOriginal);
-        tmData.documentTranslation = 
-                reader.getTranslationDocument(tmData.documentTranslation);
-      } catch (Exception ex) {
-        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      initializeTmView();
-      updateTmView();
-      toolBar.enableButtons(true);
-      mainMenu.enableEditMenus(true);
-      toolBar.setUndoEnabled(false);
-      mainMenu.menuItemFileSave.setEnabled(true);
-      mainMenu.menuItemFileSaveAs.setEnabled(true);
-      mainMenu.menuItemFileClose.setEnabled(true);
+    prop.setFilePathOriginal(filePathOriginal);
+    prop.setFilePathTranslation(prop.getFilePathOriginal());
+    prop.setSourceLanguage(stringLangOriginal);
+    prop.setTargetLanguage(stringLangTranslation);
+    tmView.buildDisplay();
+    try {
+      TmxReader reader = new TmxReader(prop);
+      tmData.documentOriginal
+          = reader.getOriginalDocument(tmData.documentOriginal);
+      tmData.documentTranslation
+          = reader.getTranslationDocument(tmData.documentTranslation);
+    } catch (Exception ex) {
+      Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    initializeTmView();
+    updateTmView();
+    toolBar.enableButtons(true);
+    mainMenu.enableEditMenus(true);
+    toolBar.setUndoEnabled(false);
+    mainMenu.menuItemFileSave.setEnabled(true);
+    mainMenu.menuItemFileSaveAs.setEnabled(true);
+    mainMenu.menuItemFileClose.setEnabled(true);
   }
 
   @Override
   public void setOriginalProperties(File filePath, String text, String lang, String encoding) {
-    tmData.originalEncoding = encoding;
-    tmData.filePathOriginal = filePath;
+    prop.setOriginalEncoding(encoding);
+    prop.setFilePathOriginal(filePath);
     tmData.stringOriginal = text;
     tmData.stringLangOriginal = lang;
   }
 
   @Override
   public void setTargetProperties(File filePath, String text, String lang, String encoding) {
-    tmData.targetEncoding = encoding;
-    tmData.filePathTranslation = filePath;
+    prop.setTranslationEncoding(encoding);
+    prop.setFilePathTranslation(filePath);
     tmData.stringTranslation = text;
     tmData.stringLangTranslation = lang;
   }
@@ -196,10 +196,10 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     tmData.documentTranslation = new Document();
     tmData.documentOriginal
         = TextReader.read(tmData.stringOriginal,
-            tmData.stringLangOriginal, tmData.originalEncoding);
+            tmData.stringLangOriginal, prop.getOriginalEncoding());
     tmData.documentTranslation
         = TextReader.read(tmData.stringTranslation,
-            tmData.stringLangTranslation, tmData.targetEncoding);
+            tmData.stringLangTranslation, prop.getTranslationEncoding());
     tmData.matchArrays();
 
   }
@@ -219,10 +219,10 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     TableColumn col;
     col = tmView.getColumnModel().getColumn(1);
     col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-            + tmData.filePathOriginal.getName());
+            + prop.getFilePathOriginal().getName());
     col = tmView.getColumnModel().getColumn(2);
     col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-            + tmData.filePathTranslation.getName());
+            + prop.getFilePathTranslation().getName());
     tmView.setColumnHeaderView();
     updateTmView();
     tmData.topArrays = tmData.documentOriginal.size() - 1;

@@ -49,10 +49,6 @@ public class TmData {
   protected String stringLangTranslation = "en";
   protected String stringOriginal;
   protected String stringTranslation;
-  protected File filePathTranslation;
-  protected File filePathOriginal;
-  protected String originalEncoding;
-  protected String targetEncoding;
 
   /**
    * Updates the changes adding a "join" change in the "undo" array and performs
@@ -281,8 +277,6 @@ public class TmData {
     indexChanges = -1;
     indexCurrent = 0;
     indexPrevious = 0;
-    filePathTranslation = null;
-    filePathOriginal = null;
     topArrays = 0;
   }
 

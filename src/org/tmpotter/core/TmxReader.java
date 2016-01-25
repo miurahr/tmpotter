@@ -45,12 +45,11 @@ public class TmxReader {
    * Read TMX file.
    * 
    * @param prop property.
-   * @param file file to open
    * @throws Exception when read I/O error.
    */
-  public TmxReader(ProjectProperties prop, final File file)
+  public TmxReader(ProjectProperties prop)
           throws Exception {
-    this.name = file.getName();
+    this.name = prop.getFilePathOriginal().getName();
     entries = new ArrayList<>();
     
     TmxReader2.LoadCallback callbackLoader =  new TmxReader2.LoadCallback() {
@@ -95,8 +94,8 @@ public class TmxReader {
     }; 
     
     TmxReader2 reader = new TmxReader2();
-    reader.readTmx(file, prop.getSourceLanguage(), prop.getTargetLanguage(),
-        false, false, callbackLoader);
+    reader.readTmx(prop.getFilePathOriginal(), prop.getSourceLanguage(),
+        prop.getTargetLanguage(), false, false, callbackLoader);
   }
 
   public String getName() {
