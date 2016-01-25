@@ -404,7 +404,7 @@ final class MenuHandler {
     onChangeLnF(MenuHandler.LnfType.LIQUID);
   }
 
-  public void menuLafMetalActionPerformed() {
+  public void menuItemLafMetalActionPerformed() {
     onChangeLnF(MenuHandler.LnfType.METAL);
   }
 
