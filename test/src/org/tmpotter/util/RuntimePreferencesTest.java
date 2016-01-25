@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -23,6 +23,7 @@
 
 package org.tmpotter.util;
 
+import java.io.File;
 import junit.framework.TestCase;
 
 /**
@@ -36,9 +37,9 @@ public class RuntimePreferencesTest extends TestCase {
    */
   public void testSetUserHome() {
     System.out.println("setUserHome");
-    String home = "hoge";
+    File home = new File("/tmp");
     RuntimePreferences.setUserHome(home);
-    String result = RuntimePreferences.getUserHome();
+    File result = RuntimePreferences.getUserHome();
     assertEquals(home, result);
   }
 

@@ -49,10 +49,10 @@ public class TmData {
   protected String stringLangTranslation = "en";
   protected String stringOriginal;
   protected String stringTranslation;
-  protected final ArrayList arrayListBitext = new ArrayList();
-  protected final ArrayList arrayListLang = new ArrayList();
   protected File filePathTranslation;
   protected File filePathOriginal;
+  protected String originalEncoding;
+  protected String targetEncoding;
 
   /**
    * Updates the changes adding a "join" change in the "undo" array and performs
@@ -274,11 +274,7 @@ public class TmData {
   protected void clear() {
     documentOriginal.clean();
     documentTranslation.clean();
-    int cont = arrayListBitext.size() - 1;
-    while (!arrayListBitext.isEmpty()) {
-      arrayListBitext.remove(cont--);
-    }
-    cont = arrayListChanges.size() - 1;
+    int cont = arrayListChanges.size() - 1;
     while (!arrayListChanges.isEmpty()) {
       arrayListChanges.remove(cont--);
     }
