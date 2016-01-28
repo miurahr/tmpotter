@@ -24,6 +24,9 @@
 package org.tmpotter.filters;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import org.tmpotter.core.Document;
+import org.tmpotter.util.Language;
 
 /**
  * Import filter interface.
@@ -47,25 +50,31 @@ public interface IImportFilter {
   boolean isCombinedFileFormat();
 
   /**
-   * Read source and translated files.
+   * Read combined document.
    * 
-   * @param sourceFile
-   *            source file
-   * @param targetFile
-   *            translated file
-   * @throws Exception while file read.
+   * @throws Exception while read.
    */
-  void load(File sourceFile, File targetFile) throws Exception;
+  void read(InputStreamReader isr, Language originalLang, Language translationLang) throws Exception;
 
   /**
    * Read document.
    * 
-   * @param sourceFile
-   *            source file
-   * @param targetFile
-   *            translated file
-   * @throws Exception while file read.
+   * @throws Exception while read.
    */
-  void load( File filePath, String sourceEncode ) throws Exception;
+  Document read(InputStreamReader isr, Language lang) throws Exception;
+
+  /**
+   *
+   * @param doc
+   * @return
+   */
+  Document getOriginalDocument();
+
+  /**
+   *
+   * @param doc
+   * @return
+   */
+  Document getTranslationDocument();
 
 }

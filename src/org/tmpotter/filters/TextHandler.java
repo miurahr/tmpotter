@@ -23,7 +23,15 @@
 
 package org.tmpotter.filters;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import org.tmpotter.core.Document;
+import org.tmpotter.segmentation.SRX;
+import org.tmpotter.segmentation.Segmenter;
+import org.tmpotter.util.Language;
+import org.tmpotter.util.Preferences;
 
 /**
  * Bi-Text loader.
@@ -33,6 +41,8 @@ import java.io.File;
  * @author Hiroshi Miura
  */
 public class TextHandler implements IImportFilter {
+  private Document resultDocument;
+
   @Override
   public boolean isCombinedFileFormat() {
     return false;
@@ -44,12 +54,44 @@ public class TextHandler implements IImportFilter {
   }
   
   @Override
-  public void load(File sourceFile, File targetFile) throws Exception {
-
+  public void read(InputStreamReader isr, Language olang, Language tLang) throws Exception {
+    return;
   }
   
   @Override
-  public void load(File sourceFile, String encoding ) throws Exception {
+  public final Document read(InputStreamReader isr, Language lang) throws Exception {
+    Segmenter.srx = Preferences.getSrx();
+    if (Segmenter.srx == null) {
+      Segmenter.srx = SRX.getDefault();
+    }
+    String result = copyCleanString(new BufferedReader(isr));
+    resultDocument = new Document(Segmenter.segment(lang, result, null, null));
+    return resultDocument;
     
   }
+
+  @Override
+  public Document getOriginalDocument() {
+    return resultDocument;
+  }
+
+  @Override
+  public Document getTranslationDocument() {
+    return resultDocument;
+  }
+
+  private static String copyCleanString(BufferedReader br) throws IOException {
+    String linea;
+    StringBuilder sb = new StringBuilder();
+
+    while ((linea = br.readLine()) != null) {
+      linea = linea.trim();
+      if (!linea.equals("")) {
+        linea = linea + "\n";
+        sb.append(linea);
+      }
+    }
+    return sb.toString();
+  }
+
 }

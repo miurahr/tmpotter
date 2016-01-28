@@ -23,17 +23,13 @@
 
 package org.tmpotter.core;
 
-import org.tmpotter.segmentation.SRX;
-import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
-import org.tmpotter.util.Preferences;
+import org.tmpotter.filters.TextHandler;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 
 
 /**
@@ -64,28 +60,13 @@ public class TextReader {
     } else {
       isr = new InputStreamReader(fis, encoding);
     }
-    Segmenter.srx = Preferences.getSrx();
-    if (Segmenter.srx == null) {
-      Segmenter.srx = SRX.getDefault();
-    }
-    String result = copyCleanString(new BufferedReader(isr));
+    TextHandler tr = new TextHandler();
     Language lang = new Language(language);
-    Document res = new Document(Segmenter.segment(lang, result, null, null));
-    return res;
-    
-  }
-
-  private static String copyCleanString(BufferedReader br) throws IOException {
-    String linea;
-    StringBuilder sb = new StringBuilder();
-    
-    while ((linea = br.readLine()) != null) {
-      linea = linea.trim();
-      if (!linea.equals("")) {
-        linea = linea + "\n";
-        sb.append(linea);
-      }
+    try {
+      return tr.read(isr, lang);
+    } catch (Exception ex) {
+      return null;
     }
-    return sb.toString();
-  }  
+
+  }
 }
