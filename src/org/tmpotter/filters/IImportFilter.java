@@ -23,10 +23,11 @@
 
 package org.tmpotter.filters;
 
-import java.io.File;
-import java.io.InputStreamReader;
 import org.tmpotter.core.Document;
 import org.tmpotter.util.Language;
+
+import java.io.InputStreamReader;
+
 
 /**
  * Import filter interface.
@@ -54,26 +55,30 @@ public interface IImportFilter {
    * 
    * @throws Exception while read.
    */
-  void read(InputStreamReader isr, Language originalLang, Language translationLang) throws Exception;
+  void read(InputStreamReader isr, Language originalLang, Language translationLang)
+          throws Exception;
 
   /**
    * Read document.
    * 
+   * @param isr InputStreamReader of target.
+   * @param lang language of target stream.
+   * @return Document result by read.
    * @throws Exception while read.
    */
   Document read(InputStreamReader isr, Language lang) throws Exception;
 
   /**
+   * Get resulted original document.
    *
-   * @param doc
-   * @return
+   * @return document result
    */
   Document getOriginalDocument();
 
   /**
+   * Get resulted target document.
    *
-   * @param doc
-   * @return
+   * @return document result
    */
   Document getTranslationDocument();
 

@@ -26,6 +26,7 @@ package org.tmpotter.core;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Document hold single text segments in Array.
  * 
@@ -92,6 +93,11 @@ public class Document {
     documentSegments.add(index, documentSegments.get(index - 1));
   }
 
+  /**
+   * Get last segment.
+   *
+   * @return segument
+   */
   public String getLast() {
     if (documentSegments.size() > 0) {
       return documentSegments.get(documentSegments.size() - 1 );
@@ -100,17 +106,27 @@ public class Document {
     }
   }
 
+  /**
+   * Remove last segment.
+   */
   public void removeLast() {
     if (documentSegments.size() > 0) {
       documentSegments.remove(documentSegments.size() - 1 );
     }
   }
-  
+
+  /**
+   * Padding by pad string.
+   *
+   * @param pad String to pad
+   * @param length of padding
+   */
   public void padding(String pad, int length) {
     for (int i = 0; i < length; i++) {
       documentSegments.add(pad);
     }
   }
+
   /**
    * Clean up all strings.
    */
@@ -120,7 +136,7 @@ public class Document {
       documentSegments.remove(cont--);
     }
   }
-  
+
   /**
    * Perform alignments:join.
    *
@@ -141,7 +157,7 @@ public class Document {
     }
     documentSegments.set(length, "");
   }
-  
+
   /**
    * Perform alignments: delete.
    *
@@ -185,5 +201,5 @@ public class Document {
     }
     documentSegments.set(index + 1, cad.substring(position).trim());
   }
-  
+
 }

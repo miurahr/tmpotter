@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -23,15 +23,16 @@
 
 package org.tmpotter.filters;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import org.tmpotter.core.Document;
 import org.tmpotter.segmentation.SRX;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Preferences;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 
 /**
  * Bi-Text loader.
@@ -52,12 +53,12 @@ public class TextHandler implements IImportFilter {
   public String getFileFormatName() {
     return "bi-text";
   }
-  
+
   @Override
-  public void read(InputStreamReader isr, Language olang, Language tLang) throws Exception {
-    return;
+  public void read(InputStreamReader isr, Language origLang, Language transLang) throws Exception {
+    read(isr, origLang);
   }
-  
+
   @Override
   public final Document read(InputStreamReader isr, Language lang) throws Exception {
     Segmenter.srx = Preferences.getSrx();

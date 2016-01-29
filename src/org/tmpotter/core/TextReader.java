@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -23,9 +23,9 @@
 
 package org.tmpotter.core;
 
+import org.tmpotter.filters.TextHandler;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
-import org.tmpotter.filters.TextHandler;
 
 import java.io.FileInputStream;
 import java.io.IOException;
