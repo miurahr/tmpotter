@@ -466,7 +466,8 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
    */
   @Override
   public final void onTuSplit() {
-    tmData.tuSplit((tmView.getSelectedColumn()==1)?TmData.Side.ORIGINAL:TmData.Side.TRANSLATION);
+    tmData.tuSplit((tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
+            : TmData.Side.TRANSLATION);
     updateTmView();
     toolBar.buttonUndo.setEnabled(true);
     mainMenu.menuItemUndo.setEnabled(true);
@@ -539,29 +540,21 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
     tmData.setIdentAntAsLabel();
     switch (operationKind) {
       case JOIN:
-        {
-          tmData.undoJoin();
-          break;
-        }
+        tmData.undoJoin();
+        break;
       case DELETE:
         tmData.undoDelete();
         updateTmView();
         break;
       case SPLIT:
-        {
-          tmData.undoSplit();
-          break;
-        }
+        tmData.undoSplit();
+        break;
       case REMOVE:
-        {
-          tmData.undoRemove();
-          break;
-        }
+        tmData.undoRemove();
+        break;
       case TUSPLIT:
-        {
-          tmData.undoTuSplit(ultChanges.getSource());
-          break;
-        }
+        tmData.undoTuSplit(ultChanges.getSource());
+        break;
       default:
         break;
     }

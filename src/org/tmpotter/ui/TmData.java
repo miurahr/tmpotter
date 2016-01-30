@@ -137,7 +137,7 @@ public class TmData {
     documentOriginal.duplicateLast();
     documentTranslation.duplicateLast();
 
-    if (side==Side.ORIGINAL) {
+    if (side == Side.ORIGINAL) {
       // Left column.
       changes = new SegmentChanges(SegmentChanges.OperationKind.TUSPLIT,
           0, Side.ORIGINAL, "", indexCurrent);

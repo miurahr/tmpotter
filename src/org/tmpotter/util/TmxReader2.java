@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from OmegaT project
  *
@@ -139,7 +139,7 @@ public class TmxReader2 {
    * @param extTmxLevel2 frag to specify Tmx level2
    * @param useSlash use slash for after tag such as &lt;tag/&gt;
    * @param callback callback to accept result
-   * @throws java.lang.Exception
+   * @throws java.lang.Exception when file read fails.
    */
   public void readTmx(File file, final Language sourceLanguage,
           final Language targetLanguage,
