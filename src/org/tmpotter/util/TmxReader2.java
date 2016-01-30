@@ -67,7 +67,7 @@ import javax.xml.stream.events.XMLEvent;
  * Helper for read TMX files, using StAX.
  *
  * TMX 1.4b specification:
- * https://www.gala-global.org/tmx-14b
+ * http://ttt.org/oscarstandards/tmx/
  *
  * @author Alex Buloichik
  * @author Hiroshi Miura
