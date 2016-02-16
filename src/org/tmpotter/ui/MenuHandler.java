@@ -145,7 +145,26 @@ final class MenuHandler {
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
       RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.onImportFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
+      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(),
+          dlg.getSourceLocale(), (String) dlg.getEncoding());
+      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(),
+          dlg.getTargetLocale(), (String) dlg.getEncoding());
+      mainWindow.tmView.buildDisplay();
+      Segmenter.srx = Preferences.getSrx();
+      try {
+        modelMediator.onImportFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
+      } catch (Exception ex) {
+        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+                getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+        mainWindow.dispose();
+      }
+      initializeTmView(mainWindow);
+      mainWindow.updateTmView();
+      mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
+      mainWindow.toolBar.setUndoEnabled(false);
+      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
       dlg.dispose();
     }
   }

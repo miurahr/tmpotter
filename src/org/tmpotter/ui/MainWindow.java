@@ -35,11 +35,9 @@ import static org.tmpotter.util.StringUtil.restoreText;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.SegmentChanges;
-import org.tmpotter.core.TextReader;
 import org.tmpotter.core.TmxReader;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
-import org.tmpotter.util.RuntimePreferences;
 import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.AquaAdapter;
 
@@ -59,6 +57,14 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumn;
+import org.tmpotter.filters.FilterContext;
+import org.tmpotter.filters.IAlignCallback;
+import org.tmpotter.filters.IFilter;
+import org.tmpotter.filters.IParseCallback;
+import org.tmpotter.filters.PoFilter;
+import org.tmpotter.filters.TextHandler;
+import org.tmpotter.util.Language;
+import org.tmpotter.util.Localization;
 
 
 /**
@@ -193,14 +199,23 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   public void loadDocumentsFromText(String stringOriginal, String stringTarget) throws IOException {
     tmData.documentOriginal = new Document();
     tmData.documentTranslation = new Document();
-    tmData.documentOriginal
-        = TextReader.read(tmData.stringOriginal,
-            tmData.stringLangOriginal, prop.getOriginalEncoding());
-    tmData.documentTranslation
-        = TextReader.read(tmData.stringTranslation,
-            tmData.stringLangTranslation, prop.getTranslationEncoding());
+    Language lang = new Language(tmData.stringLangOriginal);
+    FilterContext fc = new FilterContext(lang, lang, true);
+    if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+      fc.setInEncoding(null);
+    } else {
+      fc.setInEncoding(prop.getOriginalEncoding());
+    }
+    IFilter filter = new TextHandler();
+    File inFile = new File(stringOriginal);
+    File outFile = new File(stringTarget);
+    try {
+      filter.parseFile(inFile, null, fc, new ParseCb());
+      filter.alignFile(inFile, outFile, null, fc, new AlignCb());
+    } catch (Exception ex) {
+      System.out.println(ex);
+    }
     tmData.matchArrays();
-
   }
 
   @Override
@@ -208,7 +223,51 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
       String stringLangOriginal, String stringLangTranslation) {
     tmData.documentOriginal = new Document();
     tmData.documentTranslation = new Document();
-    // TODO implement me.
+    Language lang = new Language(tmData.stringLangOriginal);
+    FilterContext fc = new FilterContext(lang, lang, true);
+    if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+      fc.setInEncoding(null);
+    } else {
+      fc.setInEncoding(prop.getOriginalEncoding());
+    }
+    IFilter filter = new PoFilter();
+    try {
+      filter.alignFile(filePathOriginal, filePathOriginal, null, fc, new AlignCb());
+    } catch (Exception ex) {
+      System.out.println(ex);
+    }
+    tmData.matchArrays();
+
+  }
+  
+  public class ParseCb implements IParseCallback {
+    @Override
+    public void addEntry(String id, String source, String translation, boolean isFuzzy,
+        String comment, String path, IFilter filter) {
+      if (source != null) {
+        tmData.documentOriginal.add(source);
+      }
+      if (translation != null) {
+        tmData.documentTranslation.add(translation);
+      } 
+    }
+  }
+  
+  /**
+   * Align callback method.
+   * Add sentences to tmData. Add also empty string.
+   */
+  public class AlignCb implements IAlignCallback {
+    @Override
+    public void addTranslation(String id, String source, String translation, boolean isFuzzy,
+        String comment, IFilter filter) {
+      if (source != null) {
+        tmData.documentOriginal.add(source);
+      }
+      if (translation != null) {
+        tmData.documentTranslation.add(translation);
+      } 
+    }
   }
 
   /**

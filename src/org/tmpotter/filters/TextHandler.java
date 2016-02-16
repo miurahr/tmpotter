@@ -23,15 +23,15 @@
 
 package org.tmpotter.filters;
 
-import org.tmpotter.core.Document;
 import org.tmpotter.segmentation.SRX;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Preferences;
+import org.tmpotter.util.TranslationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
 
 /**
@@ -41,12 +41,15 @@ import java.io.InputStreamReader;
  * 
  * @author Hiroshi Miura
  */
-public class TextHandler implements IImportFilter {
-  private Document resultDocument;
-
+public class TextHandler extends AbstractFilter implements IFilter {
   @Override
   public boolean isCombinedFileFormat() {
     return false;
+  }
+
+  @Override
+  protected boolean isFileSupported(BufferedReader reader) {
+    return true;
   }
 
   @Override
@@ -55,30 +58,83 @@ public class TextHandler implements IImportFilter {
   }
 
   @Override
-  public void read(InputStreamReader isr, Language origLang, Language transLang) throws Exception {
-    read(isr, origLang);
+  public String getHint() {
+    return "Reading from two text files. One is for source, and another is for translation.";
   }
 
   @Override
-  public final Document read(InputStreamReader isr, Language lang) throws Exception {
+  public boolean isSourceEncodingVariable() {
+    return true;
+  }
+  
+  @Override
+  public boolean isTargetEncodingVariable() {
+    return true;
+  }
+
+  @Override
+  public void processFile(BufferedReader br, FilterContext fc) throws IOException,
+      TranslationException {
+    List<String> result;
+    try {
+      result = processTextFile(br, fc.getSourceLang());
+      for (String item: result) {
+        align(item, "", null, null);
+      }
+    } catch (Exception ex) {
+      System.out.println(ex);
+    }
+  }
+  
+  @Override
+  public void alignFile(BufferedReader sourceFile, BufferedReader translatedFile,
+      FilterContext fc) throws Exception {
+    List<String> result;
+    try {
+      result = processTextFile(translatedFile, fc.getTargetLang());
+      for (String item: result) {
+        align(null, item, null, null);
+      }
+    } catch (Exception ex) {
+      System.out.println(ex);
+    }
+
+  }
+
+  /**
+   * Process input file.
+   * 
+   * @param br BufferedReader to input
+   * @param lang analyze by lang
+   * @return List of String
+   * @throws Exception when file error
+   */
+  public final List<String> processTextFile(BufferedReader br, Language lang) throws Exception {
     Segmenter.srx = Preferences.getSrx();
     if (Segmenter.srx == null) {
       Segmenter.srx = SRX.getDefault();
     }
-    String result = copyCleanString(new BufferedReader(isr));
-    resultDocument = new Document(Segmenter.segment(lang, result, null, null));
-    return resultDocument;
-    
+    String result = copyCleanString(br);
+    return Segmenter.segment(lang, result, null, null);
   }
 
-  @Override
-  public Document getOriginalDocument() {
-    return resultDocument;
-  }
-
-  @Override
-  public Document getTranslationDocument() {
-    return resultDocument;
+  /**
+   *
+   * @param source source
+   * @param translation translation
+   * @param comments comments
+   * @param path 
+   */
+  protected void align(String source, String translation, String comments, String path) {
+    if (translation != null && translation.isEmpty()) {
+      translation = null;
+    }
+    if (entryParseCallback != null) {
+      entryParseCallback.addEntry(null, source, translation, false, comments, path,
+            this);
+    } else if (entryAlignCallback != null) {
+      entryAlignCallback.addTranslation(null, source, translation, false, path, this);
+    }
   }
 
   private static String copyCleanString(BufferedReader br) throws IOException {

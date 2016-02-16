@@ -196,6 +196,14 @@ public class ImportFile  extends JDialog implements ActionListener {
   public final String getTargetLocale() {
     return ( translationLang ); 
   }
+  
+  public final String getEncoding() {
+    return "UTF-8";
+  }
+
+  public final String getSource() {
+    return ( originalDoc );
+  }
 
   private void onImportFile() {
     final JFileChooser fc = new JFileChooser();

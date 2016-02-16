@@ -87,6 +87,13 @@ public interface IFilter {
   String getFuzzyMark();
 
   /**
+   * File format has both source and translated text?
+   * 
+   * @return  boolean true if format is combined such as TMX.
+   */
+  boolean isCombinedFileFormat();
+
+  /**
    * Returns whether the file is supported by the filter, given the file and possible file's
    * encoding ( <code>null</code> encoding means autodetect).
    * <p>
