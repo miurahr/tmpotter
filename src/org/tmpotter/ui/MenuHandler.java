@@ -37,6 +37,7 @@ import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.dialogs.FontSelector;
 import org.tmpotter.ui.dialogs.OpenTexts;
 import org.tmpotter.ui.dialogs.OpenTmx;
+import org.tmpotter.ui.dialogs.ImportFile;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
 
@@ -129,6 +130,22 @@ final class MenuHandler {
       mainWindow.toolBar.setUndoEnabled(false);
       mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
       mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
+      dlg.dispose();
+    }
+  }
+
+  /**
+   * Open dialog to select the Po file.
+   *
+   */
+  public void menuItemImportActionPerformed() {
+    final ImportFile dlg = new ImportFile(null, "", false);
+    dlg.setPath(RuntimePreferences.getUserHome());
+    dlg.setModal(true);
+    dlg.setVisible(true);
+    if (!dlg.isClosed()) {
+      RuntimePreferences.setUserHome(dlg.getPath());
+      modelMediator.onImportFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       dlg.dispose();
     }
   }

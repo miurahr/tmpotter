@@ -189,7 +189,6 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
   }
 
 
-
   @Override
   public void loadDocumentsFromText(String stringOriginal, String stringTarget) throws IOException {
     tmData.documentOriginal = new Document();
@@ -202,6 +201,14 @@ public final class MainWindow extends JFrame implements ModelMediator, WindowLis
             tmData.stringLangTranslation, prop.getTranslationEncoding());
     tmData.matchArrays();
 
+  }
+
+  @Override
+  public void onImportFile(File filePathOriginal,
+      String stringLangOriginal, String stringLangTranslation) {
+    tmData.documentOriginal = new Document();
+    tmData.documentTranslation = new Document();
+    // TODO implement me.
   }
 
   /**
