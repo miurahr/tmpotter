@@ -240,7 +240,7 @@ final class MainMenu implements ActionListener, MenuListener {
             getIcon("project_open.png"), "Open", "MNI.FILE.OPEN");
     menuItemFileTextOpen = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('T', KeyEvent.CTRL_MASK, false),
-            getIcon("project_open.png"), "Open Text", "MNI.TEXTFILE.OPEN");
+            getIcon("fileopen.png"), "Open Text", "MNI.TEXTFILE.OPEN");
     menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('S', KeyEvent.CTRL_MASK, false),
             getIcon("filesave.png"), "Save", "MNI.FILE.SAVE");
