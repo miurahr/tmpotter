@@ -29,7 +29,7 @@
 
 package org.tmpotter.filters;
 
-import org.tmpotter.util.Localization;
+import org.tmpotter.util.EncodingDetector;
 import org.tmpotter.util.TranslationException;
 
 import java.io.BufferedReader;
@@ -41,7 +41,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import org.tmpotter.util.EncodingDetector;
 
 /**
  * The base class for all filters.
@@ -245,8 +244,7 @@ public abstract class AbstractFilter implements IFilter {
    * @param inFile The source file.
    * @param fc Filter context.
    * @returns List of processed files (each element of type {@link File}) or null if the filter can
-   * not/did not process multiple files.
-   *
+   *     not/did not process multiple files.
    * @throws IOException In case of any I/O error.
    * @throws TranslationException Should be thrown when processed file has any format defects.
    */
@@ -268,10 +266,10 @@ public abstract class AbstractFilter implements IFilter {
    * the filter allows ({@link #isSourceEncodingVariable()}), try to detect it. The result may be
    * null.
    *
-   * @param fc
-   * @param inFile
-   * @return
-   * @throws IOException
+   * @param fc Filter context that has encoding
+   * @param inFile target file
+   * @return Encoding name
+   * @throws IOException throw when Encoding detection fails
    */
   protected String getInputEncoding(FilterContext fc, File inFile) throws IOException {
     String encoding = fc.getInEncoding();
@@ -319,8 +317,8 @@ public abstract class AbstractFilter implements IFilter {
    *
    * @param sourceFile source file
    * @param translatedFile translated file
-   * @param fc
-   * @throws java.lang.Exception
+   * @param fc filter context for file load
+   * @throws java.lang.Exception against file load
    */
   protected void alignFile(BufferedReader sourceFile, BufferedReader translatedFile,
       FilterContext fc) throws Exception {
@@ -335,7 +333,7 @@ public abstract class AbstractFilter implements IFilter {
    *
    * @param entry Translatable source string
    * @return Translation of the source string. If there's no translation, returns the source string
-   * itself.
+   *     itself.
    */
   protected final String processEntry(String entry) {
     return processEntry(entry, null);
@@ -351,7 +349,7 @@ public abstract class AbstractFilter implements IFilter {
    * @param entry Translatable source string
    * @param comment comment on the source string in the source file (if available)
    * @return Translation of the source string. If there's no translation, returns the source string
-   * itself.
+   *     itself.
    */
   protected final String processEntry(String entry, String comment) {
     entryParseCallback.addEntry(null, entry, null, false, comment, null, this);
@@ -361,7 +359,7 @@ public abstract class AbstractFilter implements IFilter {
   /**
    * Set both callbacks. Used for child XML filters only.
    *
-   * @param parseCallback
+   * @param parseCallback to be set.
    */
   public void setCallback(IParseCallback parseCallback) {
     this.entryParseCallback = parseCallback;
