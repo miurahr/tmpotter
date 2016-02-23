@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  Part of this come from OmegaT.
  *
@@ -27,13 +27,11 @@
 
 package org.tmpotter.segmentation;
 
-import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Language;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -70,6 +68,7 @@ public final class Segmenter {
    * translation together with the same spaces between them as in original
    * paragraph.
    *
+   * @param lang language to analyze
    * @param paragraph the paragraph text
    * @param spaces list to store information about spaces between sentences
    * @param brules list to store rules that account to breaks
@@ -82,9 +81,9 @@ public final class Segmenter {
       return null;
     }
     List<String> segments = breakParagraph(lang, paragraph, brules);
-    List<String> sentences = new ArrayList<String>(segments.size());
+    List<String> sentences = new ArrayList<>(segments.size());
     if (spaces == null) {
-      spaces = new ArrayList<StringBuilder>();
+      spaces = new ArrayList<>();
     }
     spaces.clear();
     for (String one : segments) {
@@ -112,10 +111,8 @@ public final class Segmenter {
 
       String trimmed = one.substring(b, e);
       sentences.add(trimmed);
-      if (spaces != null) {
-        spaces.add(bs);
-        spaces.add(es);
-      }
+      spaces.add(bs);
+      spaces.add(es);
     }
     return sentences;
   }
@@ -136,7 +133,7 @@ public final class Segmenter {
           List<Rule> brules) {
     List<Rule> rules = Segmenter.srx.lookupRulesForLanguage(lang);
     if (brules == null) {
-      brules = new ArrayList<Rule>();
+      brules = new ArrayList<>();
     }
 
     // determining the applicable break positions
@@ -156,7 +153,7 @@ public final class Segmenter {
     breakpositions.removeAll(dontbreakpositions);
 
     // and now breaking the string according to the positions
-    List<String> segments = new ArrayList<String>();
+    List<String> segments = new ArrayList<>();
     brules.clear();
     int prevpos = 0;
     for (BreakPosition bposition : breakpositions) {
@@ -185,13 +182,13 @@ public final class Segmenter {
     return segments;
   }
 
-  private static Pattern DEFAULT_BEFOREBREAK_PATTERN = Pattern.compile(".", Pattern.DOTALL);
+  private static final Pattern DEFAULT_BEFOREBREAK_PATTERN = Pattern.compile(".", Pattern.DOTALL);
 
   /**
    * Returns the places of possible breaks between sentences.
    */
   private static List<BreakPosition> getBreaks(String paragraph, Rule rule) {
-    List<BreakPosition> res = new ArrayList<BreakPosition>();
+    List<BreakPosition> res = new ArrayList<>();
 
     Matcher bbm = null;
     if (rule.getBeforebreak() != null) {
@@ -278,6 +275,7 @@ public final class Segmenter {
     /**
      * Returns a hash code == position for the object.
      */
+    @Override
     public int hashCode() {
       return this.position;
     }

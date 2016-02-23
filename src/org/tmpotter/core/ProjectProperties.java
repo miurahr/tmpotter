@@ -21,7 +21,6 @@
  *
  * *************************************************************************/
 
-
 package org.tmpotter.core;
 
 import org.tmpotter.util.Language;

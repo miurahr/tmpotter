@@ -86,6 +86,7 @@ final class MainMenu implements ActionListener, MenuListener {
   JMenuItem menuItemFileClose;
   JMenuItem menuItemFileSaveAs;
   JMenuItem menuItemFileSave;
+  JMenuItem menuItemImport;
   JMenuItem menuItemFileQuit;
   JMenuItem menuItemFileOpen;
   //  Edit menu
@@ -239,7 +240,7 @@ final class MainMenu implements ActionListener, MenuListener {
             getIcon("project_open.png"), "Open", "MNI.FILE.OPEN");
     menuItemFileTextOpen = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('T', KeyEvent.CTRL_MASK, false),
-            getIcon("project_open.png"), "Open Text", "MNI.TEXTFILE.OPEN");
+            getIcon("fileopen.png"), "Open Text", "MNI.TEXTFILE.OPEN");
     menuItemFileSave = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('S', KeyEvent.CTRL_MASK, false),
             getIcon("filesave.png"), "Save", "MNI.FILE.SAVE");
@@ -247,6 +248,9 @@ final class MainMenu implements ActionListener, MenuListener {
     menuItemFileSaveAs = makeMenuComponent(MenuComponentType.ITEM,
             null, getIcon("filesave.png"), "Save As", "MNI.FILE.SAVEAS");
     menuItemFileSaveAs.setEnabled(false);
+    menuItemImport = makeMenuComponent(MenuComponentType.ITEM,
+            KeyStroke.getKeyStroke('I', KeyEvent.CTRL_MASK, false),
+            getIcon("fileimport.png"), "Import", "MNI.FILE.IMPORT");
     menuItemFileClose = makeMenuComponent(MenuComponentType.ITEM,
             KeyStroke.getKeyStroke('W', KeyEvent.CTRL_MASK, false),
             getIcon("fileclose.png"), "Close", "MNI.FILE.ABORT");
@@ -260,6 +264,8 @@ final class MainMenu implements ActionListener, MenuListener {
     menuFile.addSeparator();
     menuFile.add(menuItemFileSave);
     menuFile.add(menuItemFileSaveAs);
+    menuFile.addSeparator();
+    menuFile.add(menuItemImport);
     menuFile.addSeparator();
     menuFile.add(menuItemFileClose);
     if (!Platform.isMacOsx()) {

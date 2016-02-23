@@ -35,6 +35,7 @@ import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.dialogs.FontSelector;
+import org.tmpotter.ui.dialogs.ImportFile;
 import org.tmpotter.ui.dialogs.OpenTexts;
 import org.tmpotter.ui.dialogs.OpenTmx;
 import org.tmpotter.util.Preferences;
@@ -117,6 +118,41 @@ final class MenuHandler {
       Segmenter.srx = Preferences.getSrx();
       try {
         modelMediator.loadDocumentsFromText(originalPath, translationPath);
+      } catch (Exception ex) {
+        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+                getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+        mainWindow.dispose();
+      }
+      initializeTmView(mainWindow);
+      mainWindow.updateTmView();
+      mainWindow.toolBar.enableButtons(true);
+      mainWindow.mainMenu.enableEditMenus(true);
+      mainWindow.toolBar.setUndoEnabled(false);
+      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
+      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
+      dlg.dispose();
+    }
+  }
+
+  /**
+   * Open dialog to select the Po file.
+   *
+   */
+  public void menuItemImportActionPerformed() {
+    final ImportFile dlg = new ImportFile(null, "", false);
+    dlg.setPath(RuntimePreferences.getUserHome());
+    dlg.setModal(true);
+    dlg.setVisible(true);
+    if (!dlg.isClosed()) {
+      RuntimePreferences.setUserHome(dlg.getPath());
+      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(),
+          dlg.getSourceLocale(), (String) dlg.getEncoding());
+      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(),
+          dlg.getTargetLocale(), (String) dlg.getEncoding());
+      mainWindow.tmView.buildDisplay();
+      Segmenter.srx = Preferences.getSrx();
+      try {
+        modelMediator.onImportFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
