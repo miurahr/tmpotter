@@ -40,9 +40,7 @@ public interface ModelMediator {
 
   void setTargetProperties(File filePath, String text, String lang, String encoding);
 
-  void loadDocumentsFromText(String stringOriginal, String stringTarget) throws IOException;
-
-  void onImportFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+  void onImportFile(String filterName) throws IOException;
 
   //for TMView
   void updateTmView();

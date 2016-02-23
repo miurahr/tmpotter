@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Hiroshi Miura
  */
-public class TextHandler extends AbstractFilter implements IFilter {
+public class BiTextFilter extends AbstractFilter implements IFilter {
   @Override
   public boolean isCombinedFileFormat() {
     return false;

@@ -46,10 +46,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Locale;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import org.tmpotter.util.AppConstants;
 
 
 /**
@@ -59,7 +62,9 @@ import javax.swing.JTextField;
  */
 @SuppressWarnings("serial")
 public class ImportFile  extends JDialog implements ActionListener {
-  private final JXPanel  panel = new JXPanel();
+  private final JXPanel panel = new JXPanel();
+  
+  private final JXLabel labelEncoding = new JXLabel();
 
   private final JXLabel labelImportFile = new JXLabel();
   private final JTextField fieldImportFile = new JTextField();
@@ -68,9 +73,8 @@ public class ImportFile  extends JDialog implements ActionListener {
   private final JXButton buttonOk = new JXButton();
   private final JXButton buttonCancel = new JXButton();
 
-  private File     filePath;
-  private boolean  closed;
-  
+  private File filePath;
+  private boolean closed;
   
   private String originalLang;
   private String translationLang;
@@ -91,10 +95,13 @@ public class ImportFile  extends JDialog implements ActionListener {
   private final JXComboBox comboTranslationLang = new JXComboBox();
   private final JXLabel labelSourceLang = new JXLabel();
   private final JXLabel labelTranslationLang = new JXLabel();
-  
+  private final JComboBox comboOriginalEncoding    = new JComboBox( AppConstants
+          .straEncodings );
+  private final int numEncodings = AppConstants.straEncodings.length;
+
   public File userPathFile = new File( System.getProperty( "user.dir" ) );
 
-  private String   originalDoc;
+  private String   originalDocFilename;
   
   private final String [] idiom = Localization.getLanguageList();
   
@@ -151,38 +158,47 @@ public class ImportFile  extends JDialog implements ActionListener {
       comboTranslationLang.addItem(item);
     }
 
-    comboSourceLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
-    comboSourceLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    comboSourceLang.setBounds( new Rectangle( 5, 75, 100, 22 ) );
-    labelSourceLang.setText( getString( "LBL.SOURCE.LANG" ) );
-    labelSourceLang.setBounds( new Rectangle( 5, 55, 100, 16 ) );
+    comboSourceLang.setToolTipText(getString( "CB.LANG.SOURCE.TOOLTIP"));
+    comboSourceLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+    comboSourceLang.setBounds(new Rectangle(5, 75, 100, 22));
+    labelSourceLang.setText(getString("LBL.SOURCE.LANG"));
+    labelSourceLang.setBounds(new Rectangle( 5, 55, 100, 16));
 
-    comboTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
-    comboTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    comboTranslationLang.setBounds(new Rectangle( 120, 75, 100, 22 ));
-    labelTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
-    labelTranslationLang.setBounds( new Rectangle( 120, 55, 100, 16 ));
-        
-    panel.setBounds( new Rectangle( -1, 0, 420, 180 ) );
+    comboTranslationLang.setToolTipText(getString( "CB.LANG.TARGET.TOOLTIP"));
+    comboTranslationLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+    comboTranslationLang.setBounds(new Rectangle(120, 75, 100, 22));
+    labelTranslationLang.setText(getString("LBL.TARGET.LANG"));
+    labelTranslationLang.setBounds(new Rectangle(120, 55, 100, 16));
 
-    panel.add( fieldImportFile, null );
-    panel.add( buttonImportFile, null );
+    comboOriginalEncoding.removeItemAt(numEncodings - 1);
+    comboOriginalEncoding.addItem(getString("ENCODING.DEFAULT"));
+    comboOriginalEncoding.setToolTipText(getString("CB.ENCODING.TOOLTIP"));
+    comboOriginalEncoding.setSelectedIndex( 0 );
+    comboOriginalEncoding.setBounds(new Rectangle(250, 75, 100, 22));
+    labelEncoding.setText(getString("LBL.ENCODING"));
+    labelEncoding.setBounds(new Rectangle(250, 55, 100, 16));
 
-    panel.add(comboSourceLang, null );
-    panel.add(comboTranslationLang, null );
+    panel.setBounds(new Rectangle(-1, 0, 420, 180));
 
-    panel.add( buttonCancel, null );
-    panel.add( buttonOk, null );
+    panel.add(fieldImportFile, null);
+    panel.add(buttonImportFile, null);
 
-    panel.add( labelImportFile, null);
-    panel.add( labelSourceLang, null);
-    panel.add( labelTranslationLang, null);
+    panel.add(comboSourceLang, null);
+    panel.add(comboTranslationLang, null);
+    panel.add(comboOriginalEncoding, null);
+    
+    panel.add(buttonCancel, null);
+    panel.add(buttonOk, null);
+
+    panel.add(labelImportFile, null);
+    panel.add(labelSourceLang, null);
+    panel.add(labelTranslationLang, null);
+    panel.add(labelEncoding, null);
 
     getContentPane().add(panel, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds( ( screenSize.width - 420 ) / 2,
-        ( screenSize.height - 180 ) / 2, 420, 180 );
+    setBounds((screenSize.width - 420)/2, (screenSize.height - 180)/2, 420, 180);
   }
 
   public final File getFilePath() {
@@ -197,12 +213,12 @@ public class ImportFile  extends JDialog implements ActionListener {
     return ( translationLang ); 
   }
   
-  public final String getEncoding() {
-    return "UTF-8";
+  public final JComboBox getLangEncComboBox() {
+    return ( comboOriginalEncoding );
   }
 
   public final String getSource() {
-    return ( originalDoc );
+    return ( originalDocFilename );
   }
 
   private void onImportFile() {
@@ -215,9 +231,8 @@ public class ImportFile  extends JDialog implements ActionListener {
 
     if ( returnVal == JFileChooser.APPROVE_OPTION ) {
       filePath = fc.getSelectedFile();
-      if (fc.getName( filePath ).endsWith( ".po" )
-          && filePath.exists()) {
-        originalDoc = fc.getName( filePath );
+      if (fc.getName( filePath ).endsWith( ".po" ) && filePath.exists()) {
+        originalDocFilename = fc.getName( filePath );
         fieldImportFile.setText(filePath.getPath());
       } else {
         JOptionPane.showMessageDialog(panel,
@@ -234,12 +249,10 @@ public class ImportFile  extends JDialog implements ActionListener {
       if ( fieldImportFile.getText() != null ) {
         final FileReader fr = new FileReader( fieldImportFile.getText() );
         fr.close();
-        originalDoc = fieldImportFile.getText();
-        filePath = new File( originalDoc );
-        originalLang = Localization.getLanguageCode(comboSourceLang
-                .getSelectedIndex());
-        translationLang = Localization.getLanguageCode(comboTranslationLang
-                .getSelectedIndex());
+        originalDocFilename = fieldImportFile.getText();
+        filePath = new File( originalDocFilename );
+        originalLang = Localization.getLanguageCode(comboSourceLang.getSelectedIndex());
+        translationLang = Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
         errorImport = false;
         setVisible(false);
       }

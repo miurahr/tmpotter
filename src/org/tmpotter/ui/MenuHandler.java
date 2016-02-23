@@ -107,17 +107,20 @@ final class MenuHandler {
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
+      String sourceLocale = dlg.getSourceLocale();
+      String targetLocale = dlg.getTargetLocale();
+      String sourceEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
+      String targetEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
+
       RuntimePreferences.setUserHome(dlg.getPath());
-      String originalPath = dlg.getSource();
-      String translationPath = dlg.getTarget();
-      modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(),
-          dlg.getSourceLocale(), (String) dlg.getSourceLangEncComboBox().getSelectedItem());
-      modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(),
-          dlg.getTargetLocale(), (String) dlg.getTargetLangEncComboBox().getSelectedItem());
+      modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(), sourceLocale,
+          sourceEncoding);
+      modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(), targetLocale,
+          targetEncoding);
       mainWindow.tmView.buildDisplay();
       Segmenter.srx = Preferences.getSrx();
       try {
-        modelMediator.loadDocumentsFromText(originalPath, translationPath);
+        modelMediator.onImportFile("BiTextFilter");
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
@@ -144,15 +147,18 @@ final class MenuHandler {
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
+      String sourceLocale = dlg.getSourceLocale();
+      String targetLocale = dlg.getTargetLocale();
+      String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
+
       RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(),
-          dlg.getSourceLocale(), (String) dlg.getEncoding());
-      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(),
-          dlg.getTargetLocale(), (String) dlg.getEncoding());
+      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(), sourceLocale,
+          encoding);
+      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);
       mainWindow.tmView.buildDisplay();
       Segmenter.srx = Preferences.getSrx();
       try {
-        modelMediator.onImportFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
+        modelMediator.onImportFile("PoFilter");
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
                 getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);

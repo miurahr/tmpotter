@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Django Software Foundation and contributors
+# This file is distributed under the same license as the Django package.
+# 
+# Translators:
+# Hiroki KIYOHARA <hirokiky@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: django-docs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-26 02:09-0500\n"
+"PO-Revision-Date: 2013-11-20 11:27+0000\n"
+"Last-Translator: Hiroki KIYOHARA <hirokiky@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/django-docs/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# b549e288090f4542bc1151599733c431
+#: ../../../../1.8/docs/contents.txt:5
+msgid "Django documentation contents"
+msgstr "Django ドキュメント目次"
+
+# 6e43d0cd33a44a30b86524bf3641aa06
+#: ../../../../1.8/docs/contents.txt:26
+msgid "Indices, glossary and tables"
+msgstr "索引、モジュール一覧、用語集"
+
+# d3767dae471d418da50b44e2c31a1b26
+#: ../../../../1.8/docs/contents.txt:28
+msgid ":ref:`genindex`"
+msgstr ":ref:`genindex`"
+
+# 48a867ed91fe41f084cc2fe99dd794e7
+#: ../../../../1.8/docs/contents.txt:29
+msgid ":ref:`modindex`"
+msgstr ":ref:`modindex`"
+
+# 57a5e41933b64aa7a0535685192647e1
+#: ../../../../1.8/docs/contents.txt:30
+msgid ":ref:`glossary`"
+msgstr ":ref:`glossary`"
+
+msgid "Delete Account"
+msgid_plural "Delete Accounts"
+msgstr[0] "Supprimer le compte"
+msgstr[1] "Supprimer des comptes"
+
+msgid "non-fuzzy"
+msgstr "non-fuzzy translation"
+
+#, fuzzy
+msgid "fuzzy"
+msgstr "fuzzy translation"

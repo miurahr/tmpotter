@@ -82,7 +82,7 @@ public final class OpenTexts extends JDialog implements ActionListener {
   private File     filePath;
   private File     originalFilepath;
   private File     translationFilePath;
-  private String   originalDoc;
+  private String   originalDocFilename;
   private String   translationDoc;
   private boolean  closed;
 
@@ -107,7 +107,7 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
   public final String getSource() {
-    return ( originalDoc );
+    return ( originalDocFilename );
   }
   
   public final String getTarget() {
@@ -263,8 +263,7 @@ public final class OpenTexts extends JDialog implements ActionListener {
     getContentPane().add(panel, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds( ( screenSize.width - 640 ) / 2,
-        ( screenSize.height - 180 ) / 2, 640, 180 );
+    setBounds((screenSize.width - 640)/2, (screenSize.height - 180)/2, 640, 180);
   }
 
   public final String getSourceLocale() {
@@ -296,7 +295,7 @@ public final class OpenTexts extends JDialog implements ActionListener {
 
       if ( fc.getName( originalFilepath ).endsWith( ".txt" ) ) {
         if ( originalFilepath.exists() ) {
-          originalDoc = fc.getName( originalFilepath );
+          originalDocFilename = fc.getName( originalFilepath );
           fieldOriginal.setText( originalFilepath.getPath() );
           labelTranslation.setEnabled( true );
           buttonTranslation.setEnabled( true );
@@ -344,8 +343,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
   private void onOk() {
 
     if (fieldOriginal.getText() != null) {
-      originalDoc = fieldOriginal.getText();
-      originalFilepath = new File(originalDoc);
+      originalDocFilename = fieldOriginal.getText();
+      originalFilepath = new File(originalDocFilename);
       if (!originalFilepath.exists()) {
         showFileNotFoundDlg();
         fieldOriginal.setText("");
@@ -387,11 +386,9 @@ public final class OpenTexts extends JDialog implements ActionListener {
   final void setLanguageCode( final boolean originalFlag ) {
 
     if (originalFlag) {
-      originalLang = Localization.getLanguageCode(comboOriginalLang
-              .getSelectedIndex());
+      originalLang = Localization.getLanguageCode(comboOriginalLang.getSelectedIndex());
     } else {
-      translationLang = Localization.getLanguageCode(comboTranslationLang
-              .getSelectedIndex());
+      translationLang = Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
     }
   }
 
