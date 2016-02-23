@@ -35,9 +35,9 @@ import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.dialogs.FontSelector;
+import org.tmpotter.ui.dialogs.ImportFile;
 import org.tmpotter.ui.dialogs.OpenTexts;
 import org.tmpotter.ui.dialogs.OpenTmx;
-import org.tmpotter.ui.dialogs.ImportFile;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
 

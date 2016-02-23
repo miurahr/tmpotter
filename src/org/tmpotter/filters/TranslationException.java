@@ -1,28 +1,28 @@
-/**************************************************************************
- OmegaT - Computer Assisted Translation (CAT) tool 
-          with fuzzy matching, translation memory, keyword search, 
-          glossaries, and translation leveraging into updated projects.
-
- Copyright (C) 2000-2006 Keith Godfrey and Maxym Mykhalchuk
-               2015 Aaron Madlon-Kay
-               Home page: http://www.omegat.org/
-               Support center: http://groups.yahoo.com/group/OmegaT/
-
- This file is part of OmegaT.
-
- OmegaT is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- OmegaT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/* *************************************************************************
+ *
+ *  TMPotter - Bi-text Aligner/TMX Editor
+ *
+ *  Copyright (C) 2016 Hiroshi Miura
+ *
+ *  This file is part of TMPotter.
+ *
+ *  Copyright (C) 2000-2006 Keith Godfrey and Maxym Mykhalchuk
+ *                2015 Aaron Madlon-Kay
+ *
+ *  TMPotter is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  TMPotter is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
+ *
+ * *************************************************************************/
 
 package org.tmpotter.filters;
 
@@ -37,38 +37,33 @@ package org.tmpotter.filters;
  */
 @SuppressWarnings("serial")
 public class TranslationException extends Exception {
-    /**
-     * Constructs an instance of <code>TranslationException</code> with the
-     * specified detail message.
-     * 
-     * @param msg
-     *            the detail message.
-     */
-    public TranslationException(String msg) {
-        super(msg);
-    }
 
-    /**
-     * Constructs an instance of <code>TranslationException</code> with the
-     * specified detail message and cause.
-     * 
-     * @param msg
-     *            the detail message.
-     * @param cause
-     *            cause the cause
-     */
-    public TranslationException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+  /**
+   * Constructs an instance of <code>TranslationException</code> with the specified detail message.
+   *
+   * @param msg the detail message.
+   */
+  public TranslationException(String msg) {
+    super(msg);
+  }
 
-    /**
-     * Constructs an instance of <code>TranslationException</code> with the
-     * specified cause.
-     * 
-     * @param cause
-     *            cause the cause
-     */
-    public TranslationException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * Constructs an instance of <code>TranslationException</code> with the specified detail message
+   * and cause.
+   *
+   * @param msg the detail message.
+   * @param cause cause the cause
+   */
+  public TranslationException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
+
+  /**
+   * Constructs an instance of <code>TranslationException</code> with the specified cause.
+   *
+   * @param cause cause the cause
+   */
+  public TranslationException(Throwable cause) {
+    super(cause);
+  }
 }

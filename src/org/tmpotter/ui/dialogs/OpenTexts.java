@@ -342,38 +342,31 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
   private void onOk() {
-    boolean errorOrig = true;
 
-    try {
-      if ( fieldOriginal.getText() != null ) {
-        //  FixMe: this is only used for the side-effect of throwing an exception
-        //  should check for existence of file instead!!!
-        final FileReader fr = new FileReader( fieldOriginal.getText() );
-        fr.close();
-        originalDoc = fieldOriginal.getText();
-        originalFilepath = new File( originalDoc );
-        setLanguageCode( true );
-        errorOrig = false;
+    if (fieldOriginal.getText() != null) {
+      originalDoc = fieldOriginal.getText();
+      originalFilepath = new File(originalDoc);
+      if (!originalFilepath.exists()) {
+        showFileNotFoundDlg();
+        fieldOriginal.setText("");
       }
-      if ( fieldTranslation.getText() != null ) {
-        //  FixMe: this is only used for the side-effect of throwing an exception
-        final FileReader fr = new FileReader( fieldTranslation.getText() );
-        fr.close();
-        translationDoc = fieldTranslation.getText();
-        translationFilePath = new File( translationDoc );
-        setLanguageCode( false );
-        setVisible( false );
-      }
-    } catch ( final IOException ex ) {
-      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
-          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-
-      if ( errorOrig ) {
-        fieldOriginal.setText( "" );
-      } else {
-        fieldTranslation.setText( "" );
-      }
+      setLanguageCode(true);
     }
+    if (fieldTranslation.getText() != null) {
+      translationDoc = fieldTranslation.getText();
+      translationFilePath = new File(translationDoc);
+      if (!translationFilePath.exists()) {
+        showFileNotFoundDlg();
+        fieldTranslation.setText("");
+      }
+      setLanguageCode(false);
+      setVisible(false);
+    }
+  }
+
+  private void showFileNotFoundDlg() {
+    JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
+          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
   }
 
   private void onCancel() {

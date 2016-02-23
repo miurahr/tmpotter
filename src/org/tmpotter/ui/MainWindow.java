@@ -36,7 +36,15 @@ import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TmxReader;
+import org.tmpotter.filters.FilterContext;
+import org.tmpotter.filters.IAlignCallback;
+import org.tmpotter.filters.IFilter;
+import org.tmpotter.filters.IParseCallback;
+import org.tmpotter.filters.PoFilter;
+import org.tmpotter.filters.TextHandler;
 import org.tmpotter.util.AppConstants;
+import org.tmpotter.util.Language;
+import org.tmpotter.util.Localization;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.AquaAdapter;
@@ -57,14 +65,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumn;
-import org.tmpotter.filters.FilterContext;
-import org.tmpotter.filters.IAlignCallback;
-import org.tmpotter.filters.IFilter;
-import org.tmpotter.filters.IParseCallback;
-import org.tmpotter.filters.PoFilter;
-import org.tmpotter.filters.TextHandler;
-import org.tmpotter.util.Language;
-import org.tmpotter.util.Localization;
 
 
 /**

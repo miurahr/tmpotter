@@ -119,11 +119,12 @@ public class TextHandler extends AbstractFilter implements IFilter {
   }
 
   /**
-   *
+   * Align source and translation test input.
+   * 
    * @param source source
    * @param translation translation
    * @param comments comments
-   * @param path 
+   * @param path  not used.
    */
   protected void align(String source, String translation, String comments, String path) {
     if (translation != null && translation.isEmpty()) {

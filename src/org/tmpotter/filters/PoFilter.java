@@ -556,9 +556,9 @@ public class PoFilter extends AbstractFilter {
   }
 
   /**
-   *
-   * @param header
-   * @param fc
+   * Align input of header in Po File.
+   * @param header header string
+   * @param fc Filter context
    */
   protected void alignHeader(String header, FilterContext fc) {
     if (entryParseCallback != null && !PoFilter.skipHeader) {
@@ -568,10 +568,11 @@ public class PoFilter extends AbstractFilter {
   }
 
   /**
-   *
-   * @param currentMode
-   * @param fc
-   * @throws IOException
+   * Flush translation text.
+   * 
+   * @param currentMode Which test is processing.
+   * @param fc Filter context.
+   * @throws IOException when error at File I/O
    */
   protected void flushTranslation(Mode currentMode, FilterContext fc) throws IOException {
     if (sources[0].length() == 0 && path.isEmpty()) {
@@ -579,8 +580,7 @@ public class PoFilter extends AbstractFilter {
         // there is no text to translate yet
         return;
       } else {
-                // header
-
+        // header
         //check existing plural statement. If it contains the number of plurals, then use it!
         StringBuilder targets0 = targets[0];
         String header = targets[0].toString();

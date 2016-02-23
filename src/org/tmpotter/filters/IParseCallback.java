@@ -36,7 +36,7 @@ package org.tmpotter.filters;
 public interface IParseCallback {
 
   /**
-   * Read entry from source file
+   * Read entry from source file.
    *
    * @param id ID in source file, or null if ID not supported by format
    * @param source source entry text

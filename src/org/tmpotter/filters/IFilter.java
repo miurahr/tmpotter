@@ -114,10 +114,10 @@ public interface IFilter {
    * @param config filter's configuration options
    * @param context processing context
    * @param callback callback for parsed data
-   * @throws Exception
+   * @throws Exception when file I/O error
    */
-  void parseFile(File inFile, Map<String, String> config, FilterContext context, IParseCallback callback)
-      throws Exception;
+  void parseFile(File inFile, Map<String, String> config, FilterContext context,
+      IParseCallback callback) throws Exception;
 
   /**
    * Align source and translated files.
@@ -127,9 +127,9 @@ public interface IFilter {
    * @param config filter's configuration options
    * @param context processing context
    * @param callback callback for store aligned data
-   * @throws Exception
+   * @throws Exception when file I/O error
    */
-  void alignFile(File sourceFile, File translateFile, Map<String, String> config, FilterContext context,
-      IAlignCallback callback) throws Exception;
+  void alignFile(File sourceFile, File translateFile, Map<String, String> config,
+      FilterContext context, IAlignCallback callback) throws Exception;
 
 }
