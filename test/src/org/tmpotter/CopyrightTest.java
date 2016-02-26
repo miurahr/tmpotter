@@ -59,7 +59,7 @@ public class CopyrightTest extends TestCase {
     "along with TMPotter.  If not, see http://www.gnu.org/licenses/."};
 
   public void testCopyright() throws Exception {
-    List<File> sourceFiles = new ArrayList<File>();
+    List<File> sourceFiles = new ArrayList<>();
     list(new File("src"), sourceFiles);
     list(new File("test"), sourceFiles);
     ByteArrayOutputStream fdata = new ByteArrayOutputStream();
@@ -72,6 +72,11 @@ public class CopyrightTest extends TestCase {
         // skip Base64.java (public domain)
         continue;
       }
+      if (f.getPath().replace('\\', '/').endsWith("util/Base64Test.java")) {
+        // skip Base64Test.java (public domain)
+        continue;
+      }
+
       LFileCopy.copy(f, fdata);
       String data = fdata.toString("ISO-8859-1");
       checkNote(f, data);
