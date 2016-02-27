@@ -66,11 +66,6 @@ import java.util.regex.Pattern;
  */
 public class PoFilter extends AbstractFilter {
 
-  public static final String OPTION_ALLOW_BLANK = "disallowBlank";
-  public static final String OPTION_ALLOW_EDITING_BLANK_SEGMENT = "disallowEditingBlankSegment";
-  public static final String OPTION_SKIP_HEADER = "skipHeader";
-  public static final String OPTION_AUTO_FILL_IN_PLURAL_STATEMENT = "autoFillInPluralStatement";
-
   /**
    * Pattern for detecting the placeholders in a printf-function string which can occur in languages
    * like php, C and others. placeholder ::= "%" [ARGUMENTSWAPSPECIFIER] [SIGNSPECIFIER]
@@ -108,7 +103,7 @@ public class PoFilter extends AbstractFilter {
 
   static {
     HashMap<String, PluralInfo> info = new HashMap<>();
-        //list taken from http://translate.sourceforge.net/wiki/l10n/pluralforms d.d. 14-09-2012
+    //list taken from http://translate.sourceforge.net/wiki/l10n/pluralforms d.d. 14-09-2012
     //See also http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html
     info.put("ach", new PluralInfo(2, "(n > 1)"));
     info.put("af", new PluralInfo(2, "(n != 1)"));
@@ -263,25 +258,6 @@ public class PoFilter extends AbstractFilter {
     pluralInfos = Collections.unmodifiableMap(info);
   }
 
-  /**
-   * If true, non-translated segments will contain the source text in ms.
-   */
-  public static boolean allowBlank = false;
-  /**
-   * If false, the blank source segments will be skipped (not shown in editor).
-   */
-  public static boolean allowEditingBlankSegment = false;
-  /**
-   * If true, the header will be skipped (not shown in editor).
-   */
-  public static boolean skipHeader = false;
-  /**
-   * If true, the "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;" section in the 
-   * header will be updated with the correct INTEGER and EXPRESSION based on the chosen
-   * targetLanguage.
-   */
-  public static boolean autoFillInPluralStatement = false;
-
   protected static Pattern COMMENT_FUZZY = Pattern.compile("#, fuzzy");
   protected static Pattern COMMENT_FUZZY_OTHER = Pattern.compile("#,.* fuzzy.*");
   protected static Pattern COMMENT_NOWRAP = Pattern.compile("#,.* no-wrap.*");
@@ -302,7 +278,6 @@ public class PoFilter extends AbstractFilter {
   private StringBuilder references;
   private int plurals = 2;
   private String path;
-  private boolean nowrap;
   private boolean fuzzy;
 
   @Override
@@ -326,7 +301,7 @@ public class PoFilter extends AbstractFilter {
   }
 
   @Override
-  protected void alignFile(BufferedReader sourceFile, BufferedReader translatedFile,
+  protected void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
       FilterContext fc) throws Exception {
     processFile(translatedFile, fc);
   }
@@ -348,7 +323,6 @@ public class PoFilter extends AbstractFilter {
       in.reset();
     }
     fuzzy = false;
-    nowrap = false;
     Mode currentMode = null;
     int currentPlural = 0;
 
@@ -367,13 +341,9 @@ public class PoFilter extends AbstractFilter {
 
     String src;
     while ((src = in.readLine()) != null) {
-      // We trim trailing spaces, otherwise the regexps could fail, thus making some segments
-      // invisible to OmegaT
+      // We trim trailing spaces, otherwise the regexps could fail.
       src = src.trim();
 
-      /*
-       * Removing the fuzzy markers, as it has no meanings after being processed by omegat
-       */
       if (COMMENT_FUZZY.matcher(src).matches()) {
         currentPlural = 0;
         fuzzy = true;
@@ -390,16 +360,10 @@ public class PoFilter extends AbstractFilter {
       if (COMMENT_NOWRAP.matcher(src).matches()) {
         currentPlural = 0;
         flushTranslation(currentMode, fc);
-        /*
-         * Read the no-wrap comment, indicating that the creator of the po-file did not want long
-         * messages to be wrapped on multiple lines. See 5.6.2 no-wrap of http://docs.oasis-open
-         * .org/xliff/v1.2/xliff-profile-po/xliff -profile-po-1.2-cd02.html for an example.
-         */
-        nowrap = true;
         continue;
       }
-      Matcher mat;
 
+      Matcher mat;
       if ((mat = MSG_ID.matcher(src)).matches()) { //msg_id(_plural)
         currentPlural = 0;
         String text = mat.group(2);
@@ -422,16 +386,6 @@ public class PoFilter extends AbstractFilter {
       }
 
       if ((mat = MSG_STR.matcher(src)).matches()) {
-        // Hack to be able to translate empty segments
-        // If the source segment is empty and there is a reference then
-        // it copies the reference of the segment and the localization note into the source segment
-        if (allowEditingBlankSegment == true
-            && sources[0].length() == 0 
-            && references.length() > 0) {
-          String aux = references.toString() + extractedComments.toString();
-          sources[0].append(aux);
-        }
-
         String text = mat.group(3);
         if (mat.group(1) == null) {
           // non-plural lines
@@ -455,7 +409,6 @@ public class PoFilter extends AbstractFilter {
         path = mat.group(1);
         continue;
       }
-
       if ((mat = COMMENT_REFERENCE.matcher(src)).matches()) {
         currentPlural = 0;
         references.append(mat.group(1));
@@ -471,6 +424,7 @@ public class PoFilter extends AbstractFilter {
       if ((mat = COMMENT_TRANSLATOR.matcher(src)).matches()) {
         currentPlural = 0;
         translatorComments.append(mat.group(1));
+        translatorComments.append("\n");
         continue;
       }
 
@@ -550,20 +504,8 @@ public class PoFilter extends AbstractFilter {
     if (entryParseCallback != null) {
       entryParseCallback.addEntry(null, source, translation, fuzzy, comments, path + pathSuffix,
             this);
-    } else if (entryAlignCallback != null) {
-      entryAlignCallback.addTranslation(null, source, translation, fuzzy, path + pathSuffix, this);
-    }
-  }
-
-  /**
-   * Align input of header in Po File.
-   * @param header header string
-   * @param fc Filter context
-   */
-  protected void alignHeader(String header, FilterContext fc) {
-    if (entryParseCallback != null && !PoFilter.skipHeader) {
-      header = unescape(autoFillInPluralStatement(header, fc));
-      entryParseCallback.addEntry(null, header, null, false, null, path, this);
+    } else {
+      System.out.println("WARN: No ParseCallback defined!");
     }
   }
 
@@ -605,8 +547,6 @@ public class PoFilter extends AbstractFilter {
         for (int i = 1; i < plurals; i++) {
           targets[i] = new StringBuilder();
         }
-
-        alignHeader(targets[0].toString(), fc);
       }
       fuzzy = false;
     } else {
@@ -638,26 +578,6 @@ public class PoFilter extends AbstractFilter {
   protected static final Pattern R2 = Pattern.compile("(?<!\\\\)((\\\\\\\\)*)\\\\n");
   protected static final Pattern R3 = Pattern.compile("(?<!\\\\)((\\\\\\\\)*)\\\\t");
   protected static final Pattern R4 = Pattern.compile("^\\\\n");
-
-  /**
-   * Replaces Plural-Forms: nplurals=INTEGER; plural=EXPRESSION; when selected
-   *
-   * @param header The header text that contains the Plural-forms line.
-   * @return Header with the correct plural forms line according to target language.
-   */
-  private String autoFillInPluralStatement(String header, FilterContext fc) {
-    if (PoFilter.autoFillInPluralStatement) {
-      Language targetLang = fc.getTargetLang();
-      String lang = targetLang.getLanguageCode().toLowerCase();
-      PluralInfo pluralInfo = pluralInfos.get(lang);
-      if (pluralInfo != null) {
-        return header.replaceAll("Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;",
-            "Plural-Forms: nplurals=" + pluralInfo.plurals + "; plural="
-                + pluralInfo.expression + ";");
-      }
-    }
-    return header;
-  }
 
   /**
    * Unescape text from .po format.

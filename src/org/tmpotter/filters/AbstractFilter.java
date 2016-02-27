@@ -72,11 +72,6 @@ public abstract class AbstractFilter implements IFilter {
   protected IParseCallback entryParseCallback;
 
   /**
-   * Callback for align.
-   */
-  protected IAlignCallback entryAlignCallback;
-
-  /**
    * Options for processing time.
    */
   protected Map<String, String> processOptions;
@@ -216,8 +211,7 @@ public abstract class AbstractFilter implements IFilter {
 
   /**
    * Processes a single file given a reader. Generally this method should read strings from the
-   * input reader. In order to let core know what strings are translatable, filter should call
-   * {@link #processEntry(String)} method.
+   * input reader.
    * <p>
    * If you need more control over processed files, override
    * {@link #processFile(File, File, FilterContext)} instead.
@@ -229,14 +223,25 @@ public abstract class AbstractFilter implements IFilter {
    */
   protected abstract void processFile(BufferedReader inFile, FilterContext fc) throws IOException,
       TranslationException;
+  
+  /**
+   * Process source and translated file.
+   *
+   * @param sourceFile source file buffer reader
+   * @param translatedFile translated file buffer reader
+   * @param fc filter context for file load
+   * @throws java.io.IOException
+   * @throws org.tmpotter.util.TranslationException
+   */
+  protected abstract void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
+      FilterContext fc) throws IOException, TranslationException;
 
   /**
    * Processes a single file given an input. This method can be used to create a filter that works
    * with the source/target files directly, rather than using BufferedReader.
    * <p>
    * Generally this method should read strings from the input reader and write them to the output
-   * reader. In order to let OmegaT know what strings are translatable and to get thair translation,
-   * filter should call {@link #processEntry(String)} method.
+   * reader.
    * <p>
    * If you override this method and do all the processing here, you should simply implement
    * {@link #processFile(BufferedReader)} with a stub.
@@ -262,6 +267,39 @@ public abstract class AbstractFilter implements IFilter {
   }
 
   /**
+   * Processes twe files given an input. This method can be used to create a filter that works
+   * with the source/target files directly, rather than using BufferedReader.
+   * Generally this method should read strings from the input reader.
+   * <p>
+   * If you override this method and do all the processing here, you should simply implement
+   * {@link #processFile(BufferedReader, BufferedReader)} with a stub.
+   *
+   * @param sourceFile The source file.
+   * @param translateFile The translation file.
+   * @param fc Filter context.
+   * @returns List of processed files (each element of type {@link File}) or null if the filter can
+   *     not/did not process multiple files.
+   * @throws IOException In case of any I/O error.
+   * @throws TranslationException Should be thrown when processed file has any format defects.
+   */
+  protected void processFile(File sourceFile, File translateFile, FilterContext fc)
+      throws IOException, TranslationException {
+    String sourceEncoding = getInputEncoding(fc, sourceFile);
+    BufferedReader sourceReader = createReader(sourceFile, sourceEncoding);
+    inEncodingLastParsedFile = sourceEncoding == null ? Charset.defaultCharset().name() 
+        : sourceEncoding;
+    String translateEncoding = getInputEncoding(fc, translateFile);
+    BufferedReader translateReader = createReader(translateFile, translateEncoding);
+    
+    try {
+      processFile(sourceReader, translateReader, fc);
+    } finally {
+      sourceReader.close();
+      translateReader.close();
+    }
+  }
+
+  /**
    * Get the input encoding. If it's not set in the FilterContext (setting is "&lt;auto&gt;") and
    * the filter allows ({@link #isSourceEncodingVariable()}), try to detect it. The result may be
    * null.
@@ -283,7 +321,6 @@ public abstract class AbstractFilter implements IFilter {
   public final void parseFile(File inFile, Map<String, String> config, FilterContext fc,
       IParseCallback callback) throws Exception {
     entryParseCallback = callback;
-    entryAlignCallback = null;
     processOptions = config;
 
     try {
@@ -295,65 +332,17 @@ public abstract class AbstractFilter implements IFilter {
   }
 
   @Override
-  public final void alignFile(File inFile, File outFile, Map<String, String> config,
-      FilterContext fc, IAlignCallback callback) throws Exception {
-    entryParseCallback = null;
-    entryAlignCallback = callback;
+  public final void parseFile(File inFile, File outFile, Map<String, String> config,
+      FilterContext fc, IParseCallback callback) throws Exception {
+    entryParseCallback = callback;
     processOptions = config;
 
-    BufferedReader readerIn = createReader(inFile, fc.getInEncoding());
-    BufferedReader readerOut = createReader(outFile, fc.getOutEncoding());
-
     try {
-      alignFile(readerIn, readerOut, fc);
+      processFile(inFile, outFile, fc);
     } finally {
-      readerIn.close();
-      readerOut.close();
+      entryParseCallback = null;
+      processOptions = null;
     }
-  }
-
-  /**
-   * Align source file against translated file.
-   *
-   * @param sourceFile source file
-   * @param translatedFile translated file
-   * @param fc filter context for file load
-   * @throws java.lang.Exception against file load
-   */
-  protected void alignFile(BufferedReader sourceFile, BufferedReader translatedFile,
-      FilterContext fc) throws Exception {
-  }
-
-  /**
-   * Call this method to:
-   * <ul>
-   * <li>Instruct OmegaT what source strings are translatable.
-   * <li>Get the translation of each source string.
-   * </ul>
-   *
-   * @param entry Translatable source string
-   * @return Translation of the source string. If there's no translation, returns the source string
-   *     itself.
-   */
-  protected final String processEntry(String entry) {
-    return processEntry(entry, null);
-  }
-
-  /**
-   * Call this method to:
-   * <ul>
-   * <li>Instruct OmegaT what source strings are translatable.
-   * <li>Get the translation of each source string.
-   * </ul>
-   *
-   * @param entry Translatable source string
-   * @param comment comment on the source string in the source file (if available)
-   * @return Translation of the source string. If there's no translation, returns the source string
-   *     itself.
-   */
-  protected final String processEntry(String entry, String comment) {
-    entryParseCallback.addEntry(null, entry, null, false, comment, null, this);
-    return entry;
   }
 
   /**

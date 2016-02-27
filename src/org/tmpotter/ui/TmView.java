@@ -128,7 +128,7 @@ final class TmView extends JXPanel {
   }
 
   public final Object getValueAt( final int row, final int column ) {
-    if (row < 0 && column < 0 ) {
+    if (row < 0 || column < 0 ) {
       return null;
     }
     return ( table.getValueAt( row, column ) );
