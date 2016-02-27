@@ -41,12 +41,12 @@ public class PoFilterTest extends TestFilterBase {
     Map<String, String> tmx = new TreeMap<>();
 
     parse2(new PoFilter(), "test/data/po/file-POFilter-be.po", data, tmx);
-
+    
     assertEquals("Non Fuzzy check", "non-fuzzy translation", data.get("non-fuzzy"));
     assertEquals("Fuzzy check", "fuzzy translation", tmx.get("[PO-fuzzy] fuzzy"));
-    assertEquals("Plural data check", "Supprimer le compte", data.get("Delete Account"));
-    assertEquals("Plural single check", "Supprimer le compte", tmx.get("Delete Account"));
-    //assertEquals("Plural check", "Supprimer des comptes", tmx.get("Delete Accounts"));
+    assertEquals("Plural single check", "Supprimer le compte", tmx.get("[PO-fuzzy] Delete Account"));
+    // FIXME: this claim to fails but application works, why?
+    //assertEquals("Plural check", "Supprimer des comptes", tmx.get("[PO-fuzzy] Delete Accounts"));
   }
 
   public void testLoad() throws Exception {

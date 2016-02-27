@@ -40,6 +40,9 @@ import java.util.List;
 public class FilterManager {
   private final List<IFilter> filterList;
 
+  private Document documentOriginal;
+  private Document documentTranslation;
+  
   /**
    * Constructor.
    */
@@ -54,21 +57,31 @@ public class FilterManager {
    * 
    * @param name to get
    * @return IFilter filter instance
-   * @throws org.tmpotter.filters.FilterNotFoundException when filter not found
+   * @throws FilterNotFoundException when filter not found
    */
   public IFilter getFilterInstance(String name) throws FilterNotFoundException {
     for (IFilter filter: filterList) {
-      String fName = filter.getClass().getSimpleName();
-      if (fName.equals(name)) {
+      String fileterName = filter.getClass().getSimpleName();
+      if (fileterName.equals(name)) {
         return filter;
       }
     }
-    throw new FilterNotFoundException("Filter "+name+" not found.");
+    throw new FilterNotFoundException("Filter " + name + " not found.");
   }
   
+  /**
+   * Load file from source file set to properties.
+   * 
+   * @param prop project properties
+   * @param docOriginal document to return
+   * @param docTranslation document to return
+   * @param filterName filter to use
+   */
   public void loadFile(ProjectProperties prop, Document docOriginal, Document docTranslation,
       String filterName) {
     IFilter filter = null;
+    this.documentOriginal = docOriginal;
+    this.documentTranslation = docTranslation;
 
     FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(), true);
     File inFile = prop.getFilePathOriginal();
@@ -85,12 +98,7 @@ public class FilterManager {
     }
     if (filter != null) {
       try {
-        if (filter.isCombinedFileFormat()) {
-          filter.alignFile(inFile, outFile, null, fc, new AlignCb(docOriginal, docTranslation));
-        } else {
-          filter.parseFile(inFile, null, fc, new ParseCb(docOriginal, docTranslation));
-          filter.alignFile(inFile, outFile, null, fc, new AlignCb(docOriginal, docTranslation));
-        }
+        filter.parseFile(inFile, outFile, null, fc, new ParseCb());
       } catch (Exception ex) {
         System.out.println(ex);
       }
@@ -98,42 +106,9 @@ public class FilterManager {
   }
   
   public class ParseCb implements IParseCallback {
-    private final Document documentOriginal;
-    private final Document documentTranslation;
-    
-    public ParseCb(Document orig, Document trans) {
-      this.documentOriginal = orig;
-      this.documentTranslation = trans;
-    }
-
     @Override
     public void addEntry(String id, String source, String translation, boolean isFuzzy,
         String comment, String path, IFilter filter) {
-      if (source != null) {
-        documentOriginal.add(source);
-      }
-      if (translation != null) {
-        documentTranslation.add(translation);
-      } 
-    }
-  }
-  
-  /**
-   * Align callback method.
-   * Add sentences to tmData. Add also empty string.
-   */
-  public class AlignCb implements IAlignCallback {
-    private final Document documentOriginal;
-    private final Document documentTranslation;
-    
-    public AlignCb(Document orig, Document trans) {
-      this.documentOriginal = orig;
-      this.documentTranslation = trans;
-    }
-
-    @Override
-    public void addTranslation(String id, String source, String translation, boolean isFuzzy,
-        String comment, IFilter filter) {
       if (source != null) {
         documentOriginal.add(source);
       }

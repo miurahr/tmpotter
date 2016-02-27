@@ -120,7 +120,7 @@ public interface IFilter {
       IParseCallback callback) throws Exception;
 
   /**
-   * Align source and translated files.
+   * Parse source and translated files.
    *
    * @param sourceFile source file
    * @param translateFile translated file
@@ -129,7 +129,7 @@ public interface IFilter {
    * @param callback callback for store aligned data
    * @throws Exception when file I/O error
    */
-  void alignFile(File sourceFile, File translateFile, Map<String, String> config,
-      FilterContext context, IAlignCallback callback) throws Exception;
+  void parseFile(File sourceFile, File translateFile, Map<String, String> config,
+      FilterContext context, IParseCallback callback) throws Exception;
 
 }

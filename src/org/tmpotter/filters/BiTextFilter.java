@@ -75,30 +75,29 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
   @Override
   public void processFile(BufferedReader br, FilterContext fc) throws IOException,
       TranslationException {
-    List<String> result;
-    try {
-      result = processTextFile(br, fc.getSourceLang());
-      for (String item: result) {
-        align(item, "", null, null);
-      }
-    } catch (Exception ex) {
-      System.out.println(ex);
-    }
+    processFile(br, null, fc);
   }
   
   @Override
-  public void alignFile(BufferedReader sourceFile, BufferedReader translatedFile,
-      FilterContext fc) throws Exception {
-    List<String> result;
-    try {
-      result = processTextFile(translatedFile, fc.getTargetLang());
-      for (String item: result) {
-        align(null, item, null, null);
-      }
-    } catch (Exception ex) {
-      System.out.println(ex);
+  public void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
+      FilterContext fc) throws IOException, TranslationException {
+    List<String> source;
+    List<String> translated;
+    
+    source = processTextFile(sourceFile, fc.getSourceLang());
+    translated = processTextFile(translatedFile, fc.getTargetLang());
+    int maxLen = max(source.size(), translated.size());
+    for (int i = 0 ; i < maxLen; i++) {
+      align(source.get(i), translated.get(i), null, null);
     }
-
+  }
+  
+  private int max(int na, int nb) {
+    if (na > nb) {
+      return na;
+    } else {
+      return nb;
+    }
   }
 
   /**
@@ -107,14 +106,21 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
    * @param br BufferedReader to input
    * @param lang analyze by lang
    * @return List of String
-   * @throws Exception when file error
+   * @throws TranslationException when parse error
    */
-  public final List<String> processTextFile(BufferedReader br, Language lang) throws Exception {
+  public final List<String> processTextFile(BufferedReader br, Language lang) 
+      throws TranslationException {
+    String result;
+
     Segmenter.srx = Preferences.getSrx();
     if (Segmenter.srx == null) {
       Segmenter.srx = SRX.getDefault();
     }
-    String result = copyCleanString(br);
+    try {
+      result = copyCleanString(br);
+    } catch (Exception ex) {
+      throw(new TranslationException("Error in copyCleanString()"));
+    }
     return Segmenter.segment(lang, result, null, null);
   }
 
@@ -133,8 +139,8 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
     if (entryParseCallback != null) {
       entryParseCallback.addEntry(null, source, translation, false, comments, path,
             this);
-    } else if (entryAlignCallback != null) {
-      entryAlignCallback.addTranslation(null, source, translation, false, path, this);
+    } else {
+      System.out.println("WARN: not parse callback defined!");
     }
   }
 

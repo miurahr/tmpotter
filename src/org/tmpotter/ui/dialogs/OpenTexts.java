@@ -263,7 +263,7 @@ public final class OpenTexts extends JDialog implements ActionListener {
     getContentPane().add(panel, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds((screenSize.width - 640)/2, (screenSize.height - 180)/2, 640, 180);
+    setBounds((screenSize.width - 640) / 2, (screenSize.height - 180) / 2, 640, 180);
   }
 
   public final String getSourceLocale() {
