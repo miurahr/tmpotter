@@ -31,6 +31,7 @@ import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
+import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Localization;
 
 import java.awt.Dimension;
@@ -41,18 +42,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import org.tmpotter.util.AppConstants;
 
 
 /**
@@ -198,7 +199,7 @@ public class ImportFile  extends JDialog implements ActionListener {
     getContentPane().add(panel, null );
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds((screenSize.width - 420)/2, (screenSize.height - 180)/2, 420, 180);
+    setBounds((screenSize.width - 420) / 2, (screenSize.height - 180) / 2, 420, 180);
   }
 
   public final File getFilePath() {

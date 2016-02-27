@@ -112,10 +112,10 @@ public class TmxWriter {
       pw.println("<?xml version=\"1.0\" encoding=\"" + tmxEncoding + "\"?>");
       pw.println("<tmx version=\"1.4\">" );
       pw.println( "  <header" );
-      pw.println( "    creationtool=\"Bitext2tmx\"" );
-      pw.println( "    creationtoolversion=\"1.0\"" );
+      pw.println( "    creationtool=\"tmpotter\"" );
+      pw.println( "    creationtoolversion=\"0.8\"" );
       pw.println( "    segtype=\"sentence\"" );
-      pw.println( "    o-tmf=\"Bitext2tmx\""  );
+      pw.println( "    o-tmf=\"tmpotter\""  );
       pw.println( "    adminlang=\"en\"" );
       pw.println( "    srclang=\"" + langOriginal.toLowerCase() + "\"" );
       pw.println( "    datatype=\"PlainText\"" );
