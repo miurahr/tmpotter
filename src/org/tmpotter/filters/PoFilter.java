@@ -302,7 +302,7 @@ public class PoFilter extends AbstractFilter {
 
   @Override
   protected void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
-      FilterContext fc) throws Exception {
+      FilterContext fc) throws IOException {
     processFile(translatedFile, fc);
   }
 
