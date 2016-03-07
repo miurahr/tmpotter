@@ -218,8 +218,8 @@ public abstract class AbstractFilter implements IFilter {
    *
    * @param inFile Reader of the source file. It's the result of calling
    * {@link #createReader(File,String)}.
-   * @throws TranslationException Should be thrown when processed file has any format defects.
    * @throws IOException In case of any I/O error.
+   * @throws TranslationException Should be thrown when processed file has any format defects.
    */
   protected abstract void processFile(BufferedReader inFile, FilterContext fc) throws IOException,
       TranslationException;
@@ -230,8 +230,8 @@ public abstract class AbstractFilter implements IFilter {
    * @param sourceFile source file buffer reader
    * @param translatedFile translated file buffer reader
    * @param fc filter context for file load
-   * @throws java.io.IOException
-   * @throws org.tmpotter.util.TranslationException
+   * @throws java.io.IOException In case of any I/O error.
+   * @throws org.tmpotter.util.TranslationException Should be thrown when processed file has any format defects.
    */
   protected abstract void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
       FilterContext fc) throws IOException, TranslationException;
