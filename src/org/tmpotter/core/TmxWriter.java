@@ -89,7 +89,7 @@ public class TmxWriter {
    * @param encoding character encoding to be written to TMX
    * @throws java.io.IOException may happen while writing file
    */
-  public static void writeBitext( final File outFile,
+  public static void writeTmxFileBody( final File outFile,
           Document originalDocument, String langOriginal,
           Document translationDocument, String langTranslation,
           String encoding) throws IOException {
