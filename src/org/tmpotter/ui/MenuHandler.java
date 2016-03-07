@@ -201,19 +201,19 @@ final class MenuHandler {
   }
 
   public void menuItemFileSaveAsActionPerformed() {
-    saveBitext();
+    saveProject();
   }
 
   //  ToDo: implement proper functionality; not used currently
   public void menuItemFileSaveActionPerformed() {
-    saveBitext();
+    saveProject();
   }
 
   /**
    * Necessary capabilities to store the bitext.
    *
    */
-  private void saveBitext() {
+  private void saveProject() {
     for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
       if (tmData.documentOriginal.get(cont).equals("")
               && tmData.documentTranslation.get(cont).equals("")) {
@@ -281,7 +281,7 @@ final class MenuHandler {
           dlgEnc.dispose();
         }
       }
-      TmxWriter.writeBitext(outFile, tmData.documentOriginal,
+      TmxWriter.writeTmxFileBody(outFile, tmData.documentOriginal,
               tmData.stringLangOriginal, tmData.documentTranslation,
               tmData.stringLangTranslation, encoding);
     } catch (IOException ex) {
