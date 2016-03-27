@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+
+apply plugin: 'application'
+mainClassName = 'org.tmpotter.Main'
+applicationName = 'tmpotter'
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+[compileJava, compileTestJava]*.options*.bootClasspath = "$JDK7_HOME/jre/lib/rt.jar"
+checkstyle {
+  config = resources.text.fromFile("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+  ignoreFailures = true
+  toolVersion = '6.16.1'
+}
+
+// Force prevent checkstyle/findbugs on Test.
+task checkstyleTest(overwrite: true) << {}
+task findbugsTest(overwrite: true) << {}
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
+          'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile 'xmlunit:xmlunit:1.6',
+          'commons-io:commons-io:2.4'
+}

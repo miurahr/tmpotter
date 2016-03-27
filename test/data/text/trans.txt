@@ -1,2 +1,0 @@
-'''Android'''は、携帯電話やモバイル機器の[[Linux]]ベースの操作環境です。
-全般的な情報については、 [[Wikipedia:Android_(operating_system)|WikipediaのAndroidの項]] や [https://android.com/ android.com]を参照してください。

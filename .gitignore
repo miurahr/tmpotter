@@ -3,3 +3,4 @@
 /dist/
 /.jacocoverage/
 MANIFEST.MF
+gradle.properties

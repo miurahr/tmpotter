@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx SYSTEM "tmx11.dtd">
+<tmx version="1.1">
+  <header creationtool="Bitext2tmx" o-tmf="bitext2tmx TMX" adminlang="EN-US" datatype="plaintext" creationtoolversion="1.1_0_dev" segtype="sentence" srclang="EN"/>
+  <body>
+    <tu>
+      <tuv lang="EN">
+        <seg>Sentense one.</seg>
+      </tuv>
+      <tuv lang="JA">
+        <seg>Sentense one in Japanese.</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="EN">
+        <seg>Sentense two.</seg>
+      </tuv>
+      <tuv lang="JA">
+        <seg>Sentense two in Japanese.</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>

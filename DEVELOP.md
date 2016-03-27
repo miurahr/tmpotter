@@ -1,17 +1,13 @@
 TMPotter Developers guide
 ==========================
 
-
-
-
-
-Sending patch
+Sending patches
 -------------
 
 Contributions are welcome. You can PR on github.
 
 Before sending PR, please check again with
-ant test.
+`gradle check`.
 
 
 
@@ -38,7 +34,7 @@ Special rules
 You can check coding style with ant command
 
 ```
-$ ant checkstyle
+$ gradle check
 ```
 
 Internatinalization(i18n) and Localization(l10n)
@@ -69,5 +65,5 @@ XSR.ERROR.BAD_XML_TAG
 Document versions
 ----------------------------
 
-Last Update: 5, Jan. 2016
+Last Update: 27, Mar. 2016
 Initial version: Jan. 2016

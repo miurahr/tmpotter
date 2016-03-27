@@ -1,0 +1,2 @@
+'''Android''' is a [[Linux]]-based operating system for mobile phones and other mobile devices.
+For general information, see [[Wikipedia:Android_(operating_system)|Wikipedia's page on Android]] or [https://android.com/ android.com].
