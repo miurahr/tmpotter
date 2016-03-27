@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -24,19 +24,14 @@
 package org.tmpotter.segmentation;
 
 import org.tmpotter.util.Language;
-import org.tmpotter.util.Preferences;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
 public class SegmenterTest {
   /**
@@ -63,5 +58,4 @@ public class SegmenterTest {
     List<String> result = Segmenter.segment(lang, paragraph, spaces, brules);
     assertEquals(expResult, result);
   }
-  
 }

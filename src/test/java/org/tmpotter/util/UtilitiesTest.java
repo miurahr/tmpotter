@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -81,14 +81,13 @@ public class UtilitiesTest extends TestCase {
    */
   public void testSaveUTF8() {
     System.out.println("saveUTF8");
-    String dir = "test/data/";
+    String dir = this.getClass().getResource("/").getFile();
     String filename = "save_utf8_result.txt";
     String output = "\u3401\u3402";
-    String expectedFN = "save_utf8_expected.txt";
     try {
       Utilities.saveUtf8(dir, filename, output);
-      File target = new File(dir+filename);
-      File expected = new File(dir+expectedFN); 
+      File target = new File(this.getClass().getResource("/save_utf8_result.txt").getFile());
+      File expected = new File(this.getClass().getResource("/save_utf8_expected.txt").getFile()); 
       assertTrue(FileUtil.compareFile(target, expected));
       target.delete();
     } catch (Exception ex) {
@@ -128,5 +127,4 @@ public class UtilitiesTest extends TestCase {
     int result = Utilities.largerSize(a, b);
     assertEquals(expResult, result);
   }
-  
 }

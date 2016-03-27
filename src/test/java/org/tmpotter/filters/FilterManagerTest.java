@@ -64,8 +64,8 @@ public class FilterManagerTest {
     prop.setTranslationEncoding("UTF-8");
     prop.setSourceLanguage("en");
     prop.setTargetLanguage("ja");
-    prop.setFilePathOriginal(new File("test/data/text/src.txt"));
-    prop.setFilePathTranslation(new File("test/data/text/trans.txt"));
+    prop.setFilePathOriginal(new File(this.getClass().getResource("/text/src.txt").getFile()));
+    prop.setFilePathTranslation(new File(this.getClass().getResource("/text/trans.txt").getFile()));
     Document docOriginal = new Document();
     Document docTranslation = new Document();
     String filterName = "BiTextFilter";
@@ -74,5 +74,4 @@ public class FilterManagerTest {
     assertEquals(2, docOriginal.size());
     assertEquals(2, docTranslation.size());
   }
-  
 }

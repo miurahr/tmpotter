@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -27,39 +27,17 @@
 
 package org.tmpotter.core;
 
+import junit.framework.TestCase;
 import org.tmpotter.util.Language;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 
 /**
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
-public class ProjectPropertiesTest {
+public class ProjectPropertiesTest extends TestCase {
   
-  public ProjectPropertiesTest() {
-  }
-  
-  @BeforeClass
-  public static void setUpClass() {
-  }
-  
-  @AfterClass
-  public static void tearDownClass() {
-  }
-  
-  @Before
-  public void setUp() {
-  }
-  
-  @After
-  public void tearDown() {
-  }
-
   /**
    * Test of getSourceLanguage method, of class ProjectProperties.
    */

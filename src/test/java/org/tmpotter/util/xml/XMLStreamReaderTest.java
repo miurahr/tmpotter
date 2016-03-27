@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from OmegaT project
  *
@@ -46,7 +46,7 @@ public class XMLStreamReaderTest extends TestCase {
         XMLStreamReader xml = new XMLStreamReader();
         xml.killEmptyBlocks();
         
-        xml.setStream(new File("test/data/xml/test.xml"));
+        xml.setStream(new File(this.getClass().getResource("/xml/test.xml").getFile()));
         
         XMLBlock blk;
         List<XMLBlock> lst;
@@ -101,7 +101,7 @@ public class XMLStreamReaderTest extends TestCase {
         
         XMLBlock blk;
         
-        xml.setStream(new File("test/data/xml/test-badDecimalEntity.xml"));
+        xml.setStream(new File(this.getClass().getResource("/xml/test-badDecimalEntity.xml").getFile()));
 
         assertNotNull(xml.advanceToTag("root"));
         assertNotNull(blk = xml.advanceToTag("body"));
@@ -111,7 +111,7 @@ public class XMLStreamReaderTest extends TestCase {
         } catch (TranslationException ex) {
         }
         
-        xml.setStream(new File("test/data/xml/test-badHexEntity.xml"));
+        xml.setStream(new File(this.getClass().getResource("/xml/test-badHexEntity.xml").getFile()));
 
         assertNotNull(xml.advanceToTag("root"));
         assertNotNull(blk = xml.advanceToTag("body"));

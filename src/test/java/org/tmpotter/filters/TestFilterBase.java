@@ -25,8 +25,6 @@
 
 package org.tmpotter.filters;
 
-import static junit.framework.Assert.*;
-
 import org.tmpotter.util.Language;
 import org.tmpotter.util.TmxReader2;
 

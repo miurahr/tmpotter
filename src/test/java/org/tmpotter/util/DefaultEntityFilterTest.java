@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -57,5 +57,4 @@ public class DefaultEntityFilterTest extends TestCase {
     int result = instance.convertToSymbol(escapeSequence);
     assertEquals(expResult, result);
   }
-  
 }

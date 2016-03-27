@@ -25,6 +25,7 @@
 
 package org.tmpotter.filters;
 
+import java.io.File;
 import java.util.List;
 import org.tmpotter.util.Localization;
 
@@ -40,7 +41,8 @@ public class PoFilterTest extends TestFilterBase {
     Map<String, String> data = new TreeMap<>();
     Map<String, String> tmx = new TreeMap<>();
 
-    parse2(new PoFilter(), "test/data/po/file-POFilter-be.po", data, tmx);
+    parse2(new PoFilter(), this.getClass().getResource("/po/file-POFilter-be.po").getFile(),
+        data, tmx);
     
     assertEquals("Non Fuzzy check", "non-fuzzy translation", data.get("non-fuzzy"));
     assertEquals("Fuzzy check", "fuzzy translation", tmx.get("[PO-fuzzy] fuzzy"));
@@ -52,7 +54,8 @@ public class PoFilterTest extends TestFilterBase {
   public void testLoad() throws Exception {
     Map<String, String> options = new TreeMap<>();
     options.put("skipHeader", "true");
-    List<ParsedEntry> result = parse3(new PoFilter(), "test/data/po/file-POFilter-multiple.po", options);
+    List<ParsedEntry> result = parse3(new PoFilter(),
+        this.getClass().getResource("/po/file-POFilter-multiple.po").getFile(), options);
 
     String comment = Localization.getString("POFILTER_TRANSLATOR_COMMENTS") + "\n" + "A valid comment\nAnother valid comment\n\n"
         + Localization.getString("POFILTER_EXTRACTED_COMMENTS") + "\n" + "Some extracted comments\nMore extracted comments\n\n"

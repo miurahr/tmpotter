@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -27,6 +27,8 @@
 
 package org.tmpotter.core;
 
+import static org.junit.Assert.*;
+
 import org.tmpotter.util.AppConstants;
 
 import org.custommonkey.xmlunit.XMLUnit;
@@ -41,14 +43,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
-public class TmxTestBase extends TestCase {
+public class TmxTestBase {
   static Pattern RE_SEG = Pattern.compile("(<seg>.+</seg>)");
 
   protected Set<String> readTmxSegments(File tmx) throws Exception {
@@ -70,8 +70,8 @@ public class TmxTestBase extends TestCase {
   protected void compareTmx(File orig, File created, int count) throws Exception {
     Set<String> tmxOrig = readTmxSegments(orig);
     Set<String> tmxCreated = readTmxSegments(created);
-    Assert.assertEquals(count, tmxCreated.size());
-    Assert.assertEquals(tmxOrig.size(), tmxCreated.size());
+    assertEquals(count, tmxCreated.size());
+    assertEquals(tmxOrig.size(), tmxCreated.size());
 
     List<String> listOrig = new ArrayList<>(tmxOrig);
     List<String> listCreated = new ArrayList<>(tmxCreated);

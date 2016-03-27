@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -24,7 +24,9 @@
 package org.tmpotter.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 import org.junit.After;
@@ -41,8 +43,9 @@ public class FileUtilTest extends TestCase {
   private static File target;
   
   @Before
-  public void setUp() {
-        tmpDir = FileUtil.createTempDir();
+  @Override
+  public void setUp() throws FileNotFoundException, UnsupportedEncodingException {
+    tmpDir = FileUtil.createTempDir();
     try {
       assertTrue(tmpDir.isDirectory());
       target = new File(tmpDir, "FileUtilTest");
@@ -50,12 +53,13 @@ public class FileUtilTest extends TestCase {
       out.println("hoge");
       out.println("fuga");
       out.close();
-    } catch (Exception ex) {
-      // FIXME
+    } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+      throw ex;
     }
   }
   
   @After
+  @Override
   public void tearDown() {
     target.delete();
   }

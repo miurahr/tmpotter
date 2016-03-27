@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -61,19 +61,10 @@ public class CopyrightTest extends TestCase {
   public void testCopyright() throws Exception {
     List<File> sourceFiles = new ArrayList<>();
     list(new File("src"), sourceFiles);
-    list(new File("test"), sourceFiles);
     ByteArrayOutputStream fdata = new ByteArrayOutputStream();
     for (File f : sourceFiles) {
-      if (f.getPath().replace('\\', '/').startsWith("src/gen/")) {
+      if (f.getPath().replace('\\', '/').startsWith("src/main/java/gen/")) {
         // skip jaxb generated files
-        continue;
-      }
-      if (f.getPath().replace('\\', '/').endsWith("util/Base64.java")) {
-        // skip Base64.java (public domain)
-        continue;
-      }
-      if (f.getPath().replace('\\', '/').endsWith("util/Base64Test.java")) {
-        // skip Base64Test.java (public domain)
         continue;
       }
 
@@ -100,7 +91,7 @@ public class CopyrightTest extends TestCase {
       String fn = f.getName();
       if (f.getName().endsWith(".java")) {
         files.add(f);
-      } else if (fn.equals("build.xml")) {
+      } else if (fn.equals("gradle.build")) {
         files.add(f);
       } else if (fn.endsWith(".properties")) {
         if (fn.startsWith("Version") || fn.startsWith("Bundle") || fn.startsWith("project")) {

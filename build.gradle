@@ -1,3 +1,36 @@
+/**************************************************************************
+ *
+ *  TMPotter - Bitext Aligner/TMX Editor (ant build script)
+ *
+ *  Copyright (C) 2015,2016 Hiroshi Miura
+ *
+ *  This file is part of tmpotter.
+ *
+ *  Some portion are derived from OmegaT and bitext2tmx
+ *
+ *  Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
+ *                2008-2010 Didier Briel, Alex Buloichik
+ *                2012 Didier Briel
+ *                2013 Didier Briel, Aaron Madlon-Kay
+ *                2014 Didier Briel
+ *                2015 Aaron Madlon-Kay, Didier Briel
+ *
+ *  Copyright (C) 2006-2009 Raymond: Martin et al.
+ *
+ *  tmpotter is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  tmpotter is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with tmpotter.  If not, see http://www.gnu.org/licenses/.
+ *
+ **************************************************************************/
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle'

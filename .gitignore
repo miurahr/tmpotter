@@ -5,3 +5,4 @@
 MANIFEST.MF
 gradle.properties
 .gradle/
+/.nb-gradle/

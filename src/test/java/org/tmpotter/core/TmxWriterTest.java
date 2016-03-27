@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -40,8 +40,8 @@ public class TmxWriterTest extends TmxTestBase {
    */
   public void testWriteTmx() throws Exception {
     System.out.println("writeTmx");
-    File outputFile = new File("test/data/tmx/test_write_tmx.tmx");
-    File expectedFile = new File("test/data/tmx/expected_write_tmx.tmx");
+    File outputFile = new File(this.getClass().getResource("/tmx/test_write_tmx.tmx").getFile());
+    File expectedFile = new File(this.getClass().getResource("/tmx/expected_write_tmx.tmx").getFile());
     Document originalDocument = new Document();
     originalDocument.add("Sentense one.");
     originalDocument.add("Sentense two.");
@@ -56,6 +56,4 @@ public class TmxWriterTest extends TmxTestBase {
     compareTmx(outputFile, expectedFile, 4);
     outputFile.delete();
   }
-
-  
 }
