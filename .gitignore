@@ -1,6 +1,7 @@
 /build/
-/nbproject/private/*
+/nbproject/
 /dist/
 /.jacocoverage/
 MANIFEST.MF
 gradle.properties
+.gradle/
