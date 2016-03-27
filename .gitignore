@@ -6,3 +6,7 @@ MANIFEST.MF
 gradle.properties
 .gradle/
 /.nb-gradle/
+.idea/compiler.xml
+.idea/misc.xml
+.idea/copyright/
+.idea/workspace.xml
