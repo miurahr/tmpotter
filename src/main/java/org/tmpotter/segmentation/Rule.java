@@ -55,7 +55,12 @@ public class Rule implements Serializable, Cloneable {
   }
 
   public Rule clone() {
-    Rule result = new Rule();
+    Rule result;
+    try {
+      result = (Rule) super.clone();
+    } catch (CloneNotSupportedException ce) {
+      throw new RuntimeException();
+    }
     result.breakRule = breakRule;
     result.beforebreak = beforebreak;
     result.afterbreak = afterbreak;

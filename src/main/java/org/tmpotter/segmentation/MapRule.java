@@ -122,7 +122,12 @@ public class MapRule implements Serializable, Cloneable {
   }
 
   public MapRule clone() {
-    MapRule result = new MapRule();
+    MapRule result;
+    try {
+      result = (MapRule)super.clone();
+    } catch (CloneNotSupportedException ce) {
+      throw new RuntimeException();
+    }
     result.languageCode = languageCode;
     result.pattern = pattern;
     result.rules = new ArrayList<Rule>(rules.size());

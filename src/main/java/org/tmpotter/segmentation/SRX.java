@@ -109,12 +109,17 @@ public class SRX implements Serializable, Cloneable {
   }
 
   public SRX clone() {
-    SRX result = new SRX();
-    result.mappingRules = new ArrayList<>(mappingRules.size());
-    for (MapRule rule : mappingRules) {
-      result.mappingRules.add(rule.clone());
+    SRX result;
+    try {
+      result = (SRX) super.clone();
+      result.mappingRules = new ArrayList<>(mappingRules.size());
+      for (MapRule rule : mappingRules) {
+        result.mappingRules.add(rule.clone());
+      }
+      return result;
+    } catch (CloneNotSupportedException ce) {
+      throw new RuntimeException();
     }
-    return result;
   }
 
   /**
