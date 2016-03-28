@@ -48,7 +48,7 @@ public final class AquaAdapter implements InvocationHandler {
   
   private static final Logger LOG = Logger.getLogger(AquaAdapter.class.getName());
 
-  public static enum AquaEvent { ABOUT, OPEN, PREFERENCES, QUIT }
+  public enum AquaEvent { ABOUT, OPEN, PREFERENCES, QUIT }
 
   protected static final String[] _straAquaEvents = {
     "handleAbout",
@@ -71,7 +71,7 @@ public final class AquaAdapter implements InvocationHandler {
    * @param strHandler handler
    * @param evtAqua event
    */
-  public static final void connect( final Object objReceiver,
+  public static void connect( final Object objReceiver,
           final String strHandler,
       final AquaEvent evtAqua ) {
     if ( !Platform.isMacOsx() ) {
@@ -155,7 +155,7 @@ public final class AquaAdapter implements InvocationHandler {
                 + objaArgs[0] );
       }
     }
-    return ( null );
+    return  null;
   }
 
   /**
@@ -182,7 +182,7 @@ public final class AquaAdapter implements InvocationHandler {
    * 
    * @param image icon image
    */
-  public static final void setDockIconImage( final Image image ) {
+  public static void setDockIconImage( final Image image ) {
     if ( !Platform.isMacOsx() || image == null ) {
       return;
     }

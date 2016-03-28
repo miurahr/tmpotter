@@ -258,16 +258,16 @@ public class PoFilter extends AbstractFilter {
     pluralInfos = Collections.unmodifiableMap(info);
   }
 
-  protected static Pattern COMMENT_FUZZY = Pattern.compile("#, fuzzy");
-  protected static Pattern COMMENT_FUZZY_OTHER = Pattern.compile("#,.* fuzzy.*");
-  protected static Pattern COMMENT_NOWRAP = Pattern.compile("#,.* no-wrap.*");
-  protected static Pattern COMMENT_TRANSLATOR = Pattern.compile("# (.*)");
-  protected static Pattern COMMENT_EXTRACTED = Pattern.compile("#\\. (.*)");
-  protected static Pattern COMMENT_REFERENCE = Pattern.compile("#: (.*)");
-  protected static Pattern MSG_ID = Pattern.compile("msgid(_plural)?\\s+\"(.*)\"");
-  protected static Pattern MSG_STR = Pattern.compile("msgstr(\\[([0-9]+)\\])?\\s+\"(.*)\"");
-  protected static Pattern MSG_CTX = Pattern.compile("msgctxt\\s+\"(.*)\"");
-  protected static Pattern MSG_OTHER = Pattern.compile("\"(.*)\"");
+  private static final Pattern COMMENT_FUZZY = Pattern.compile("#, fuzzy");
+  private static final Pattern COMMENT_FUZZY_OTHER = Pattern.compile("#,.* fuzzy.*");
+  private static final Pattern COMMENT_NOWRAP = Pattern.compile("#,.* no-wrap.*");
+  private static final Pattern COMMENT_TRANSLATOR = Pattern.compile("# (.*)");
+  private static final Pattern COMMENT_EXTRACTED = Pattern.compile("#\\. (.*)");
+  private static final Pattern COMMENT_REFERENCE = Pattern.compile("#: (.*)");
+  private static final Pattern MSG_ID = Pattern.compile("msgid(_plural)?\\s+\"(.*)\"");
+  private static final Pattern MSG_STR = Pattern.compile("msgstr(\\[([0-9]+)\\])?\\s+\"(.*)\"");
+  private static final Pattern MSG_CTX = Pattern.compile("msgctxt\\s+\"(.*)\"");
+  private static final Pattern MSG_OTHER = Pattern.compile("\"(.*)\"");
 
   enum Mode { MSGID, MSGSTR, MSGID_PLURAL, MSGSTR_PLURAL, MSGCTX }
 

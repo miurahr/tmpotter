@@ -61,11 +61,12 @@ import java.util.logging.Logger;
  * @author Alex Buloichik (alex73mail@gmail.com)
  * @author Didier Briel
  * @author Aaron Madlon-Kay
+ * @author Hiroshi Miura
  */
 public class FileUtil {
 
-  public static String LINE_SEPARATOR = System.getProperty("line.separator");
-  public static long RENAME_RETRY_TIMEOUT = 3000;
+  public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  public static final long RENAME_RETRY_TIMEOUT = 3000;
   private static final Logger LOG = Logger.getLogger(FileUtil.class.getName());
 
   /**

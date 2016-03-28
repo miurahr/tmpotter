@@ -534,11 +534,11 @@ public class SRX implements Serializable, Cloneable {
   /**
    * Segmentation support of 1.6.0 RC9 (rules separated).
    */
-  public static String OT160RC9_VERSION = "0.2.2";
+  public static final String OT160RC9_VERSION = "0.2.2";
   /**
    * Currently supported segmentation support version.
    */
-  public static String CURRENT_VERSION = OT160RC9_VERSION;
+  public static final String CURRENT_VERSION = OT160RC9_VERSION;
 
   /**
    * Version of OmegaT segmentation support.

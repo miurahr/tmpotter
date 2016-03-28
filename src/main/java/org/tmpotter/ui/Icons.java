@@ -41,7 +41,7 @@ import javax.swing.ImageIcon;
  */
 public class Icons {
   
-  public static final Map<String, Image> ICONS = new HashMap<String, Image>();
+  protected static final Map<String, Image> ICONS = new HashMap<String, Image>();
   static final String RESOURCES = "/org/tmpotter/ui/resources/";
 
   static {
