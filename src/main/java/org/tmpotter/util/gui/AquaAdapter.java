@@ -65,7 +65,7 @@ public final class AquaAdapter implements InvocationHandler {
   }
 
   /**
-   * Connect to object reciever.
+   * Connect to object receiver.
    * 
    * @param objReceiver object to be connected.
    * @param strHandler handler
