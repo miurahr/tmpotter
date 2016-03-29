@@ -153,7 +153,7 @@ public class MappingRulesModel extends AbstractTableModel {
    */
   public void moveRowUp(int row) {
     MapRule maprulePrev = srx.getMappingRules().get(row - 1);
-    MapRule maprule = srx.getMappingRules().get(row);
+    //MapRule maprule = srx.getMappingRules().get(row);
     srx.getMappingRules().remove(row - 1);
     srx.getMappingRules().add(row, maprulePrev);
     fireTableRowsUpdated(row - 1, row);
@@ -164,14 +164,14 @@ public class MappingRulesModel extends AbstractTableModel {
    */
   public void moveRowDown(int row) {
     MapRule mapruleNext = srx.getMappingRules().get(row + 1);
-    MapRule maprule = srx.getMappingRules().get(row);
+    //MapRule maprule = srx.getMappingRules().get(row);
     srx.getMappingRules().remove(row + 1);
     srx.getMappingRules().add(row, mapruleNext);
     fireTableRowsUpdated(row, row + 1);
   }
 
-    //
-  // Managing Listeners of Errorneous Input
+  //
+  // Managing Listeners of Erroneous Input
   //
   /**
    * List of listeners
