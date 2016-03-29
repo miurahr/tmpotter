@@ -73,6 +73,7 @@ public class AppComponentsManager {
     labelStatusBar = new JXLabel(" ");
     panelStatusBar = new JXStatusBar();
     msp = new JXMultiSplitPane();
+    tableRows = new JXLabel(" ");
   }
 
   protected void makeUi() {
