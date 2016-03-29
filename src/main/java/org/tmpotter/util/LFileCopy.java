@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from OmegaT project
  * 
@@ -57,16 +57,19 @@ public class LFileCopy {
                 .format(getString("LFC.ERROR.FILE_DOESNT_EXIST"),
                 src.getAbsolutePath()));
     }
-    FileInputStream fis = new FileInputStream(src);
-    dest.getParentFile().mkdirs();
-    FileOutputStream fos = new FileOutputStream(dest);
-    byte[] ba = new byte[BUFSIZE];
-    int readBytes;
-    while ((readBytes = fis.read(ba)) > 0) {
-      fos.write(ba, 0, readBytes);
+    if (!dest.getParentFile().mkdirs()) {
+      // FIXME: destination directory has already existed.
     }
-    fis.close();
-    fos.close();
+    try (FileOutputStream fos = new FileOutputStream(dest);
+        FileInputStream fis = new FileInputStream(src)) {
+      byte[] ba = new byte[BUFSIZE];
+      int readBytes;
+      while ((readBytes = fis.read(ba)) > 0) {
+        fos.write(ba, 0, readBytes);
+      }
+      fis.close();
+      fos.close();
+    }
   }
 
   /** 
@@ -79,14 +82,17 @@ public class LFileCopy {
    * @throws java.io.IOException if stream has error.
    */
   public static void copy(InputStream src, File dest) throws IOException {
-    dest.getParentFile().mkdirs();
-    FileOutputStream fos = new FileOutputStream(dest);
-    byte[] ba = new byte[BUFSIZE];
-    int readBytes;
-    while ((readBytes = src.read(ba)) > 0) {
-      fos.write(ba, 0, readBytes);
+    if (!dest.getParentFile().mkdirs()) {
+      // FIXME: Destination directory has already existed.
     }
-    fos.close();
+    try (FileOutputStream fos = new FileOutputStream(dest)) {
+      byte[] ba = new byte[BUFSIZE];
+      int readBytes;
+      while ((readBytes = src.read(ba)) > 0) {
+        fos.write(ba, 0, readBytes);
+      }
+      fos.close();
+    }
   }
 
   /**
@@ -129,13 +135,14 @@ public class LFileCopy {
               .format(getString("LFC.ERROR.FILE_DOESNT_EXIST"),
               src.getAbsolutePath()));
     }
-    FileInputStream fis = new FileInputStream(src);
-    byte[] ba = new byte[BUFSIZE];
-    int readBytes;
-    while ((readBytes = fis.read(ba)) > 0) {
-      dest.write(ba, 0, readBytes);
+    try (FileInputStream fis = new FileInputStream(src)) {
+      byte[] ba = new byte[BUFSIZE];
+      int readBytes;
+      while ((readBytes = fis.read(ba)) > 0) {
+        dest.write(ba, 0, readBytes);
+      }
+      fis.close();
     }
-    fis.close();
   }
 
 }

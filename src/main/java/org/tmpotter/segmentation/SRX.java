@@ -127,7 +127,9 @@ public class SRX implements Serializable, Cloneable {
    */
   public static void saveTo(SRX srx, File outFile) throws IOException {
     if (srx == null) {
-      outFile.delete();
+      if (!outFile.delete()) {
+        throw new RuntimeException();
+      }
       return;
     }
     try {

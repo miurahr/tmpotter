@@ -205,7 +205,9 @@ public class FileUtil {
     if (dir.isDirectory()) {
       for (File file : dir.listFiles()) {
         if (file.isFile()) {
-          file.delete();
+          if (!file.delete()) {
+            return false;
+          }
         } else if (file.isDirectory()) {
           deleteTree(file);
         }
