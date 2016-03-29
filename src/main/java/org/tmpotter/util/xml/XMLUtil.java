@@ -44,16 +44,16 @@ public class XMLUtil {
    *
    *  Output stream must convert stream to UTF-8 when saving to disk.
    */
-  private static String getValidXMLChar( final char c )
+  private static String getValidXMLChar( final char ch )
   {
-    switch( c )
+    switch( ch )
     {
       //case '\'': return "&apos;";
       case '&': return "&amp;";
       case '>': return "&gt;";
       case '<': return "&lt;";
       case '"': return "&quot;";
-      default : return String.valueOf( c );
+      default : return String.valueOf( ch );
     }
   }
 
