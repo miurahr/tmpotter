@@ -146,10 +146,13 @@ public final class AquaAdapter implements InvocationHandler {
         //  setHandled must be called to inform the Aqua side of the
         //  expected behavior, else it will go default
         final Method mtdSetHandled = objaArgs[0].getClass()
-            .getDeclaredMethod( "setHandled", new Class[] { boolean.class } );
-        mtdSetHandled.invoke( objaArgs[0],
-            new Object[] { Boolean.valueOf( fireHandler( objaArgs[0] ) ) } );
-      } catch ( final Exception e ) {
+            .getDeclaredMethod("setHandled", new Class[]{boolean.class});
+        mtdSetHandled.invoke(objaArgs[0],
+            new Object[]{Boolean.valueOf(fireHandler(objaArgs[0]))});
+      } catch ( RuntimeException e) {
+        throw e;
+      } catch ( Exception e ) {
+        LOG.log(Level.WARNING, e.getMessage());
         LOG.log(Level.WARNING,
                 "AquaAdapter was unable to handle ApplicationEvent: "
                 + objaArgs[0] );
