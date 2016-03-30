@@ -143,7 +143,7 @@ public class SegmentationRulesModel extends AbstractTableModel {
    */
   public void moveRowUp(int row) {
     Rule rulePrev = rules.get(row - 1);
-    Rule rule = rules.get(row);
+    //Rule rule = rules.get(row);
     rules.remove(row - 1);
     rules.add(row, rulePrev);
     fireTableRowsUpdated(row - 1, row);
@@ -154,7 +154,7 @@ public class SegmentationRulesModel extends AbstractTableModel {
    */
   public void moveRowDown(int row) {
     Rule ruleNext = rules.get(row + 1);
-    Rule rule = rules.get(row);
+    //Rule rule = rules.get(row);
     rules.remove(row + 1);
     rules.add(row, ruleNext);
     fireTableRowsUpdated(row, row + 1);
