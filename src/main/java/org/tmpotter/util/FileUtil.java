@@ -226,19 +226,23 @@ public class FileUtil {
    */
   public static boolean compareFile(File target, File expected) throws Exception {
     String line;
-    FileInputStream fin;
-    BufferedReader in;
-    fin = new FileInputStream(target);
-    in = new BufferedReader(new InputStreamReader(fin));
-    StringBuilder tsb = new StringBuilder();
-    while ((line = in.readLine()) != null) {
-      tsb.append(line);
+    StringBuilder tsb;
+    StringBuilder esb;
+    try (FileInputStream fin = new FileInputStream(target)) {
+      BufferedReader in;
+      in = new BufferedReader(new InputStreamReader(fin));
+      tsb = new StringBuilder();
+      while ((line = in.readLine()) != null) {
+        tsb.append(line);
+      }
     }
-    FileInputStream expectedIn = new FileInputStream(expected);
-    BufferedReader expectedInput = new BufferedReader(new InputStreamReader(expectedIn));
-    StringBuilder esb = new StringBuilder();
-    while ((line = expectedInput.readLine()) != null) {
-      esb.append(line);
+    try (FileInputStream expectedIn = new FileInputStream(expected)) {
+      BufferedReader expectedInput;
+      expectedInput = new BufferedReader(new InputStreamReader(expectedIn));
+      esb = new StringBuilder();
+      while ((line = expectedInput.readLine()) != null) {
+        esb.append(line);
+      }
     }
     return esb.toString().equals(tsb.toString());
   }
