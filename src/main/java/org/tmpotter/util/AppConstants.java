@@ -109,7 +109,7 @@ public class AppConstants {
    * @return string to indicate for human reading
    */
   public static String getDisplayNameAndVersion() {
-    if (UPDATE != null && !UPDATE.equals("0")) {
+    if (!UPDATE.equals("0")) {
       return StringUtil.format(getString("app-version-template-pretty-update"),
                     getApplicationDisplayName(), VERSION, UPDATE);
     } else {
