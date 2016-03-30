@@ -59,7 +59,7 @@ import javax.swing.JTextField;
 /**
  * Import file dialog.
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
 @SuppressWarnings("serial")
 public class ImportFile  extends JDialog implements ActionListener {
