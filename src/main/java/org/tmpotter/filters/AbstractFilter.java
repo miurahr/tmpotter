@@ -193,7 +193,7 @@ public abstract class AbstractFilter implements IFilter {
    * Creates a reader of an input file.
    *
    * @param inFile The source file.
-   * @param inEncoding Encoding of the input file, if the filter supports it. Otherwise null.
+   * @param inEncoding Encoding of the input file. null means filter default encoding.
    * @return The reader for the source file
    * @throws UnsupportedEncodingException Thrown if JVM doesn't support the specified inEncoding
    * @throws IOException If any I/O Error occurs upon reader creation
@@ -202,10 +202,9 @@ public abstract class AbstractFilter implements IFilter {
       throws UnsupportedEncodingException, IOException {
     InputStreamReader isr;
     if (inEncoding == null) {
-      isr = new InputStreamReader(new FileInputStream(inFile));
-    } else {
-      isr = new InputStreamReader(new FileInputStream(inFile), inEncoding);
+      inEncoding = "UTF-8";
     }
+    isr = new InputStreamReader(new FileInputStream(inFile), inEncoding);
     return new BufferedReader(isr);
   }
 
