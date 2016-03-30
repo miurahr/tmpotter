@@ -106,9 +106,7 @@ public class WindowFontManager {
       iFontStyle = Font.ITALIC;
     } else if (strFontStyle.equals("Bold")) {
       iFontStyle = Font.BOLD;
-    } else if (strFontStyle.equals("Plain")) {
-      iFontStyle = Font.PLAIN;
-    } else {
+    } else { // strFontStyle.equals("Plain") and others
       iFontStyle = Font.PLAIN;
     }
     return iFontStyle;
@@ -129,9 +127,7 @@ public class WindowFontManager {
       strFontStyle = "Italic";
     } else if (font.isBold()) {
       strFontStyle = "Bold";
-    } else if (font.isPlain()) {
-      strFontStyle = "Plain";
-    } else {
+    } else { // font.isPlain() and others
       strFontStyle = "Plain";
     }
     return strFontStyle;

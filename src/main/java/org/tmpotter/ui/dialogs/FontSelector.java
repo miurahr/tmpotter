@@ -98,9 +98,7 @@ public final class FontSelector extends JDialog {
       comboFontStyle.setSelectedIndex( 1 );
     } else if ( getFontStyle() ==  Font.BOLD ) {
       comboFontStyle.setSelectedIndex( 2 );
-    } else if ( getFontStyle() == Font.PLAIN ) {
-      comboFontStyle.setSelectedIndex( 0 );
-    } else {
+    } else { //Font.PLAIN and other
       comboFontStyle.setSelectedIndex( 0 );
     }
     
