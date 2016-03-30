@@ -95,7 +95,7 @@ public class AppConstants {
   public static final char TAG_REPLACEMENT_CHAR = '\b';
   
   /** Pattern that detects language and country,
-   * with an optionnal script in the middle.
+   * with an optional script in the middle.
    */
   public static final Pattern LANG_AND_COUNTRY = Pattern
           .compile("([A-Za-z]{1,8})(?:(?:-|_)(?:[A-Za-z]{4}(?:-|_))?([A-Za-z0-9]{1,8}))?");
