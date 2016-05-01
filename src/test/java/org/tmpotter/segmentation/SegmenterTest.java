@@ -23,11 +23,14 @@
 
 package org.tmpotter.segmentation;
 
-import org.tmpotter.util.Language;
+import static org.junit.Assert.*;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.tmpotter.util.Language;
+
 
 /**
  *

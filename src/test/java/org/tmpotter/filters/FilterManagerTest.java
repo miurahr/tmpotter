@@ -23,11 +23,14 @@
 
 package org.tmpotter.filters;
 
-import java.io.File;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
+
+import java.io.File;
+
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
+
 
 /**
  *

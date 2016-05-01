@@ -25,14 +25,14 @@
 
 package org.tmpotter.filters;
 
-import java.io.File;
+import org.junit.Test;
+
 import java.util.List;
 import org.tmpotter.util.Localization;
 
-import org.junit.Test;
-
 import java.util.Map;
 import java.util.TreeMap;
+
 
 public class PoFilterTest extends TestFilterBase {
 
@@ -51,6 +51,7 @@ public class PoFilterTest extends TestFilterBase {
     //assertEquals("Plural check", "Supprimer des comptes", tmx.get("[PO-fuzzy] Delete Accounts"));
   }
 
+  @Test
   public void testLoad() throws Exception {
     Map<String, String> options = new TreeMap<>();
     options.put("skipHeader", "true");

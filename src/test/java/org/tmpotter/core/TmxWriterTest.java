@@ -23,6 +23,7 @@
 
 package org.tmpotter.core;
 
+import org.junit.Test;
 import org.tmpotter.util.AppConstants;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class TmxWriterTest extends TmxTestBase {
    * Test of writeTmx method, of class TmxWriter.
    * @throws java.lang.Exception
    */
+  @Test
   public void testWriteTmx() throws Exception {
     System.out.println("writeTmx");
     File outputFile = new File(this.getClass().getResource("/tmx/test_write_tmx.tmx").getFile());

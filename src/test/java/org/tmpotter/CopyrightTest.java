@@ -27,12 +27,13 @@
 
 package org.tmpotter;
 
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.tmpotter.util.LFileCopy;
 
@@ -41,7 +42,7 @@ import org.tmpotter.util.LFileCopy;
  * 
  * @author Alex Buloichik
  */
-public class CopyrightTest extends TestCase {
+public class CopyrightTest {
 
   protected static final String[] MUST_EXIST = new String[]{
     "TMPotter - Bi-text Aligner/TMX Editor",
@@ -58,6 +59,7 @@ public class CopyrightTest extends TestCase {
     "You should have received a copy of the GNU General Public License",
     "along with TMPotter.  If not, see http://www.gnu.org/licenses/."};
 
+  @Test
   public void testCopyright() throws Exception {
     List<File> sourceFiles = new ArrayList<>();
     list(new File("src"), sourceFiles);
@@ -75,6 +77,7 @@ public class CopyrightTest extends TestCase {
     }
   }
 
+  @Test
   protected void checkNote(File f, String data) {
     int pos = data.indexOf("\npackage ");
     if (pos > 0) {

@@ -27,16 +27,17 @@
 
 package org.tmpotter.core;
 
-import junit.framework.TestCase;
-import org.tmpotter.util.Language;
+import static org.junit.Assert.*;
 import org.junit.Test;
+
+import org.tmpotter.util.Language;
 
 
 /**
  *
  * @author Hiroshi Miura
  */
-public class ProjectPropertiesTest extends TestCase {
+public class ProjectPropertiesTest {
   
   /**
    * Test of getSourceLanguage method, of class ProjectProperties.
