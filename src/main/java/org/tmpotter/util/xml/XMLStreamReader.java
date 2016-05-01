@@ -55,8 +55,8 @@ public class XMLStreamReader {
     public XMLStreamReader() {
         m_pos = -1;
         m_stringStream = "";
-        m_charStack = new Stack<Integer>();
-        m_charCache = new ArrayList<Integer>();
+        m_charStack = new Stack<>();
+        m_charCache = new ArrayList<>();
         m_killEmptyBlocks = false;
         m_ignoreWhiteSpace = false;
         m_breakWhitespace = false;

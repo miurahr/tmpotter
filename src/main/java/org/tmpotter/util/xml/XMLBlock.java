@@ -168,58 +168,53 @@ public class XMLBlock {
     public String getText() {
         if (m_typeChar == '?') {
             // write < + [/ +] tagname + attributes + [/ +] >
-            String tag = "<?" + m_text;
+            StringBuilder tag = new StringBuilder("<?").append(m_text);
             if (m_attrList != null) {
                 for (XMLAttribute attr : m_attrList) {
                     // add attribute/value pair
-                    tag += " " + attr.name + "=\"" + attr.value + "\"";
+                    tag.append(" ").append(attr.name).append("=\"").append(attr.value).append("\"");
                 }
             }
-
-            tag += "?>";
-            return tag;
+            tag.append("?>");
+            return tag.toString();
         } else if (m_typeChar == '!') {
-            String tag = "<!";
+            StringBuilder tag = new StringBuilder("<!");
             if (m_text.equals("CDATA")) {
-                tag += "[";
-                tag += m_text;
-                tag += "[";
+                tag.append("[").append(m_text).append("[");
             } else if (m_text.equals("]]")) {
-                tag = "]]>";
+                tag = new StringBuilder("]]>");
             } else if (m_isComment) {
-                tag += "-- ";
-                tag += m_text;
-                tag += " -->";
+                tag.append("-- ");
+                tag.append(m_text);
+                tag.append(" -->");
             } else {
-                tag += m_text + " ";
+                tag.append(m_text).append(" ");
                 if (m_attrList != null) {
                     if (!m_attrList.isEmpty()) {
-                        tag += m_attrList.get(0).name;
+                        tag.append(m_attrList.get(0).name);
                     }
                 }
-                tag += '>';
+                tag.append('>');
             }
-            return tag;
+            return tag.toString();
         } else if (isTag()) {
             // write < + [/ +] tagname + attributes + [/ +] >
-            String tag = "<";
+            StringBuilder tag = new StringBuilder("<");
             if (m_isClose) {
-                tag += '/';
+                tag.append('/');
             }
-            tag += m_text;
+            tag.append(m_text);
             if (m_attrList != null) {
                 for (XMLAttribute attr : m_attrList) {
                     // add attribute/value pair
-                    tag += " " + attr.name + "=\"" + attr.value + "\"";
+                    tag.append(" ").append(attr.name).append("=\"").append(attr.value).append("\"");
                 }
             }
-
-            if (m_isStandalone)
-                tag += " /";
-
-            tag += '>';
-
-            return tag;
+            if (m_isStandalone) {
+                tag.append(" /");
+            }
+            tag.append('>');
+            return tag.toString();
         } else
             return m_text;
     }

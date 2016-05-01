@@ -249,9 +249,9 @@ public class FileUtil {
 
   public interface ICollisionCallback {
 
-    public boolean isCanceled();
+    boolean isCanceled();
 
-    public boolean shouldReplace(File file, int thisFile, int totalFiles);
+    boolean shouldReplace(File file, int thisFile, int totalFiles);
   }
 
   /**
@@ -368,5 +368,7 @@ public class FileUtil {
             + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
   }
 
-  private static int TEMP_DIR_ATTEMPTS = 10000;
+  private static final int TEMP_DIR_ATTEMPTS = 10000;
+
+  private FileUtil() {}
 }
