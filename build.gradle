@@ -62,6 +62,7 @@ tasks.withType(FindBugs) {
 }
 
 repositories {
+  jcenter()
   mavenCentral()
 }
 
@@ -69,7 +70,12 @@ dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
           'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
   compile fileTree(dir: 'libs', include: '*.jar')
-  testCompile group: 'junit', name: 'junit', version: '4.11'
-  testCompile 'xmlunit:xmlunit:1.6',
-          'commons-io:commons-io:2.4'
+  testCompile 'org.testng:testng:6.9.10',
+          'org.xmlunit:xmlunit-core:2.1.1',
+              'commons-io:commons-io:2.4'
 }
+
+test {
+  useTestNG()
+}
+

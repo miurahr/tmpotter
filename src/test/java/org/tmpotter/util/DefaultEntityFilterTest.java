@@ -23,14 +23,15 @@
 
 package org.tmpotter.util;
 
-import junit.framework.TestCase;
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 
 /**
  *
  * @author miurahr
  */
-public class DefaultEntityFilterTest extends TestCase {
+public class DefaultEntityFilterTest {
   
   /**
    * Test of convertToEntity method, of class DefaultEntityFilter.

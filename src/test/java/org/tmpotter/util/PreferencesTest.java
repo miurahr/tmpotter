@@ -27,13 +27,10 @@ import org.tmpotter.segmentation.SRX;
 
 import java.io.File;
 import java.io.PrintWriter;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 /**
  *

@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -41,7 +41,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
 /**
  *  Utility functions.
  */
@@ -50,9 +49,9 @@ public class Utilities {
   private static String configDirectory = null;
 
   /* Constants */
-  private static final String WINDOWS_CONFIG_DIR = "\\Bitext2tmx\\";
+  private static final String WINDOWS_CONFIG_DIR = "\\TMPotter\\";
   private static final String UNIX_CONFIG_DIR = "/.tmpotter/";
-  private static final String OSX_CONFIG_DIR = "/Library/Preferences/Bitext2tmx/";
+  private static final String OSX_CONFIG_DIR = "/Library/Preferences/TMPotter/";
 
   private static final Logger LOG = Logger.getLogger(Utilities.class.getName());
   
@@ -205,13 +204,13 @@ public class Utilities {
     } else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
       // Check for UNIX varieties
       // Solaris is generally detected as SunOS
-      // set the config dir to the user's home dir + "/.omegat/", so it's
+      // set the config dir to the user's home dir + "/.tmpotter/", so it's
       // hidden
       configDirectory = home + UNIX_CONFIG_DIR;
     } else if (Platform.isMacOsx()) {
       // check for Mac OS X
       // set the config dir to the user's home dir +
-      // "/Library/Preferences/OmegaT/"
+      // "/Library/Preferences/tmpotter/"
       configDirectory = home + OSX_CONFIG_DIR;
     } else {
       // other OSes / default

@@ -24,17 +24,20 @@
 package org.tmpotter.util;
 
 import java.io.File;
-import junit.framework.TestCase;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  *
  * @author miurahr
  */
-public class RuntimePreferencesTest extends TestCase {
+public class RuntimePreferencesTest {
 
   /**
    * Test of setUserHome method, of class RuntimePreferences.
    */
+  @Test
   public void testSetUserHome() {
     System.out.println("setUserHome");
     File home = new File("/tmp");

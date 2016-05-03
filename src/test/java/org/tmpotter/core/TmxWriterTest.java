@@ -23,7 +23,9 @@
 
 package org.tmpotter.core;
 
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 import org.tmpotter.util.AppConstants;
 
 import java.io.File;
@@ -42,7 +44,7 @@ public class TmxWriterTest extends TmxTestBase {
   @Test
   public void testWriteTmx() throws Exception {
     System.out.println("writeTmx");
-    File outputFile = new File(this.getClass().getResource("/tmx/test_write_tmx.tmx").getFile());
+    File outputFile = File.createTempFile("test_write_tmx", "tmx");
     File expectedFile = new File(this.getClass().getResource("/tmx/expected_write_tmx.tmx").getFile());
     Document originalDocument = new Document();
     originalDocument.add("Sentense one.");

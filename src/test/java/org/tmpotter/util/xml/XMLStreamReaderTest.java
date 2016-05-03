@@ -31,16 +31,17 @@ import java.io.File;
 import java.util.List;
 
 import org.tmpotter.util.TranslationException;
-import org.tmpotter.util.TranslationException;
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 
 /**
  * Test the XML reader used to read OmegaT preference files.
  * 
  * @author Aaron Madlon-Kay
  */
-public class XMLStreamReaderTest extends TestCase {
+public class XMLStreamReaderTest  {
     
     public void testLoadXML() throws Exception {
         XMLStreamReader xml = new XMLStreamReader();

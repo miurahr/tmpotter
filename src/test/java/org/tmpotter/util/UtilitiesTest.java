@@ -24,31 +24,20 @@
 package org.tmpotter.util;
 
 import java.io.File;
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 
 /**
  *
  * @author miurahr
  */
-public class UtilitiesTest extends TestCase {
+public class UtilitiesTest {
   
-  public UtilitiesTest(String testName) {
-    super(testName);
-  }
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
   /**
    * Test of getFontNames method, of class Utilities.
    */
+  @Test
   public void testGetFontNames() {
     System.out.println("getFontNames");
     String[] result = Utilities.getFontNames();
@@ -58,6 +47,7 @@ public class UtilitiesTest extends TestCase {
   /**
    * Test of joinString method, of class Utilities.
    */
+  @Test
   public void testJoinString() {
     System.out.println("joinString");
     String separator = ",";
@@ -70,6 +60,7 @@ public class UtilitiesTest extends TestCase {
   /**
    * Test of printUTF8 method, of class Utilities.
    */
+  @Test
   public void testPrintUTF8() {
     System.out.println("printUTF8");
     String output = "test output";
@@ -79,6 +70,7 @@ public class UtilitiesTest extends TestCase {
   /**
    * Test of saveUTF8 method, of class Utilities.
    */
+  @Test
   public void testSaveUTF8() {
     System.out.println("saveUTF8");
     String dir = this.getClass().getResource("/").getFile();
@@ -99,16 +91,19 @@ public class UtilitiesTest extends TestCase {
   /**
    * Test of getConfigDir method, of class Utilities.
    */
+  @Test
   public void testGetConfigDir() {
     System.out.println("getConfigDir");
-    String expResult = "/.tmpotter/";
+
+    String expResult = "tmpotter" + File.separator;
     String result = Utilities.getConfigDir();
-    assertTrue(result.endsWith(expResult));
+    assertTrue(result.toLowerCase().endsWith(expResult));
   }
 
   /**
    * Test of installDir method, of class Utilities.
    */
+  @Test
   public void testInstallDir() {
     System.out.println("installDir");
     String expResult = "tmpotter/build";
@@ -119,6 +114,7 @@ public class UtilitiesTest extends TestCase {
   /**
    * Test of largerSize method, of class Utilities.
    */
+  @Test
   public void testLargerSize() {
     System.out.println("largerSize");
     int a = 1;

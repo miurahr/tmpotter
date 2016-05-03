@@ -25,7 +25,8 @@
 
 package org.tmpotter.filters;
 
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 import java.util.List;
 import org.tmpotter.util.Localization;
@@ -44,9 +45,9 @@ public class PoFilterTest extends TestFilterBase {
     parse2(new PoFilter(), this.getClass().getResource("/po/file-POFilter-be.po").getFile(),
         data, tmx);
     
-    assertEquals("Non Fuzzy check", "non-fuzzy translation", data.get("non-fuzzy"));
-    assertEquals("Fuzzy check", "fuzzy translation", tmx.get("[PO-fuzzy] fuzzy"));
-    assertEquals("Plural single check", "Supprimer le compte", tmx.get("[PO-fuzzy] Delete Account"));
+    assertEquals("non-fuzzy translation", data.get("non-fuzzy"), "Non Fuzzy check");
+    assertEquals("fuzzy translation", tmx.get("[PO-fuzzy] fuzzy"), "Fuzzy check");
+    assertEquals("Supprimer le compte", tmx.get("[PO-fuzzy] Delete Account"), "Plural single check");
     // FIXME: this claim to fails but application works, why?
     //assertEquals("Plural check", "Supprimer des comptes", tmx.get("[PO-fuzzy] Delete Accounts"));
   }
@@ -62,13 +63,13 @@ public class PoFilterTest extends TestFilterBase {
         + Localization.getString("POFILTER_EXTRACTED_COMMENTS") + "\n" + "Some extracted comments\nMore extracted comments\n\n"
         + Localization.getString("POFILTER_REFERENCES") + "\n" + "/my/source/file\n/my/source/file2\n\n";
     
-    assertEquals("Source1", "source1", result.get(0).source);
-    assertEquals("Comment check", comment, result.get(0).comment);
-    assertEquals("Source2", "source2", result.get(1).source);
-    assertTrue("Fuzzy check", result.get(1).isFuzzy);
-    assertEquals("source3", result.get(2).source);
-    assertEquals("Null comment", null, result.get(2).comment);
-    assertEquals("Context check", "other context", result.get(4).path);
-    assertEquals("Context check(same source text with other context)","source1", result.get(4).source);
+    assertEquals("source1", result.get(0).source, "Source1");
+    assertEquals(comment, result.get(0).comment, "Comment check");
+    assertEquals("source2", result.get(1).source, "Source2");
+    assertTrue(result.get(1).isFuzzy, "Fuzzy check");
+    assertEquals(result.get(2).source, "source3");
+    assertEquals(null, result.get(2).comment, "Null comment");
+    assertEquals("other context", result.get(4).path, "Context check");
+    assertEquals("source1", result.get(4).source, "Context check(same source text with other context)");
   }
 }

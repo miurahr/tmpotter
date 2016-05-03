@@ -28,13 +28,18 @@ package org.tmpotter.filters;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.TmxReader2;
 
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Diff;
+
 import org.apache.commons.io.FileUtils;
-import org.custommonkey.xmlunit.XMLTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -54,18 +59,16 @@ import javax.xml.xpath.XPathFactory;
  * @author Alex Buloichik <alex73mail@gmail.com>
  * @author Hiroshi Miura
  */
-@SuppressWarnings("unchecked")
-public abstract class TestFilterBase extends XMLTestCase {
+public abstract class TestFilterBase {
 
   protected FilterContext context = new FilterContext(new Language("en"), new Language("be"), false);
 
   protected File outTestFile;
 
-  @Override
+  @BeforeMethod
   protected void setUp() throws Exception {
-    super.setUp();
 
-    outTestFile = new File("build/testdata/tmpotter_test-" + getClass().getName() + "-" + getName());
+    outTestFile = File.createTempFile("build/testdata/tmpotter_test-" + getClass().getName(), "");
     outTestFile.getParentFile().mkdirs();
   }
 
@@ -170,21 +173,6 @@ public abstract class TestFilterBase extends XMLTestCase {
     return result;
   }
 
-  public static void compareBinary(File f1, File f2) throws Exception {
-    ByteArrayOutputStream d1 = new ByteArrayOutputStream();
-    FileUtils.copyFile(f1, d1);
-
-    ByteArrayOutputStream d2 = new ByteArrayOutputStream();
-    FileUtils.copyFile(f2, d2);
-
-    assertEquals(d1.size(), d2.size());
-    byte[] a1 = d1.toByteArray();
-    byte[] a2 = d2.toByteArray();
-    for (int i = 0; i < d1.size(); i++) {
-      assertEquals(a1[i], a2[i]);
-    }
-  }
-
   /**
    * Remove version and toolname, then compare.
    * @param f1
@@ -219,7 +207,11 @@ public abstract class TestFilterBase extends XMLTestCase {
     n = (Node) exprTool.evaluate(doc2, XPathConstants.NODE);
     n.setNodeValue("");
 
-    assertXMLEqual(doc1, doc2);
+    Diff myDiff = DiffBuilder.compare(Input.from(doc1)).withTest(Input.from(doc2))
+          .checkForSimilar()
+          .ignoreWhitespace()
+          .build();
+    assertFalse(myDiff.hasDifferences());
   }
 
   /**
@@ -239,7 +231,12 @@ public abstract class TestFilterBase extends XMLTestCase {
    * @throws Exception
    */
   protected void compareXML(URL f1, URL f2) throws Exception {
-    assertXMLEqual(new InputSource(f1.toExternalForm()), new InputSource(f2.toExternalForm()));
+    Diff myDiff = DiffBuilder.compare(Input.from(new InputSource(f1.toExternalForm())))
+        .withTest(Input.from(new InputSource(f2.toExternalForm())))
+        .checkForSimilar()
+        .ignoreWhitespace()
+        .build();
+    assertFalse(myDiff.hasDifferences());
   }
 
   protected static class ParsedEntry {

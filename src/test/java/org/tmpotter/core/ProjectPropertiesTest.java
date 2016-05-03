@@ -27,8 +27,8 @@
 
 package org.tmpotter.core;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 import org.tmpotter.util.Language;
 

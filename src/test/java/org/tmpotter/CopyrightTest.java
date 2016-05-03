@@ -27,8 +27,8 @@
 
 package org.tmpotter;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -84,8 +84,9 @@ public class CopyrightTest {
       data = data.substring(0, pos);
     }
     for (String con : MUST_EXIST) {
-      assertTrue("There is no copyright note in '" + f.getAbsolutePath()
-              + "' : " + con, data.contains(con));
+      assertTrue(data.contains(con),
+          "There is no copyright note in '" + f.getAbsolutePath()
+          + "' : " + con);
     }
   }
 

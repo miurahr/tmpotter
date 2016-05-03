@@ -27,31 +27,20 @@
 
 package org.tmpotter.util.xml;
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 
 /**
  *
  * @author miurahr
  */
-public class XMLUtilTest extends TestCase {
-  
-  public XMLUtilTest(String testName) {
-    super(testName);
-  }
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+public class XMLUtilTest {
 
   /**
    * Test of getValidXMLText method, of class XMLUtil.
    */
+  @Test
   public void testGetValidXMLText() {
     System.out.println("getValidXMLText");
     String plaintext = "hoge<tag>fuga";
@@ -63,6 +52,7 @@ public class XMLUtilTest extends TestCase {
   /**
    * Test of removeXMLInvalidChars method, of class XMLUtil.
    */
+  @Test
   public void testRemoveXMLInvalidChars() {
     System.out.println("removeXMLInvalidChars");
     String str = "test\u000Btest";
@@ -74,6 +64,7 @@ public class XMLUtilTest extends TestCase {
   /**
    * Test of isValidXMLChar method, of class XMLUtil.
    */
+  @Test
   public void testIsValidXMLChar() {
     assertFalse(XMLUtil.isValidXMLChar(0x01));
     assertTrue(XMLUtil.isValidXMLChar(0x09));

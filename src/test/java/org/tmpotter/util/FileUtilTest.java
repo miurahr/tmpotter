@@ -28,22 +28,21 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 
 
 /**
  *
  * @author miurahr
  */
-public class FileUtilTest extends TestCase {
+public class FileUtilTest {
   private static File tmpDir;
   private static File target;
   
-  @Before
-  @Override
+  @BeforeMethod
   public void setUp() throws FileNotFoundException, UnsupportedEncodingException {
     tmpDir = FileUtil.createTempDir();
     try {
@@ -58,8 +57,7 @@ public class FileUtilTest extends TestCase {
     }
   }
   
-  @After
-  @Override
+  @AfterMethod
   public void tearDown() {
     target.delete();
   }

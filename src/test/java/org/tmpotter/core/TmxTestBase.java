@@ -27,11 +27,15 @@
 
 package org.tmpotter.core;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Diff;
 
 import org.tmpotter.util.AppConstants;
 
-import org.custommonkey.xmlunit.XMLUnit;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -76,7 +80,12 @@ public class TmxTestBase {
     List<String> listOrig = new ArrayList<>(tmxOrig);
     List<String> listCreated = new ArrayList<>(tmxCreated);
     for (int i = 0; i < listOrig.size(); i++) {
-      XMLUnit.compareXML(listOrig.get(i), listCreated.get(i));
+      Diff myDiff = DiffBuilder.compare(Input.fromString(listOrig.get(i)))
+          .withTest(Input.fromString(listCreated.get(i)))
+          .checkForSimilar()
+          .ignoreWhitespace()
+          .build();
+      assertFalse(myDiff.hasDifferences());
     }
   }
 }
