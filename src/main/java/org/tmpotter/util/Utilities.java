@@ -52,6 +52,7 @@ public class Utilities {
   private static final String WINDOWS_CONFIG_DIR = "\\TMPotter\\";
   private static final String UNIX_CONFIG_DIR = "/.tmpotter/";
   private static final String OSX_CONFIG_DIR = "/Library/Preferences/TMPotter/";
+  private static final String OTHER_CONFIG_DIR = "TMPOTTER/";
 
   private static final Logger LOG = Logger.getLogger(Utilities.class.getName());
   
@@ -129,12 +130,12 @@ public class Utilities {
    * is being determined, an empty string will be returned, resulting in the
    * current working directory being used.
    *
-   * <ul><li>Windows XP: &lt;Documents and Settings>\&lt;User name>\Application Data\OmegaT
+   * <ul><li>Windows XP: &lt;Documents and Settings>\&lt;User name>\Application Data\TMPotter
    * <li>Windows Vista: User\&lt;User name>\AppData\Roaming 
-   * <li>Linux: ~/.omegat 
-   * <li>Solaris/SunOS: ~/.omegat
-   * <li>FreeBSD: ~/.omegat 
-   * <li>Mac OS X: ~/Library/Preferences/OmegaT 
+   * <li>Linux: ~/.tmpotter
+   * <li>Solaris/SunOS: ~/.tmpotter
+   * <li>FreeBSD: ~/.tmpotter
+   * <li>Mac OS X: ~/Library/Preferences/TMPOtter
    * <li>Other: User home directory
    * </ul>
    *
@@ -198,7 +199,7 @@ public class Utilities {
       } else {
         // otherwise set the config dir to the user's home directory,
         // usually
-        // C:\Documents and Settings\<User>\OmegaT
+        // C:\Documents and Settings\<User>\TMPotter
         configDirectory = home + WINDOWS_CONFIG_DIR;
       }
     } else if (os == OsType.LINUX32 || os == OsType.LINUX64 || os == OsType.OTHER) {
@@ -210,11 +211,11 @@ public class Utilities {
     } else if (Platform.isMacOsx()) {
       // check for Mac OS X
       // set the config dir to the user's home dir +
-      // "/Library/Preferences/tmpotter/"
+      // "/Library/Preferences/TMPotter/"
       configDirectory = home + OSX_CONFIG_DIR;
     } else {
       // other OSes / default
-      configDirectory = home + File.separator;
+      configDirectory = home + OTHER_CONFIG_DIR;
       // use the user's home directory by default
     }
 
@@ -244,7 +245,6 @@ public class Utilities {
     return configDirectory;
   }
 
-      
   /**
    * Set the config dir path. This method is for unit testing purposes only. DO
    * NOT CALL IT UNLESS YOU KNOW WHAT YOU'RE DOING.

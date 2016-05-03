@@ -63,6 +63,7 @@ public class PreferencesTest {
     } catch (Exception ex) {
       // FIXME
     }
+    Utilities.setConfigDir(null);
   }
   
   @AfterClass
