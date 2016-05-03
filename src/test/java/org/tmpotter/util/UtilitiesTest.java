@@ -95,9 +95,13 @@ public class UtilitiesTest {
   public void testGetConfigDir() {
     System.out.println("getConfigDir");
 
-    String expResult = "tmpotter" + File.separator;
+    String expResult1 = ".tmpotter" + File.separator; // Unix
+    String expResult2 = new File(".").getAbsolutePath() + File.separator; // no HOME env
+    String expResult3 = "TMPotter" + File.separator; // Win/Mac
     String result = Utilities.getConfigDir();
-    assertTrue(result.toLowerCase().endsWith(expResult));
+    assertTrue(result.endsWith(expResult1) ||
+               result.endsWith(expResult2) ||
+               result.endsWith(expResult3));
   }
 
   /**
