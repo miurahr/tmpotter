@@ -48,11 +48,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -239,7 +238,7 @@ public class OpenTmx extends JDialog implements ActionListener {
     boolean errorTmx = true;
     try {
       if ( fieldTmxFile.getText() != null ) {
-        final FileReader fr = new FileReader( fieldTmxFile.getText() );
+        final FileInputStream fr = new FileInputStream(fieldTmxFile.getText());
         fr.close();
         originalDoc = fieldTmxFile.getText();
         filePath = new File( originalDoc );

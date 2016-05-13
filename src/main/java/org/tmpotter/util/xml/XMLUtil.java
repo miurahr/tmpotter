@@ -144,27 +144,16 @@ public class XMLUtil {
    *  @param str input stream
    *  @return result stream
    */
-  final public static String fixChars( final String str )
-  {
-    char[] result = new char[str.length()];
-
-    for( int i = 0; i < str.length(); i++ )
-    {
-      char c = str.charAt( i );
-
-      if( c < 0x20 )
-      {
-        if( c != 0x09 && c != 0x0A && c != 0x0D )  c = ' ';
-      }
-      else if( c >= 0x20    && c <= 0xD7FF )   {}
-      else if( c >= 0xE000  && c <= 0xFFFD )   {}
-      else if( c >= 0x10000 && c <= 0x10FFFF ) {}
-      else c = ' ';
-
-      result[i] = c;
+  final public static String fixChars(final String str) {
+    StringBuffer result = new StringBuffer(str.length());
+    for (int i = 0; i < str.length(); i++) {
+        int c = str.codePointAt(i);
+        if (!isValidXMLChar(c)) {
+           c = ' ';
+        }
+        result.append(Character.toChars(c));
     }
-
-    return( new String( result ) );
+    return result.toString();
   }
 
     /**

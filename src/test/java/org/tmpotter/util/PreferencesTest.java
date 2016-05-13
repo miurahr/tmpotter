@@ -28,6 +28,7 @@ import org.tmpotter.segmentation.SRX;
 import java.io.File;
 import java.io.PrintWriter;
 
+import org.apache.commons.io.FileUtils;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.*;
@@ -223,7 +224,7 @@ public class PreferencesTest {
       assertNotNull(backup);
       assertTrue(backup.isFile());
 
-      FileUtil.compareFile(prefs, backup);
+      assertTrue(FileUtils.contentEquals(prefs, backup));
     } finally {
       assertTrue(FileUtil.deleteTree(tmpDir));
     }

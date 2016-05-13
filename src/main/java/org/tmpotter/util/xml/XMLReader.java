@@ -34,6 +34,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 
 /**
@@ -120,7 +122,7 @@ public class XMLReader extends Reader {
         byte[] buf = new byte[AppConstants.READ_AHEAD_LIMIT];
         int len = is.read(buf);
         if (len > 0) {
-            String buffer = new String(buf, 0, len);
+            String buffer = new String(buf, 0, len, StandardCharsets.UTF_8);
 
             Matcher matcher_xml = AppConstants.XML_ENCODING.matcher(buffer);
             if (matcher_xml.find())
@@ -136,7 +138,7 @@ public class XMLReader extends Reader {
         try {
             return new InputStreamReader(is, defaultEncoding);
         } catch (Exception e) {
-            return new InputStreamReader(is);
+            return new InputStreamReader(is, Charset.defaultCharset());
         }
     }
 

@@ -44,7 +44,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -248,7 +248,7 @@ public class ImportFile  extends JDialog implements ActionListener {
     boolean errorImport = true;
     try {
       if ( fieldImportFile.getText() != null ) {
-        final FileReader fr = new FileReader( fieldImportFile.getText() );
+        final FileInputStream fr = new FileInputStream( fieldImportFile.getText() );
         fr.close();
         originalDocFilename = fieldImportFile.getText();
         filePath = new File( originalDocFilename );

@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -324,7 +325,7 @@ public class Preferences {
         // If no prefs file is present, look inside JAR for defaults. Useful for e.g. Web Start.
         InputStream is = Preferences.class.getResourceAsStream(FILE_PREFERENCES);
         if (is != null) {
-          xml.setStream(new BufferedReader(new InputStreamReader(is)));
+          xml.setStream(new BufferedReader(new InputStreamReader(is, Charset.defaultCharset())));
           readXmlPrefs(xml);
         }
       } else {

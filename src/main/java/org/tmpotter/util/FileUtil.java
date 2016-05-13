@@ -40,6 +40,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,37 +215,6 @@ public class FileUtil {
       }
     }
     return dir.delete();
-  }
-
-  /**
-   * Compare File contents whether same or not (for test).
-   * 
-   * @param target file to test
-   * @param expected file to be
-   * @return true if contents are same
-   * @throws Exception when file does not exist
-   */
-  public static boolean compareFile(File target, File expected) throws Exception {
-    String line;
-    StringBuilder tsb;
-    StringBuilder esb;
-    try (FileInputStream fin = new FileInputStream(target)) {
-      BufferedReader in;
-      in = new BufferedReader(new InputStreamReader(fin));
-      tsb = new StringBuilder();
-      while ((line = in.readLine()) != null) {
-        tsb.append(line);
-      }
-    }
-    try (FileInputStream expectedIn = new FileInputStream(expected)) {
-      BufferedReader expectedInput;
-      expectedInput = new BufferedReader(new InputStreamReader(expectedIn));
-      esb = new StringBuilder();
-      while ((line = expectedInput.readLine()) != null) {
-        esb.append(line);
-      }
-    }
-    return esb.toString().equals(tsb.toString());
   }
 
   public interface ICollisionCallback {

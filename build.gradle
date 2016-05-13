@@ -44,6 +44,7 @@ sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.bootClasspath = "$JDK7_HOME/jre/lib/rt.jar"
+compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 checkstyle {
   config = resources.text.fromFile("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
   ignoreFailures = true
@@ -72,7 +73,7 @@ dependencies {
   compile fileTree(dir: 'libs', include: '*.jar')
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1',
-              'commons-io:commons-io:2.4'
+          'commons-io:commons-io:2.4'
 }
 
 test {

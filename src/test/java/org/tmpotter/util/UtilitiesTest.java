@@ -24,6 +24,8 @@
 package org.tmpotter.util;
 
 import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -80,7 +82,7 @@ public class UtilitiesTest {
       Utilities.saveUtf8(dir, filename, output);
       File target = new File(this.getClass().getResource("/save_utf8_result.txt").getFile());
       File expected = new File(this.getClass().getResource("/save_utf8_expected.txt").getFile()); 
-      assertTrue(FileUtil.compareFile(target, expected));
+      assertTrue(FileUtils.contentEquals(target, expected));
       target.delete();
     } catch (Exception ex) {
       System.out.println(ex);
