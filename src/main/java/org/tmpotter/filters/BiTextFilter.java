@@ -23,6 +23,7 @@
 
 package org.tmpotter.filters;
 
+import org.tmpotter.segmentation.Rule;
 import org.tmpotter.segmentation.SRX;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
@@ -31,6 +32,7 @@ import org.tmpotter.util.TranslationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -112,16 +114,18 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
       throws TranslationException {
     String result;
 
-    Segmenter.srx = Preferences.getSrx();
+    Segmenter.setSrx(Preferences.getSrx());
     if (Segmenter.srx == null) {
-      Segmenter.srx = SRX.getDefault();
+      Segmenter.setSrx(SRX.getDefault());
     }
     try {
       result = copyCleanString(br);
     } catch (Exception ex) {
       throw(new TranslationException("Error in copyCleanString()"));
     }
-    return Segmenter.segment(lang, result, null, null);
+    ArrayList<StringBuilder> spaces = new ArrayList<>();
+    ArrayList<Rule> listRules = new ArrayList<>();
+    return Segmenter.segment(lang, result, spaces, listRules);
   }
 
   /**

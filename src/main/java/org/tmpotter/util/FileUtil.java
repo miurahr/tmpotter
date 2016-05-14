@@ -204,14 +204,27 @@ public class FileUtil {
       return false;
     }
     if (dir.isDirectory()) {
-      for (File file : dir.listFiles()) {
+      File[] files = dir.listFiles();
+      if (files == null) {
+        return false;
+      }
+      for (File file : files)  {
+        if (file.isDirectory()) {
+          // recursive delete
+          if (!deleteTree(file)) {
+            return false;
+          }
+          continue;
+        }
+        // recursive leaf/file
         if (file.isFile()) {
           if (!file.delete()) {
             return false;
           }
-        } else if (file.isDirectory()) {
-          deleteTree(file);
+          continue;
         }
+        // other condition?
+        // TODO
       }
     }
     return dir.delete();

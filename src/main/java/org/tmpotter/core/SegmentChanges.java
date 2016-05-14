@@ -123,8 +123,10 @@ public class SegmentChanges {
    * 
    * @return numEliminada
    */
-  public int[]   getNumEliminada() {
-    return ( numEliminada );
+  public int  getNumEliminada(final int index) {
+    assert(index >= 0);
+    assert(index < numEliminada.length);
+    return ( numEliminada[index] );
   }
 
   /**

@@ -125,9 +125,9 @@ public final class OpenTexts extends JDialog implements ActionListener {
 
   public File userPathFile = new File( System.getProperty( "user.dir" ) );
 
-  private final JComboBox comboOriginalEncoding    = new JComboBox(AppConstants.straEncodings);
-  private final JComboBox comboTranslationEncoding = new JComboBox(AppConstants.straEncodings);
-  private final int numEncodings = AppConstants.straEncodings.length;
+  private final JComboBox comboOriginalEncoding    = new JComboBox(AppConstants.straEncodings.toArray());
+  private final JComboBox comboTranslationEncoding = new JComboBox(AppConstants.straEncodings.toArray());
+  private final int numEncodings = AppConstants.straEncodings.size();
 
   private final String [] idiom = Localization.getLanguageList();
   

@@ -623,6 +623,9 @@ public class XMLStreamReader {
                 state = state_recordDouble;
                 break;
 
+                default:
+                    // TODO What should do here?
+                    break;
             }
             if (err) {
                 // TODO construct error message with correct state data
@@ -961,60 +964,64 @@ public class XMLStreamReader {
     private int getCharType(int cp) {
         int type = type_text;
         switch (cp) {
-        case 0x20:
-        case 0x0a:
-        case 0x0d:
-        case 0x09:
-            type = type_ws;
-            break;
+          case 0x20:
+          case 0x0a:
+          case 0x0d:
+          case 0x09:
+              type = type_ws;
+              break;
 
-        case '"':
-            type = type_quote;
-            break;
+          case '"':
+              type = type_quote;
+              break;
 
-        case '\'':
-            type = type_apos;
-            break;
+          case '\'':
+              type = type_apos;
+              break;
 
-        case '&':
-            type = type_amp;
-            break;
+          case '&':
+              type = type_amp;
+              break;
 
-        case '<':
-            type = type_lt;
-            break;
+          case '<':
+              type = type_lt;
+              break;
 
-        case '>':
-            type = type_gt;
-            break;
+          case '>':
+              type = type_gt;
+              break;
 
-        case '?':
-            type = type_ques;
-            break;
+          case '?':
+              type = type_ques;
+              break;
 
-        case '/':
-            type = type_slash;
-            break;
+          case '/':
+              type = type_slash;
+              break;
 
-        case '=':
-            type = type_equals;
-            break;
+          case '=':
+              type = type_equals;
+              break;
 
-        case '[':
-            type = type_opBrac;
-            break;
+          case '[':
+              type = type_opBrac;
+              break;
 
-        case ']':
-            type = type_clBrac;
-            break;
+          case ']':
+              type = type_clBrac;
+              break;
 
-        case '-':
-            type = type_dash;
-            break;
+          case '-':
+              type = type_dash;
+              break;
 
-        case '\\':
-            type = type_backSlash;
-            break;
+          case '\\':
+              type = type_backSlash;
+              break;
+
+          default:
+              type = type_text;
+              break;
         }
         return type;
     }

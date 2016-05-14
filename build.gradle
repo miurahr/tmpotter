@@ -69,7 +69,8 @@ repositories {
 
 dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
-          'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+          'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
+          'com.google.code.findbugs:annotations:3.0.1'
   compile fileTree(dir: 'libs', include: '*.jar')
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1',

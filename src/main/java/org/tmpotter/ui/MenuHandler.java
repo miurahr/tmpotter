@@ -118,7 +118,7 @@ final class MenuHandler {
       modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(), targetLocale,
           targetEncoding);
       mainWindow.tmView.buildDisplay();
-      Segmenter.srx = Preferences.getSrx();
+      Segmenter.setSrx(Preferences.getSrx());
       try {
         modelMediator.onImportFile("BiTextFilter");
       } catch (Exception ex) {
@@ -156,7 +156,7 @@ final class MenuHandler {
           encoding);
       modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);
       mainWindow.tmView.buildDisplay();
-      Segmenter.srx = Preferences.getSrx();
+      Segmenter.setSrx(Preferences.getSrx());
       try {
         modelMediator.onImportFile("PoFilter");
       } catch (Exception ex) {

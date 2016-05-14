@@ -495,5 +495,5 @@ public class Preferences {
   private static List<String> valList;
   private static Map<String, Integer> preferenceMap;
   
-  private static SRX srx;
+  private volatile static SRX srx;
 }

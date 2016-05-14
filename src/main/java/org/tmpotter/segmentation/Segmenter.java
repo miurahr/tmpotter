@@ -50,6 +50,10 @@ public final class Segmenter {
 
   public static volatile SRX srx;
 
+  synchronized public static void setSrx(SRX newSrx) {
+    srx = newSrx;
+  }
+
   /**
    * private to disallow creation
    */
@@ -71,21 +75,21 @@ public final class Segmenter {
    * @param lang language to analyze
    * @param paragraph the paragraph text
    * @param spaces list to store information about spaces between sentences
-   * @param brules list to store rules that account to breaks
+   * @param ruleList list to store rules that account to breaks
    * @return list of sentences (String objects)
    */
   public static List<String> segment(Language lang, String paragraph,
           List<StringBuilder> spaces,
-          List<Rule> brules) {
+          List<Rule> ruleList) {
     if (paragraph == null) {
       return null;
     }
-    List<String> segments = breakParagraph(lang, paragraph, brules);
+    assert(spaces != null);
+    assert(ruleList != null);
+
+    List<String> segments = breakParagraph(lang, paragraph, ruleList);
     List<String> sentences = new ArrayList<>(segments.size());
-    if (spaces == null) {
-      spaces = new ArrayList<>();
-    }
-    spaces.clear();
+   spaces.clear();
     for (String one : segments) {
       int len = one.length();
       int b = 0;
@@ -127,45 +131,42 @@ public final class Segmenter {
    * function was fed.
    *
    * @param paragraph the paragraph text
-   * @param brules list to store rules that account to breaks
+   * @param ruleList list to store rules that account to breaks
    */
   private static List<String> breakParagraph(Language lang, String paragraph,
-          List<Rule> brules) {
+          List<Rule> ruleList) {
     List<Rule> rules = Segmenter.srx.lookupRulesForLanguage(lang);
-    if (brules == null) {
-      brules = new ArrayList<>();
-    }
 
     // determining the applicable break positions
-    Set<BreakPosition> dontbreakpositions = new TreeSet<BreakPosition>();
-    Set<BreakPosition> breakpositions = new TreeSet<BreakPosition>();
+    Set<BreakPosition> noBreakPositions = new TreeSet<BreakPosition>();
+    Set<BreakPosition> breakPositions = new TreeSet<BreakPosition>();
     for (int i = rules.size() - 1; i >= 0; i--) {
       Rule rule = rules.get(i);
       List<BreakPosition> rulebreaks = getBreaks(paragraph, rule);
       if (rule.isBreakRule()) {
-        breakpositions.addAll(rulebreaks);
-        dontbreakpositions.removeAll(rulebreaks);
+        breakPositions.addAll(rulebreaks);
+        noBreakPositions.removeAll(rulebreaks);
       } else {
-        dontbreakpositions.addAll(rulebreaks);
-        breakpositions.removeAll(rulebreaks);
+        noBreakPositions.addAll(rulebreaks);
+        breakPositions.removeAll(rulebreaks);
       }
     }
-    breakpositions.removeAll(dontbreakpositions);
+    breakPositions.removeAll(noBreakPositions);
 
     // and now breaking the string according to the positions
     List<String> segments = new ArrayList<>();
-    brules.clear();
+    ruleList.clear();
     int prevpos = 0;
-    for (BreakPosition bposition : breakpositions) {
+    for (BreakPosition bposition : breakPositions) {
       String oneseg = paragraph.substring(prevpos, bposition.position);
       segments.add(oneseg);
-      brules.add(bposition.reason);
+      ruleList.add(bposition.reason);
       prevpos = bposition.position;
     }
     try {
       String oneseg = paragraph.substring(prevpos);
 
-            // Sometimes the last segment may be empty,
+      // Sometimes the last segment may be empty,
       // it happens for paragraphs like "Rains. "
       // So if it's an empty segment and there's a previous segment
       if (oneseg.trim().isEmpty() && !segments.isEmpty()) {

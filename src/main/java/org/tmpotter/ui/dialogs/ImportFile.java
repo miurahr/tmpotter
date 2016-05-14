@@ -97,8 +97,8 @@ public class ImportFile  extends JDialog implements ActionListener {
   private final JXLabel labelSourceLang = new JXLabel();
   private final JXLabel labelTranslationLang = new JXLabel();
   private final JComboBox comboOriginalEncoding    = new JComboBox( AppConstants
-          .straEncodings );
-  private final int numEncodings = AppConstants.straEncodings.length;
+          .straEncodings.toArray() );
+  private final int numEncodings = AppConstants.straEncodings.size();
 
   public File userPathFile = new File( System.getProperty( "user.dir" ) );
 

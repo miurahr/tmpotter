@@ -52,8 +52,6 @@ import javax.swing.JMenuBar;
 public class AppComponentsManager {
   private final MainWindow mainWindow;
   JXMultiSplitPane msp;
-  JXPanel controlPane;
-  JXPanel editPane;
   //  Statusbar
   protected JXStatusBar panelStatusBar;
   protected JXLabel labelStatusBar;
@@ -68,8 +66,6 @@ public class AppComponentsManager {
    */
   public AppComponentsManager(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
-    controlPane = new JXPanel();
-    editPane = new JXPanel();
     labelStatusBar = new JXLabel(" ");
     panelStatusBar = new JXStatusBar();
     msp = new JXMultiSplitPane();

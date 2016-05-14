@@ -154,7 +154,7 @@ public final class Encodings extends JDialog implements ActionListener {
   private final JPanel    panel         = new JPanel();
   private final JButton   buttonOk      = new JButton();
   private final JLabel    labelEncoding = new JLabel();
-  private final JComboBox comboEncoding = new JComboBox( AppConstants.straEncodings );
+  private final JComboBox comboEncoding = new JComboBox( AppConstants.straEncodings.toArray() );
   // End of variables declaration
 }
 

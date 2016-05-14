@@ -26,6 +26,9 @@ package org.tmpotter.util;
 import static org.tmpotter.util.Localization.getString;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -77,9 +80,9 @@ public class AppConstants {
   public static final String ENCODINGS_ISO8859_1   = "ISO-8859-1";
   public static final String ENCODINGS_CP932       = "CP932";
   public static final String ENCODINGS_DEFAULT     = "Default";
-  public static final String [] straEncodings = {
-      ENCODINGS_UTF8, ENCODINGS_ISO8859_1, ENCODINGS_CP932, ENCODINGS_DEFAULT
-  };
+  public static final List<String> straEncodings = Collections.unmodifiableList(
+      new ArrayList<String>() {{add(ENCODINGS_UTF8);
+          add(ENCODINGS_ISO8859_1); add(ENCODINGS_CP932); add(ENCODINGS_DEFAULT);}});
   public static final String TAG_REPLACEMENT = "\b";
   
   /**

@@ -26,6 +26,7 @@ package org.tmpotter.segmentation;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,8 +51,8 @@ public class SegmenterTest {
             + "For general information, see [[Wikipedia:Android_(operating_system"
             + ")|Wikipedia's page on Android]] "
             + "or [https://android.com/ android.com].";
-    List<StringBuilder> spaces = null;
-    List<Rule> brules = null;
+    List<StringBuilder> spaces = new ArrayList<>();
+    List<Rule> brules = new ArrayList<>();
     List<String> expResult = Arrays.asList(
             "'''Android''' is a [[Linux]]-based operating system for"
             + "mobile phones and other mobile devices.",

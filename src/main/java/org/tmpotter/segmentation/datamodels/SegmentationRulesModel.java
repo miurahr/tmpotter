@@ -113,6 +113,8 @@ public class SegmentationRulesModel extends AbstractTableModel {
           fireException(pse);
         }
         break;
+      default:
+        fireException(new IllegalArgumentException("Illegal column index."));
     }
   }
 

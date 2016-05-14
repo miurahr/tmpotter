@@ -50,7 +50,7 @@ public final class AquaAdapter implements InvocationHandler {
 
   public enum AquaEvent { ABOUT, OPEN, PREFERENCES, QUIT }
 
-  protected static final String[] _straAquaEvents = {
+  static final String[] _straAquaEvents = {
     "handleAbout",
     "handleOpenFile",
     "handlePreferences",

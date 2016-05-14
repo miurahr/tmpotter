@@ -355,8 +355,6 @@ public class TmData {
   void undoRemove() {
     SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
     int tam = ultChanges.getTam();
-    int[] filasEliminadas;
-    filasEliminadas = ultChanges.getNumEliminada();
     while (tam > 0) {
       documentTranslation.add(documentTranslation.size(), "");
       documentOriginal.add(documentOriginal.size(), "");
@@ -366,7 +364,7 @@ public class TmData {
     int cont2 = documentOriginal.size() - 1;
     tam = ultChanges.getTam();
     while (cont2 >= tam && tam > 0) {
-      if (cont2 == filasEliminadas[tam - 1]) {
+      if (cont2 == ultChanges.getNumEliminada(tam - 1)) {
         documentTranslation.set(cont2, "");
         documentOriginal.set(cont2, "");
         tam--;

@@ -29,6 +29,8 @@
 
 package org.tmpotter.filters;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.tmpotter.util.EncodingDetector;
 import org.tmpotter.util.TranslationException;
 
@@ -74,6 +76,8 @@ public abstract class AbstractFilter implements IFilter {
   /**
    * Options for processing time.
    */
+  @SuppressFBWarnings(value={"URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"},
+      justification="It may be used in concrete filter implementation")
   protected Map<String, String> processOptions;
 
   /**

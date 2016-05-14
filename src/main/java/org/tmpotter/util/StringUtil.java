@@ -51,39 +51,29 @@ public class StringUtil {
    *  @param cad : la cadena que hay que formatear
    *  @return cad con la cadena formateada
    */
-  public static String formatText( final String cad ) {
-    String palabra = "";
-    String newCad  = "";
-    String frase  = "";
+  public static String formatText(final String cad) {
+    StringBuffer newCad  = new StringBuffer();
+    StringBuffer frase  = new StringBuffer();
 
-    if ( cad.length() > _KTAMTEXTAREA ) {
-      final StringTokenizer linea = new StringTokenizer( cad, " " );
-
+    if (cad.length() > _KTAMTEXTAREA) {
+      final StringTokenizer linea = new StringTokenizer(cad, " ");
       while ( linea.hasMoreTokens() ) {
-        palabra = linea.nextToken();
-        if ( ( palabra.length() + frase.length() ) < _KTAMTEXTAREA ) {
-          //frase = frase + " ";
-          //frase = frase + palabra;
-          frase = frase + " " + palabra;
+        String palabra = linea.nextToken();
+        if ((palabra.length() + frase.length()) < _KTAMTEXTAREA) {
+          frase.append(" ").append(palabra);
         } else {
-          if ( newCad.equals( "" ) ) {
+          if (newCad.toString().equals("")) {
             newCad = frase;
           } else {
-            newCad = newCad + "\n" + frase;
+            newCad.append("\n").append(frase);
           }
-          frase = "";
-          frase = palabra;
+          frase = new StringBuffer(palabra);
         }
-      }//  while()
-
-      frase = frase.trim();
-      newCad = newCad.trim();
-      newCad = newCad + "\n" + frase;
-
-      return ( newCad );
+      }
+      return (new StringBuffer(newCad.toString().trim()).append("\n")
+            .append(frase.toString().trim())).toString();
     }
-
-    return ( cad );
+    return cad;
   }
 
   /**
@@ -93,23 +83,15 @@ public class StringUtil {
    *  @return cad con la frase
    */
   public static String restoreText( final String cad ) {
-    String newCad = "";
-    String palabra = "";
-
+    StringBuffer newCad = new StringBuffer();
     if ( cad.length() > _KTAMTEXTAREA ) {
-      final StringTokenizer linea = new StringTokenizer( cad, "\n" );
-
+      final StringTokenizer linea = new StringTokenizer(cad, "\n");
       while ( linea.hasMoreTokens() ) {
-        palabra = linea.nextToken();
-        newCad = newCad + " " + palabra;
+        newCad.append(" ").append(linea.nextToken());
       }
-
-      newCad = newCad.trim();
-
-      return ( newCad );
+      return (newCad.toString().trim());
     }
-
-    return ( cad );
+    return (cad);
   }
 
   /**
