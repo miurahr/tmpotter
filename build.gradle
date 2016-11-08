@@ -40,10 +40,10 @@ apply plugin: 'application'
 mainClassName = 'org.tmpotter.Main'
 applicationName = 'tmpotter'
 
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-[compileJava, compileTestJava]*.options*.bootClasspath = "$JDK7_HOME/jre/lib/rt.jar"
+[compileJava, compileTestJava]*.options*.bootClasspath = "$JDK8_HOME/jre/lib/rt.jar"
 compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 checkstyle {
   config = resources.text.fromFile("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
@@ -70,11 +70,15 @@ repositories {
 dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
           'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
+          'org.slf4j:slf4j-api:1.7.21',
           'com.google.code.findbugs:annotations:3.0.1'
   compile fileTree(dir: 'libs', include: '*.jar')
+  runtime 'org.slf4j:slf4j-sdk14:1.7.21'
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1',
-          'commons-io:commons-io:2.4'
+          'commons-io:commons-io:2.4',
+	  'org.slf4j:slf4j-nop:1.7.21'
+
 }
 
 test {

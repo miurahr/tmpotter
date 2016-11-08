@@ -423,15 +423,6 @@ final class MenuHandler {
           System.out.println(getString("OTP.LNF.INIT.ERROR"));
         }
         break;
-      case LIQUID:
-        try {
-          UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
-          com.birosoft.liquid.LiquidLookAndFeel.setLiquidDecorations(false);
-          SwingUtilities.updateComponentTreeUI(mainWindow);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        break;
       case METAL:
         try {
           UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
