@@ -48,7 +48,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 
-
 /**
  * Action Handlers.
  *
@@ -56,325 +55,324 @@ import javax.swing.table.TableColumn;
  */
 final class MenuHandler {
 
-  private final MainWindow mainWindow;
-  private ModelMediator modelMediator;
-  private final TmData tmData;
+    private final MainWindow mainWindow;
+    private ModelMediator modelMediator;
+    private final TmData tmData;
 
-  public MenuHandler(final MainWindow mainWindow, TmData tmData) {
-    this.mainWindow = mainWindow;
-    this.tmData = tmData;
-  }
-
-  public void setModelMediator(ModelMediator mediator) {
-    this.modelMediator = mediator;
-  }
-
-  // proxy for aqua
-  public boolean displayAbout() {
-    menuItemHelpAboutActionPerformed();
-    return true;
-  }
-  
-  public void menuItemHelpAboutActionPerformed() {
-    new About(mainWindow, true).setVisible(true);
-  }
-
-  /**
-   * Open dialog to select the files we want to align/convert.
-   *
-   */
-  public void menuItemFileOpenActionPerformed() {
-    final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(RuntimePreferences.getUserHome());
-    dlg.setModal(true);
-    dlg.setVisible(true);
-    if (!dlg.isClosed()) {
-      RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
-      dlg.dispose();
+    public MenuHandler(final MainWindow mainWindow, TmData tmData) {
+        this.mainWindow = mainWindow;
+        this.tmData = tmData;
     }
-  }
 
-  /**
-   * Open dialog to select the files we want to align/convert.
-   *
-   */
-  public void menuItemFileTextOpenActionPerformed() {
-    final OpenTexts dlg = new OpenTexts();
-    dlg.setPath(RuntimePreferences.getUserHome());
-    dlg.setModal(true);
-    dlg.setVisible(true);
-    if (!dlg.isClosed()) {
-      String sourceLocale = dlg.getSourceLocale();
-      String targetLocale = dlg.getTargetLocale();
-      String sourceEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
-      String targetEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
-
-      RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(), sourceLocale,
-          sourceEncoding);
-      modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(), targetLocale,
-          targetEncoding);
-      mainWindow.tmView.buildDisplay();
-      Segmenter.setSrx(Preferences.getSrx());
-      try {
-        modelMediator.onImportFile("BiTextFilter");
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
-                getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
-        mainWindow.dispose();
-      }
-      initializeTmView(mainWindow);
-      mainWindow.updateTmView();
-      mainWindow.toolBar.enableButtons(true);
-      mainWindow.enableEditMenus(true);
-      mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.enableMenuItemFileSaveAs(true);
-      mainWindow.enableMenuItemFileClose(true);
-      dlg.dispose();
+    public void setModelMediator(ModelMediator mediator) {
+        this.modelMediator = mediator;
     }
-  }
 
-  /**
-   * Open dialog to select the Po file.
-   *
-   */
-  public void menuItemImportActionPerformed() {
-    final ImportFile dlg = new ImportFile(null, "", false);
-    dlg.setPath(RuntimePreferences.getUserHome());
-    dlg.setModal(true);
-    dlg.setVisible(true);
-    if (!dlg.isClosed()) {
-      String sourceLocale = dlg.getSourceLocale();
-      String targetLocale = dlg.getTargetLocale();
-      String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
-
-      RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(), sourceLocale,
-          encoding);
-      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);
-      mainWindow.tmView.buildDisplay();
-      Segmenter.setSrx(Preferences.getSrx());
-      try {
-        modelMediator.onImportFile("PoFilter");
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
-                getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
-        mainWindow.dispose();
-      }
-      initializeTmView(mainWindow);
-      mainWindow.updateTmView();
-      mainWindow.toolBar.enableButtons(true);
-      mainWindow.enableEditMenus(true);
-      mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.enableMenuItemFileSaveAs(true);
-      mainWindow.enableMenuItemFileClose(true);
-      dlg.dispose();
+    // proxy for aqua
+    public boolean displayAbout() {
+        menuItemHelpAboutActionPerformed();
+        return true;
     }
-  }
 
-  /**
-   * Initialize alignment view.
-   *
-   * <p>
-   * Extracts from the TMX those lines having information which is useful for
-   * alignment, and puts them in the corresponding ArrayList's The left part in
-   * _alstOriginal corresponds to source text lines and the right part in
-   * _alstTranslation corresponds to the target text lines. Initialize the table
-   * with one line for each left and right line
-   *
-   */
-  protected void initializeTmView(MainWindow mainWindow) {
-    TableColumn col;
-    col = mainWindow.tmView.getColumnModel().getColumn(1);
-    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-            + mainWindow.prop.getFilePathOriginal().getName());
-    col = mainWindow.tmView.getColumnModel().getColumn(2);
-    col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-            + mainWindow.prop.getFilePathTranslation().getName());
-    mainWindow.tmView.setColumnHeaderView();
-    mainWindow.updateTmView();
-    tmData.topArrays = tmData.documentOriginal.size() - 1;
-    tmData.indexCurrent = 0;
-  }
-
-  public void menuItemFileSaveAsActionPerformed() {
-    saveProject();
-  }
-
-  //  ToDo: implement proper functionality; not used currently
-  public void menuItemFileSaveActionPerformed() {
-    saveProject();
-  }
-
-  /**
-   * Necessary capabilities to store the bitext.
-   *
-   */
-  private void saveProject() {
-    for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
-      if (tmData.documentOriginal.get(cont).equals("")
-              && tmData.documentTranslation.get(cont).equals("")) {
-        tmData.documentOriginal.remove(cont);
-        tmData.documentTranslation.remove(cont);
-      }
+    public void menuItemHelpAboutActionPerformed() {
+        new About(mainWindow, true).setVisible(true);
     }
-    try {
-      String outFileName = mainWindow.prop.getFilePathOriginal().getName();
-      String outFileNameBase = outFileName.substring(0,
-              mainWindow.prop.getFilePathOriginal().getName().length() - 4);
-      boolean save = false;
-      boolean cancel = false;
-      File outFile = new File(outFileNameBase.concat(tmData
-              .stringLangTranslation + ".tmx"));
-      while (!save && !cancel) {
-        final JFileChooser fc = new JFileChooser();
-        boolean nameOfUser = false;
-        while (!nameOfUser) {
-          fc.setLocation(230, 300);
-          fc.setCurrentDirectory(RuntimePreferences.getUserHome());
-          fc.setDialogTitle(getString("DLG.SAVEAS"));
-          fc.setMultiSelectionEnabled(false);
-          fc.setSelectedFile(outFile);
-          fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-          RuntimePreferences.setUserHome(fc.getCurrentDirectory());
-          int returnVal;
-          returnVal = fc.showSaveDialog(mainWindow);
-          if (returnVal == JFileChooser.APPROVE_OPTION) {
-            returnVal = 1;
-            outFile = fc.getSelectedFile();
-            if (!outFile.getName().endsWith(".tmx")) {
-              outFileName = outFile.getName().concat(".tmx");
-              outFile = new File(outFileName);
+
+    /**
+     * Open dialog to select the files we want to align/convert.
+     *
+     */
+    public void menuItemFileOpenActionPerformed() {
+        final OpenTmx dlg = new OpenTmx(null, "", false);
+        dlg.setPath(RuntimePreferences.getUserHome());
+        dlg.setModal(true);
+        dlg.setVisible(true);
+        if (!dlg.isClosed()) {
+            RuntimePreferences.setUserHome(dlg.getPath());
+            modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
+            dlg.dispose();
+        }
+    }
+
+    /**
+     * Open dialog to select the files we want to align/convert.
+     *
+     */
+    public void menuItemFileTextOpenActionPerformed() {
+        final OpenTexts dlg = new OpenTexts();
+        dlg.setPath(RuntimePreferences.getUserHome());
+        dlg.setModal(true);
+        dlg.setVisible(true);
+        if (!dlg.isClosed()) {
+            String sourceLocale = dlg.getSourceLocale();
+            String targetLocale = dlg.getTargetLocale();
+            String sourceEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
+            String targetEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
+
+            RuntimePreferences.setUserHome(dlg.getPath());
+            modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(), sourceLocale,
+                    sourceEncoding);
+            modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(), targetLocale,
+                    targetEncoding);
+            mainWindow.tmView.buildDisplay();
+            Segmenter.setSrx(Preferences.getSrx());
+            try {
+                modelMediator.onImportFile("BiTextFilter");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+                        getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+                mainWindow.dispose();
             }
-            nameOfUser = true;
-          } else {
-            nameOfUser = true;
-            cancel = true;
-          }
+            initializeTmView(mainWindow);
+            mainWindow.updateTmView();
+            mainWindow.toolBar.enableButtons(true);
+            mainWindow.enableEditMenus(true);
+            mainWindow.toolBar.setUndoEnabled(false);
+            mainWindow.enableMenuItemFileSaveAs(true);
+            mainWindow.enableMenuItemFileClose(true);
+            dlg.dispose();
         }
-        int selected;
-        if (nameOfUser && !cancel) {
-          if (outFile.exists()) {
-            final Object[] options = {getString("BTN.SAVE"),
-                    getString("BTN.CANCEL")};
-            selected = JOptionPane.showOptionDialog(mainWindow,
-                    getString("MSG.FILE_EXISTS"), getString("MSG.WARNING"),
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[0]);
-            if (selected == 0) {
-              save = true;
-            }
-          } else {
-            save = true;
-          }
-        }
-      }
-      String encoding = "UTF-8";
-      if (save) {
-        Encodings dlgEnc = new Encodings();
-        dlgEnc.setVisible(true);
-        if (!dlgEnc.isClosed()) {
-          encoding = dlgEnc.getComboBoxEncoding();
-          dlgEnc.dispose();
-        }
-      }
-      TmxWriter.writeTmxFileBody(outFile, tmData.documentOriginal,
-              tmData.stringLangOriginal, tmData.documentTranslation,
-              tmData.stringLangTranslation, encoding);
-    } catch (IOException ex) {
-      JOptionPane.showMessageDialog(mainWindow,
-              tmData.stringLangOriginal, tmData.stringLangTranslation,
-              JOptionPane.ERROR_MESSAGE);
-      mainWindow.dispose();
     }
-  }
 
-  /**
-   * Actions to perform when closing alignment/editing session.
-   *
-   * <p>Leaves the text
-   * as it was so that it can be processed later.
-   */
-  public void menuItemFileCloseActionPerformed() {
-    clear();
-    mainWindow.toolBar.enableButtons(false);
-    mainWindow.enableEditMenus(false);
-    mainWindow.enableMenuItemFileSave(false);
-    mainWindow.enableMenuItemFileSaveAs(false);
-    mainWindow.enableMenuItemFileClose(false);
-  }
+    /**
+     * Open dialog to select the Po file.
+     *
+     */
+    public void menuItemImportActionPerformed() {
+        final ImportFile dlg = new ImportFile(null, "", false);
+        dlg.setPath(RuntimePreferences.getUserHome());
+        dlg.setModal(true);
+        dlg.setVisible(true);
+        if (!dlg.isClosed()) {
+            String sourceLocale = dlg.getSourceLocale();
+            String targetLocale = dlg.getTargetLocale();
+            String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
 
-  /**
-   * clear empty segment.
-   *
-   * <p>Initialize values to start the validation of the following alignment
-   */
-  private void clear() {
-    modelMediator.tmDataClear();
-    mainWindow.prop.clear();
-    modelMediator.setUndoEnabled(false);
-    modelMediator.tmViewClear();
-    modelMediator.editSegmentClear();
-  }
+            RuntimePreferences.setUserHome(dlg.getPath());
+            modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(), sourceLocale,
+                    encoding);
+            modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);
+            mainWindow.tmView.buildDisplay();
+            Segmenter.setSrx(Preferences.getSrx());
+            try {
+                modelMediator.onImportFile("PoFilter");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+                        getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+                mainWindow.dispose();
+            }
+            initializeTmView(mainWindow);
+            mainWindow.updateTmView();
+            mainWindow.toolBar.enableButtons(true);
+            mainWindow.enableEditMenus(true);
+            mainWindow.toolBar.setUndoEnabled(false);
+            mainWindow.enableMenuItemFileSaveAs(true);
+            mainWindow.enableMenuItemFileClose(true);
+            dlg.dispose();
+        }
+    }
 
-  /**
-   * Quit application.
-   *
-   * @return boolean - OS X Aqua integration only
-   */
-  public boolean quit() {
-    menuItemFileQuitActionPerformed();
-    return true;
-  }
-  
-  public void menuItemFileQuitActionPerformed() {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        mainWindow.dispose();
-      }
-    });
-  }
+    /**
+     * Initialize alignment view.
+     *
+     * <p>
+     * Extracts from the TMX those lines having information which is useful for alignment, and puts
+     * them in the corresponding ArrayList's The left part in _alstOriginal corresponds to source
+     * text lines and the right part in _alstTranslation corresponds to the target text lines.
+     * Initialize the table with one line for each left and right line
+     *
+     */
+    protected void initializeTmView(MainWindow mainWindow) {
+        TableColumn col;
+        col = mainWindow.tmView.getColumnModel().getColumn(1);
+        col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
+                + mainWindow.prop.getFilePathOriginal().getName());
+        col = mainWindow.tmView.getColumnModel().getColumn(2);
+        col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
+                + mainWindow.prop.getFilePathTranslation().getName());
+        mainWindow.tmView.setColumnHeaderView();
+        mainWindow.updateTmView();
+        tmData.topArrays = tmData.documentOriginal.size() - 1;
+        tmData.indexCurrent = 0;
+    }
 
-  public void menuItemUndoActionPerformed() {
-    modelMediator.undoChanges();
-    modelMediator.onUndo();
-  }
+    public void menuItemFileSaveAsActionPerformed() {
+        saveProject();
+    }
 
-  public void menuItemRedoActionPerformed() {
-    
-  }
+    //  ToDo: implement proper functionality; not used currently
+    public void menuItemFileSaveActionPerformed() {
+        saveProject();
+    }
 
-  public void menuItemOriginalDeleteActionPerformed() {
-    modelMediator.onOriginalDelete();
-  }
+    /**
+     * Necessary capabilities to store the bitext.
+     *
+     */
+    private void saveProject() {
+        for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
+            if (tmData.documentOriginal.get(cont).equals("")
+                    && tmData.documentTranslation.get(cont).equals("")) {
+                tmData.documentOriginal.remove(cont);
+                tmData.documentTranslation.remove(cont);
+            }
+        }
+        try {
+            String outFileName = mainWindow.prop.getFilePathOriginal().getName();
+            String outFileNameBase = outFileName.substring(0,
+                    mainWindow.prop.getFilePathOriginal().getName().length() - 4);
+            boolean save = false;
+            boolean cancel = false;
+            File outFile = new File(outFileNameBase.concat(tmData.stringLangTranslation + ".tmx"));
+            while (!save && !cancel) {
+                final JFileChooser fc = new JFileChooser();
+                boolean nameOfUser = false;
+                while (!nameOfUser) {
+                    fc.setLocation(230, 300);
+                    fc.setCurrentDirectory(RuntimePreferences.getUserHome());
+                    fc.setDialogTitle(getString("DLG.SAVEAS"));
+                    fc.setMultiSelectionEnabled(false);
+                    fc.setSelectedFile(outFile);
+                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    RuntimePreferences.setUserHome(fc.getCurrentDirectory());
+                    int returnVal;
+                    returnVal = fc.showSaveDialog(mainWindow);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        returnVal = 1;
+                        outFile = fc.getSelectedFile();
+                        if (!outFile.getName().endsWith(".tmx")) {
+                            outFileName = outFile.getName().concat(".tmx");
+                            outFile = new File(outFileName);
+                        }
+                        nameOfUser = true;
+                    } else {
+                        nameOfUser = true;
+                        cancel = true;
+                    }
+                }
+                int selected;
+                if (nameOfUser && !cancel) {
+                    if (outFile.exists()) {
+                        final Object[] options = {getString("BTN.SAVE"),
+                            getString("BTN.CANCEL")};
+                        selected = JOptionPane.showOptionDialog(mainWindow,
+                                getString("MSG.FILE_EXISTS"), getString("MSG.WARNING"),
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                                null, options, options[0]);
+                        if (selected == 0) {
+                            save = true;
+                        }
+                    } else {
+                        save = true;
+                    }
+                }
+            }
+            String encoding = "UTF-8";
+            if (save) {
+                Encodings dlgEnc = new Encodings();
+                dlgEnc.setVisible(true);
+                if (!dlgEnc.isClosed()) {
+                    encoding = dlgEnc.getComboBoxEncoding();
+                    dlgEnc.dispose();
+                }
+            }
+            TmxWriter.writeTmxFileBody(outFile, tmData.documentOriginal,
+                    tmData.stringLangOriginal, tmData.documentTranslation,
+                    tmData.stringLangTranslation, encoding);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(mainWindow,
+                    tmData.stringLangOriginal, tmData.stringLangTranslation,
+                    JOptionPane.ERROR_MESSAGE);
+            mainWindow.dispose();
+        }
+    }
 
-  public void menuItemOriginalJoinActionPerformed() {
-    modelMediator.onOriginalJoin();
-  }
+    /**
+     * Actions to perform when closing alignment/editing session.
+     *
+     * <p>
+     * Leaves the text as it was so that it can be processed later.
+     */
+    public void menuItemFileCloseActionPerformed() {
+        clear();
+        mainWindow.toolBar.enableButtons(false);
+        mainWindow.enableEditMenus(false);
+        mainWindow.enableMenuItemFileSave(false);
+        mainWindow.enableMenuItemFileSaveAs(false);
+        mainWindow.enableMenuItemFileClose(false);
+    }
 
-  public void menuItemOriginalSplitActionPerformed() {
-    modelMediator.onOriginalSplit();
-  }
+    /**
+     * clear empty segment.
+     *
+     * <p>
+     * Initialize values to start the validation of the following alignment
+     */
+    private void clear() {
+        modelMediator.tmDataClear();
+        mainWindow.prop.clear();
+        modelMediator.setUndoEnabled(false);
+        modelMediator.tmViewClear();
+        modelMediator.editSegmentClear();
+    }
 
-  public void menuItemTranslationDeleteActionPerformed() {
-    modelMediator.onTranslationDelete();
-  }
+    /**
+     * Quit application.
+     *
+     * @return boolean - OS X Aqua integration only
+     */
+    public boolean quit() {
+        menuItemFileQuitActionPerformed();
+        return true;
+    }
 
-  public void menuItemTranslationJoinActionPerformed() {
-    modelMediator.onTranslationJoin();
-  }
+    public void menuItemFileQuitActionPerformed() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                mainWindow.dispose();
+            }
+        });
+    }
 
-  public void menuItemTranslationSplitActionPerformed() {
-    modelMediator.onTranslationSplit();
-  }
+    public void menuItemUndoActionPerformed() {
+        modelMediator.undoChanges();
+        modelMediator.onUndo();
+    }
 
-  public void menuItemRemoveBlankRowsActionPerformed() {
-    modelMediator.onRemoveBlankRows();
-  }
+    public void menuItemRedoActionPerformed() {
 
-  public void menuItemTuSplitActionPerformed() {
-    modelMediator.onTuSplit();
-  }
+    }
+
+    public void menuItemOriginalDeleteActionPerformed() {
+        modelMediator.onOriginalDelete();
+    }
+
+    public void menuItemOriginalJoinActionPerformed() {
+        modelMediator.onOriginalJoin();
+    }
+
+    public void menuItemOriginalSplitActionPerformed() {
+        modelMediator.onOriginalSplit();
+    }
+
+    public void menuItemTranslationDeleteActionPerformed() {
+        modelMediator.onTranslationDelete();
+    }
+
+    public void menuItemTranslationJoinActionPerformed() {
+        modelMediator.onTranslationJoin();
+    }
+
+    public void menuItemTranslationSplitActionPerformed() {
+        modelMediator.onTranslationSplit();
+    }
+
+    public void menuItemRemoveBlankRowsActionPerformed() {
+        modelMediator.onRemoveBlankRows();
+    }
+
+    public void menuItemTuSplitActionPerformed() {
+        modelMediator.onTuSplit();
+    }
 }
