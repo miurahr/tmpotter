@@ -269,7 +269,7 @@ final class MenuHandler {
             }
             String encoding = "UTF-8";
             if (save) {
-                Encodings dlgEnc = new Encodings();
+                Encodings dlgEnc = new Encodings(mainWindow, true);
                 dlgEnc.setVisible(true);
                 if (!dlgEnc.isClosed()) {
                     encoding = dlgEnc.getComboBoxEncoding();
