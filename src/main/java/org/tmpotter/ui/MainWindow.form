@@ -142,9 +142,11 @@
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemAbout">
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemHelpAbout">
               <Properties>
                 <Property name="text" type="java.lang.String" value="About"/>
+                <Property name="actionCommand" type="java.lang.String" value=""/>
+                <Property name="name" type="java.lang.String" value="" noResource="true"/>
               </Properties>
             </MenuItem>
           </SubComponents>

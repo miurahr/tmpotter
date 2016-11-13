@@ -20,12 +20,14 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -43,6 +45,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.table.TableColumn;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMultiSplitPane;
@@ -70,7 +73,8 @@ import org.tmpotter.util.gui.AquaAdapter;
  *
  * @author Hiroshi Miura
  */
-public class MainWindow extends JFrame implements ModelMediator, WindowListener {
+public class MainWindow extends JFrame implements ModelMediator, ActionListener,
+	MenuListener, WindowListener {
 
 	private static final Logger LOGGER = LoggerFactory
 		.getLogger(MainWindow.class);
@@ -163,6 +167,7 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 				if (JMenuItem.class.isAssignableFrom(f.getType())) {
 					JMenuItem menuItem = (JMenuItem) f.get(this);
 					menuItem.setActionCommand(f.getName());
+					menuItem.addActionListener(this);
 				}
 			}
 		} catch (IllegalAccessException ex) {
@@ -771,7 +776,7 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
                 menuOptions = new javax.swing.JMenu();
                 menuItemSettings = new javax.swing.JMenuItem();
                 menuHelp = new javax.swing.JMenu();
-                menuItemAbout = new javax.swing.JMenuItem();
+                menuItemHelpAbout = new javax.swing.JMenuItem();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setMinimumSize(new java.awt.Dimension(640, 480));
@@ -850,8 +855,10 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 
                 menuHelp.setText("Help");
 
-                menuItemAbout.setText("About");
-                menuHelp.add(menuItemAbout);
+                menuItemHelpAbout.setText("About");
+                menuItemHelpAbout.setActionCommand("");
+                menuItemHelpAbout.setName(""); // NOI18N
+                menuHelp.add(menuItemHelpAbout);
 
                 jMenuBar1.add(menuHelp);
 
@@ -905,7 +912,6 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
         protected javax.swing.JMenu menuEdit;
         protected javax.swing.JMenu menuFile;
         private javax.swing.JMenu menuHelp;
-        private javax.swing.JMenuItem menuItemAbout;
         private javax.swing.JMenuItem menuItemFileClose;
         private javax.swing.JMenuItem menuItemFileImport;
         private javax.swing.JMenuItem menuItemFileOpen;
@@ -913,6 +919,7 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
         private javax.swing.JMenuItem menuItemFileSave;
         private javax.swing.JMenuItem menuItemFileSaveAs;
         private javax.swing.JMenuItem menuItemFileTextOpen;
+        private javax.swing.JMenuItem menuItemHelpAbout;
         private javax.swing.JMenuItem menuItemOriginalDelete;
         private javax.swing.JMenuItem menuItemOriginalJoin;
         private javax.swing.JMenuItem menuItemOriginalSplit;
