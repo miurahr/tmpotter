@@ -77,8 +77,8 @@ public class Icons {
 
   protected ImageIcon getDesktopIcon(final String iconName, MainWindow mainWindow) {
     if (Platform.isMacOsx()) {
-      return mainWindow.mainMenu.getIcon("desktop/osx/" + iconName);
+      return Icons.getIcon("desktop/osx/" + iconName);
     }
-    return mainWindow.mainMenu.getIcon("desktop/" + iconName);
+    return Icons.getIcon("desktop/" + iconName);
   }
 }

@@ -57,42 +57,6 @@ public class WindowFontManager {
   }
   
   /**
-   * User interface components font mutator.
-   *
-   * <p>Acts as delegate for
-   * setUserInterfaceFont()
-   *
-   * @param uiFont UI font to be set
-   */
-  private void setUiFonts(final Font uiFont) {
-    mainWindow.mainMenu.menuFile.setFont(uiFont);
-    mainWindow.mainMenu.menuItemFileOpen.setFont(uiFont);
-    mainWindow.mainMenu.menuItemFileTextOpen.setFont(uiFont);
-    mainWindow.mainMenu.menuItemFileSave.setFont(uiFont);
-    mainWindow.mainMenu.menuItemFileSaveAs.setFont(uiFont);
-    mainWindow.mainMenu.menuItemFileClose.setFont(uiFont);
-    if (!Platform.isMacOsx()) {
-      mainWindow.mainMenu.menuItemFileQuit.setFont(uiFont);
-    }
-    mainWindow.mainMenu.menuSettings.setFont(uiFont);
-    mainWindow.mainMenu.menuItemSettingsFonts.setFont(uiFont);
-    if (!Platform.isMacOsx()) {
-      mainWindow.mainMenu.menuItemLaf.setFont(uiFont);
-      mainWindow.mainMenu.menuItemLafLiquid.setFont(uiFont);
-      mainWindow.mainMenu.menuItemLafMetal.setFont(uiFont);
-      mainWindow.mainMenu.menuItemLafNimbus.setFont(uiFont);
-      mainWindow.mainMenu.menuItemLafSystem.setFont(uiFont);
-      if (!Platform.isWindows()) {
-        mainWindow.mainMenu.menuItemLafGtk.setFont(uiFont);
-      }
-    }
-    mainWindow.mainMenu.menuHelp.setFont(uiFont);
-    if (!Platform.isMacOsx()) {
-      mainWindow.mainMenu.menuItemHelpAbout.setFont(uiFont);
-    }
-  }
-
-  /**
    * Font style accessor.
    *
    * @param strFontStyle font style string
@@ -222,22 +186,6 @@ public class WindowFontManager {
   }
 
   /**
-   * User interface font mutator.
-   *
-   * @param font UI font
-   */
-  public final void setUiFont(final Font font) {
-    uiFont = font;
-    if (uiFont == null) {
-      final String strFontName = "Serif";
-      final String strFontStyle = "Plain";
-      final int iFontSize = 11;
-      uiFont = new Font(strFontName, getFontStyle(strFontStyle), iFontSize);
-    }
-    setUiFonts(uiFont);
-  }
-
-  /**
    * Original editor font accessor.
    *
    * @return font
@@ -291,7 +239,6 @@ public class WindowFontManager {
    * @param font to be configured
    */
   public final void setFonts(final Font font) {
-    setUiFont(font);
     setTableFont(font);
     setTableHeaderFont(font);
     setSourceEditorFont(font);

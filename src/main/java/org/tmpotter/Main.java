@@ -29,18 +29,15 @@ package org.tmpotter;
 import org.tmpotter.ui.Icons;
 import org.tmpotter.ui.MainWindow;
 import org.tmpotter.ui.SplashScreen;
-import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.gui.AquaAdapter;
-
-import java.util.Date;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -55,7 +52,6 @@ public class Main {
   public Main() {
     setLnF();
     displaySplash();
-    echoStartMsg();
 
     final MainWindow windowMain = new MainWindow();
 
@@ -67,7 +63,7 @@ public class Main {
     });
   }
   
-  private static final Logger LOG = Logger.getLogger(Main.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   /**
    * main method.
@@ -78,16 +74,6 @@ public class Main {
     new Main();
   }
   
-  private void echoStartMsg() {
-    System.out.println("\n"
-        + ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
-        + "\n" + ";;  "
-        + AppConstants.getApplicationDisplayName()
-        + ", Locale: " + Locale.getDefault()
-        + ", " + new Date()
-        + "\n" );
-  }
-
   /** 
    * Set the Swing Look and Feel.
    */
@@ -111,7 +97,7 @@ public class Main {
             | IllegalAccessException 
             | InstantiationException 
             | UnsupportedLookAndFeelException cnfe) {
-      LOG.logrb(Level.INFO, "Main", "setLnF", "MW.ERROR.LOOK_AND_FEEL_EXCEPTION", "", cnfe);
+      //LOGGER.INFO(Main", "setLnF", "MW.ERROR.LOOK_AND_FEEL_EXCEPTION", "", cnfe);
     }
   }
 
@@ -125,7 +111,7 @@ public class Main {
           try {
             sleep(5000); 
           } catch (InterruptedException ie) {
-            LOG.log(Level.INFO, "Splash try to be Interrupted.");
+            LOGGER.info("Splash try to be Interrupted.");
           }
 
           splash.remove();

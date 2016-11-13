@@ -25,23 +25,33 @@ package org.tmpotter.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import static org.openide.awt.Mnemonics.setLocalizedText;
-import static org.tmpotter.util.Localization.getString;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.table.TableColumn;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXMultiSplitPane;
+import org.jdesktop.swingx.JXStatusBar;
+import org.jdesktop.swingx.MultiSplitLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.SegmentChanges;
@@ -71,23 +81,36 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 	protected final SegmentEditor editRightSegment = new SegmentEditor();
 	protected final TmView tmView = new TmView();
 
-	protected WindowFontManager fontManager = new WindowFontManager(this);
-	protected AppComponentsManager appComponentsManager = new AppComponentsManager(this);
 	protected TmData tmData = new TmData();
 	protected ProjectProperties prop = new ProjectProperties();
 	protected FilterManager filterManager = new FilterManager();
+
+	private JXMultiSplitPane msp;
+	//  Statusbar
+	protected JXStatusBar panelStatusBar;
+	protected JXLabel labelStatusBar;
+	private JXLabel tableRows;
 
 	/**
 	 * Creates new form MainFrame
 	 */
 	public MainWindow() {
 		initComponents();
+		setActionCommands();
 		tmView.setModelMediator(this);
 		toolBar.setModelMediator(this);
 		editLeftSegment.setModelMediator(this);
 		editRightSegment.setModelMediator(this);
 		menuHandler = new MenuHandler(this, tmData);
 		menuHandler.setModelMediator(this);
+		labelStatusBar = new JXLabel(" ");
+		panelStatusBar = new JXStatusBar();
+		msp = new JXMultiSplitPane();
+		tableRows = new JXLabel(" ");
+		makeUi();
+		getContentPane().add(toolBar, BorderLayout.NORTH);
+		getContentPane().add(msp);
+		getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
 		setTitle(AppConstants.getDisplayNameAndVersion());
 
 		if (Platform.isMacOsx()) {
@@ -95,7 +118,63 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 		}
 		setCloseHandler();
 		setMainFrameSize();
-		fontManager.setFonts(null);
+	}
+
+	protected void makeUi() {
+		// Make Status Bar
+		panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
+		panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
+		panelStatusBar.add(labelStatusBar, BorderLayout.SOUTH);
+		// Create a Multi Split Pane model
+		LinkedList<MultiSplitLayout.Node> editChildren = new LinkedList<>();
+		MultiSplitLayout.Leaf leaf1 = new MultiSplitLayout.Leaf("leftEdit");
+		leaf1.setWeight(0.5f);
+		MultiSplitLayout.Leaf leaf2 = new MultiSplitLayout.Leaf("rightEdit");
+		leaf2.setWeight(0.5f);
+		editChildren.add(leaf1);
+		editChildren.add(new MultiSplitLayout.Divider());
+		editChildren.add(leaf2);
+		MultiSplitLayout.Split edit = new MultiSplitLayout.Split();
+		edit.setRowLayout(true);
+		edit.setChildren(editChildren);
+		LinkedList<MultiSplitLayout.Node> rootChildren = new LinkedList<>();
+		MultiSplitLayout.Leaf leaf3 = new MultiSplitLayout.Leaf("view");
+		leaf3.setWeight(0.5f);
+		rootChildren.add(edit);
+		rootChildren.add(new MultiSplitLayout.Divider());
+		rootChildren.add(leaf3);
+		MultiSplitLayout.Split root = new MultiSplitLayout.Split();
+		root.setRowLayout(false);
+		root.setChildren(rootChildren);
+		msp.getMultiSplitLayout().setModel(root);
+		msp.getMultiSplitLayout().layoutByWeight(msp);
+		// Arrange views
+		msp.add(editLeftSegment, "leftEdit");
+		msp.add(editRightSegment, "rightEdit");
+		msp.add(tmView, "view");
+	}
+
+	/**
+	 * Set 'actionCommand' for all menu items.
+	 */
+	protected void setActionCommands() {
+		try {
+			for (Field f : this.getClass().getDeclaredFields()) {
+				if (JMenuItem.class.isAssignableFrom(f.getType())) {
+					JMenuItem menuItem = (JMenuItem) f.get(this);
+					menuItem.setActionCommand(f.getName());
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			throw new ExceptionInInitializerError(ex);
+		}
+	}
+
+	/**
+	 * Updates status labels.
+	 */
+	protected void updateStatusBar() {
+		tableRows.setText("" + tmView.getRowCount());
 	}
 
 	public final void enableEditMenus(boolean enabled) {
@@ -138,7 +217,7 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 			throw new IncompatibleClassChangeError(
 				"Error invoke method handler for main menu");
 		} catch (InvocationTargetException ex) {
-			LOGGER.SEVERE("Error execute method", ex);
+			LOGGER.info("Error execute method", ex);
 			throw new IncompatibleClassChangeError(
 				"Error invoke method handler for main menu");
 		}
@@ -152,6 +231,68 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 
 	public final void setUndoEnabled(boolean enabled) {
 		menuItemUndo.setEnabled(enabled);
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+		// Get item name from actionCommand.
+		String action = evt.getActionCommand();
+
+		//LOGGER.logRB("LOG_MENU_CLICK", action);
+		// Find method by item name.
+		String methodName = action + "ActionPerformed";
+		Method method = null;
+		try {
+			method = menuHandler.getClass().getMethod(methodName);
+		} catch (NoSuchMethodException ignore) {
+			try {
+				method = menuHandler.getClass()
+					.getMethod(methodName, Integer.TYPE);
+			} catch (NoSuchMethodException ex) {
+				throw new IncompatibleClassChangeError(
+					"Error invoke method handler for main menu: there is no method "
+					+ methodName);
+			}
+		}
+		// Call ...MenuItemActionPerformed method.
+		Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
+		try {
+			method.invoke(menuHandler, args);
+		} catch (IllegalAccessException ex) {
+			throw new IncompatibleClassChangeError(
+				"Error invoke method handler for main menu");
+		} catch (InvocationTargetException ex) {
+			LOGGER.info("Error execute method", ex);
+			throw new IncompatibleClassChangeError(
+				"Error invoke method handler for main menu");
+		}
+	}
+
+	public final JMenu getMenuFile() {
+		return menuFile;
+	}
+
+	public final JMenu getMenuEdit() {
+		return menuEdit;
+	}
+
+	public final JMenu getMenuOptions() {
+		return menuOptions;
+	}
+
+	public final JMenu getMenuHelp() {
+		return menuHelp;
+	}
+
+	public final void enableMenuItemFileSave(final boolean val) {
+		menuItemFileSave.setEnabled(val);
+	}
+
+	public final void enableMenuItemFileSaveAs(final boolean val) {
+		menuItemFileSaveAs.setEnabled(val);
+	}
+
+	public final void enableMenuItemFileClose(final boolean val) {
+		menuItemFileClose.setEnabled(val);
 	}
 
 	private void setMacProxy() {
@@ -203,7 +344,7 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 			tmData.documentTranslation
 				= reader.getTranslationDocument(tmData.documentTranslation);
 		} catch (Exception ex) {
-			LOGGER.SEVERE(null, ex);
+			LOGGER.info(ex.getMessage());
 		}
 		initializeTmView();
 		updateTmView();
@@ -559,12 +700,6 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 		editRightSegment.setText("");
 	}
 
-	@Override
-	public final void setUndoEnabled(boolean enable) {
-		toolBar.setUndoEnabled(enable);
-		menuItemUndo.setEnabled(enable);
-	}
-
 	/**
 	 * Undo last change.
 	 *
@@ -742,20 +877,20 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
 		//</editor-fold>
 
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new MainFrame().setVisible(true);
+				new MainWindow().setVisible(true);
 			}
 		});
 	}
@@ -767,8 +902,8 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
         private javax.swing.JPopupMenu.Separator jSeparator3;
         private javax.swing.JPopupMenu.Separator jSeparator4;
         private javax.swing.JPopupMenu.Separator jSeparator5;
-        private javax.swing.JMenu menuEdit;
-        private javax.swing.JMenu menuFile;
+        protected javax.swing.JMenu menuEdit;
+        protected javax.swing.JMenu menuFile;
         private javax.swing.JMenu menuHelp;
         private javax.swing.JMenuItem menuItemAbout;
         private javax.swing.JMenuItem menuItemFileClose;
@@ -789,6 +924,6 @@ public class MainWindow extends JFrame implements ModelMediator, WindowListener 
         private javax.swing.JMenuItem menuItemTranslationSplit;
         private javax.swing.JMenuItem menuItemTuSplit;
         private javax.swing.JMenuItem menuItemUndo;
-        private javax.swing.JMenu menuOptions;
+        protected javax.swing.JMenu menuOptions;
         // End of variables declaration//GEN-END:variables
 }

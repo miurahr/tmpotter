@@ -34,7 +34,6 @@ import org.tmpotter.core.TmxWriter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
-import org.tmpotter.ui.dialogs.FontSelector;
 import org.tmpotter.ui.dialogs.ImportFile;
 import org.tmpotter.ui.dialogs.OpenTexts;
 import org.tmpotter.ui.dialogs.OpenTmx;
@@ -47,7 +46,6 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 
 
@@ -78,7 +76,7 @@ final class MenuHandler {
   }
   
   public void menuItemHelpAboutActionPerformed() {
-    new About(mainWindow).setVisible(true);
+    new About(mainWindow, true).setVisible(true);
   }
 
   /**
@@ -129,10 +127,10 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
-      mainWindow.mainMenu.enableEditMenus(true);
+      mainWindow.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
+      mainWindow.enableMenuItemFileSaveAs(true);
+      mainWindow.enableMenuItemFileClose(true);
       dlg.dispose();
     }
   }
@@ -167,10 +165,10 @@ final class MenuHandler {
       initializeTmView(mainWindow);
       mainWindow.updateTmView();
       mainWindow.toolBar.enableButtons(true);
-      mainWindow.mainMenu.enableEditMenus(true);
+      mainWindow.enableEditMenus(true);
       mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(true);
-      mainWindow.mainMenu.menuItemFileClose.setEnabled(true);
+      mainWindow.enableMenuItemFileSaveAs(true);
+      mainWindow.enableMenuItemFileClose(true);
       dlg.dispose();
     }
   }
@@ -301,10 +299,10 @@ final class MenuHandler {
   public void menuItemFileCloseActionPerformed() {
     clear();
     mainWindow.toolBar.enableButtons(false);
-    mainWindow.mainMenu.enableEditMenus(false);
-    mainWindow.mainMenu.menuItemFileSave.setEnabled(false);
-    mainWindow.mainMenu.menuItemFileSaveAs.setEnabled(false);
-    mainWindow.mainMenu.menuItemFileClose.setEnabled(false);
+    mainWindow.enableEditMenus(false);
+    mainWindow.enableMenuItemFileSave(false);
+    mainWindow.enableMenuItemFileSaveAs(false);
+    mainWindow.enableMenuItemFileClose(false);
   }
 
   /**
@@ -378,77 +376,5 @@ final class MenuHandler {
 
   public void menuItemTuSplitActionPerformed() {
     modelMediator.onTuSplit();
-  }
-
-  /**
-   * Display fonts dialog.
-   *
-   * <p>Display the fonts dialog to allow selection of fonts for
-   * origianl/translation tables/editors and main window
-   */
-  public void menuItemSettingsFontsActionPerformed() {
-    FontSelector dlgFonts = new FontSelector(mainWindow, mainWindow.fontManager);
-    dlgFonts.setVisible(true);
-  }
-
-  enum LnfType { GTK, LIQUID, METAL, NIMBUS, SYSTEM }
-
-  public void menuItemLafGtkActionPerformed() {
-    onChangeLnF(MenuHandler.LnfType.GTK);
-  }
-
-  public void menuItemLafLiquidActionPerformed() {
-    onChangeLnF(MenuHandler.LnfType.LIQUID);
-  }
-
-  public void menuItemLafMetalActionPerformed() {
-    onChangeLnF(MenuHandler.LnfType.METAL);
-  }
-
-  public void menuItemLafNimbusActionPerformed() {
-    onChangeLnF(MenuHandler.LnfType.NIMBUS);
-  }
-
-  public void menuItemLafSystemActionPerformed() {
-    onChangeLnF(MenuHandler.LnfType.SYSTEM);
-  }
-
-  private void onChangeLnF(LnfType type) {
-    switch (type) {
-      case GTK:
-        try {
-          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-          SwingUtilities.updateComponentTreeUI(mainWindow);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        break;
-      case METAL:
-        try {
-          UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-          SwingUtilities.updateComponentTreeUI(mainWindow);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        //  Java 1.6 update 10+
-        break;
-      case NIMBUS:
-        try {
-          UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-          SwingUtilities.updateComponentTreeUI(mainWindow);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        break;
-      case SYSTEM:
-      default:
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          SwingUtilities.updateComponentTreeUI(mainWindow);
-        } catch (final Exception e) {
-          System.out.println(getString("OTP.LNF.INIT.ERROR"));
-        }
-        break;
-    }
   }
 }
