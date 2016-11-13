@@ -53,13 +53,13 @@ import javax.swing.table.TableColumn;
  *
  * @author Hiroshi Miura
  */
-final class MenuHandler {
+final class ActionHandler {
 
     private final MainWindow mainWindow;
     private ModelMediator modelMediator;
     private final TmData tmData;
 
-    public MenuHandler(final MainWindow mainWindow, TmData tmData) {
+    public ActionHandler(final MainWindow mainWindow, TmData tmData) {
         this.mainWindow = mainWindow;
         this.tmData = tmData;
     }
@@ -374,5 +374,9 @@ final class MenuHandler {
 
     public void menuItemTuSplitActionPerformed() {
         modelMediator.onTuSplit();
+    }
+
+    public void menuItemSettingsActionPerformed() {
+	    // FIXME: Implement me.
     }
 }

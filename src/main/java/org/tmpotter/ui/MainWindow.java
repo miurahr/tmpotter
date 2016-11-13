@@ -77,7 +77,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
 
 	private static final Logger LOGGER = LoggerFactory
 		.getLogger(MainWindow.class);
-	protected MenuHandler menuHandler;
+	protected ActionHandler menuHandler;
 
 	protected final ToolBar toolBar = new ToolBar();
 	protected final SegmentEditor editLeftSegment = new SegmentEditor();
@@ -104,7 +104,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
 		toolBar.setModelMediator(this);
 		editLeftSegment.setModelMediator(this);
 		editRightSegment.setModelMediator(this);
-		menuHandler = new MenuHandler(this, tmData);
+		menuHandler = new ActionHandler(this, tmData);
 		menuHandler.setModelMediator(this);
 		labelStatusBar = new JXLabel(" ");
 		panelStatusBar = new JXStatusBar();
