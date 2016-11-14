@@ -25,7 +25,6 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
-
 package org.tmpotter.ui;
 
 import org.tmpotter.util.Platform;
@@ -35,27 +34,28 @@ import java.awt.GraphicsEnvironment;
 
 /**
  * Font setup for main window.
- * 
+ *
  * @author Hiroshi Miura
  */
 public class WindowFontManager {
-  
+
   private Font fontTable;
   private Font fontTableHeader;
   private Font fontSourceEditor;
   private Font fontTranslationEditor;
   private Font uiFont;
-  
+
   private final MainWindow mainWindow;
 
   /**
    * Constructor.
+   *
    * @param mainWindow main frame owner
    */
   public WindowFontManager(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
   }
-  
+
   /**
    * Font style accessor.
    *
@@ -75,7 +75,6 @@ public class WindowFontManager {
     }
     return iFontStyle;
   }
-
 
   /**
    * Font style string accessor.
@@ -109,7 +108,7 @@ public class WindowFontManager {
       final String strFontStyle = "Plain";
       final int iFontSize = 11;
       fontSourceEditor = new Font(strFontName, getFontStyle(strFontStyle),
-              iFontSize);
+          iFontSize);
     }
     mainWindow.editLeftSegment.setEditorFont(fontSourceEditor);
   }
@@ -144,7 +143,7 @@ public class WindowFontManager {
       final String strFontStyle = "Plain";
       final int iFontSize = 11;
       fontTranslationEditor = new Font(strFontName, getFontStyle(strFontStyle),
-              iFontSize);
+          iFontSize);
     }
     mainWindow.editRightSegment.setEditorFont(fontTranslationEditor);
   }
@@ -215,7 +214,7 @@ public class WindowFontManager {
       final String strFontStyle = "Plain";
       final int iFontSize = 11;
       fontTableHeader = new Font(strFontName, getFontStyle(strFontStyle),
-              iFontSize);
+          iFontSize);
     }
   }
 
@@ -232,9 +231,10 @@ public class WindowFontManager {
   /**
    * Fonts mutator Delegates actual setting of fonts to specific methods.
    *
-   * <p> Passing in null causes default values to be used - used at startup or for
-   * reset Passing in a font causes all UI elements to be the same - used with
-   * the 'All' window area when selected in the fonts dialog
+   * <p>
+   * Passing in null causes default values to be used - used at startup or for reset Passing in a
+   * font causes all UI elements to be the same - used with the 'All' window area when selected in
+   * the fonts dialog
    *
    * @param font to be configured
    */
@@ -245,5 +245,5 @@ public class WindowFontManager {
     setTargetEditorFont(font);
     mainWindow.toolBar.setFonts(font);
   }
-  
+
 }

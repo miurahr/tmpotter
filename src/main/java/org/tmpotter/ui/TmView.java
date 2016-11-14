@@ -25,7 +25,6 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
-
 package org.tmpotter.ui;
 
 import org.jdesktop.swingx.JXPanel;
@@ -49,9 +48,8 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-
 /**
- *   Alignment Table view for parallel texts.
+ * Alignment Table view for parallel texts.
  *
  */
 @SuppressWarnings("serial")
@@ -59,91 +57,91 @@ final class TmView extends JXPanel {
 
   private ModelMediator modelMediator;
 
-  BitextModel          bitextModel;
-  JXTable              table;
-  private JScrollPane  scrollPane;
+  BitextModel bitextModel;
+  JXTable table;
+  private JScrollPane scrollPane;
 
   public TmView() {
     super();
-    setLayout( new BorderLayout() );
+    setLayout(new BorderLayout());
   }
 
   public void setModelMediator(ModelMediator mediator) {
     this.modelMediator = mediator;
   }
 
-  public final void setTableFont( final Font font ) {
-    if ( table != null ) {
+  public final void setTableFont(final Font font) {
+    if (table != null) {
       int size = font.getSize();
 
-      if ( size <= 10 ) {
-        table.setRowHeight( 10 );
+      if (size <= 10) {
+        table.setRowHeight(10);
       } else {
-        table.setRowHeight( size );
+        table.setRowHeight(size);
       }
 
-      table.setFont( font );
+      table.setFont(font);
     }
   }
 
   public final TableColumnModel getColumnModel() {
-    return ( table.getColumnModel() );
+    return (table.getColumnModel());
   }
 
   public final void setColumnHeaderView() {
-    scrollPane.setColumnHeaderView(table.getTableHeader() );
+    scrollPane.setColumnHeaderView(table.getTableHeader());
   }
 
-  public final void setRowSelectionInterval( final int row, final int len ) {
+  public final void setRowSelectionInterval(final int row, final int len) {
     if (row > 0 && len > 0) {
-      table.setRowSelectionInterval( row, len );
+      table.setRowSelectionInterval(row, len);
     }
   }
 
-  public final void setValueAt( final String str, final int row, final int column ) {
-    table.setValueAt( str, row, column );
+  public final void setValueAt(final String str, final int row, final int column) {
+    table.setValueAt(str, row, column);
   }
 
-  public final void setPreferredSize( final int width,
-          final int height, final int offset ) {
-    table.setPreferredSize(new Dimension( width, ( table
-        .getRowCount() * height ) + offset ) );
+  public final void setPreferredSize(final int width,
+      final int height, final int offset) {
+    table.setPreferredSize(new Dimension(width, (table
+        .getRowCount() * height) + offset));
   }
 
   public final int getRowCount() {
-    return ( table.getRowCount() );
+    return (table.getRowCount());
   }
 
-  public final void setModelValueAt( final Object obj, int row, int column ) {
-    bitextModel.setValueAt( obj, row, column );
+  public final void setModelValueAt(final Object obj, int row, int column) {
+    bitextModel.setValueAt(obj, row, column);
   }
 
-  public final void removeSegment( final int row ) {
-    bitextModel.removeSegment( row );
+  public final void removeSegment(final int row) {
+    bitextModel.removeSegment(row);
     revalidate();
   }
 
-  public final void addModelSegment( final Segment segment ) {
-    bitextModel.addSegment( segment );
+  public final void addModelSegment(final Segment segment) {
+    bitextModel.addSegment(segment);
   }
 
-  public final Object getValueAt( final int row, final int column ) {
-    if (row < 0 || column < 0 ) {
+  public final Object getValueAt(final int row, final int column) {
+    if (row < 0 || column < 0) {
       return null;
     }
-    return ( table.getValueAt( row, column ) );
+    return (table.getValueAt(row, column));
   }
 
   public final int getSelectedRow() {
-    return ( table.getSelectedRow() );
+    return (table.getSelectedRow());
   }
 
   public final int getSelectedColumn() {
-    return ( table.getSelectedColumn() );
+    return (table.getSelectedColumn());
   }
 
   public final JTableHeader getTableHeader() {
-    return ( table.getTableHeader() );
+    return (table.getTableHeader());
   }
 
   final void clear() {
@@ -159,59 +157,59 @@ final class TmView extends JXPanel {
 
   final void buildDisplay() {
     bitextModel = new BitextModel();
-    table   = new JXTable( bitextModel );
+    table = new JXTable(bitextModel);
 
     TableColumn column;
 
     //  Segment
-    column = table.getColumnModel().getColumn( 0 );
-    column.setPreferredWidth( 60 );
-    column.setHeaderValue(table.getColumnName( 0 ) );
+    column = table.getColumnModel().getColumn(0);
+    column.setPreferredWidth(60);
+    column.setHeaderValue(table.getColumnName(0));
 
     //  Original
-    column = table.getColumnModel().getColumn( 1 );
-    column.setPreferredWidth( 600 );
-    column.setHeaderValue(table.getColumnName( 1 ) );
+    column = table.getColumnModel().getColumn(1);
+    column.setPreferredWidth(600);
+    column.setHeaderValue(table.getColumnName(1));
     column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
 
     //  Translation
-    column = table.getColumnModel().getColumn( 2 );
-    column.setPreferredWidth( 600 );
-    column.setHeaderValue(table.getColumnName( 2 ) );
-    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));    
+    column = table.getColumnModel().getColumn(2);
+    column.setPreferredWidth(600);
+    column.setHeaderValue(table.getColumnName(2));
+    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
 
-    table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-    table.setAutoscrolls( true );
+    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table.setAutoscrolls(true);
 
     // ToDo: set the start height according to the users font point size
-    table.setRowHeight( 15 );
-    table.setRowMargin( 2 );
-    table.setRowSelectionAllowed( true );
-    table.setColumnSelectionAllowed( false );
-    table.setAutoCreateColumnsFromModel( false );
-    table.setSelectionBackground( new Color( 220, 235, 250 ) );
+    table.setRowHeight(15);
+    table.setRowMargin(2);
+    table.setRowSelectionAllowed(true);
+    table.setColumnSelectionAllowed(false);
+    table.setAutoCreateColumnsFromModel(false);
+    table.setSelectionBackground(new Color(220, 235, 250));
     table.setShowGrid(true);
     table.setShowHorizontalLines(true);
 
-    table.addKeyListener( new KeyAdapter() {
+    table.addKeyListener(new KeyAdapter() {
       @Override
-      public final void keyPressed( final KeyEvent event ) {
-        modelMediator.onTablePressed( event );
+      public final void keyPressed(final KeyEvent event) {
+        modelMediator.onTablePressed(event);
       }
     });
 
-    table.addMouseListener( new MouseAdapter() {
+    table.addMouseListener(new MouseAdapter() {
       @Override
-      public final void mouseClicked( final MouseEvent event ) {
+      public final void mouseClicked(final MouseEvent event) {
         modelMediator.onTableClicked();
       }
     });
 
-    scrollPane = new JScrollPane( table );
-    scrollPane.setColumnHeader( null );
-    scrollPane.setColumnHeaderView(table.getTableHeader() );
+    scrollPane = new JScrollPane(table);
+    scrollPane.setColumnHeader(null);
+    scrollPane.setColumnHeaderView(table.getTableHeader());
 
-    add( scrollPane );
+    add(scrollPane);
   }
 
   void clearAllView() {

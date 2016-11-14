@@ -20,13 +20,11 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * ************************************************************************/
-
 package org.tmpotter.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-
 
 /**
  * Model mediator for TM view and segment editors.
@@ -35,49 +33,49 @@ import java.io.IOException;
  */
 public interface ModelMediator {
 
-    void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+  void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
 
-    void setOriginalProperties(File filePath, String text, String lang, String encoding);
+  void setOriginalProperties(File filePath, String text, String lang, String encoding);
 
-    void setTargetProperties(File filePath, String text, String lang, String encoding);
+  void setTargetProperties(File filePath, String text, String lang, String encoding);
 
-    void onImportFile(String filterName) throws IOException;
+  void onImportFile(String filterName) throws IOException;
 
-    //for TMView
-    void updateTmView();
+  //for TMView
+  void updateTmView();
 
-    void onOriginalJoin();
+  void onOriginalJoin();
 
-    void onOriginalDelete();
+  void onOriginalDelete();
 
-    void onOriginalSplit();
+  void onOriginalSplit();
 
-    void onTranslationJoin();
+  void onTranslationJoin();
 
-    void onTranslationDelete();
+  void onTranslationDelete();
 
-    void onTranslationSplit();
+  void onTranslationSplit();
 
-    void onUndo();
+  void onUndo();
 
-    void onRemoveBlankRows();
+  void onRemoveBlankRows();
 
-    void onTuSplit();
+  void onTuSplit();
 
-    // Segment Editor
-    void setTextAreaPosition(int position);
+  // Segment Editor
+  void setTextAreaPosition(int position);
 
-    void onTableClicked();
+  void onTableClicked();
 
-    void onTablePressed(final KeyEvent event);
+  void onTablePressed(final KeyEvent event);
 
-    void tmDataClear();
+  void tmDataClear();
 
-    void tmViewClear();
+  void tmViewClear();
 
-    void editSegmentClear();
+  void editSegmentClear();
 
-    void setUndoEnabled(boolean enable);
+  void setUndoEnabled(boolean enable);
 
-    void undoChanges();
+  void undoChanges();
 }

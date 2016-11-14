@@ -20,7 +20,6 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * ************************************************************************/
-
 package org.tmpotter.ui;
 
 import org.tmpotter.core.Document;
@@ -28,7 +27,6 @@ import org.tmpotter.core.SegmentChanges;
 
 import java.io.File;
 import java.util.ArrayList;
-
 
 /**
  * TM data holder.
@@ -51,8 +49,8 @@ public class TmData {
   protected String stringTranslation;
 
   /**
-   * Updates the changes adding a "join" change in the "undo" array and performs
-   * the "join". (not sure about the translation)
+   * Updates the changes adding a "join" change in the "undo" array and performs the "join". (not
+   * sure about the translation)
    *
    * @param textAreaIzq :TRUE if the left text (source text) has to be joined
    */
@@ -77,8 +75,8 @@ public class TmData {
   /**
    * Delete text.
    *
-   * <p>This function updates the changes adding a delete change
-   * to the undo array and deletes
+   * <p>
+   * This function updates the changes adding a delete change to the undo array and deletes
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be deleted
    */
@@ -101,8 +99,8 @@ public class TmData {
   /**
    * Function Split.
    *
-   * <p>This function updates the changes adding a split to the undo
-   * array and performs the splitting
+   * <p>
+   * This function updates the changes adding a split to the undo array and performs the splitting
    *
    * @param textAreaIzq :TRUE if the left hand (source text) has to be split
    */
@@ -174,8 +172,7 @@ public class TmData {
   }
 
   /**
-   * Function IgualarArrays: adds rows to the smallest array and deletes blank
-   * rows.
+   * Function IgualarArrays: adds rows to the smallest array and deletes blank rows.
    */
   void matchArrays() {
     int origLen = documentOriginal.size();
@@ -245,7 +242,7 @@ public class TmData {
   protected boolean isIdentTop() {
     return (indexCurrent == topArrays);
   }
-  
+
   protected boolean isSomeDocumentEmpty() {
     return (documentOriginal.isEmpty() || documentTranslation.isEmpty());
   }
@@ -266,7 +263,7 @@ public class TmData {
   protected void setTranslationDocumentAnt(String text) {
     documentTranslation.set(indexPrevious, text);
   }
-  
+
   protected void clear() {
     documentOriginal.clean();
     documentTranslation.clean();
@@ -390,5 +387,7 @@ public class TmData {
     }
   }
 
-  public enum Side { ORIGINAL, TRANSLATION }
+  public enum Side {
+    ORIGINAL, TRANSLATION
+  }
 }

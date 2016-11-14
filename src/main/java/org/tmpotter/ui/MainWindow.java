@@ -68,684 +68,681 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
-
 /**
  * Main Frame for Main window.
  *
  * @author Hiroshi Miura
  */
 public class MainWindow extends JFrame implements ModelMediator, ActionListener,
-        MenuListener, WindowListener {
+    MenuListener, WindowListener {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(MainWindow.class);
-    protected ActionHandler menuHandler;
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(MainWindow.class);
+  protected ActionHandler menuHandler;
 
-    protected final AlignToolBar toolBar = new AlignToolBar();
-    protected final SegmentEditor editLeftSegment = new SegmentEditor();
-    protected final SegmentEditor editRightSegment = new SegmentEditor();
-    protected final TmView tmView = new TmView();
+  protected final AlignToolBar toolBar = new AlignToolBar();
+  protected final SegmentEditor editLeftSegment = new SegmentEditor();
+  protected final SegmentEditor editRightSegment = new SegmentEditor();
+  protected final TmView tmView = new TmView();
 
-    protected TmData tmData = new TmData();
-    protected ProjectProperties prop = new ProjectProperties();
-    protected FilterManager filterManager = new FilterManager();
+  protected TmData tmData = new TmData();
+  protected ProjectProperties prop = new ProjectProperties();
+  protected FilterManager filterManager = new FilterManager();
 
-    private JXMultiSplitPane msp;
-    //  Statusbar
-    protected JXStatusBar panelStatusBar;
-    protected JXLabel labelStatusBar;
-    private JXLabel tableRows;
+  private JXMultiSplitPane msp;
+  //  Statusbar
+  protected JXStatusBar panelStatusBar;
+  protected JXLabel labelStatusBar;
+  private JXLabel tableRows;
 
-    /**
-     * Creates new form MainFrame
-     */
-    public MainWindow() {
-        initComponents();
-        setActionCommands();
-        tmView.setModelMediator(this);
-        toolBar.setModelMediator(this);
-        editLeftSegment.setModelMediator(this);
-        editRightSegment.setModelMediator(this);
-        menuHandler = new ActionHandler(this, tmData);
-        menuHandler.setModelMediator(this);
-        labelStatusBar = new JXLabel(" ");
-        panelStatusBar = new JXStatusBar();
-        msp = new JXMultiSplitPane();
-        tableRows = new JXLabel(" ");
-        makeUi();
-        getContentPane().add(toolBar, BorderLayout.NORTH);
-        getContentPane().add(msp);
-        getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
-        setTitle(AppConstants.getDisplayNameAndVersion());
+  /**
+   * Creates new form MainFrame
+   */
+  public MainWindow() {
+    initComponents();
+    setActionCommands();
+    tmView.setModelMediator(this);
+    toolBar.setModelMediator(this);
+    editLeftSegment.setModelMediator(this);
+    editRightSegment.setModelMediator(this);
+    menuHandler = new ActionHandler(this, tmData);
+    menuHandler.setModelMediator(this);
+    labelStatusBar = new JXLabel(" ");
+    panelStatusBar = new JXStatusBar();
+    msp = new JXMultiSplitPane();
+    tableRows = new JXLabel(" ");
+    makeUi();
+    getContentPane().add(toolBar, BorderLayout.NORTH);
+    getContentPane().add(msp);
+    getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
+    setTitle(AppConstants.getDisplayNameAndVersion());
 
-        if (Platform.isMacOsx()) {
-            setMacProxy();
+    if (Platform.isMacOsx()) {
+      setMacProxy();
+    }
+    setCloseHandler();
+    setMainFrameSize();
+  }
+
+  protected void makeUi() {
+    // Make Status Bar
+    panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
+    panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
+    panelStatusBar.add(labelStatusBar, BorderLayout.SOUTH);
+    // Create a Multi Split Pane model
+    LinkedList<MultiSplitLayout.Node> editChildren = new LinkedList<>();
+    MultiSplitLayout.Leaf leaf1 = new MultiSplitLayout.Leaf("leftEdit");
+    leaf1.setWeight(0.5f);
+    MultiSplitLayout.Leaf leaf2 = new MultiSplitLayout.Leaf("rightEdit");
+    leaf2.setWeight(0.5f);
+    editChildren.add(leaf1);
+    editChildren.add(new MultiSplitLayout.Divider());
+    editChildren.add(leaf2);
+    MultiSplitLayout.Split edit = new MultiSplitLayout.Split();
+    edit.setRowLayout(true);
+    edit.setChildren(editChildren);
+    LinkedList<MultiSplitLayout.Node> rootChildren = new LinkedList<>();
+    MultiSplitLayout.Leaf leaf3 = new MultiSplitLayout.Leaf("view");
+    leaf3.setWeight(0.5f);
+    rootChildren.add(edit);
+    rootChildren.add(new MultiSplitLayout.Divider());
+    rootChildren.add(leaf3);
+    MultiSplitLayout.Split root = new MultiSplitLayout.Split();
+    root.setRowLayout(false);
+    root.setChildren(rootChildren);
+    msp.getMultiSplitLayout().setModel(root);
+    msp.getMultiSplitLayout().layoutByWeight(msp);
+    // Arrange views
+    msp.add(editLeftSegment, "leftEdit");
+    msp.add(editRightSegment, "rightEdit");
+    msp.add(tmView, "view");
+  }
+
+  /**
+   * Set 'actionCommand' for all menu items.
+   */
+  protected void setActionCommands() {
+    try {
+      for (Field f : this.getClass().getDeclaredFields()) {
+        if (JMenuItem.class.isAssignableFrom(f.getType())) {
+          JMenuItem menuItem = (JMenuItem) f.get(this);
+          menuItem.setActionCommand(f.getName());
+          menuItem.addActionListener(this);
         }
-        setCloseHandler();
-        setMainFrameSize();
+      }
+    } catch (IllegalAccessException ex) {
+      throw new ExceptionInInitializerError(ex);
+    }
+  }
+
+  /**
+   * Updates status labels.
+   */
+  protected void updateStatusBar() {
+    tableRows.setText("" + tmView.getRowCount());
+  }
+
+  public final void enableEditMenus(boolean enabled) {
+    menuItemRemoveBlankRows.setEnabled(enabled);
+    menuItemTuSplit.setEnabled(enabled);
+    menuItemOriginalJoin.setEnabled(enabled);
+    menuItemOriginalDelete.setEnabled(enabled);
+    menuItemOriginalSplit.setEnabled(enabled);
+    menuItemTranslationJoin.setEnabled(enabled);
+    menuItemTranslationDelete.setEnabled(enabled);
+    menuItemTranslationSplit.setEnabled(enabled);
+  }
+
+  /**
+   * Code for dispatching events from components to event handlers.
+   *
+   * @param evt event info
+   */
+  public void menuSelected(MenuEvent evt) {
+    // Item what perform event.
+    JMenu menu = (JMenu) evt.getSource();
+
+    // Get item name from actionCommand.
+    String action = menu.getActionCommand();
+
+    // Find method by item name.
+    String methodName = action + "MenuSelected";
+    Method method = null;
+    try {
+      method = this.getClass().getMethod(methodName, JMenu.class);
+    } catch (NoSuchMethodException ex) {
+      // method not declared
+      return;
     }
 
-    protected void makeUi() {
-        // Make Status Bar
-        panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
-        panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
-        panelStatusBar.add(labelStatusBar, BorderLayout.SOUTH);
-        // Create a Multi Split Pane model
-        LinkedList<MultiSplitLayout.Node> editChildren = new LinkedList<>();
-        MultiSplitLayout.Leaf leaf1 = new MultiSplitLayout.Leaf("leftEdit");
-        leaf1.setWeight(0.5f);
-        MultiSplitLayout.Leaf leaf2 = new MultiSplitLayout.Leaf("rightEdit");
-        leaf2.setWeight(0.5f);
-        editChildren.add(leaf1);
-        editChildren.add(new MultiSplitLayout.Divider());
-        editChildren.add(leaf2);
-        MultiSplitLayout.Split edit = new MultiSplitLayout.Split();
-        edit.setRowLayout(true);
-        edit.setChildren(editChildren);
-        LinkedList<MultiSplitLayout.Node> rootChildren = new LinkedList<>();
-        MultiSplitLayout.Leaf leaf3 = new MultiSplitLayout.Leaf("view");
-        leaf3.setWeight(0.5f);
-        rootChildren.add(edit);
-        rootChildren.add(new MultiSplitLayout.Divider());
-        rootChildren.add(leaf3);
-        MultiSplitLayout.Split root = new MultiSplitLayout.Split();
-        root.setRowLayout(false);
-        root.setChildren(rootChildren);
-        msp.getMultiSplitLayout().setModel(root);
-        msp.getMultiSplitLayout().layoutByWeight(msp);
-        // Arrange views
-        msp.add(editLeftSegment, "leftEdit");
-        msp.add(editRightSegment, "rightEdit");
-        msp.add(tmView, "view");
+    // Call ...MenuMenuSelected method.
+    try {
+      method.invoke(this, menu);
+    } catch (IllegalAccessException ex) {
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    } catch (InvocationTargetException ex) {
+      LOGGER.info("Error execute method", ex);
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
     }
+  }
 
-    /**
-     * Set 'actionCommand' for all menu items.
-     */
-    protected void setActionCommands() {
-        try {
-            for (Field f : this.getClass().getDeclaredFields()) {
-                if (JMenuItem.class.isAssignableFrom(f.getType())) {
-                    JMenuItem menuItem = (JMenuItem) f.get(this);
-                    menuItem.setActionCommand(f.getName());
-                    menuItem.addActionListener(this);
-                }
-            }
-        } catch (IllegalAccessException ex) {
-            throw new ExceptionInInitializerError(ex);
+  public void menuCanceled(MenuEvent evt) {
+  }
+
+  public void menuDeselected(MenuEvent evt) {
+  }
+
+  public final void setUndoEnabled(boolean enabled) {
+    menuItemUndo.setEnabled(enabled);
+  }
+
+  public void actionPerformed(ActionEvent evt) {
+    // Get item name from actionCommand.
+    String action = evt.getActionCommand();
+
+    //LOGGER.logRB("LOG_MENU_CLICK", action);
+    // Find method by item name.
+    String methodName = action + "ActionPerformed";
+    Method method = null;
+    try {
+      method = menuHandler.getClass().getMethod(methodName);
+    } catch (NoSuchMethodException ignore) {
+      try {
+        method = menuHandler.getClass()
+            .getMethod(methodName, Integer.TYPE);
+      } catch (NoSuchMethodException ex) {
+        throw new IncompatibleClassChangeError(
+            "Error invoke method handler for main menu: there is no method "
+            + methodName);
+      }
+    }
+    // Call ...MenuItemActionPerformed method.
+    Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
+    try {
+      method.invoke(menuHandler, args);
+    } catch (IllegalAccessException ex) {
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    } catch (InvocationTargetException ex) {
+      LOGGER.info("Error execute method", ex);
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    }
+  }
+
+  public final JMenu getMenuFile() {
+    return menuFile;
+  }
+
+  public final JMenu getMenuEdit() {
+    return menuEdit;
+  }
+
+  public final JMenu getMenuOptions() {
+    return menuOptions;
+  }
+
+  public final JMenu getMenuHelp() {
+    return menuHelp;
+  }
+
+  public final void enableMenuItemFileSave(final boolean val) {
+    menuItemFileSave.setEnabled(val);
+  }
+
+  public final void enableMenuItemFileSaveAs(final boolean val) {
+    menuItemFileSaveAs.setEnabled(val);
+  }
+
+  public final void enableMenuItemFileClose(final boolean val) {
+    menuItemFileClose.setEnabled(val);
+  }
+
+  private void setMacProxy() {
+    //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
+    try {
+      AquaAdapter.connect(menuHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
+      AquaAdapter.connect(menuHandler, "quit", AquaAdapter.AquaEvent.QUIT);
+    } catch (final NoClassDefFoundError e) {
+      System.out.println(e);
+    }
+  }
+
+  private void setCloseHandler() {
+    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public final void windowClosing(final WindowEvent event) {
+        menuHandler.quit();
+      }
+    });
+  }
+
+  private void setMainFrameSize() {
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension frameSize = this.getSize();
+
+    if (frameSize.height > screenSize.height) {
+      frameSize.height = screenSize.height;
+    }
+    if (frameSize.width > screenSize.width) {
+      frameSize.width = screenSize.width;
+    }
+    this.setLocation((screenSize.width - frameSize.width) / 2,
+        (screenSize.height - frameSize.height) / 2);
+  }
+
+  @Override
+  public void onOpenFile(File filePathOriginal,
+      String stringLangOriginal, String stringLangTranslation) {
+    prop.setFilePathOriginal(filePathOriginal);
+    prop.setFilePathTranslation(prop.getFilePathOriginal());
+    prop.setSourceLanguage(stringLangOriginal);
+    prop.setTargetLanguage(stringLangTranslation);
+    tmView.buildDisplay();
+    try {
+      TmxReader reader = new TmxReader(prop);
+      tmData.documentOriginal
+          = reader.getOriginalDocument(tmData.documentOriginal);
+      tmData.documentTranslation
+          = reader.getTranslationDocument(tmData.documentTranslation);
+    } catch (Exception ex) {
+      LOGGER.info(ex.getMessage());
+    }
+    initializeTmView();
+    updateTmView();
+    toolBar.enableButtons(true);
+    enableEditMenus(true);
+    toolBar.setUndoEnabled(false);
+    menuItemFileSave.setEnabled(true);
+    menuItemFileSaveAs.setEnabled(true);
+    menuItemFileClose.setEnabled(true);
+  }
+
+  @Override
+  public void setOriginalProperties(File filePath, String text, String lang, String encoding) {
+    prop.setOriginalEncoding(encoding);
+    prop.setFilePathOriginal(filePath);
+    tmData.stringOriginal = text;
+    tmData.stringLangOriginal = lang;
+  }
+
+  @Override
+  public void setTargetProperties(File filePath, String text, String lang, String encoding) {
+    prop.setTranslationEncoding(encoding);
+    prop.setFilePathTranslation(filePath);
+    tmData.stringTranslation = text;
+    tmData.stringLangTranslation = lang;
+  }
+
+  @Override
+  public void onImportFile(String filterName) {
+    tmData.documentOriginal = new Document();
+    tmData.documentTranslation = new Document();
+    filterManager.loadFile(prop,
+        tmData.documentOriginal, tmData.documentTranslation, filterName);
+    tmData.matchArrays();
+  }
+
+  /**
+   * Initialize alignment view.
+   *
+   * <p>
+   * Extracts from the TMX those lines having information which is useful for alignment, and puts
+   * them in the corresponding ArrayList's The left part in _alstOriginal corresponds to source text
+   * lines and the right part in _alstTranslation corresponds to the target text lines. Initialize
+   * the table with one line for each left and right line
+   *
+   */
+  protected void initializeTmView() {
+    TableColumn col;
+    col = tmView.getColumnModel().getColumn(1);
+    col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
+        + prop.getFilePathOriginal().getName());
+    col = tmView.getColumnModel().getColumn(2);
+    col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
+        + prop.getFilePathTranslation().getName());
+    tmView.setColumnHeaderView();
+    updateTmView();
+    tmData.topArrays = tmData.documentOriginal.size() - 1;
+    tmData.indexCurrent = 0;
+  }
+
+  /**
+   * Update the row in table with mods.
+   *
+   * <p>
+   * This function updates the rows in the table with the modifications performed, adds rows or
+   * removes them.
+   */
+  @Override
+  public void updateTmView() {
+    if (!tmData.isSomeDocumentEmpty()) {
+      tmData.matchArrays();
+    }
+    tmView.clearAllView();
+    tmView.adjustOriginalView(tmData.getDocumentOriginalSize());
+    tmView.setViewData(tmData);
+    if (tmData.isIdentTop()) {
+      tmView.setRowSelectionInterval(tmData.topArrays, tmData.topArrays);
+    }
+    tmView.repaint(100);
+    tmView.updateUI();
+    editLeftSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 1).toString()));
+    editRightSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 2).toString()));
+  }
+
+  @Override
+  public void onTableClicked() {
+    tmData.positionTextArea = 0;
+    if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
+      tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
+      tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
+    }
+    editLeftSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
+        1).toString()));
+    editRightSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
+        2).toString()));
+    tmData.setBothIndex(tmView.getSelectedRow());
+    if (tmData.isIdentTop()) {
+      toolBar.setTranslationJoinEnabled(false);
+      toolBar.setOriginalJoinEnabled(false);
+    } else {
+      toolBar.setTranslationJoinEnabled(true);
+      toolBar.setOriginalJoinEnabled(true);
+    }
+    updateTmView();
+  }
+
+  @Override
+  public void onTablePressed(final KeyEvent event) {
+    int fila;
+    if (tmView.getSelectedRow() != -1) {
+      fila = tmView.getSelectedRow();
+      tmData.positionTextArea = 0;
+    } else {
+      fila = 1;
+    }
+    if (fila < tmView.getRowCount() - 1) {
+      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
+          || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
+        if (tmData.indexPrevious < tmData.documentOriginal.size()) {
+          tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
+          tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
         }
-    }
-
-    /**
-     * Updates status labels.
-     */
-    protected void updateStatusBar() {
-        tableRows.setText("" + tmView.getRowCount());
-    }
-
-    public final void enableEditMenus(boolean enabled) {
-        menuItemRemoveBlankRows.setEnabled(enabled);
-        menuItemTuSplit.setEnabled(enabled);
-        menuItemOriginalJoin.setEnabled(enabled);
-        menuItemOriginalDelete.setEnabled(enabled);
-        menuItemOriginalSplit.setEnabled(enabled);
-        menuItemTranslationJoin.setEnabled(enabled);
-        menuItemTranslationDelete.setEnabled(enabled);
-        menuItemTranslationSplit.setEnabled(enabled);
-    }
-
-    /**
-     * Code for dispatching events from components to event handlers.
-     *
-     * @param evt event info
-     */
-    public void menuSelected(MenuEvent evt) {
-        // Item what perform event.
-        JMenu menu = (JMenu) evt.getSource();
-
-        // Get item name from actionCommand.
-        String action = menu.getActionCommand();
-
-        // Find method by item name.
-        String methodName = action + "MenuSelected";
-        Method method = null;
-        try {
-            method = this.getClass().getMethod(methodName, JMenu.class);
-        } catch (NoSuchMethodException ex) {
-            // method not declared
-            return;
+        editLeftSegment.setText(formatText(tmView.getValueAt(fila + 1, 1)
+            .toString()));
+        editRightSegment.setText(formatText(tmView.getValueAt(fila + 1, 2)
+            .toString()));
+        tmData.indexCurrent = fila + 1;
+      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
+          || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
+        tmData.indexCurrent = fila - 1;
+        if (fila == 0) {
+          fila = 1;
+          tmData.indexCurrent = 0;
         }
-
-        // Call ...MenuMenuSelected method.
-        try {
-            method.invoke(this, menu);
-        } catch (IllegalAccessException ex) {
-            throw new IncompatibleClassChangeError(
-                    "Error invoke method handler for main menu");
-        } catch (InvocationTargetException ex) {
-            LOGGER.info("Error execute method", ex);
-            throw new IncompatibleClassChangeError(
-                    "Error invoke method handler for main menu");
-        }
-    }
-
-    public void menuCanceled(MenuEvent evt) {
-    }
-
-    public void menuDeselected(MenuEvent evt) {
-    }
-
-    public final void setUndoEnabled(boolean enabled) {
-        menuItemUndo.setEnabled(enabled);
-    }
-
-    public void actionPerformed(ActionEvent evt) {
-        // Get item name from actionCommand.
-        String action = evt.getActionCommand();
-
-        //LOGGER.logRB("LOG_MENU_CLICK", action);
-        // Find method by item name.
-        String methodName = action + "ActionPerformed";
-        Method method = null;
-        try {
-            method = menuHandler.getClass().getMethod(methodName);
-        } catch (NoSuchMethodException ignore) {
-            try {
-                method = menuHandler.getClass()
-                        .getMethod(methodName, Integer.TYPE);
-            } catch (NoSuchMethodException ex) {
-                throw new IncompatibleClassChangeError(
-                        "Error invoke method handler for main menu: there is no method "
-                        + methodName);
-            }
-        }
-        // Call ...MenuItemActionPerformed method.
-        Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
-        try {
-            method.invoke(menuHandler, args);
-        } catch (IllegalAccessException ex) {
-            throw new IncompatibleClassChangeError(
-                    "Error invoke method handler for main menu");
-        } catch (InvocationTargetException ex) {
-            LOGGER.info("Error execute method", ex);
-            throw new IncompatibleClassChangeError(
-                    "Error invoke method handler for main menu");
-        }
-    }
-
-    public final JMenu getMenuFile() {
-        return menuFile;
-    }
-
-    public final JMenu getMenuEdit() {
-        return menuEdit;
-    }
-
-    public final JMenu getMenuOptions() {
-        return menuOptions;
-    }
-
-    public final JMenu getMenuHelp() {
-        return menuHelp;
-    }
-
-    public final void enableMenuItemFileSave(final boolean val) {
-        menuItemFileSave.setEnabled(val);
-    }
-
-    public final void enableMenuItemFileSaveAs(final boolean val) {
-        menuItemFileSaveAs.setEnabled(val);
-    }
-
-    public final void enableMenuItemFileClose(final boolean val) {
-        menuItemFileClose.setEnabled(val);
-    }
-
-    private void setMacProxy() {
-        //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
-        try {
-            AquaAdapter.connect(menuHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
-            AquaAdapter.connect(menuHandler, "quit", AquaAdapter.AquaEvent.QUIT);
-        } catch (final NoClassDefFoundError e) {
-            System.out.println(e);
-        }
-    }
-
-    private void setCloseHandler() {
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public final void windowClosing(final WindowEvent event) {
-                menuHandler.quit();
-            }
-        });
-    }
-
-    private void setMainFrameSize() {
-        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        final Dimension frameSize = this.getSize();
-
-        if (frameSize.height > screenSize.height) {
-            frameSize.height = screenSize.height;
-        }
-        if (frameSize.width > screenSize.width) {
-            frameSize.width = screenSize.width;
-        }
-        this.setLocation((screenSize.width - frameSize.width) / 2,
-                (screenSize.height - frameSize.height) / 2);
-    }
-
-    @Override
-    public void onOpenFile(File filePathOriginal,
-            String stringLangOriginal, String stringLangTranslation) {
-        prop.setFilePathOriginal(filePathOriginal);
-        prop.setFilePathTranslation(prop.getFilePathOriginal());
-        prop.setSourceLanguage(stringLangOriginal);
-        prop.setTargetLanguage(stringLangTranslation);
-        tmView.buildDisplay();
-        try {
-            TmxReader reader = new TmxReader(prop);
-            tmData.documentOriginal
-                    = reader.getOriginalDocument(tmData.documentOriginal);
-            tmData.documentTranslation
-                    = reader.getTranslationDocument(tmData.documentTranslation);
-        } catch (Exception ex) {
-            LOGGER.info(ex.getMessage());
-        }
-        initializeTmView();
-        updateTmView();
-        toolBar.enableButtons(true);
-        enableEditMenus(true);
-        toolBar.setUndoEnabled(false);
-        menuItemFileSave.setEnabled(true);
-        menuItemFileSaveAs.setEnabled(true);
-        menuItemFileClose.setEnabled(true);
-    }
-
-    @Override
-    public void setOriginalProperties(File filePath, String text, String lang, String encoding) {
-        prop.setOriginalEncoding(encoding);
-        prop.setFilePathOriginal(filePath);
-        tmData.stringOriginal = text;
-        tmData.stringLangOriginal = lang;
-    }
-
-    @Override
-    public void setTargetProperties(File filePath, String text, String lang, String encoding) {
-        prop.setTranslationEncoding(encoding);
-        prop.setFilePathTranslation(filePath);
-        tmData.stringTranslation = text;
-        tmData.stringLangTranslation = lang;
-    }
-
-    @Override
-    public void onImportFile(String filterName) {
-        tmData.documentOriginal = new Document();
-        tmData.documentTranslation = new Document();
-        filterManager.loadFile(prop,
-                tmData.documentOriginal, tmData.documentTranslation, filterName);
-        tmData.matchArrays();
-    }
-
-    /**
-     * Initialize alignment view.
-     *
-     * <p>
-     * Extracts from the TMX those lines having information which is useful for
-     * alignment, and puts them in the corresponding ArrayList's The left part
-     * in _alstOriginal corresponds to source text lines and the right part in
-     * _alstTranslation corresponds to the target text lines. Initialize the
-     * table with one line for each left and right line
-     *
-     */
-    protected void initializeTmView() {
-        TableColumn col;
-        col = tmView.getColumnModel().getColumn(1);
-        col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-                + prop.getFilePathOriginal().getName());
-        col = tmView.getColumnModel().getColumn(2);
-        col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-                + prop.getFilePathTranslation().getName());
-        tmView.setColumnHeaderView();
-        updateTmView();
-        tmData.topArrays = tmData.documentOriginal.size() - 1;
-        tmData.indexCurrent = 0;
-    }
-
-    /**
-     * Update the row in table with mods.
-     *
-     * <p>
-     * This function updates the rows in the table with the modifications
-     * performed, adds rows or removes them.
-     */
-    @Override
-    public void updateTmView() {
-        if (!tmData.isSomeDocumentEmpty()) {
-            tmData.matchArrays();
-        }
-        tmView.clearAllView();
-        tmView.adjustOriginalView(tmData.getDocumentOriginalSize());
-        tmView.setViewData(tmData);
-        if (tmData.isIdentTop()) {
-            tmView.setRowSelectionInterval(tmData.topArrays, tmData.topArrays);
-        }
-        tmView.repaint(100);
-        tmView.updateUI();
-        editLeftSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 1).toString()));
-        editRightSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 2).toString()));
-    }
-
-    @Override
-    public void onTableClicked() {
-        tmData.positionTextArea = 0;
         if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
-            tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-            tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
+          tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
+          tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
         }
-        editLeftSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
-                1).toString()));
-        editRightSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
-                2).toString()));
-        tmData.setBothIndex(tmView.getSelectedRow());
-        if (tmData.isIdentTop()) {
-            toolBar.setTranslationJoinEnabled(false);
-            toolBar.setOriginalJoinEnabled(false);
-        } else {
-            toolBar.setTranslationJoinEnabled(true);
-            toolBar.setOriginalJoinEnabled(true);
-        }
+        editLeftSegment.setText(formatText(tmView.getValueAt(fila - 1, 1)
+            .toString()));
+        editRightSegment.setText(formatText(tmView.getValueAt(fila - 1, 2)
+            .toString()));
+      }
+      if (tmData.isIdentTop()) {
+        toolBar.setTranslationJoinEnabled(false);
+        toolBar.setOriginalJoinEnabled(false);
+      } else {
+        toolBar.setTranslationJoinEnabled(true);
+        toolBar.setOriginalJoinEnabled(true);
+      }
+      tmData.indexPrevious = tmData.indexCurrent;
+    }
+    updateTmView();
+  }
+
+  /**
+   * Join on Original.
+   */
+  @Override
+  public final void onOriginalJoin() {
+    tmData.incrementChanges();
+    tmData.join(TmData.Side.ORIGINAL);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  /**
+   * Delete on original document.
+   */
+  @Override
+  public final void onOriginalDelete() {
+    tmData.incrementChanges();
+    tmData.delete(TmData.Side.ORIGINAL);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  /**
+   * Split on original document.
+   */
+  @Override
+  public final void onOriginalSplit() {
+    tmData.incrementChanges();
+    tmData.split(TmData.Side.ORIGINAL);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  /**
+   * join on translation document.
+   */
+  @Override
+  public final void onTranslationJoin() {
+    tmData.incrementChanges();
+    tmData.join(TmData.Side.TRANSLATION);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  /**
+   * delete on translation document.
+   */
+  @Override
+  public final void onTranslationDelete() {
+    tmData.incrementChanges();
+    tmData.delete(TmData.Side.TRANSLATION);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  /**
+   * split on translation document.
+   */
+  @Override
+  public final void onTranslationSplit() {
+    tmData.incrementChanges();
+    tmData.split(TmData.Side.TRANSLATION);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    setUndoEnabled(true);
+  }
+
+  //  Accessed by ControlView
+  @Override
+  public void onUndo() {
+    tmData.arrayListChanges.remove(tmData.getIdentChanges());
+    int currentChange = tmData.decrementChanges();
+
+    if (currentChange == -1) {
+      toolBar.setUndoEnabled(false);
+      setUndoEnabled(false);
+    }
+  }
+
+  /**
+   * Set position.
+   *
+   * @param position indicate where in int
+   */
+  @Override
+  public final void setTextAreaPosition(int position) {
+    tmData.positionTextArea = position;
+  }
+
+  /**
+   * remove blank rows in TMView.
+   */
+  @Override
+  public final void onRemoveBlankRows() {
+    int maxTamArrays = 0;
+    int cont = 0;
+    int cleanedLines = 0;
+    final int[] numCleared = new int[1000];  // default = 1000 - why?
+    int cont2 = 0;
+
+    maxTamArrays = Utilities.largerSize(tmData.getDocumentOriginalSize(),
+        tmData.getDocumentTranslationSize()) - 1;
+
+    while (cont <= (maxTamArrays - cleanedLines)) {
+      if ((tmData.getDocumentOriginal(cont) == null
+          || tmData.getDocumentOriginal(cont).equals(""))
+          && (tmData.getDocumentTranslation(cont) == null
+          || tmData.getDocumentTranslation(cont).equals(""))) {
+        cleanedLines++;
+        numCleared[cont2] = cont + cont2;
+        cont2++;
+        tmData.documentOriginal.remove(cont);
+        tmData.documentTranslation.remove(cont);
+      } else {
+        cont++;
+      }
+    }
+
+    JOptionPane.showMessageDialog(this, getString("MSG.ERASED") + " "
+        + cleanedLines + " " + getString("MSG.BLANK_ROWS"));
+
+    if (cleanedLines > 0) {
+      tmData.incrementChanges();
+
+      SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
+          0, TmData.Side.TRANSLATION, "", 0);
+      tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
+      changes.setNumEliminada(numCleared, cleanedLines);
+      toolBar.setUndoEnabled(true);
+      menuItemUndo.setEnabled(true);
+      updateTmView();
+    }
+  }
+
+  /**
+   * Split on TU.
+   */
+  @Override
+  public final void onTuSplit() {
+    tmData.tuSplit((tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
+        : TmData.Side.TRANSLATION);
+    updateTmView();
+    toolBar.setUndoEnabled(true);
+    menuItemUndo.setEnabled(true);
+  }
+
+  //  WindowListener Overrides
+  @Override
+  public final void windowActivated(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void windowClosed(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void windowClosing(final WindowEvent evt) {
+    if (evt.getSource() == this) {
+      menuHandler.menuItemFileQuitActionPerformed();
+    }
+  }
+
+  @Override
+  public final void windowDeactivated(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void windowDeiconified(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void windowIconified(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void windowOpened(final WindowEvent evt) {
+  }
+
+  @Override
+  public final void tmDataClear() {
+    tmData.clear();
+  }
+
+  @Override
+  public final void tmViewClear() {
+    tmView.clear();
+  }
+
+  @Override
+  public final void editSegmentClear() {
+    editLeftSegment.setText("");
+    editRightSegment.setText("");
+  }
+
+  /**
+   * Undo last change.
+   *
+   */
+  @Override
+  public void undoChanges() {
+    SegmentChanges ultChanges;
+    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.indexCurrent = ultChanges.getIdent_linea();
+    SegmentChanges.OperationKind operationKind = ultChanges.getKind();
+    tmData.setIdentAntAsLabel();
+    switch (operationKind) {
+      case JOIN:
+        tmData.undoJoin();
+        break;
+      case DELETE:
+        tmData.undoDelete();
         updateTmView();
+        break;
+      case SPLIT:
+        tmData.undoSplit();
+        break;
+      case REMOVE:
+        tmData.undoRemove();
+        break;
+      case TUSPLIT:
+        tmData.undoTuSplit(ultChanges.getSource());
+        break;
+      default:
+        break;
     }
+    updateTmView();
+  }
 
-    @Override
-    public void onTablePressed(final KeyEvent event) {
-        int fila;
-        if (tmView.getSelectedRow() != -1) {
-            fila = tmView.getSelectedRow();
-            tmData.positionTextArea = 0;
-        } else {
-            fila = 1;
-        }
-        if (fila < tmView.getRowCount() - 1) {
-            if ((event.getKeyCode() == KeyEvent.VK_DOWN)
-                    || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-                if (tmData.indexPrevious < tmData.documentOriginal.size()) {
-                    tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-                    tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
-                }
-                editLeftSegment.setText(formatText(tmView.getValueAt(fila + 1, 1)
-                        .toString()));
-                editRightSegment.setText(formatText(tmView.getValueAt(fila + 1, 2)
-                        .toString()));
-                tmData.indexCurrent = fila + 1;
-            } else if ((event.getKeyCode() == KeyEvent.VK_UP)
-                    || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
-                tmData.indexCurrent = fila - 1;
-                if (fila == 0) {
-                    fila = 1;
-                    tmData.indexCurrent = 0;
-                }
-                if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
-                    tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-                    tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
-                }
-                editLeftSegment.setText(formatText(tmView.getValueAt(fila - 1, 1)
-                        .toString()));
-                editRightSegment.setText(formatText(tmView.getValueAt(fila - 1, 2)
-                        .toString()));
-            }
-            if (tmData.isIdentTop()) {
-                toolBar.setTranslationJoinEnabled(false);
-                toolBar.setOriginalJoinEnabled(false);
-            } else {
-                toolBar.setTranslationJoinEnabled(true);
-                toolBar.setOriginalJoinEnabled(true);
-            }
-            tmData.indexPrevious = tmData.indexCurrent;
-        }
-        updateTmView();
-    }
-
-    /**
-     * Join on Original.
-     */
-    @Override
-    public final void onOriginalJoin() {
-        tmData.incrementChanges();
-        tmData.join(TmData.Side.ORIGINAL);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    /**
-     * Delete on original document.
-     */
-    @Override
-    public final void onOriginalDelete() {
-        tmData.incrementChanges();
-        tmData.delete(TmData.Side.ORIGINAL);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    /**
-     * Split on original document.
-     */
-    @Override
-    public final void onOriginalSplit() {
-        tmData.incrementChanges();
-        tmData.split(TmData.Side.ORIGINAL);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    /**
-     * join on translation document.
-     */
-    @Override
-    public final void onTranslationJoin() {
-        tmData.incrementChanges();
-        tmData.join(TmData.Side.TRANSLATION);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    /**
-     * delete on translation document.
-     */
-    @Override
-    public final void onTranslationDelete() {
-        tmData.incrementChanges();
-        tmData.delete(TmData.Side.TRANSLATION);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    /**
-     * split on translation document.
-     */
-    @Override
-    public final void onTranslationSplit() {
-        tmData.incrementChanges();
-        tmData.split(TmData.Side.TRANSLATION);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        setUndoEnabled(true);
-    }
-
-    //  Accessed by ControlView
-    @Override
-    public void onUndo() {
-        tmData.arrayListChanges.remove(tmData.getIdentChanges());
-        int currentChange = tmData.decrementChanges();
-
-        if (currentChange == -1) {
-            toolBar.setUndoEnabled(false);
-            setUndoEnabled(false);
-        }
-    }
-
-    /**
-     * Set position.
-     *
-     * @param position indicate where in int
-     */
-    @Override
-    public final void setTextAreaPosition(int position) {
-        tmData.positionTextArea = position;
-    }
-
-    /**
-     * remove blank rows in TMView.
-     */
-    @Override
-    public final void onRemoveBlankRows() {
-        int maxTamArrays = 0;
-        int cont = 0;
-        int cleanedLines = 0;
-        final int[] numCleared = new int[1000];  // default = 1000 - why?
-        int cont2 = 0;
-
-        maxTamArrays = Utilities.largerSize(tmData.getDocumentOriginalSize(),
-                tmData.getDocumentTranslationSize()) - 1;
-
-        while (cont <= (maxTamArrays - cleanedLines)) {
-            if ((tmData.getDocumentOriginal(cont) == null
-                    || tmData.getDocumentOriginal(cont).equals(""))
-                    && (tmData.getDocumentTranslation(cont) == null
-                    || tmData.getDocumentTranslation(cont).equals(""))) {
-                cleanedLines++;
-                numCleared[cont2] = cont + cont2;
-                cont2++;
-                tmData.documentOriginal.remove(cont);
-                tmData.documentTranslation.remove(cont);
-            } else {
-                cont++;
-            }
-        }
-
-        JOptionPane.showMessageDialog(this, getString("MSG.ERASED") + " "
-                + cleanedLines + " " + getString("MSG.BLANK_ROWS"));
-
-        if (cleanedLines > 0) {
-            tmData.incrementChanges();
-
-            SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
-                    0, TmData.Side.TRANSLATION, "", 0);
-            tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
-            changes.setNumEliminada(numCleared, cleanedLines);
-            toolBar.setUndoEnabled(true);
-            menuItemUndo.setEnabled(true);
-            updateTmView();
-        }
-    }
-
-    /**
-     * Split on TU.
-     */
-    @Override
-    public final void onTuSplit() {
-        tmData.tuSplit((tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
-                : TmData.Side.TRANSLATION);
-        updateTmView();
-        toolBar.setUndoEnabled(true);
-        menuItemUndo.setEnabled(true);
-    }
-
-    //  WindowListener Overrides
-    @Override
-    public final void windowActivated(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void windowClosed(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void windowClosing(final WindowEvent evt) {
-        if (evt.getSource() == this) {
-            menuHandler.menuItemFileQuitActionPerformed();
-        }
-    }
-
-    @Override
-    public final void windowDeactivated(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void windowDeiconified(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void windowIconified(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void windowOpened(final WindowEvent evt) {
-    }
-
-    @Override
-    public final void tmDataClear() {
-        tmData.clear();
-    }
-
-    @Override
-    public final void tmViewClear() {
-        tmView.clear();
-    }
-
-    @Override
-    public final void editSegmentClear() {
-        editLeftSegment.setText("");
-        editRightSegment.setText("");
-    }
-
-    /**
-     * Undo last change.
-     *
-     */
-    @Override
-    public void undoChanges() {
-        SegmentChanges ultChanges;
-        ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
-        tmData.indexCurrent = ultChanges.getIdent_linea();
-        SegmentChanges.OperationKind operationKind = ultChanges.getKind();
-        tmData.setIdentAntAsLabel();
-        switch (operationKind) {
-            case JOIN:
-                tmData.undoJoin();
-                break;
-            case DELETE:
-                tmData.undoDelete();
-                updateTmView();
-                break;
-            case SPLIT:
-                tmData.undoSplit();
-                break;
-            case REMOVE:
-                tmData.undoRemove();
-                break;
-            case TUSPLIT:
-                tmData.undoTuSplit(ultChanges.getSource());
-                break;
-            default:
-                break;
-        }
-        updateTmView();
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
@@ -868,40 +865,40 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 pack();
         }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+     */
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainWindow().setVisible(true);
-            }
-        });
+      }
+    } catch (ClassNotFoundException ex) {
+      java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+      java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
+
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        new MainWindow().setVisible(true);
+      }
+    });
+  }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JMenuBar jMenuBar1;

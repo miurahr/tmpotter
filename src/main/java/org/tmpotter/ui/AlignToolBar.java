@@ -1,8 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/* *************************************************************************
+ *
+ *  TMPotter - Bi-text Aligner/TMX Editor
+ *
+ *  Copyright (C) 2016 Hiroshi Miura
+ *
+ *  This file is part of TMPotter.
+ *
+ *  TMPotter is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  TMPotter is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
+ *
+ * *************************************************************************/
+
 package org.tmpotter.ui;
 
 import java.awt.Font;
@@ -20,105 +38,104 @@ import static org.tmpotter.util.Localization.getString;
  */
 public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
 
-    private ModelMediator modelMediator;
+  private ModelMediator modelMediator;
 
-    /**
-     * Creates new form AlignToolBar
-     */
-    public AlignToolBar() {
-        initComponents();
-    }
+  /**
+   * Creates new form AlignToolBar
+   */
+  public AlignToolBar() {
+    initComponents();
+  }
 
-    /**
-     * Set 'actionCommand' for all menu items.
-     */
-    protected void setActionCommands() {
-        try {
-            for (Field f : this.getClass().getDeclaredFields()) {
-                if (JButton.class.isAssignableFrom(f.getType())) {
-                    JButton button = (JButton) f.get(this);
-                    button.setActionCommand(f.getName());
-                    button.addActionListener(this);
-                }
-            }
-        } catch (IllegalAccessException ex) {
-            throw new ExceptionInInitializerError(ex);
+  /**
+   * Set 'actionCommand' for all menu items.
+   */
+  protected void setActionCommands() {
+    try {
+      for (Field f : this.getClass().getDeclaredFields()) {
+        if (JButton.class.isAssignableFrom(f.getType())) {
+          JButton button = (JButton) f.get(this);
+          button.setActionCommand(f.getName());
+          button.addActionListener(this);
         }
+      }
+    } catch (IllegalAccessException ex) {
+      throw new ExceptionInInitializerError(ex);
     }
+  }
 
-    public void setModelMediator(ModelMediator mediator) {
-        this.modelMediator = mediator;
+  public void setModelMediator(ModelMediator mediator) {
+    this.modelMediator = mediator;
+  }
+
+  @Override
+  public final void actionPerformed(final ActionEvent action) {
+    final Object actor = action.getSource();
+
+    if (actor instanceof JButton) {
+      if (actor == buttonOriginalDelete) {
+        modelMediator.onOriginalDelete();
+      } else if (actor == buttonOriginalJoin) {
+        modelMediator.onOriginalJoin();
+      } else if (actor == buttonOriginalSplit) {
+        modelMediator.onOriginalSplit();
+      } else if (actor == buttonTranslationDelete) {
+        modelMediator.onTranslationDelete();
+      } else if (actor == buttonTranslationJoin) {
+        modelMediator.onTranslationJoin();
+      } else if (actor == buttonTranslationSplit) {
+        modelMediator.onTranslationSplit();
+      } else if (actor == buttonRemoveBlankRows) {
+        modelMediator.onRemoveBlankRows();
+      } else if (actor == buttonTUSplit) {
+        modelMediator.onTuSplit();
+      } else if (actor == buttonUndo) {
+        modelMediator.undoChanges();
+        modelMediator.onUndo();
+      }
     }
+  }
 
-    @Override
-    public final void actionPerformed(final ActionEvent action) {
-        final Object actor = action.getSource();
+  final void setFonts(final Font font) {
+    buttonUndo.setFont(font);
+    buttonRemoveBlankRows.setFont(font);
+    buttonTUSplit.setFont(font);
+    buttonOriginalJoin.setFont(font);
+    buttonOriginalDelete.setFont(font);
+    buttonOriginalSplit.setFont(font);
+    buttonTranslationJoin.setFont(font);
+    buttonTranslationDelete.setFont(font);
+    buttonTranslationSplit.setFont(font);
+  }
 
-        if (actor instanceof JButton) {
-            if (actor == buttonOriginalDelete) {
-                modelMediator.onOriginalDelete();
-            } else if (actor == buttonOriginalJoin) {
-                modelMediator.onOriginalJoin();
-            } else if (actor == buttonOriginalSplit) {
-                modelMediator.onOriginalSplit();
-            } else if (actor == buttonTranslationDelete) {
-                modelMediator.onTranslationDelete();
-            } else if (actor == buttonTranslationJoin) {
-                modelMediator.onTranslationJoin();
-            } else if (actor == buttonTranslationSplit) {
-                modelMediator.onTranslationSplit();
-            } else if (actor == buttonRemoveBlankRows) {
-                modelMediator.onRemoveBlankRows();
-            } else if (actor == buttonTUSplit) {
-                modelMediator.onTuSplit();
-            } else if (actor == buttonUndo) {
-                modelMediator.undoChanges();
-                modelMediator.onUndo();
-            }
-        }
-    }
+  final void enableButtons(boolean enabled) {
+    buttonRemoveBlankRows.setEnabled(enabled);
+    buttonTUSplit.setEnabled(enabled);
+    buttonOriginalJoin.setEnabled(enabled);
+    buttonOriginalDelete.setEnabled(enabled);
+    buttonOriginalSplit.setEnabled(enabled);
+    buttonTranslationJoin.setEnabled(enabled);
+    buttonTranslationDelete.setEnabled(enabled);
+    buttonTranslationSplit.setEnabled(enabled);
+  }
 
-    final void setFonts( final Font font ) {
-	buttonUndo               .setFont( font );
-	buttonRemoveBlankRows    .setFont( font );
-	buttonTUSplit            .setFont( font );
-	buttonOriginalJoin       .setFont( font );
-	buttonOriginalDelete     .setFont( font );
-	buttonOriginalSplit      .setFont( font );
-	buttonTranslationJoin    .setFont( font );
-	buttonTranslationDelete  .setFont( font );
-	buttonTranslationSplit   .setFont( font );
-    }
+  public final void setUndoEnabled(boolean enabled) {
+    buttonUndo.setEnabled(enabled);
+  }
 
-    final void enableButtons(boolean enabled) {
-        buttonRemoveBlankRows.setEnabled(enabled);
-        buttonTUSplit.setEnabled(enabled);
-        buttonOriginalJoin.setEnabled(enabled);
-        buttonOriginalDelete.setEnabled(enabled);
-        buttonOriginalSplit.setEnabled(enabled);
-        buttonTranslationJoin.setEnabled(enabled);
-        buttonTranslationDelete.setEnabled(enabled);
-        buttonTranslationSplit.setEnabled(enabled);
-    }
+  public final void setOriginalJoinEnabled(boolean enabled) {
+    buttonOriginalJoin.setEnabled(enabled);
+  }
 
-    public final void setUndoEnabled(boolean enabled) {
-        buttonUndo.setEnabled(enabled);
-    }
+  public final void setTranslationJoinEnabled(boolean enabled) {
+    buttonTranslationJoin.setEnabled(enabled);
+  }
 
-    public final void setOriginalJoinEnabled(boolean enabled) {
-        buttonOriginalJoin.setEnabled(enabled);
-    }
-
-    public final void setTranslationJoinEnabled(boolean enabled) {
-        buttonTranslationJoin.setEnabled(enabled);
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
@@ -279,7 +296,6 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                         .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 );
         }// </editor-fold>//GEN-END:initComponents
-
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton buttonOriginalDelete;
