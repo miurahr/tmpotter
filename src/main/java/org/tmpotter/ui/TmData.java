@@ -25,7 +25,6 @@ package org.tmpotter.ui;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.SegmentChanges;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**

@@ -25,45 +25,57 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.ui;
 
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
-
-import org.tmpotter.core.BitextModel;
-import org.tmpotter.core.Segment;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.tmpotter.core.BitextModel;
+import org.tmpotter.core.Segment;
+
 /**
  * Alignment Table view for parallel texts.
  *
+ * @author Hiroshi Miura
  */
 @SuppressWarnings("serial")
-final class TmView extends JXPanel {
+public class TmView extends javax.swing.JPanel {
 
   private ModelMediator modelMediator;
-
   BitextModel bitextModel;
-  JXTable table;
-  private JScrollPane scrollPane;
 
+  /**
+   * Creates new form TmView
+   */
   public TmView() {
-    super();
-    setLayout(new BorderLayout());
+    bitextModel = new BitextModel();
+    initComponents();
+    table.setEnabled(false);  
+  }
+
+  final void buildDisplay() {
+    table.addKeyListener(new KeyAdapter() {
+      public final void keyPressed(final KeyEvent event) {
+        modelMediator.onTablePressed(event);
+      }
+    });
+
+    table.addMouseListener(new MouseAdapter() {
+      public final void mouseClicked(final MouseEvent event) {
+        modelMediator.onTableClicked();
+      }
+    });
+    scrollPane.setColumnHeader(null);
+    scrollPane.setColumnHeaderView(table.getTableHeader());
+    table.setEnabled(true);  
   }
 
   public void setModelMediator(ModelMediator mediator) {
@@ -73,13 +85,11 @@ final class TmView extends JXPanel {
   public final void setTableFont(final Font font) {
     if (table != null) {
       int size = font.getSize();
-
       if (size <= 10) {
         table.setRowHeight(10);
       } else {
         table.setRowHeight(size);
       }
-
       table.setFont(font);
     }
   }
@@ -103,9 +113,9 @@ final class TmView extends JXPanel {
   }
 
   public final void setPreferredSize(final int width,
-      final int height, final int offset) {
+	  final int height, final int offset) {
     table.setPreferredSize(new Dimension(width, (table
-        .getRowCount() * height) + offset));
+	.getRowCount() * height) + offset));
   }
 
   public final int getRowCount() {
@@ -155,63 +165,6 @@ final class TmView extends JXPanel {
     repaint(100);
   }
 
-  final void buildDisplay() {
-    bitextModel = new BitextModel();
-    table = new JXTable(bitextModel);
-
-    TableColumn column;
-
-    //  Segment
-    column = table.getColumnModel().getColumn(0);
-    column.setPreferredWidth(60);
-    column.setHeaderValue(table.getColumnName(0));
-
-    //  Original
-    column = table.getColumnModel().getColumn(1);
-    column.setPreferredWidth(600);
-    column.setHeaderValue(table.getColumnName(1));
-    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
-
-    //  Translation
-    column = table.getColumnModel().getColumn(2);
-    column.setPreferredWidth(600);
-    column.setHeaderValue(table.getColumnName(2));
-    column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
-
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    table.setAutoscrolls(true);
-
-    // ToDo: set the start height according to the users font point size
-    table.setRowHeight(15);
-    table.setRowMargin(2);
-    table.setRowSelectionAllowed(true);
-    table.setColumnSelectionAllowed(false);
-    table.setAutoCreateColumnsFromModel(false);
-    table.setSelectionBackground(new Color(220, 235, 250));
-    table.setShowGrid(true);
-    table.setShowHorizontalLines(true);
-
-    table.addKeyListener(new KeyAdapter() {
-      @Override
-      public final void keyPressed(final KeyEvent event) {
-        modelMediator.onTablePressed(event);
-      }
-    });
-
-    table.addMouseListener(new MouseAdapter() {
-      @Override
-      public final void mouseClicked(final MouseEvent event) {
-        modelMediator.onTableClicked();
-      }
-    });
-
-    scrollPane = new JScrollPane(table);
-    scrollPane.setColumnHeader(null);
-    scrollPane.setColumnHeaderView(table.getTableHeader());
-
-    add(scrollPane);
-  }
-
   void clearAllView() {
     for (int i = 0; i < getRowCount(); i++) {
       setModelValueAt("", i, 0);
@@ -243,4 +196,49 @@ final class TmView extends JXPanel {
       setModelValueAt(tmData.getDocumentTranslation(cont), cont, 2);
     }
   }
+
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+        private void initComponents() {
+
+                scrollPane = new javax.swing.JScrollPane();
+                table = new javax.swing.JTable();
+
+                setLayout(new java.awt.BorderLayout());
+
+                table.setModel(bitextModel
+                );
+                table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+                scrollPane.setViewportView(table);
+                TableColumn column;
+
+                //  Segment
+                column = table.getColumnModel().getColumn(0);
+                column.setPreferredWidth(60);
+                column.setHeaderValue(table.getColumnName(0));
+
+                //  Original
+                column = table.getColumnModel().getColumn(1);
+                column.setHeaderValue(table.getColumnName(1));
+                column.setPreferredWidth(600);
+                column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
+
+                //  Translation
+                column = table.getColumnModel().getColumn(2);
+                column.setPreferredWidth(600);
+                column.setHeaderValue(table.getColumnName(2));
+                column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
+
+                add(scrollPane, java.awt.BorderLayout.CENTER);
+        }// </editor-fold>//GEN-END:initComponents
+
+
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JScrollPane scrollPane;
+        private javax.swing.JTable table;
+        // End of variables declaration//GEN-END:variables
 }
