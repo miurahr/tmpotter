@@ -62,6 +62,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import static org.tmpotter.util.Localization.getString;
+
 
 /**
  * Helper for read TMX files, using StAX.
@@ -150,8 +152,8 @@ public class TmxReader2 {
     this.useSlash = useSlash;
 
     // log the parsing attempt
-    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.INFO.READING_FILE",
-            file.getAbsolutePath());
+    LOG.info(String.format("%s: %s", getString("TMXR.INFO.READING_FILE"),
+            file.getAbsolutePath()));
 
     boolean allFound = true;
 
@@ -197,24 +199,24 @@ public class TmxReader2 {
     isOmegaT = CT_APP.equals(getAttributeValue(element, "creationtool"));
 
     // log some details
-    LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR.INFO.CREATION_TOOL", getAttributeValue(element,
-                    "creationtool"));
-    LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR.INFO.CREATION_TOOL_VERSION", getAttributeValue(element,
-                    "creationtoolversion"));
-    LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR.INFO.SEG_TYPE", getAttributeValue(element, "segtype"));
-    LOG.logrb(Level.INFO, "TMXReader2", "parseHeader",
-            "TMXR.INFO.SOURCE_LANG", getAttributeValue(element, "srclang"));
+    LOG.info(String.format("%s %s",
+            getString("TMXR.INFO.CREATION_TOOL"), getAttributeValue(element,
+                    "creationtool")));
+    LOG.info(String.format("%s %s",
+            getString("TMXR.INFO.CREATION_TOOL_VERSION"), getAttributeValue(element,
+                    "creationtoolversion")));
+    LOG.info(String.format("%s %s",
+            getString("TMXR.INFO.SEG_TYPE"), getAttributeValue(element, "segtype")));
+    LOG.info(String.format("%s %s",
+            getString("TMXR.INFO.SOURCE_LANG"), getAttributeValue(element, "srclang")));
 
     // give a warning if the TMX source language is
     // different from the project source language
     String tmxSourceLanguage = getAttributeValue(element, "srclang");
     if (!tmxSourceLanguage.equalsIgnoreCase(sourceLanguage.getLanguage())) {
-      LOG.logrb(Level.WARNING, "TMXReader2", "parseHeader",
-              "TMXR.WARNING.INCORRECT_SOURCE_LANG", tmxSourceLanguage,
-              sourceLanguage);
+      LOG.info(String.format("%s %s %s",
+              getString("TMXR.WARNING.INCORRECT_SOURCE_LANG"), tmxSourceLanguage,
+              sourceLanguage));
       // TODO: Override source language by header's one
     }
   }
@@ -502,8 +504,8 @@ public class TmxReader2 {
           }
           if (tagN == null) {
             // check error of TMX reading
-            LOG.logrb(Level.SEVERE, "TMXReader2", "parseSegExtLevel2",
-                    "TMX.ERROR.READING_LEVEL2", "");
+            LOG.info(
+                    getString("TMX.ERROR.READING_LEVEL2"));
             segContent.setLength(0);
             // wait for end seg
             while (true) {
