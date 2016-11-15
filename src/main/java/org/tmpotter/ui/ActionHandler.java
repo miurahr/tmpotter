@@ -137,8 +137,8 @@ final class ActionHandler {
    * Open dialog to select the Po file.
    *
    */
-  public void menuItemImportActionPerformed() {
-    final ImportFile dlg = new ImportFile(null, "", false);
+  public void menuItemFileImportActionPerformed() {
+    final ImportFile dlg = new ImportFile(mainWindow, true);
     dlg.setPath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
@@ -147,7 +147,7 @@ final class ActionHandler {
       String targetLocale = dlg.getTargetLocale();
       String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
 
-      RuntimePreferences.setUserHome(dlg.getPath());
+      RuntimePreferences.setUserHome(dlg.getFilePath());
       modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(), sourceLocale,
           encoding);
       modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);

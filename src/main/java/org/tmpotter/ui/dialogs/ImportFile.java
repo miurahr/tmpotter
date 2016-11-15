@@ -19,227 +19,94 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
- * ************************************************************************/
-
+ * *************************************************************************/
 package org.tmpotter.ui.dialogs;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-import static org.tmpotter.util.Localization.getString;
-
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXComboBox;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXPanel;
-
-import org.tmpotter.util.AppConstants;
-import org.tmpotter.util.Localization;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
+import org.tmpotter.util.AppConstants;
+
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import org.tmpotter.util.Localization;
+import static org.tmpotter.util.Localization.getString;
 
 /**
- * Import file dialog.
  *
- * @author Hiroshi Miura
+ * @author miurahr
  */
-@SuppressWarnings("serial")
-public class ImportFile  extends JDialog implements ActionListener {
-  private final JXPanel panel = new JXPanel();
-  
-  private final JXLabel labelEncoding = new JXLabel();
+public class ImportFile extends javax.swing.JDialog implements ActionListener {
 
-  private final JXLabel labelImportFile = new JXLabel();
-  private final JTextField fieldImportFile = new JTextField();
-  private final JXButton buttonImportFile = new JXButton();
-
-  private final JXButton buttonOk = new JXButton();
-  private final JXButton buttonCancel = new JXButton();
+  /**
+   * Creates new form ImportFile
+   */
+  public ImportFile(java.awt.Frame parent, boolean modal) {
+    super(parent, modal);
+    initComponents();
+  }
+  private String originalDocFilename;
 
   private File filePath;
   private boolean closed;
-  
   private String originalLang;
   private String translationLang;
+  private final int numEncodings = AppConstants.straEncodings.size();
 
-  public final File getPath() {
-    return ( filePath );
+  public File userPathFile = new File(System.getProperty("user.dir"));
+
+  public final File getFilePath() {
+    return filePath;
   }
-  
-  public final void setPath( final File filePath ) {
+
+  public final void setPath(final File filePath) {
     this.filePath = filePath;
   }
 
   public final boolean isClosed() {
-    return ( closed );
-  }
-
-  private final JXComboBox comboSourceLang = new JXComboBox();
-  private final JXComboBox comboTranslationLang = new JXComboBox();
-  private final JXLabel labelSourceLang = new JXLabel();
-  private final JXLabel labelTranslationLang = new JXLabel();
-  private final JComboBox comboOriginalEncoding    = new JComboBox( AppConstants
-          .straEncodings.toArray() );
-  private final int numEncodings = AppConstants.straEncodings.size();
-
-  public File userPathFile = new File( System.getProperty( "user.dir" ) );
-
-  private String   originalDocFilename;
-  
-  private final String [] idiom = Localization.getLanguageList();
-  
-  /**
-   * Constructor.
-   * 
-   * @param frame parent frame
-   * @param title dialog title
-   * @param modal is modal?
-   */
-  public ImportFile( final Frame frame, final String title,
-          final boolean modal ) {
-    super( frame, title, modal );
-
-    initComponent();
-  }
-  
-  private void initComponent() {
-    
-    panel.setLayout( null );
-
-    labelImportFile.setText( getString( "LBL.IMPORT.FILE" ) );
-    labelImportFile.setBounds( new Rectangle( 5, 10, 200, 15 ) );
-
-    fieldImportFile.setText( "" );
-    fieldImportFile.setBounds( new Rectangle( 5, 30, 300, 22 ) );
-
-    setLocalizedText( buttonImportFile, getString( "BTN.BROWSE.FILE" ) );
-    buttonImportFile.addActionListener( this );
-    buttonImportFile.setBounds( new Rectangle( 310, 30, 100, 22 ) );
-
-    setLocalizedText( buttonOk, getString( "BTN.OK" ) );
-    buttonOk.addActionListener( this );
-    buttonOk.setBounds( new Rectangle( 55, 115, 100, 22 ) );
-
-    setLocalizedText( buttonCancel, getString( "BTN.CANCEL" ) );
-    buttonCancel.addActionListener( this );
-    buttonCancel.setBounds( new Rectangle( 160, 115, 100, 22 ) );
-
-    addWindowListener( new WindowAdapter() {
-      @Override
-      public void windowClosing( final WindowEvent evt ) {
-        onClose();
-      }
-    } );
-
-    setModal( true );
-    setResizable( false );
-    setTitle( getString( "DLG.OPEN.TITLE" ) );
-    getContentPane().setLayout( null );
-
-    for (String item : idiom) {
-      comboSourceLang.addItem(item);
-      comboTranslationLang.addItem(item);
-    }
-
-    comboSourceLang.setToolTipText(getString( "CB.LANG.SOURCE.TOOLTIP"));
-    comboSourceLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
-    comboSourceLang.setBounds(new Rectangle(5, 75, 100, 22));
-    labelSourceLang.setText(getString("LBL.SOURCE.LANG"));
-    labelSourceLang.setBounds(new Rectangle( 5, 55, 100, 16));
-
-    comboTranslationLang.setToolTipText(getString( "CB.LANG.TARGET.TOOLTIP"));
-    comboTranslationLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
-    comboTranslationLang.setBounds(new Rectangle(120, 75, 100, 22));
-    labelTranslationLang.setText(getString("LBL.TARGET.LANG"));
-    labelTranslationLang.setBounds(new Rectangle(120, 55, 100, 16));
-
-    comboOriginalEncoding.removeItemAt(numEncodings - 1);
-    comboOriginalEncoding.addItem(getString("ENCODING.DEFAULT"));
-    comboOriginalEncoding.setToolTipText(getString("CB.ENCODING.TOOLTIP"));
-    comboOriginalEncoding.setSelectedIndex( 0 );
-    comboOriginalEncoding.setBounds(new Rectangle(250, 75, 100, 22));
-    labelEncoding.setText(getString("LBL.ENCODING"));
-    labelEncoding.setBounds(new Rectangle(250, 55, 100, 16));
-
-    panel.setBounds(new Rectangle(-1, 0, 420, 180));
-
-    panel.add(fieldImportFile, null);
-    panel.add(buttonImportFile, null);
-
-    panel.add(comboSourceLang, null);
-    panel.add(comboTranslationLang, null);
-    panel.add(comboOriginalEncoding, null);
-    
-    panel.add(buttonCancel, null);
-    panel.add(buttonOk, null);
-
-    panel.add(labelImportFile, null);
-    panel.add(labelSourceLang, null);
-    panel.add(labelTranslationLang, null);
-    panel.add(labelEncoding, null);
-
-    getContentPane().add(panel, null );
-
-    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds((screenSize.width - 420) / 2, (screenSize.height - 180) / 2, 420, 180);
-  }
-
-  public final File getFilePath() {
-    return ( filePath );
+    return closed;
   }
 
   public final String getSourceLocale() {
-    return ( originalLang );
+    return originalLang;
   }
-  
+
   public final String getTargetLocale() {
-    return ( translationLang ); 
+    return translationLang;
   }
-  
+
   public final JComboBox getLangEncComboBox() {
-    return ( comboOriginalEncoding );
+    return comboEncoding;
   }
 
   public final String getSource() {
-    return ( originalDocFilename );
+    return originalDocFilename;
   }
 
   private void onImportFile() {
     final JFileChooser fc = new JFileChooser();
-    fc.setCurrentDirectory( filePath );
+    fc.setCurrentDirectory(filePath);
 
-    fc.setMultiSelectionEnabled( false );
-    final int returnVal = fc.showOpenDialog(panel );
+    fc.setMultiSelectionEnabled(false);
+    final int returnVal = fc.showOpenDialog(panel);
     filePath = fc.getCurrentDirectory();
 
-    if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       filePath = fc.getSelectedFile();
-      if (fc.getName( filePath ).endsWith( ".po" ) && filePath.exists()) {
-        originalDocFilename = fc.getName( filePath );
+      if (fc.getName(filePath).endsWith(".po") && filePath.exists()) {
+        originalDocFilename = fc.getName(filePath);
         fieldImportFile.setText(filePath.getPath());
       } else {
         JOptionPane.showMessageDialog(panel,
-            getString( "MSG.ERROR.FILE_NOTFOUND" ),
-            getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-        fieldImportFile.setText( "" );
+            getString("MSG.ERROR.FILE_NOTFOUND"),
+            getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+        fieldImportFile.setText("");
       }
     }
   }
@@ -247,24 +114,24 @@ public class ImportFile  extends JDialog implements ActionListener {
   private void onOk() {
     boolean errorImport = true;
     try {
-      if ( fieldImportFile.getText() != null ) {
-        final FileInputStream fr = new FileInputStream( fieldImportFile.getText() );
+      if (fieldImportFile.getText() != null) {
+        final FileInputStream fr = new FileInputStream(fieldImportFile.getText());
         fr.close();
         originalDocFilename = fieldImportFile.getText();
-        filePath = new File( originalDocFilename );
+        filePath = new File(originalDocFilename);
         originalLang = Localization.getLanguageCode(comboSourceLang.getSelectedIndex());
         translationLang = Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
         errorImport = false;
         setVisible(false);
       }
-    } catch ( final IOException ex ) {
-      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
-          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
+    } catch (final IOException ex) {
+      JOptionPane.showMessageDialog(panel, getString("MSG.ERROR.FILE_NOTFOUND"),
+          getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
       fieldImportFile.setText("");
     }
-    
+
     if (errorImport) {
-      fieldImportFile.setText( "" );
+      fieldImportFile.setText("");
     }
   }
 
@@ -274,43 +141,229 @@ public class ImportFile  extends JDialog implements ActionListener {
 
   private void onClose() {
     closed = true;
-    setVisible( false );
+    setVisible(false);
     dispose();
   }
 
   /**
    * action handler.
-   * 
+   *
    * @param action event
    */
   @Override
-  public final void actionPerformed( final ActionEvent action ) {
+  public final void actionPerformed(final ActionEvent action) {
     final Object actor = action.getSource();
 
-    if ( actor instanceof JButton ) {
-      if ( actor == buttonCancel ) {
+    if (actor instanceof JButton) {
+      if (actor == buttonCancel) {
         onCancel();
-      } else if ( actor == buttonOk ) {
+      } else if (actor == buttonOk) {
         onOk();
-      } else if ( actor == buttonImportFile ) {
+      } else if (actor == buttonImportFile) {
         onImportFile();
       }
     }
   }
-  
+
   /**
    * set language code.
-   * 
+   *
    * @param originalFlag indicate original or translation.
    */
-  final void setLanguageCode( final boolean originalFlag ) {
+  final void setLanguageCode(final boolean originalFlag) {
     String strLang = originalFlag ? comboSourceLang.getSelectedItem()
-            .toString() : comboTranslationLang.getSelectedItem().toString();
-    
-    if ( originalFlag ) {
+        .toString() : comboTranslationLang.getSelectedItem().toString();
+
+    if (originalFlag) {
       originalLang = strLang;
     } else {
       translationLang = strLang;
     }
   }
+
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+        private void initComponents() {
+
+                panel = new javax.swing.JPanel();
+                buttonOk = new javax.swing.JButton();
+                buttonCancel = new javax.swing.JButton();
+                labelImportFile = new javax.swing.JLabel();
+                fieldImportFile = new javax.swing.JTextField();
+                labelEncoding = new javax.swing.JLabel();
+                comboEncoding = new javax.swing.JComboBox<>();
+                labelSourceLanguage = new javax.swing.JLabel();
+                comboSourceLang = new javax.swing.JComboBox<>();
+                labelTargetLanguage = new javax.swing.JLabel();
+                comboTranslationLang = new javax.swing.JComboBox<>();
+                buttonImportFile = new javax.swing.JButton();
+
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/tmpotter/Bundle"); // NOI18N
+                setTitle(bundle.getString("DLG.OPEN.TITLE")); // NOI18N
+
+                buttonOk.setText("OK");
+                setLocalizedText( buttonOk, getString( "BTN.OK" ) );
+
+                buttonCancel.setText("Cancel");
+                setLocalizedText(buttonCancel, getString("BTN.CANCEL"));
+
+                javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+                panel.setLayout(panelLayout);
+                panelLayout.setHorizontalGroup(
+                        panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonOk)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonCancel)
+                                .addGap(17, 17, 17))
+                );
+                panelLayout.setVerticalGroup(
+                        panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(buttonOk)
+                                        .addComponent(buttonCancel))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+
+                labelImportFile.setText(getString("LBL.IMPORT.FILE"
+                ));
+
+                fieldImportFile.setText("jTextField1");
+
+                labelEncoding.setText(bundle.getString("LBL.ENCODING")); // NOI18N
+
+                comboEncoding.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                comboEncoding.setSelectedItem(AppConstants.straEncodings.toArray()
+                );
+
+                labelSourceLanguage.setText(bundle.getString("LBL.SOURCE.LANG")); // NOI18N
+
+                comboSourceLang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                comboSourceLang.setToolTipText(getString("CB.LANG.SOURCE.TOOLTIP"));
+
+                labelTargetLanguage.setText(bundle.getString("LBL.TARGET.LANG")); // NOI18N
+
+                comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+                setLocalizedText(buttonImportFile, getString("BTN.BROWSE.FILE"));
+
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+                getContentPane().setLayout(layout);
+                layout.setHorizontalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(labelTargetLanguage)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(labelImportFile)
+                                                        .addComponent(labelEncoding)
+                                                        .addComponent(labelSourceLanguage))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(62, 62, 62)
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(comboTranslationLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                        .addComponent(comboSourceLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(18, 18, 18)
+                                                                .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(buttonImportFile)))))
+                                .addContainerGap(113, Short.MAX_VALUE))
+                );
+                layout.setVerticalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelImportFile)
+                                        .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(buttonImportFile))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelEncoding)
+                                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(labelSourceLanguage))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelTargetLanguage)
+                                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                );
+
+                pack();
+        }// </editor-fold>//GEN-END:initComponents
+
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     */
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (ClassNotFoundException ex) {
+      java.util.logging.Logger.getLogger(ImportFile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+      java.util.logging.Logger.getLogger(ImportFile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      java.util.logging.Logger.getLogger(ImportFile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      java.util.logging.Logger.getLogger(ImportFile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+    //</editor-fold>
+
+    /* Create and display the dialog */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        ImportFile dialog = new ImportFile(new javax.swing.JFrame(), true);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+          @Override
+          public void windowClosing(java.awt.event.WindowEvent e) {
+            System.exit(0);
+          }
+        });
+        dialog.setVisible(true);
+      }
+    });
+  }
+
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JButton buttonCancel;
+        private javax.swing.JButton buttonImportFile;
+        private javax.swing.JButton buttonOk;
+        private javax.swing.JComboBox<String> comboEncoding;
+        private javax.swing.JComboBox<String> comboSourceLang;
+        private javax.swing.JComboBox<String> comboTranslationLang;
+        private javax.swing.JTextField fieldImportFile;
+        private javax.swing.JLabel labelEncoding;
+        private javax.swing.JLabel labelImportFile;
+        private javax.swing.JLabel labelSourceLanguage;
+        private javax.swing.JLabel labelTargetLanguage;
+        private javax.swing.JPanel panel;
+        // End of variables declaration//GEN-END:variables
 }
