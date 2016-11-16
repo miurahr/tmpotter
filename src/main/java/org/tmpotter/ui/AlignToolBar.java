@@ -45,6 +45,7 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
    */
   public AlignToolBar() {
     initComponents();
+    toolBar.setFloatable(false);
   }
 
   /**
@@ -153,6 +154,9 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                 buttonTranslationDelete = new javax.swing.JButton();
                 buttonTranslationJoin = new javax.swing.JButton();
                 buttonTranslationSplit = new javax.swing.JButton();
+
+                setMinimumSize(new java.awt.Dimension(800, 0));
+                setPreferredSize(new java.awt.Dimension(1000, 64));
 
                 toolBar.setRollover(true);
                 toolBar.setMaximumSize(new java.awt.Dimension(1000, 94));
@@ -271,7 +275,7 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                                 .addComponent(buttonTranslationJoin)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonTranslationSplit)
-                                .addContainerGap(18, Short.MAX_VALUE))
+                                .addContainerGap(25, Short.MAX_VALUE))
                 );
                 panelTranslationLayout.setVerticalGroup(
                         panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -289,7 +293,7 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 793, Short.MAX_VALUE)
+                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

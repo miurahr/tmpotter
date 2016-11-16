@@ -2,9 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
- *
- *  Part of this come from bitext2tmx.
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  Copyright (C) 2005-2006 Susana Santos Antón
  *            (C) 2006-2009 Raymond: Martin et al
@@ -28,21 +26,6 @@
 
 package org.tmpotter.ui.dialogs;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import static org.tmpotter.util.Localization.getString;
-
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXComboBox;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXPanel;
-
-import org.tmpotter.util.Localization;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -52,184 +35,95 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.tmpotter.util.Localization;
+
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import static org.tmpotter.util.Localization.getString;
 
 
 /**
  * Open TMX file dialog.
- *
  * @author Hiroshi Miura
  */
 @SuppressWarnings("serial")
-public class OpenTmx extends JDialog implements ActionListener {
-  private final JXPanel  panel = new JXPanel();
+public class OpenTmx extends javax.swing.JDialog implements ActionListener {
 
-  private final JXLabel labelTmxFile = new JXLabel();
-  private final JTextField fieldTmxFile = new JTextField();
-  private final JXButton buttonTmxFile = new JXButton();
-
-  private final JXButton buttonOk = new JXButton();
-  private final JXButton buttonCancel = new JXButton();
-
-  private File     filePath;
-  private boolean  closed;
-  
-  
+  private File filePath;
+  private boolean closed;
+  private String originalDoc;
+  private final String[] idiom = Localization.getLanguageList();
   private String originalLang;
   private String translationLang;
 
-  public final File getPath() {
-    return ( filePath );
+  public File userPathFile = new File(System.getProperty("user.dir"));
+
+  /**
+   * Creates new form OpenTmx
+   */
+  public OpenTmx(java.awt.Frame parent, boolean modal) {
+    super(parent, modal);
+    initComponents();
+    addListener();
   }
-  
-  public final void setPath( final File filePath ) {
+
+  private void addListener() {
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent evt) {
+        onClose();
+      }
+    });
+  }
+
+  public final File getFilePath() {
+    return (filePath);
+  }
+
+  public final void setFilePath(final File filePath) {
     this.filePath = filePath;
   }
 
   public final boolean isClosed() {
-    return ( closed );
-  }
-
-  private final JXComboBox comboSourceLang = new JXComboBox();
-  private final JXComboBox comboTranslationLang = new JXComboBox();
-  private final JXLabel labelSourceLang = new JXLabel();
-  private final JXLabel labelTranslationLang = new JXLabel();
-  
-  public File userPathFile = new File( System.getProperty( "user.dir" ) );
-
-  private String   originalDoc;
-  
-  private final String [] idiom = Localization.getLanguageList();
-  
-  /**
-   * Constructor.
-   * 
-   * @param frame parent frame
-   * @param title dialog title
-   * @param modal is modal?
-   */
-  public OpenTmx( final Frame frame, final String title,
-          final boolean modal ) {
-    super( frame, title, modal );
-
-    initComponent();
-  }
-  
-  private void initComponent() {
-    
-    panel.setLayout( null );
-
-    labelTmxFile.setText( getString( "LBL.TMX.FILE" ) );
-    labelTmxFile.setBounds( new Rectangle( 5, 10, 200, 15 ) );
-
-    fieldTmxFile.setText( "" );
-    fieldTmxFile.setBounds( new Rectangle( 5, 30, 300, 22 ) );
-
-    setLocalizedText( buttonTmxFile, getString( "BTN.BROWSE.TMX" ) );
-    buttonTmxFile.addActionListener( this );
-    buttonTmxFile.setBounds( new Rectangle( 310, 30, 100, 22 ) );
-
-    setLocalizedText( buttonOk, getString( "BTN.OK" ) );
-    buttonOk.addActionListener( this );
-    //buttonOk.setBounds( new Rectangle( 205, 115, 100, 22 ) );
-    buttonOk.setBounds( new Rectangle( 55, 115, 100, 22 ) );
-
-    setLocalizedText( buttonCancel, getString( "BTN.CANCEL" ) );
-    buttonCancel.addActionListener( this );
-    //buttonCancel.setBounds( new Rectangle( 310, 115, 100, 22 ) );
-    buttonCancel.setBounds( new Rectangle( 160, 115, 100, 22 ) );
-
-    addWindowListener( new WindowAdapter() {
-      @Override
-      public void windowClosing( final WindowEvent evt ) {
-        onClose();
-      }
-    } );
-
-    setModal( true );
-    setResizable( false );
-    setTitle( getString( "DLG.OPEN.TITLE" ) );
-    getContentPane().setLayout( null );
-
-    for (String item : idiom) {
-      comboSourceLang.addItem(item);
-      comboTranslationLang.addItem(item);
-    }
-
-    comboSourceLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
-    comboSourceLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    //comboSourceLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
-    comboSourceLang.setBounds( new Rectangle( 5, 75, 100, 22 ) );
-    labelSourceLang.setText( getString( "LBL.SOURCE.LANG" ) );
-    //labelSourceLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
-    labelSourceLang.setBounds( new Rectangle( 5, 55, 100, 16 ) );
-
-    comboTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
-    comboTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    //comboTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
-    comboTranslationLang.setBounds(new Rectangle( 120, 75, 100, 22 ));
-    labelTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
-    //labelTranslationLang.setBounds( new Rectangle( 420, 55, 100, 16 ) );
-    labelTranslationLang.setBounds( new Rectangle( 120, 55, 100, 16 ));
-        
-    panel.setBounds( new Rectangle( -1, 0, 420, 180 ) );
-
-    panel.add( fieldTmxFile, null );
-    panel.add( buttonTmxFile, null );
-
-    panel.add(comboSourceLang, null );
-    panel.add(comboTranslationLang, null );
-
-    panel.add( buttonCancel, null );
-    panel.add( buttonOk, null );
-
-    panel.add( labelTmxFile, null);
-    panel.add( labelSourceLang, null);
-    panel.add( labelTranslationLang, null);
-
-    getContentPane().add(panel, null );
-
-    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds( ( screenSize.width - 420 ) / 2,
-        ( screenSize.height - 180 ) / 2, 420, 180 );
-  }
-
-  public final File getFilePath() {
-    return ( filePath );
+    return closed;
   }
 
   public final String getSourceLocale() {
-    return ( originalLang );
+    return originalLang;
   }
   
   public final String getTargetLocale() {
-    return ( translationLang ); 
+    return translationLang; 
   }
 
   private void onTmxFile() {
     final JFileChooser fc = new JFileChooser();
-    fc.setCurrentDirectory( filePath );
-
-    fc.setMultiSelectionEnabled( false );
-    final int returnVal = fc.showOpenDialog(panel );
+if (filePath == null) {
+        filePath = userPathFile;
+    }
+    fc.setCurrentDirectory(filePath);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "TMX File", "tmx");
+    fc.setFileFilter(filter);
+    fc.setMultiSelectionEnabled(false);
+    final int returnVal = fc.showOpenDialog(jPanel1);
     filePath = fc.getCurrentDirectory();
 
-    if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       filePath = fc.getSelectedFile();
 
-      if (fc.getName( filePath ).endsWith( ".tmx" )
+      if (fc.getName(filePath).endsWith(".tmx")
           && filePath.exists()) {
-        originalDoc = fc.getName( filePath );
-        fieldTmxFile.setText(filePath.getPath());
-        
+        originalDoc = fc.getName(filePath);
+        fieldOpenTmxFile.setText(filePath.getPath());
+
       } else {
-        JOptionPane.showMessageDialog(panel,
-            getString( "MSG.ERROR.FILE_NOTFOUND" ),
-            getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-        fieldTmxFile.setText( "" );
+        JOptionPane.showMessageDialog(jPanel1,
+            getString("MSG.ERROR.FILE_NOTFOUND"),
+            getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+        fieldOpenTmxFile.setText("");
       }
     }
   }
@@ -237,26 +131,26 @@ public class OpenTmx extends JDialog implements ActionListener {
   private void onOk() {
     boolean errorTmx = true;
     try {
-      if ( fieldTmxFile.getText() != null ) {
-        final FileInputStream fr = new FileInputStream(fieldTmxFile.getText());
+      if (fieldOpenTmxFile.getText() != null) {
+        final FileInputStream fr = new FileInputStream(fieldOpenTmxFile.getText());
         fr.close();
-        originalDoc = fieldTmxFile.getText();
-        filePath = new File( originalDoc );
+        originalDoc = fieldOpenTmxFile.getText();
+        filePath = new File(originalDoc);
         originalLang = Localization.getLanguageCode(comboSourceLang
-                .getSelectedIndex());
+            .getSelectedIndex());
         translationLang = Localization.getLanguageCode(comboTranslationLang
-                .getSelectedIndex());
+            .getSelectedIndex());
         errorTmx = false;
         setVisible(false);
       }
-    } catch ( final IOException ex ) {
-      JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
-          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-      fieldTmxFile.setText("");
+    } catch (final IOException ex) {
+      JOptionPane.showMessageDialog(jPanel1, getString("MSG.ERROR.FILE_NOTFOUND"),
+          getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+      fieldOpenTmxFile.setText("");
     }
-    
+
     if (errorTmx) {
-      fieldTmxFile.setText( "" );
+      fieldOpenTmxFile.setText("");
     }
   }
 
@@ -266,44 +160,231 @@ public class OpenTmx extends JDialog implements ActionListener {
 
   private void onClose() {
     closed = true;
-    setVisible( false );
+    setVisible(false);
     dispose();
   }
 
   /**
    * action handler.
-   * 
+   *
    * @param action event
    */
   @Override
-  public final void actionPerformed( final ActionEvent action ) {
+  public final void actionPerformed(final ActionEvent action) {
     final Object actor = action.getSource();
 
-    if ( actor instanceof JButton ) {
-      if ( actor == buttonCancel ) {
+    if (actor instanceof JButton) {
+      if (actor == buttonCancel) {
         onCancel();
-      } else if ( actor == buttonOk ) {
+      } else if (actor == buttonOk) {
         onOk();
-      } else if ( actor == buttonTmxFile ) {
+      } else if (actor == buttonSelectFile) {
         onTmxFile();
       }
     }
   }
-  
+
   /**
    * set language code.
-   * 
+   *
    * @param originalFlag indicate original or translation.
    */
-  final void setLanguageCode( final boolean originalFlag ) {
+  final void setLanguageCode(final boolean originalFlag) {
     String strLang = originalFlag ? comboSourceLang.getSelectedItem()
-            .toString() : comboTranslationLang.getSelectedItem().toString();
-    
-    if ( originalFlag ) {
+        .toString() : comboTranslationLang.getSelectedItem().toString();
+
+    if (originalFlag) {
       originalLang = strLang;
     } else {
       translationLang = strLang;
     }
   }
-  
+
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+        private void initComponents() {
+
+                jPanel1 = new javax.swing.JPanel();
+                buttonOk = new javax.swing.JButton();
+                buttonCancel = new javax.swing.JButton();
+                jPanel2 = new javax.swing.JPanel();
+                labelTmxFile = new javax.swing.JLabel();
+                fieldOpenTmxFile = new javax.swing.JTextField();
+                buttonSelectFile = new javax.swing.JButton();
+                labelSourceLang = new javax.swing.JLabel();
+                labelTranslationLang = new javax.swing.JLabel();
+                comboSourceLang = new javax.swing.JComboBox<>();
+                comboTranslationLang = new javax.swing.JComboBox<>();
+
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/tmpotter/Bundle"); // NOI18N
+                setTitle(bundle.getString("DLG.OPEN.TMX.TITLE")); // NOI18N
+
+                buttonOk.setText("OK");
+                setLocalizedText(buttonOk, getString("BTN.OK"));
+                buttonOk.addActionListener(this);
+
+                buttonCancel.setText("Cancel");
+                setLocalizedText(buttonCancel, getString("BTN.CANCEL"));
+                buttonCancel.addActionListener(this);
+
+                javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+                jPanel1.setLayout(jPanel1Layout);
+                jPanel1Layout.setHorizontalGroup(
+                        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonOk)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonCancel)
+                                .addGap(16, 16, 16))
+                );
+                jPanel1Layout.setVerticalGroup(
+                        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap(22, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(buttonOk)
+                                        .addComponent(buttonCancel))
+                                .addGap(15, 15, 15))
+                );
+
+                labelTmxFile.setText(bundle.getString("LBL.TMX.FILE")); // NOI18N
+
+                buttonSelectFile.setText("Select File");
+                setLocalizedText(buttonSelectFile, getString("BTN.BROWSE.TMX"));
+                buttonSelectFile.addActionListener(this);
+
+                labelSourceLang.setText(bundle.getString("LBL.SOURCE.LANG")); // NOI18N
+
+                labelTranslationLang.setText(bundle.getString("LBL.TARGET.LANG")); // NOI18N
+
+                comboSourceLang.setModel(new javax.swing.DefaultComboBoxModel(idiom));
+                comboSourceLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+                comboSourceLang.setToolTipText(bundle.getString("CB.LANG.SOURCE.TOOLTIP")); // NOI18N
+
+                comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel(idiom));
+                comboTranslationLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+                comboTranslationLang.setToolTipText(bundle.getString("CB.LANG.TARGET.TOOLTIP")); // NOI18N
+
+                javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+                jPanel2.setLayout(jPanel2Layout);
+                jPanel2Layout.setHorizontalGroup(
+                        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(labelTranslationLang)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                                        .addComponent(labelSourceLang)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                                        .addComponent(labelTmxFile)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(fieldOpenTmxFile, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonSelectFile)
+                                .addContainerGap(15, Short.MAX_VALUE))
+                );
+                jPanel2Layout.setVerticalGroup(
+                        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelTmxFile)
+                                        .addComponent(fieldOpenTmxFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(buttonSelectFile))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelSourceLang)
+                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelTranslationLang)
+                                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+                getContentPane().setLayout(layout);
+                layout.setHorizontalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                );
+                layout.setVerticalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                );
+
+                pack();
+        }// </editor-fold>//GEN-END:initComponents
+
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     */
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (ClassNotFoundException ex) {
+      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+    //</editor-fold>
+
+    /* Create and display the dialog */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        OpenTmx dialog = new OpenTmx(new javax.swing.JFrame(), true);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+          @Override
+          public void windowClosing(java.awt.event.WindowEvent e) {
+            System.exit(0);
+          }
+        });
+        dialog.setVisible(true);
+      }
+    });
+  }
+
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JButton buttonCancel;
+        private javax.swing.JButton buttonOk;
+        private javax.swing.JButton buttonSelectFile;
+        private javax.swing.JComboBox<String> comboSourceLang;
+        private javax.swing.JComboBox<String> comboTranslationLang;
+        private javax.swing.JTextField fieldOpenTmxFile;
+        private javax.swing.JPanel jPanel1;
+        private javax.swing.JPanel jPanel2;
+        private javax.swing.JLabel labelSourceLang;
+        private javax.swing.JLabel labelTmxFile;
+        private javax.swing.JLabel labelTranslationLang;
+        // End of variables declaration//GEN-END:variables
 }

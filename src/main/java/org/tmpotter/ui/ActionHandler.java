@@ -83,12 +83,12 @@ final class ActionHandler {
    *
    */
   public void menuItemFileOpenActionPerformed() {
-    final OpenTmx dlg = new OpenTmx(null, "", false);
-    dlg.setPath(RuntimePreferences.getUserHome());
+    final OpenTmx dlg = new OpenTmx(mainWindow, true);
+    dlg.setFilePath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
-      RuntimePreferences.setUserHome(dlg.getPath());
+      RuntimePreferences.setUserHome(dlg.getFilePath());
       modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       dlg.dispose();
     }
