@@ -56,12 +56,12 @@ public class TmView extends javax.swing.JPanel {
    * Creates new form TmView
    */
   public TmView() {
-    bitextModel = new BitextModel();
-    initComponents();
-    table.setEnabled(false);  
   }
 
   final void buildDisplay() {
+    bitextModel = new BitextModel();
+    initComponents();
+    table.setEnabled(false);
     table.addKeyListener(new KeyAdapter() {
       public final void keyPressed(final KeyEvent event) {
         modelMediator.onTablePressed(event);
@@ -75,7 +75,7 @@ public class TmView extends javax.swing.JPanel {
     });
     scrollPane.setColumnHeader(null);
     scrollPane.setColumnHeaderView(table.getTableHeader());
-    table.setEnabled(true);  
+    table.setEnabled(true);
   }
 
   public void setModelMediator(ModelMediator mediator) {
@@ -114,8 +114,8 @@ public class TmView extends javax.swing.JPanel {
 
   public final void setPreferredSize(final int width,
 	  final int height, final int offset) {
-    table.setPreferredSize(new Dimension(width, (table
-	.getRowCount() * height) + offset));
+    table.setPreferredSize(new Dimension(width, (table.getRowCount() * height) + offset));
+	 
   }
 
   public final int getRowCount() {
@@ -137,7 +137,7 @@ public class TmView extends javax.swing.JPanel {
 
   public final Object getValueAt(final int row, final int column) {
     if (row < 0 || column < 0) {
-      return null;
+      return "";
     }
     return (table.getValueAt(row, column));
   }

@@ -45,6 +45,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 
 /**
@@ -137,20 +138,19 @@ final class ActionHandler {
    * Open dialog to select the Po file.
    *
    */
-  public void menuItemFileImportActionPerformed() {
+  public void menuItemFilePoOpenActionPerformed() {
     final ImportFile dlg = new ImportFile(mainWindow, true);
     dlg.setPath(RuntimePreferences.getUserHome());
-    dlg.setModal(true);
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
       String sourceLocale = dlg.getSourceLocale();
       String targetLocale = dlg.getTargetLocale();
       String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
 
-      RuntimePreferences.setUserHome(dlg.getFilePath());
-      modelMediator.setOriginalProperties(dlg.getFilePath(), dlg.getSource(), sourceLocale,
+      RuntimePreferences.setUserHome(dlg.getPath());
+      modelMediator.setOriginalProperties(dlg.getPath(), dlg.getSource(), sourceLocale,
           encoding);
-      modelMediator.setTargetProperties(dlg.getFilePath(), dlg.getSource(), targetLocale, encoding);
+      modelMediator.setTargetProperties(dlg.getPath(), dlg.getSource(), targetLocale, encoding);
       mainWindow.tmView.buildDisplay();
       Segmenter.setSrx(Preferences.getSrx());
       try {
@@ -225,6 +225,9 @@ final class ActionHandler {
       File outFile = new File(outFileNameBase.concat(tmData.stringLangTranslation + ".tmx"));
       while (!save && !cancel) {
         final JFileChooser fc = new JFileChooser();
+	FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        	"TMX File", "tmx");
+    	fc.setFileFilter(filter);
         boolean nameOfUser = false;
         while (!nameOfUser) {
           fc.setLocation(230, 300);

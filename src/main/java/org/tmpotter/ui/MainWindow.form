@@ -20,11 +20,6 @@
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(menuItemFileOpen, getString(&quot;MNI.FILE.OPEN&quot;));"/>
               </AuxValues>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemFileTextOpen">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Open Text"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileSave">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save"/>
@@ -40,12 +35,24 @@
                 <Property name="text" type="java.lang.String" value="Close"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
+            <Menu class="javax.swing.JMenu" name="jMenu1">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Import"/>
               </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="menuItemFileTextOpen">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Open Text"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="menuItemFilePoOpen">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Open PO"/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator5">
             </MenuItem>

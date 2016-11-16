@@ -55,7 +55,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="113" max="32767" attributes="0"/>
+              <EmptySpace pref="72" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -83,7 +83,7 @@
                   <Component id="labelTargetLanguage" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboTranslationLang" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="36" max="32767" attributes="0"/>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
               <Component id="panel" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -120,12 +120,12 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="buttonOk">
           <Properties>
-            <Property name="text" type="java.lang.String" value="OK" postCode="setLocalizedText( buttonOk, getString( &quot;BTN.OK&quot; ) );"/>
+            <Property name="text" type="java.lang.String" value="OK" postCode="setLocalizedText(buttonOk, getString(&quot;BTN.OK&quot;));&#xa;buttonOk.addActionListener(this);"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="buttonCancel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cancel" postCode="setLocalizedText(buttonCancel, getString(&quot;BTN.CANCEL&quot;));"/>
+            <Property name="text" type="java.lang.String" value="Cancel" postCode="setLocalizedText(buttonCancel, getString(&quot;BTN.CANCEL&quot;));&#xa;buttonCancel.addActionListener(this);"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -138,9 +138,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="fieldImportFile">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelEncoding">
       <Properties>
@@ -151,16 +148,8 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="comboEncoding">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
-        </Property>
-        <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="AppConstants.straEncodings.toArray()&#xa;" type="code"/>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.DefaultComboBoxModel(AppConstants.straEncodings.toArray())" type="code"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -176,13 +165,8 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="comboSourceLang">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="comboSourceLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());">
+          <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(idiom)" type="code"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="getString(&quot;CB.LANG.SOURCE.TOOLTIP&quot;)" type="code"/>
@@ -201,13 +185,8 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="comboTranslationLang">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="comboTranslationLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());&#xa;comboTranslationLang.setToolTipText(getString(&quot;CB.LANG.TARGET.TOOLTIP&quot;));">
+          <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(idiom)" type="code"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -216,7 +195,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="buttonImportFile">
       <Properties>
-        <Property name="text" postCode="setLocalizedText(buttonImportFile, getString(&quot;BTN.BROWSE.FILE&quot;));"/>
+        <Property name="text" type="java.lang.String" value="Select" preCode="setLocalizedText(buttonImportFile, getString(&quot;BTN.BROWSE.FILE&quot;));" postCode="buttonImportFile.addActionListener(this);"/>
       </Properties>
     </Component>
   </SubComponents>

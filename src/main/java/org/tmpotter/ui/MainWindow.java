@@ -4,6 +4,9 @@
  *
  *  Copyright (C) 2016 Hiroshi Miura
  *
+ *  Copyright (C) 2005-2006 Susana Santos Antón
+ *            (C) 2006-2009 Raymond: Martin et al
+ *
  *  This file is part of TMPotter.
  *
  *  TMPotter is free software; you can redistribute it and/or modify
@@ -749,12 +752,13 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 jMenuBar1 = new javax.swing.JMenuBar();
                 menuFile = new javax.swing.JMenu();
                 menuItemFileOpen = new javax.swing.JMenuItem();
-                menuItemFileTextOpen = new javax.swing.JMenuItem();
                 menuItemFileSave = new javax.swing.JMenuItem();
                 menuItemFileSaveAs = new javax.swing.JMenuItem();
                 menuItemFileClose = new javax.swing.JMenuItem();
+                jMenu1 = new javax.swing.JMenu();
+                menuItemFileTextOpen = new javax.swing.JMenuItem();
+                menuItemFilePoOpen = new javax.swing.JMenuItem();
                 jSeparator4 = new javax.swing.JPopupMenu.Separator();
-                menuItemFileImport = new javax.swing.JMenuItem();
                 jSeparator5 = new javax.swing.JPopupMenu.Separator();
                 menuItemFileQuit = new javax.swing.JMenuItem();
                 menuEdit = new javax.swing.JMenu();
@@ -785,9 +789,6 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 setLocalizedText(menuItemFileOpen, getString("MNI.FILE.OPEN"));
                 menuFile.add(menuItemFileOpen);
 
-                menuItemFileTextOpen.setText("Open Text");
-                menuFile.add(menuItemFileTextOpen);
-
                 menuItemFileSave.setText("Save");
                 menuFile.add(menuItemFileSave);
 
@@ -796,10 +797,17 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
 
                 menuItemFileClose.setText("Close");
                 menuFile.add(menuItemFileClose);
-                menuFile.add(jSeparator4);
 
-                menuItemFileImport.setText("Import");
-                menuFile.add(menuItemFileImport);
+                jMenu1.setText("Import");
+
+                menuItemFileTextOpen.setText("Open Text");
+                jMenu1.add(menuItemFileTextOpen);
+
+                menuItemFilePoOpen.setText("Open PO");
+                jMenu1.add(menuItemFilePoOpen);
+
+                menuFile.add(jMenu1);
+                menuFile.add(jSeparator4);
                 menuFile.add(jSeparator5);
 
                 menuItemFileQuit.setText("Quit");
@@ -901,6 +909,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JMenu jMenu1;
         private javax.swing.JMenuBar jMenuBar1;
         private javax.swing.JPopupMenu.Separator jSeparator1;
         private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -911,8 +920,8 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         protected javax.swing.JMenu menuFile;
         private javax.swing.JMenu menuHelp;
         private javax.swing.JMenuItem menuItemFileClose;
-        private javax.swing.JMenuItem menuItemFileImport;
         private javax.swing.JMenuItem menuItemFileOpen;
+        private javax.swing.JMenuItem menuItemFilePoOpen;
         private javax.swing.JMenuItem menuItemFileQuit;
         private javax.swing.JMenuItem menuItemFileSave;
         private javax.swing.JMenuItem menuItemFileSaveAs;
