@@ -784,26 +784,33 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 setMinimumSize(new java.awt.Dimension(800, 480));
 
                 menuFile.setText("File");
+                setLocalizedText(menuFile, getString("MNU.FILE"));
 
                 menuItemFileOpen.setText("Open");
                 setLocalizedText(menuItemFileOpen, getString("MNI.FILE.OPEN"));
                 menuFile.add(menuItemFileOpen);
 
                 menuItemFileSave.setText("Save");
+                setLocalizedText(menuItemFileSave, getString("MNI.FILE.SAVE"));
                 menuFile.add(menuItemFileSave);
 
                 menuItemFileSaveAs.setText("Save As");
+                setLocalizedText(menuItemFileSaveAs, getString("MNI.FILE.SAVEAS"));
                 menuFile.add(menuItemFileSaveAs);
 
                 menuItemFileClose.setText("Close");
+                setLocalizedText(menuItemFileClose, getString("MNI.FILE.ABORT"));
                 menuFile.add(menuItemFileClose);
 
                 jMenu1.setText("Import");
+                setLocalizedText(jMenu1, getString("MNI.FILE.IMPORT"));
 
                 menuItemFileTextOpen.setText("Open Text");
+                setLocalizedText(menuItemFileTextOpen, getString("MNI.FILE.TEXTOPEN"));
                 jMenu1.add(menuItemFileTextOpen);
 
                 menuItemFilePoOpen.setText("Open PO");
+                setLocalizedText(menuItemFilePoOpen, getString("MNI.FILE.POOPEN"));
                 jMenu1.add(menuItemFilePoOpen);
 
                 menuFile.add(jMenu1);
@@ -811,11 +818,13 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuFile.add(jSeparator5);
 
                 menuItemFileQuit.setText("Quit");
+                setLocalizedText(menuItemFileQuit, getString("MNI.FILE.EXIT"));
                 menuFile.add(menuItemFileQuit);
 
                 jMenuBar1.add(menuFile);
 
                 menuEdit.setText("Edit");
+                setLocalizedText(menuEdit, getString("MNU.EDIT"));
 
                 menuItemUndo.setText("Undo");
                 menuEdit.add(menuItemUndo);
@@ -853,15 +862,19 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 jMenuBar1.add(menuEdit);
 
                 menuOptions.setText("Options");
+                setLocalizedText(menuOptions, getString("MNU.OPTIONS"));
 
                 menuItemSettings.setText("Settings");
+                setLocalizedText(menuItemSettings, getString("MNI.SETTINGS"));
                 menuOptions.add(menuItemSettings);
 
                 jMenuBar1.add(menuOptions);
 
                 menuHelp.setText("Help");
+                setLocalizedText(menuHelp, getString("MNU.HELP"));
 
                 menuItemHelpAbout.setText("About");
+                setLocalizedText(menuItemHelpAbout, getString("MNI.HELP.ABOUT"));
                 menuItemHelpAbout.setActionCommand("");
                 menuItemHelpAbout.setName(""); // NOI18N
                 menuHelp.add(menuItemHelpAbout);

@@ -9,6 +9,7 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(menuFile, getString(&quot;MNU.FILE&quot;));"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
           </AuxValues>
           <SubComponents>
@@ -22,33 +23,39 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileSave">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save"/>
+                <Property name="text" type="java.lang.String" value="Save" postCode="setLocalizedText(menuItemFileSave, getString(&quot;MNI.FILE.SAVE&quot;));"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileSaveAs">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save As"/>
+                <Property name="text" type="java.lang.String" value="Save As" postCode="setLocalizedText(menuItemFileSaveAs, getString(&quot;MNI.FILE.SAVEAS&quot;));"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileClose">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Close"/>
+                <Property name="text" type="java.lang.String" value="Close" postCode="setLocalizedText(menuItemFileClose, getString(&quot;MNI.FILE.ABORT&quot;));"/>
               </Properties>
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu1">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Import"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(jMenu1, getString(&quot;MNI.FILE.IMPORT&quot;));"/>
+              </AuxValues>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="menuItemFileTextOpen">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Open Text"/>
+                    <Property name="text" type="java.lang.String" value="Open Text" postCode="setLocalizedText(menuItemFileTextOpen, getString(&quot;MNI.FILE.TEXTOPEN&quot;));"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="menuItemFilePoOpen">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Open PO"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(menuItemFilePoOpen, getString(&quot;MNI.FILE.POOPEN&quot;));"/>
+                  </AuxValues>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -58,14 +65,14 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileQuit">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Quit"/>
+                <Property name="text" type="java.lang.String" value="Quit" postCode="setLocalizedText(menuItemFileQuit, getString(&quot;MNI.FILE.EXIT&quot;));"/>
               </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuEdit">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
+            <Property name="text" type="java.lang.String" value="Edit" postCode="setLocalizedText(menuEdit, getString(&quot;MNU.EDIT&quot;));"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
@@ -131,7 +138,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuOptions">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Options"/>
+            <Property name="text" type="java.lang.String" value="Options" postCode="setLocalizedText(menuOptions, getString(&quot;MNU.OPTIONS&quot;));"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
@@ -139,19 +146,19 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemSettings">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Settings"/>
+                <Property name="text" type="java.lang.String" value="Settings" postCode="setLocalizedText(menuItemSettings, getString(&quot;MNI.SETTINGS&quot;));"/>
               </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Help"/>
+            <Property name="text" type="java.lang.String" value="Help" postCode="setLocalizedText(menuHelp, getString(&quot;MNU.HELP&quot;));"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemHelpAbout">
               <Properties>
-                <Property name="text" type="java.lang.String" value="About"/>
+                <Property name="text" type="java.lang.String" value="About" postCode="setLocalizedText(menuItemHelpAbout, getString(&quot;MNI.HELP.ABOUT&quot;));"/>
                 <Property name="actionCommand" type="java.lang.String" value=""/>
                 <Property name="name" type="java.lang.String" value="" noResource="true"/>
               </Properties>
