@@ -2,9 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
- *
- *  This file come from bitext2tmx.
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  Copyright (C) 2005-2006 Susana Santos Antón
  *            (C) 2006-2009 Raymond: Martin et al
@@ -28,242 +26,79 @@
 
 package org.tmpotter.ui.dialogs;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-
-import static org.tmpotter.util.Localization.getString;
-
-import org.tmpotter.util.AppConstants;
-import org.tmpotter.util.Localization;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import org.tmpotter.util.AppConstants;
+import org.tmpotter.util.Localization;
+import static org.tmpotter.util.Localization.getString;
 
+/**
+ *
+ * @author miurahr
+ */
+public class OpenTexts extends javax.swing.JDialog implements ActionListener {
 
-@SuppressWarnings({"unchecked","serial"})
-public final class OpenTexts extends JDialog implements ActionListener {
+  /**
+   * Creates new form OpenTexts
+   */
+  public OpenTexts(java.awt.Frame parent, boolean modal) {
+    super(parent, modal);
+    initComponents();
+  }
 
-  private final JPanel  panel = new JPanel();
-
-  private final JLabel      labelOriginal  = new JLabel();
-  private final JTextField  fieldOriginal  = new JTextField();
-  private final JButton     buttonOriginal = new JButton();
-
-  private final JLabel      labelTranslation  = new JLabel();
-  private final JTextField  fieldTranslation  = new JTextField();
-  private final JButton     buttonTranslation = new JButton();
-
-  private final JButton  buttonOk     = new JButton();
-  private final JButton  buttonCancel = new JButton();
-
-  private final JLabel  labelEncoding            = new JLabel();
-  private final JLabel  labelOriginalEncoding    = new JLabel();
-  private final JLabel  labelTranslationEncoding = new JLabel();
-
-  private File     filePath;
-  private File     originalFilepath;
-  private File     translationFilePath;
-  private String   originalDocFilename;
-  private String   translationDoc;
-  private boolean  closed;
+  private File filePath;
+  private File originalFilepath;
+  private File translationFilePath;
+  private String originalDocFilename;
+  private String translationDoc;
+  private boolean closed;
 
   public final File getPath() {
-    return ( filePath );
+    return filePath;
   }
-  
-  public final void setPath( final File filePath ) {
+
+  public final void setPath(final File filePath) {
     this.filePath = filePath;
   }
 
   public final File getSourcePath() {
-    return ( originalFilepath );
+    return originalFilepath;
   }
-  
+
   public final File getTargetPath() {
-    return ( translationFilePath );
+    return translationFilePath;
   }
 
   public final boolean isClosed() {
-    return ( closed );
+    return closed;
   }
 
   public final String getSource() {
-    return ( originalDocFilename );
+    return originalDocFilename;
   }
-  
+
   public final String getTarget() {
-    return ( translationDoc );
+    return translationDoc;
   }
-
-
-  private final JComboBox  comboOriginalLang    = new JComboBox();
-  private final JComboBox  comboTranslationLang = new JComboBox();
-  private final JLabel     labelOriginalLang    = new JLabel();
-  private final JLabel     labelTranslationLang = new JLabel();
 
   private String originalLang;
   private String translationLang;
 
-  public File userPathFile = new File( System.getProperty( "user.dir" ) );
+  public File userPathFile = new File(System.getProperty("user.dir"));
 
-  private final JComboBox comboOriginalEncoding    = new JComboBox(AppConstants.straEncodings.toArray());
-  private final JComboBox comboTranslationEncoding = new JComboBox(AppConstants.straEncodings.toArray());
   private final int numEncodings = AppConstants.straEncodings.size();
 
-  private final String [] idiom = Localization.getLanguageList();
+  private final String[] idiom = Localization.getLanguageList();
+
   
-  /**
-   * Constructor.
-   * 
-   * @param frame parent frame
-   * @param title dialog title
-   * @param modal is modal?
-   */
-  public OpenTexts( final Frame frame, final String title,
-          final boolean modal ) {
-    super( frame, title, modal );
-
-    initialize();
-  }
-
-  public OpenTexts() {
-    this( null, "", false );
-  }
-
-  private void initialize() { // throws Exception
-    panel.setLayout( null );
-
-    labelOriginal.setText( getString( "LBL.SOURCE.FILE" ) );
-    labelOriginal.setBounds( new Rectangle( 5, 10, 200, 15 ) );
-
-    fieldOriginal.setText( "" );
-    fieldOriginal.setBounds( new Rectangle( 5, 30, 300, 22 ) );
-
-    //_btnOriginal.setText( l10n( "BTN.BROWSE" ) );
-    setLocalizedText( buttonOriginal, getString( "BTN.BROWSE.ORIGINAL" ) );
-    buttonOriginal.addActionListener( this );
-    buttonOriginal.setBounds( new Rectangle( 310, 30, 100, 22 ) );
-
-    //_btnTranslation.setText( l10n( "BTN.BROWSE" ) );
-    setLocalizedText( buttonTranslation, getString( "BTN.BROWSE.TRANSLATION" ) );
-    buttonTranslation.addActionListener( this );
-    buttonTranslation.setEnabled( false );
-    buttonTranslation.setBounds( new Rectangle( 310, 75, 100, 22 ) );
-
-    labelTranslation.setText( getString( "LBL.TARGET.FILE" ) );
-    labelTranslation.setBounds( new Rectangle( 5, 55, 200, 15 ) );
-
-    fieldTranslation.setText( "" );
-    fieldTranslation.setBounds( new Rectangle( 5, 75, 300, 22 ) );
-
-    setLocalizedText( buttonOk, getString( "BTN.OK" ) );
-    buttonOk.addActionListener( this );
-    buttonOk.setBounds( new Rectangle( 205, 115, 100, 22 ) );
-
-    setLocalizedText( buttonCancel, getString( "BTN.CANCEL" ) );
-    buttonCancel.addActionListener( this );
-    buttonCancel.setBounds( new Rectangle( 310, 115, 100, 22 ) );
-
-    addWindowListener( new WindowAdapter() {
-      public void windowClosing( final WindowEvent evt ) {
-        onClose();
-      }
-    } );
-
-    setModal( true );
-    setResizable( false );
-    setTitle( getString( "DLG.OPEN.TITLE" ) );
-    getContentPane().setLayout( null );
-    
-    for (String item : idiom) {
-      comboOriginalLang.addItem(item);
-      comboTranslationLang.addItem(item);
-    }
-
-    comboOriginalLang.setToolTipText( getString( "CB.LANG.SOURCE.TOOLTIP" ) );
-    comboOriginalLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    comboOriginalLang.setBounds( new Rectangle( 420, 30, 100, 22 ) );
-
-    comboOriginalEncoding.removeItemAt( numEncodings - 1 );
-    comboOriginalEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
-    comboOriginalEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
-    comboOriginalEncoding.setSelectedIndex( 0 );
-    comboOriginalEncoding.setBounds( new Rectangle( 530, 30, 100, 22 ) );
-
-    labelOriginalLang.setText( getString( "LBL.SOURCE.LANG" ) );
-    labelOriginalLang.setBounds( new Rectangle( 420, 10, 100, 16 ) );
-
-    labelOriginalEncoding.setText( getString( "LBL.ENCODING" ) );
-    labelOriginalEncoding.setBounds( new Rectangle( 530, 10, 100, 16 ) );
-
-    comboTranslationLang.setToolTipText( getString( "CB.LANG.TARGET.TOOLTIP" ) );
-    comboTranslationLang.setSelectedItem( Locale.getDefault().getDisplayLanguage() );
-    comboTranslationLang.setBounds( new Rectangle( 420, 75, 100, 22 ) );
-    comboTranslationLang.setEnabled( false );
-
-    comboTranslationEncoding.removeItemAt( numEncodings - 1 );
-    comboTranslationEncoding.addItem( getString( "ENCODING.DEFAULT" ) );
-    comboTranslationEncoding.setToolTipText( getString( "CB.ENCODING.TOOLTIP" ) );
-    comboTranslationEncoding.setSelectedIndex( 0 );
-    comboTranslationEncoding.setBounds( new Rectangle( 530, 75, 100, 22 ) );
-    comboTranslationEncoding.setEnabled( false );
-
-    labelTranslation.setEnabled( false );
-
-    labelTranslationLang.setText( getString( "LBL.TARGET.LANG" ) );
-    labelTranslationLang.setBounds( new Rectangle( 420, 55, 100, 16 ) );
-    labelTranslationLang.setEnabled( false );
-
-    labelTranslationEncoding.setText( getString( "LBL.ENCODING" ) );
-    labelTranslationEncoding.setBounds( new Rectangle( 530, 55, 100, 16 ) );
-
-    panel.setBounds( new Rectangle( -1, 0, 640, 180 ) );
-
-    panel.add( fieldTranslation, null );
-    panel.add( fieldOriginal, null );
-    panel.add( buttonOriginal, null );
-    panel.add( buttonTranslation, null );
-
-    panel.add(comboOriginalLang, null );
-    panel.add(comboTranslationLang, null );
-    panel.add( comboOriginalEncoding, null );
-    panel.add( comboTranslationEncoding, null );
-
-    panel.add( buttonCancel, null );
-    panel.add( buttonOk, null );
-
-    panel.add( labelOriginalLang, null );
-    panel.add( labelOriginalEncoding, null );
-    panel.add( labelTranslationEncoding, null );
-    panel.add( labelOriginal, null );
-    panel.add( labelTranslationLang, null );
-    panel.add( labelTranslation, null );
-
-    getContentPane().add(panel, null );
-
-    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds((screenSize.width - 640) / 2, (screenSize.height - 180) / 2, 640, 180);
-  }
-
   public final String getSourceLocale() {
     return ( originalLang );
   }
@@ -273,38 +108,36 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
   public final JComboBox getSourceLangEncComboBox() {
-    return ( comboOriginalEncoding );
+    return comboOriginalEncoding;
   }
   
   public final JComboBox getTargetLangEncComboBox() {
-    return ( comboTranslationEncoding );
+    return comboTranslationEncoding;
   }
 
   private void onOriginal() {
     final JFileChooser fc = new JFileChooser();
-    fc.setCurrentDirectory( filePath );
-
-    fc.setMultiSelectionEnabled( false );
-    final int returnVal = fc.showOpenDialog(panel );
+    fc.setCurrentDirectory(filePath);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "Text File", "txt", "utf8");
+    fc.setFileFilter(filter);
+    fc.setMultiSelectionEnabled(false);
+    final int returnVal = fc.showOpenDialog(panel);
     filePath = fc.getCurrentDirectory();
 
-    if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       originalFilepath = fc.getSelectedFile();
 
-      if ( fc.getName( originalFilepath ).endsWith( ".txt" ) ) {
-        if ( originalFilepath.exists() ) {
-          originalDocFilename = fc.getName( originalFilepath );
-          fieldOriginal.setText( originalFilepath.getPath() );
-          labelTranslation.setEnabled( true );
-          buttonTranslation.setEnabled( true );
-          comboTranslationEncoding.setEnabled( true );
-          labelTranslationLang.setEnabled( true );
-          comboTranslationLang.setEnabled( true );
+      if (fc.getName(originalFilepath).endsWith(".txt")||
+	  fc.getName(originalFilepath).endsWith(".utf8")) {
+        if (originalFilepath.exists()) {
+          originalDocFilename = fc.getName(originalFilepath);
+          fieldOriginal.setText(originalFilepath.getPath());
         } else {
           JOptionPane.showMessageDialog(panel,
-              getString( "MSG.ERROR.FILE_NOTFOUND" ),
-              getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
-          fieldOriginal.setText( "" );
+              getString("MSG.ERROR.FILE_NOTFOUND"),
+              getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+          fieldOriginal.setText("");
         }
       }
       //  ToDo: remember filename by preferences
@@ -313,25 +146,28 @@ public final class OpenTexts extends JDialog implements ActionListener {
 
   private void onTranslation() {
     final JFileChooser fc = new JFileChooser();
-    fc.setCurrentDirectory( filePath );
-
-    fc.setMultiSelectionEnabled( false );
-    final int returnVal = fc.showOpenDialog(panel );
+    fc.setCurrentDirectory(filePath);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "Text File", "txt", "utf8");
+    fc.setFileFilter(filter);
+    fc.setMultiSelectionEnabled(false);
+    final int returnVal = fc.showOpenDialog(panel);
     filePath = fc.getCurrentDirectory();
 
-    if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       translationFilePath = fc.getSelectedFile();
 
-      if ( fc.getName( translationFilePath ).endsWith( ".txt" ) ) {
-        if ( translationFilePath.exists() ) {
-          translationDoc = fc.getName( translationFilePath );
-          fieldTranslation.setText( translationFilePath.getPath() );
+      if (fc.getName(translationFilePath).endsWith(".txt")||
+	  fc.getName(translationFilePath).endsWith(".utf8")) {
+        if (translationFilePath.exists()) {
+          translationDoc = fc.getName(translationFilePath);
+          fieldTranslation.setText(translationFilePath.getPath());
         } else {
           JOptionPane.showMessageDialog(panel,
-                  getString( "MSG.ERROR.FILE_NOTFOUND" ),
-                  getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
+                  getString("MSG.ERROR.FILE_NOTFOUND"),
+                  getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
 
-          fieldTranslation.setText( "" );
+          fieldTranslation.setText("");
         }
       }
       //  ToDo: remember filename by preferences
@@ -362,8 +198,8 @@ public final class OpenTexts extends JDialog implements ActionListener {
   }
 
   private void showFileNotFoundDlg() {
-    JOptionPane.showMessageDialog(panel, getString( "MSG.ERROR.FILE_NOTFOUND" ),
-          getString( "MSG.ERROR" ), JOptionPane.ERROR_MESSAGE );
+    JOptionPane.showMessageDialog(panel, getString("MSG.ERROR.FILE_NOTFOUND"),
+          getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE );
   }
 
   private void onCancel() {
@@ -412,4 +248,242 @@ public final class OpenTexts extends JDialog implements ActionListener {
     }
   }
 
+  /**
+   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+   * modify this code. The content of this method is always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+        private void initComponents() {
+
+                panel = new javax.swing.JPanel();
+                buttonOk = new javax.swing.JButton();
+                buttonCancel = new javax.swing.JButton();
+                jSeparator1 = new javax.swing.JSeparator();
+                jPanel2 = new javax.swing.JPanel();
+                labelOriginal = new javax.swing.JLabel();
+                fieldOriginal = new javax.swing.JTextField();
+                buttonOriginal = new javax.swing.JButton();
+                labelOriginalLang = new javax.swing.JLabel();
+                comboOriginalLang = new javax.swing.JComboBox<>();
+                labelOriginalEncoding = new javax.swing.JLabel();
+                comboOriginalEncoding = new javax.swing.JComboBox<>();
+                labelTranslation = new javax.swing.JLabel();
+                jSeparator2 = new javax.swing.JSeparator();
+                fieldTranslation = new javax.swing.JTextField();
+                buttonTranslation = new javax.swing.JButton();
+                labelTranslationLang = new javax.swing.JLabel();
+                comboTranslationLang = new javax.swing.JComboBox<>();
+                labelTranslationEncoding = new javax.swing.JLabel();
+                comboTranslationEncoding = new javax.swing.JComboBox<>();
+
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/tmpotter/Bundle"); // NOI18N
+                setTitle(bundle.getString("DLG.OPEN.TITLE")); // NOI18N
+
+                buttonOk.setText("OK");
+                setLocalizedText(buttonOk, getString("BTN.OK"));
+                buttonOk.addActionListener(this);
+
+                buttonCancel.setText("Cancel");
+                setLocalizedText(buttonCancel, getString("BTN.CANCEL"));
+                buttonCancel.addActionListener(this);
+
+                javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+                panel.setLayout(panelLayout);
+                panelLayout.setHorizontalGroup(
+                        panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                                .addContainerGap(375, Short.MAX_VALUE)
+                                .addComponent(buttonOk)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonCancel)
+                                .addGap(16, 16, 16))
+                        .addGroup(panelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jSeparator1))
+                );
+                panelLayout.setVerticalGroup(
+                        panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(buttonOk)
+                                        .addComponent(buttonCancel))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+
+                getContentPane().add(panel, java.awt.BorderLayout.CENTER);
+
+                labelOriginal.setText(bundle.getString("LBL.SOURCE.FILE")); // NOI18N
+
+                buttonOriginal.setText("Select File");
+                setLocalizedText(buttonOriginal, getString("BTN.BROWSE.ORIGINAL"));
+                buttonOriginal.addActionListener(this);
+
+                labelOriginalLang.setText(bundle.getString("LBL.SOURCE.LANG")); // NOI18N
+
+                comboOriginalLang.setModel(new javax.swing.DefaultComboBoxModel(idiom));
+                comboOriginalLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+
+                labelOriginalEncoding.setText(bundle.getString("LBL.ENCODING")); // NOI18N
+
+                comboOriginalEncoding.setModel(new javax.swing.DefaultComboBoxModel(AppConstants.straEncodings.toArray()));
+                comboOriginalEncoding.setToolTipText(bundle.getString("LBL.ENCODING.TOOLTIP")); // NOI18N
+
+                labelTranslation.setText(bundle.getString("LBL.TARGET.FILE")); // NOI18N
+
+                buttonTranslation.setText("Select File");
+                setLocalizedText(buttonTranslation, getString("BTN.BROWSE.TRANSLATION"));
+                buttonTranslation.addActionListener(this);
+
+                labelTranslationLang.setText(bundle.getString("LBL.TARGET.LANG")); // NOI18N
+
+                comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel(idiom));
+                comboTranslationLang.setSelectedItem(Locale.getDefault().getDisplayLanguage());
+
+                labelTranslationEncoding.setText(bundle.getString("LBL.ENCODING")); // NOI18N
+                labelTranslationEncoding.setToolTipText(bundle.getString("LBL.ENCODING.TOOLTIP")); // NOI18N
+
+                comboTranslationEncoding.setModel(new javax.swing.DefaultComboBoxModel(AppConstants.straEncodings.toArray()));
+
+                javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+                jPanel2.setLayout(jPanel2Layout);
+                jPanel2Layout.setHorizontalGroup(
+                        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(labelTranslationLang)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(32, 32, 32)
+                                                .addComponent(labelTranslationEncoding)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(comboTranslationEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(labelTranslation)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(fieldTranslation, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(buttonTranslation))
+                                        .addComponent(labelOriginal)
+                                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(labelOriginalLang)
+                                                .addGap(58, 58, 58)
+                                                .addComponent(comboOriginalLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(31, 31, 31)
+                                                .addComponent(labelOriginalEncoding)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(comboOriginalEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(fieldOriginal, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(buttonOriginal)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+                jPanel2Layout.setVerticalGroup(
+                        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(labelOriginal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(fieldOriginal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(buttonOriginal))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelOriginalLang)
+                                        .addComponent(comboOriginalLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(labelOriginalEncoding)
+                                        .addComponent(comboOriginalEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelTranslation)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(fieldTranslation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(buttonTranslation))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelTranslationLang)
+                                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(labelTranslationEncoding)
+                                        .addComponent(comboTranslationEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(22, Short.MAX_VALUE))
+                );
+
+                getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
+
+                pack();
+        }// </editor-fold>//GEN-END:initComponents
+
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     */
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (ClassNotFoundException ex) {
+      java.util.logging.Logger.getLogger(OpenTexts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+      java.util.logging.Logger.getLogger(OpenTexts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      java.util.logging.Logger.getLogger(OpenTexts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      java.util.logging.Logger.getLogger(OpenTexts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+    //</editor-fold>
+
+    /* Create and display the dialog */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        OpenTexts dialog = new OpenTexts(new javax.swing.JFrame(), true);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+          @Override
+          public void windowClosing(java.awt.event.WindowEvent e) {
+            System.exit(0);
+          }
+        });
+        dialog.setVisible(true);
+      }
+    });
+  }
+
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JButton buttonCancel;
+        private javax.swing.JButton buttonOk;
+        private javax.swing.JButton buttonOriginal;
+        private javax.swing.JButton buttonTranslation;
+        private javax.swing.JComboBox<String> comboOriginalEncoding;
+        private javax.swing.JComboBox<String> comboOriginalLang;
+        private javax.swing.JComboBox<String> comboTranslationEncoding;
+        private javax.swing.JComboBox<String> comboTranslationLang;
+        private javax.swing.JTextField fieldOriginal;
+        private javax.swing.JTextField fieldTranslation;
+        private javax.swing.JPanel jPanel2;
+        private javax.swing.JSeparator jSeparator1;
+        private javax.swing.JSeparator jSeparator2;
+        private javax.swing.JLabel labelOriginal;
+        private javax.swing.JLabel labelOriginalEncoding;
+        private javax.swing.JLabel labelOriginalLang;
+        private javax.swing.JLabel labelTranslation;
+        private javax.swing.JLabel labelTranslationEncoding;
+        private javax.swing.JLabel labelTranslationLang;
+        private javax.swing.JPanel panel;
+        // End of variables declaration//GEN-END:variables
 }

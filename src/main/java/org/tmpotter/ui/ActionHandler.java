@@ -25,6 +25,7 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
@@ -99,7 +100,7 @@ final class ActionHandler {
    *
    */
   public void menuItemFileTextOpenActionPerformed() {
-    final OpenTexts dlg = new OpenTexts();
+    final OpenTexts dlg = new OpenTexts(mainWindow, true);
     dlg.setPath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
@@ -118,18 +119,18 @@ final class ActionHandler {
       Segmenter.setSrx(Preferences.getSrx());
       try {
         modelMediator.onImportFile("BiTextFilter");
+        initializeTmView(mainWindow);
+        mainWindow.updateTmView();
+        mainWindow.toolBar.enableButtons(true);
+        mainWindow.enableEditMenus(true);
+        mainWindow.toolBar.setUndoEnabled(false);
+        mainWindow.enableMenuItemFileSaveAs(true);
+        mainWindow.enableMenuItemFileClose(true);
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
             getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         mainWindow.dispose();
       }
-      initializeTmView(mainWindow);
-      mainWindow.updateTmView();
-      mainWindow.toolBar.enableButtons(true);
-      mainWindow.enableEditMenus(true);
-      mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.enableMenuItemFileSaveAs(true);
-      mainWindow.enableMenuItemFileClose(true);
       dlg.dispose();
     }
   }
