@@ -44,8 +44,6 @@ public class TmData {
   protected Document documentTranslation;
   protected String stringLangOriginal = "en";
   protected String stringLangTranslation = "en";
-  protected String stringOriginal;
-  protected String stringTranslation;
 
   /**
    * Updates the changes adding a "join" change in the "undo" array and performs the "join". (not

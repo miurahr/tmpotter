@@ -34,8 +34,7 @@ import org.tmpotter.core.TmxWriter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
-import org.tmpotter.ui.dialogs.ImportFile;
-import org.tmpotter.ui.dialogs.OpenTexts;
+import org.tmpotter.ui.dialogs.ImportWizard;
 import org.tmpotter.ui.dialogs.OpenTmx;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
@@ -48,6 +47,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
+import org.tmpotter.ui.dialogs.ImportPreference;
 
 /**
  * Action Handlers.
@@ -99,76 +99,35 @@ final class ActionHandler {
    * Open dialog to select the files we want to align/convert.
    *
    */
-  public void menuItemFileTextOpenActionPerformed() {
-    final OpenTexts dlg = new OpenTexts(mainWindow, true);
-    dlg.setPath(RuntimePreferences.getUserHome());
+  public void menuItemFileImportActionPerformed() {
+    final ImportWizard dlg = new ImportWizard(mainWindow, true);
+    //dlg.setPath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
-    if (!dlg.isClosed()) {
-      String sourceLocale = dlg.getSourceLocale();
-      String targetLocale = dlg.getTargetLocale();
-      String sourceEncoding = (String) dlg.getSourceLangEncComboBox().getSelectedItem();
-      String targetEncoding = (String) dlg.getTargetLangEncComboBox().getSelectedItem();
-
-      RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.setOriginalProperties(dlg.getSourcePath(), dlg.getSource(), sourceLocale,
-          sourceEncoding);
-      modelMediator.setTargetProperties(dlg.getTargetPath(), dlg.getTarget(), targetLocale,
-          targetEncoding);
-      mainWindow.tmView.buildDisplay();
-      Segmenter.setSrx(Preferences.getSrx());
-      try {
-        modelMediator.onImportFile("BiTextFilter");
-        initializeTmView(mainWindow);
-        mainWindow.updateTmView();
-        mainWindow.toolBar.enableButtons(true);
-        mainWindow.enableEditMenus(true);
-        mainWindow.toolBar.setUndoEnabled(false);
-        mainWindow.enableMenuItemFileSaveAs(true);
-        mainWindow.enableMenuItemFileClose(true);
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
-            getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
-      }
-      dlg.dispose();
-    }
+    dlg.dispose();
   }
 
-  /**
-   * Open dialog to select the Po file.
-   *
-   */
-  public void menuItemFilePoOpenActionPerformed() {
-    final ImportFile dlg = new ImportFile(mainWindow, true);
-    dlg.setPath(RuntimePreferences.getUserHome());
-    dlg.setVisible(true);
-    if (!dlg.isClosed()) {
-      String sourceLocale = dlg.getSourceLocale();
-      String targetLocale = dlg.getTargetLocale();
-      String encoding = (String) dlg.getLangEncComboBox().getSelectedItem();
-
-      RuntimePreferences.setUserHome(dlg.getPath());
-      modelMediator.setOriginalProperties(dlg.getPath(), dlg.getSource(), sourceLocale,
-          encoding);
-      modelMediator.setTargetProperties(dlg.getPath(), dlg.getSource(), targetLocale, encoding);
-      mainWindow.tmView.buildDisplay();
-      Segmenter.setSrx(Preferences.getSrx());
-      try {
-        modelMediator.onImportFile("PoFilter");
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
-            getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
-        mainWindow.dispose();
-      }
-      initializeTmView(mainWindow);
-      mainWindow.updateTmView();
-      mainWindow.toolBar.enableButtons(true);
-      mainWindow.enableEditMenus(true);
-      mainWindow.toolBar.setUndoEnabled(false);
-      mainWindow.enableMenuItemFileSaveAs(true);
-      mainWindow.enableMenuItemFileClose(true);
-      dlg.dispose();
-    }
+  private void doImport(ImportPreference pref) {
+	  String filter = pref.getFilter(); // Now support "BiTextFilter" and "PoFilter"
+	  RuntimePreferences.setUserHome(pref.getOriginalFilePath());
+	  modelMediator.setOriginalProperties(pref.getOriginalFilePath(), pref.getOriginalLang(), pref.getEncoding());
+	  modelMediator.setTargetProperties(pref.getTranslationFilePath(), pref.getTranslationLang(),pref.getEncoding());
+	  mainWindow.tmView.buildDisplay();
+	  Segmenter.setSrx(Preferences.getSrx());
+	  try {
+		  modelMediator.onImportFile(filter);
+		  initializeTmView(mainWindow);
+		  mainWindow.updateTmView();
+		  mainWindow.toolBar.enableButtons(true);
+		  mainWindow.enableEditMenus(true);
+		  mainWindow.toolBar.setUndoEnabled(false);
+		  mainWindow.enableMenuItemFileSaveAs(true);
+		  mainWindow.enableMenuItemFileClose(true);
+	  } catch (Exception ex) {
+		  JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
+		      getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+	  }
+	 
   }
 
   /**

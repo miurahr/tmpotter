@@ -366,18 +366,16 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   }
 
   @Override
-  public void setOriginalProperties(File filePath, String text, String lang, String encoding) {
+  public void setOriginalProperties(File filePath, String lang, String encoding) {
     prop.setOriginalEncoding(encoding);
     prop.setFilePathOriginal(filePath);
-    tmData.stringOriginal = text;
     tmData.stringLangOriginal = lang;
   }
 
   @Override
-  public void setTargetProperties(File filePath, String text, String lang, String encoding) {
+  public void setTargetProperties(File filePath, String lang, String encoding) {
     prop.setTranslationEncoding(encoding);
     prop.setFilePathTranslation(filePath);
-    tmData.stringTranslation = text;
     tmData.stringLangTranslation = lang;
   }
 
@@ -756,10 +754,8 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuItemFileSave = new javax.swing.JMenuItem();
                 menuItemFileSaveAs = new javax.swing.JMenuItem();
                 menuItemFileClose = new javax.swing.JMenuItem();
-                jMenu1 = new javax.swing.JMenu();
-                menuItemFileTextOpen = new javax.swing.JMenuItem();
-                menuItemFilePoOpen = new javax.swing.JMenuItem();
                 jSeparator4 = new javax.swing.JPopupMenu.Separator();
+                menuItemFileImport = new javax.swing.JMenuItem();
                 jSeparator5 = new javax.swing.JPopupMenu.Separator();
                 menuItemFileQuit = new javax.swing.JMenuItem();
                 menuEdit = new javax.swing.JMenu();
@@ -802,20 +798,10 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuItemFileClose.setText("Close");
                 setLocalizedText(menuItemFileClose, getString("MNI.FILE.ABORT"));
                 menuFile.add(menuItemFileClose);
-
-                jMenu1.setText("Import");
-                setLocalizedText(jMenu1, getString("MNI.FILE.IMPORT"));
-
-                menuItemFileTextOpen.setText("Open Text");
-                setLocalizedText(menuItemFileTextOpen, getString("MNI.FILE.TEXTOPEN"));
-                jMenu1.add(menuItemFileTextOpen);
-
-                menuItemFilePoOpen.setText("Open PO");
-                setLocalizedText(menuItemFilePoOpen, getString("MNI.FILE.POOPEN"));
-                jMenu1.add(menuItemFilePoOpen);
-
-                menuFile.add(jMenu1);
                 menuFile.add(jSeparator4);
+
+                menuItemFileImport.setText("Import...");
+                menuFile.add(menuItemFileImport);
                 menuFile.add(jSeparator5);
 
                 menuItemFileQuit.setText("Quit");
@@ -923,7 +909,6 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JMenu jMenu1;
         private javax.swing.JMenuBar jMenuBar1;
         private javax.swing.JPopupMenu.Separator jSeparator1;
         private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -934,12 +919,11 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         protected javax.swing.JMenu menuFile;
         private javax.swing.JMenu menuHelp;
         private javax.swing.JMenuItem menuItemFileClose;
+        private javax.swing.JMenuItem menuItemFileImport;
         private javax.swing.JMenuItem menuItemFileOpen;
-        private javax.swing.JMenuItem menuItemFilePoOpen;
         private javax.swing.JMenuItem menuItemFileQuit;
         private javax.swing.JMenuItem menuItemFileSave;
         private javax.swing.JMenuItem menuItemFileSaveAs;
-        private javax.swing.JMenuItem menuItemFileTextOpen;
         private javax.swing.JMenuItem menuItemHelpAbout;
         private javax.swing.JMenuItem menuItemOriginalDelete;
         private javax.swing.JMenuItem menuItemOriginalJoin;

@@ -35,9 +35,9 @@ public interface ModelMediator {
 
   void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
 
-  void setOriginalProperties(File filePath, String text, String lang, String encoding);
+  void setOriginalProperties(File filePath, String lang, String encoding);
 
-  void setTargetProperties(File filePath, String text, String lang, String encoding);
+  void setTargetProperties(File filePath, String lang, String encoding);
 
   void onImportFile(String filterName) throws IOException;
 

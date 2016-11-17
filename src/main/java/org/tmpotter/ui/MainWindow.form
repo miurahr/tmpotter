@@ -36,30 +36,12 @@
                 <Property name="text" type="java.lang.String" value="Close" postCode="setLocalizedText(menuItemFileClose, getString(&quot;MNI.FILE.ABORT&quot;));"/>
               </Properties>
             </MenuItem>
-            <Menu class="javax.swing.JMenu" name="jMenu1">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Import"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(jMenu1, getString(&quot;MNI.FILE.IMPORT&quot;));"/>
-              </AuxValues>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="menuItemFileTextOpen">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Open Text" postCode="setLocalizedText(menuItemFileTextOpen, getString(&quot;MNI.FILE.TEXTOPEN&quot;));"/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="menuItemFilePoOpen">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Open PO"/>
-                  </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(menuItemFilePoOpen, getString(&quot;MNI.FILE.POOPEN&quot;));"/>
-                  </AuxValues>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Import..."/>
+              </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator5">
             </MenuItem>
