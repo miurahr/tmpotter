@@ -129,7 +129,6 @@ final class ActionHandler {
       } catch (Exception ex) {
         JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
             getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
-        mainWindow.dispose();
       }
       dlg.dispose();
     }

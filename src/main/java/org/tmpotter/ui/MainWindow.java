@@ -23,6 +23,7 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.ui;
 
 import java.awt.BorderLayout;
