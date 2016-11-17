@@ -23,6 +23,8 @@
 
 package org.tmpotter.filters;
 
+import org.tmpotter.filters.pofile.PoFilter;
+import org.tmpotter.filters.bitext.BiTextFilter;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.util.Localization;

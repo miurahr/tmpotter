@@ -21,7 +21,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.filters;
+package org.tmpotter.filters.bitext;
 
 import org.tmpotter.segmentation.Rule;
 import org.tmpotter.segmentation.SRX;
@@ -34,6 +34,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.tmpotter.filters.AbstractFilter;
+import org.tmpotter.filters.FilterContext;
+import org.tmpotter.filters.IFilter;
 
 
 /**

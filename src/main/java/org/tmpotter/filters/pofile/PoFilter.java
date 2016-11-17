@@ -30,7 +30,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.filters;
+package org.tmpotter.filters.pofile;
 
 import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.tmpotter.filters.AbstractFilter;
+import org.tmpotter.filters.FilterContext;
 
 
 /**

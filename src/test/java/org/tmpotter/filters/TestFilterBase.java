@@ -29,13 +29,11 @@ import org.tmpotter.util.Language;
 import org.tmpotter.util.TmxReader2;
 
 import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Diff;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
