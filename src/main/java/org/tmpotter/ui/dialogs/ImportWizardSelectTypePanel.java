@@ -42,6 +42,8 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
 		return buttonGroup.getSelection().getActionCommand();
 	}
 	
+	public void updatePref() {
+	}
 
 	/**
 	 * This method is called from within the constructor to initialize the form. WARNING: Do NOT
@@ -67,7 +69,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
                 buttonGroup.add(radioButtonPlain);
                 radioButtonPlain.setSelected(true);
                 radioButtonPlain.setText("Plain text fies");
-                radioButtonPlain.setActionCommand("bitext");
+                radioButtonPlain.setActionCommand("bi-text");
                 panelBiText.add(radioButtonPlain);
 
                 labelDescPlain.setText("Load bi text file and align line-by-line.");

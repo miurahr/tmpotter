@@ -81,7 +81,9 @@ public class ImportWizard extends javax.swing.JDialog {
 	}
 	
 	void setButtonNextLabel() {
-		if ("finish".equals(getButtonNextCommand())) {
+		if (currentPanel == null) {
+			setLocalizedText(buttonNextFinish, "Next");
+		} else if ("finish".equals(getButtonNextCommand())) {
 			setLocalizedText(buttonNextFinish, "Finish");
 		} else {
 			setLocalizedText(buttonNextFinish, "Next");
@@ -90,6 +92,10 @@ public class ImportWizard extends javax.swing.JDialog {
 
 	public ImportPreference getPref() {
 		return pref;
+	}
+	
+	public void updatePref() {
+		wizardPanels.get(currentPanel).updatePref();
 	}
 
 	/**
@@ -110,6 +116,7 @@ public class ImportWizard extends javax.swing.JDialog {
                 jSeparator1 = new javax.swing.JSeparator();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                setLocationByPlatform(true);
 
                 panelButtons.setPreferredSize(new java.awt.Dimension(400, 100));
                 panelButtons.setLayout(new javax.swing.BoxLayout(panelButtons, javax.swing.BoxLayout.LINE_AXIS));

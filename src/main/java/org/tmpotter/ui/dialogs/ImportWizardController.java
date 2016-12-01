@@ -24,12 +24,6 @@
 package org.tmpotter.ui.dialogs;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import static org.tmpotter.util.Localization.getString;
 
 
 /**
@@ -82,6 +76,7 @@ public class ImportWizardController {
 	
 	public final void finish() {
 		finished = true;
+		wizard.updatePref();
 	}
 	
 	public final void setButtonNextEnabled(boolean b) {

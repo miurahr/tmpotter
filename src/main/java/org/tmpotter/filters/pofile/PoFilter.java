@@ -285,7 +285,7 @@ public class PoFilter extends AbstractFilter {
 
   @Override
   public String getFileFormatName() {
-    return Localization.getString("POFILTER_FILTER_NAME");
+    return "pofile";
   }
 
   @Override

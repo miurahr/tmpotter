@@ -133,6 +133,12 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
 	public String getNextFinishCommand() {
 		return "finish";
 	}
+
+	public void updatePref() {
+		pref.setOriginalFilePath(new File(getOriginalFile()));
+		pref.setEncoding(getOriginalEncoding());
+	}
+
 	public void onImportFile(final IImportWizardPanel panel) {
 		final JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(pref.getCurrentPath());

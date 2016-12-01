@@ -23,12 +23,11 @@
 
 package org.tmpotter.ui.dialogs;
 
-import java.io.File;
 import javax.swing.JPanel;
 
 
 /**
- * Interface of setter/getter against Wizard panel fields and combos.
+ * Interface for control wizard panels and buttons.
  * @author Hiroshi Miura
  */
 public interface IImportWizardPanel {
@@ -36,4 +35,5 @@ public interface IImportWizardPanel {
 	JPanel getPanel();
 	String getNextFinishCommand();
 	String getBackCommand();
+	void updatePref();
 }

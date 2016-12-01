@@ -43,7 +43,7 @@
             </Property>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Plain text fies"/>
-            <Property name="actionCommand" type="java.lang.String" value="bitext"/>
+            <Property name="actionCommand" type="java.lang.String" value="bi-text"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="labelDescPlain">
