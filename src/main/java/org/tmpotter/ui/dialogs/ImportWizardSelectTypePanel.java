@@ -69,7 +69,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
                 buttonGroup.add(radioButtonPlain);
                 radioButtonPlain.setSelected(true);
                 radioButtonPlain.setText("Plain text fies");
-                radioButtonPlain.setActionCommand("bi-text");
+                radioButtonPlain.setActionCommand(ImportWizardBiTextFile.id);
                 panelBiText.add(radioButtonPlain);
 
                 labelDescPlain.setText("Load bi text file and align line-by-line.");
@@ -82,7 +82,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
 
                 buttonGroup.add(radioButtonPO);
                 radioButtonPO.setText("PO file");
-                radioButtonPO.setActionCommand("pofile");
+                radioButtonPO.setActionCommand(ImportWizardPOFile.id);
                 panelSingle.add(radioButtonPO);
 
                 labelDescPO.setText("Load PO message catalog file.");

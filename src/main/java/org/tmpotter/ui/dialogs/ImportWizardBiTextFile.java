@@ -40,7 +40,7 @@ import static org.tmpotter.util.Localization.getString;
  * @author Hiroshi Miura
  */
 public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImportWizardPanel {
-	public static final String id = "bi-text";
+	public static final String id = "BiTextFilter";
 	
 	private final String[] idiom = Localization.getLanguageList();
 	private ImportWizardController wizardController;

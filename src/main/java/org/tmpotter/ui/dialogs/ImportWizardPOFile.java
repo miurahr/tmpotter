@@ -34,6 +34,7 @@ import org.tmpotter.util.AppConstants;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
 import org.tmpotter.util.Localization;
+
 import static org.tmpotter.util.Localization.getString;
 
 
@@ -43,7 +44,7 @@ import static org.tmpotter.util.Localization.getString;
  * @author Hiroshi Miura
  */
 public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWizardPanel {
-	public static final String id = "pofile";
+	public static final String id = "PoFilter";
 
 	private final String[] idiom = Localization.getLanguageList();
 	private ImportWizardController wizardController;
@@ -135,8 +136,12 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
 	}
 
 	public void updatePref() {
+		pref.setFilter(id);
 		pref.setOriginalFilePath(new File(getOriginalFile()));
+		pref.setTranslationFilePath(new File(getOriginalFile()));
 		pref.setEncoding(getOriginalEncoding());
+		pref.setOriginalLang(getSourceLocale());
+		pref.setTranslationLang(getTargetLocale());
 	}
 
 	public void onImportFile(final IImportWizardPanel panel) {

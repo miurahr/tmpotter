@@ -49,6 +49,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 import org.tmpotter.ui.dialogs.ImportPreference;
 
+
 /**
  * Action Handlers.
  *
@@ -105,6 +106,9 @@ final class ActionHandler {
     dlg.setModal(true);
     dlg.setVisible(true);
     dlg.dispose();
+    if (dlg.isFinished()) {
+	    doImport(dlg.getPref());
+    }
   }
 
   private void doImport(ImportPreference pref) {
@@ -127,7 +131,6 @@ final class ActionHandler {
 		  JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
 		      getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
 	  }
-	 
   }
 
   /**
