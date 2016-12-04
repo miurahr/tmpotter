@@ -13,6 +13,13 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
           </AuxValues>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="New Import..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileOpen">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Open"/>
@@ -34,13 +41,6 @@
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileClose">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Close" postCode="setLocalizedText(menuItemFileClose, getString(&quot;MNI.FILE.ABORT&quot;));"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Import..."/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator5">
