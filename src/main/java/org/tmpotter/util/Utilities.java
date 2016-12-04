@@ -249,7 +249,7 @@ public class Utilities {
    * Set the config dir path. This method is for unit testing purposes only. DO
    * NOT CALL IT UNLESS YOU KNOW WHAT YOU'RE DOING.
    */
-  static void setConfigDir(String path) {
+  public static void setConfigDir(String path) {
     configDirectory = path;
   }
 
