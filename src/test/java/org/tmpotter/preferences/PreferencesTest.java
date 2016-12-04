@@ -21,8 +21,9 @@
  *
  **************************************************************************/
 
-package org.tmpotter.util;
+package org.tmpotter.preferences;
 
+import org.tmpotter.preferences.Preferences;
 import org.tmpotter.segmentation.SRX;
 
 import java.io.File;
@@ -32,6 +33,8 @@ import org.apache.commons.io.FileUtils;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.*;
+import org.tmpotter.util.FileUtil;
+import org.tmpotter.util.Utilities;
 
 /**
  *

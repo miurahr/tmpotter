@@ -81,8 +81,12 @@ public class AppConstants {
   public static final String ENCODINGS_CP932       = "CP932";
   public static final String ENCODINGS_DEFAULT     = "Default";
   public static final List<String> straEncodings = Collections.unmodifiableList(
-      new ArrayList<String>() {{add(ENCODINGS_UTF8);
-          add(ENCODINGS_ISO8859_1); add(ENCODINGS_CP932); add(ENCODINGS_DEFAULT);}});
+      new ArrayList<String>() {{
+	      add(ENCODINGS_DEFAULT);
+	      add(ENCODINGS_UTF8);
+	      add(ENCODINGS_ISO8859_1);
+	      add(ENCODINGS_CP932);
+      }});
   public static final String TAG_REPLACEMENT = "\b";
   
   /**

@@ -30,7 +30,7 @@ package org.tmpotter.util.xml;
 import java.io.File;
 import java.util.List;
 
-import org.tmpotter.util.TranslationException;
+import org.tmpotter.exceptions.TranslationException;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;

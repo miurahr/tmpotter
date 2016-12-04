@@ -27,8 +27,8 @@ import org.tmpotter.segmentation.Rule;
 import org.tmpotter.segmentation.SRX;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
-import org.tmpotter.util.Preferences;
-import org.tmpotter.util.TranslationException;
+import org.tmpotter.preferences.Preferences;
+import org.tmpotter.exceptions.TranslationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

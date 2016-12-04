@@ -21,8 +21,9 @@
  *
  **************************************************************************/
 
-package org.tmpotter.util;
+package org.tmpotter.preferences;
 
+import org.tmpotter.preferences.RuntimePreferences;
 import java.io.File;
 
 import static org.testng.Assert.*;

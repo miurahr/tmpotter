@@ -32,7 +32,7 @@ package org.tmpotter.filters;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.tmpotter.util.EncodingDetector;
-import org.tmpotter.util.TranslationException;
+import org.tmpotter.exceptions.TranslationException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -234,7 +234,7 @@ public abstract class AbstractFilter implements IFilter {
    * @param translatedFile translated file buffer reader
    * @param fc filter context for file load
    * @throws java.io.IOException In case of any I/O error.
-   * @throws org.tmpotter.util.TranslationException Should be thrown when processed file has any format defects.
+   * @throws org.tmpotter.exceptions.TranslationException Should be thrown when processed file has any format defects.
    */
   protected abstract void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
       FilterContext fc) throws IOException, TranslationException;

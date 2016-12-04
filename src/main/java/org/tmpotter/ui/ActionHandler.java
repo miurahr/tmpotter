@@ -36,8 +36,8 @@ import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.wizard.ImportWizard;
 import org.tmpotter.ui.dialogs.OpenTmx;
-import org.tmpotter.util.Preferences;
-import org.tmpotter.util.RuntimePreferences;
+import org.tmpotter.preferences.Preferences;
+import org.tmpotter.preferences.RuntimePreferences;
 
 import java.io.File;
 import java.io.IOException;

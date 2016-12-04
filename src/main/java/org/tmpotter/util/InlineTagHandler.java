@@ -3,7 +3,7 @@
  *  TMPotter - Bi-text Aligner/TMX Editor.
  *
  *  Copyright (C) 2005-2009  Raymond: Martin
- *            (C) 2015 Hiroshi Miura
+ *            (C) 2015,2016 Hiroshi Miura
  *
  *  Copyright (C) 2013 Alex Buloichik, Aaron Madlon-Kay
  *

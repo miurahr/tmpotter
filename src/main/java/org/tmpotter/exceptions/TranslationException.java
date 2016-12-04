@@ -7,7 +7,6 @@
  *  This file come from OmegaT project
  * 
  *  Copyright (C) 2007 - Zoltan Bartko
- *                2011 Alex Buloichik
  *
  *  This file is part of TMPotter.
  *
@@ -26,38 +25,39 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.util;
-
-import java.io.File;
+package org.tmpotter.exceptions;
 
 /**
- * Preference that remember only run time.
+ * TranslationException may be thrown while parsing/writing out the file.
  * 
- * @author Hiroshi Miura
+ * <p>Note that a filter may also throw IOException in case of any I/O errors.
+ * 
+ * @author Maxym Mykhalchuk
  */
-public class RuntimePreferences {
-  private static File userHome = new File(System.getProperty("user.home"));
-  
+@SuppressWarnings("serial")
+public class TranslationException extends Exception {
   /**
-   * Set user home directory.
+   * Constructs an instance of <code>TranslationException</code> with the
+   * specified detail message.
    * 
-   * @param home user home directory
+   * @param msg
+   *            the detail message.
    */
-  public static void setUserHome(File home) {
-    userHome = home;
+  public TranslationException(String msg) {
+    super(msg);
   }
 
   /**
-   * Get user home directory.
+   * Constructs an instance of <code>TranslationException</code> with the
+   * specified detail message and cause.
    * 
-   * @return string user home
+   * @param msg
+   *            the detail message.
+   * @param cause
+   *            cause the cause
    */
-  public static File getUserHome() {
-    return userHome;
+  public TranslationException(String msg, Throwable cause) {
+    super(msg, cause);
   }
-
-  /**
-   * Privated constructor for global preference.
-   */
-  private RuntimePreferences() {}
 }
+

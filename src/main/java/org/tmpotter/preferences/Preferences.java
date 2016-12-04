@@ -35,8 +35,9 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.util;
+package org.tmpotter.preferences;
 
+import org.tmpotter.exceptions.TranslationException;
 import org.tmpotter.segmentation.SRX;
 import org.tmpotter.util.xml.XMLBlock;
 import org.tmpotter.util.xml.XMLStreamReader;
@@ -58,6 +59,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.tmpotter.util.LFileCopy;
+import org.tmpotter.util.StringUtil;
+import org.tmpotter.util.Utilities;
 
 
 /**
