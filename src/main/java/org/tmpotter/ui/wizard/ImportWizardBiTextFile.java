@@ -21,7 +21,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.ui.dialogs;
+package org.tmpotter.ui.wizard;
 
 import java.io.File;
 import java.util.Locale;

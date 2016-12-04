@@ -34,7 +34,7 @@ import org.tmpotter.core.TmxWriter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.Encodings;
-import org.tmpotter.ui.dialogs.ImportWizard;
+import org.tmpotter.ui.wizard.ImportWizard;
 import org.tmpotter.ui.dialogs.OpenTmx;
 import org.tmpotter.util.Preferences;
 import org.tmpotter.util.RuntimePreferences;
@@ -47,7 +47,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
-import org.tmpotter.ui.dialogs.ImportPreference;
+import org.tmpotter.ui.wizard.ImportPreference;
 
 
 /**

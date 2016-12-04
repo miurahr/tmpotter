@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.tmpotter.ui.dialogs;
+package org.tmpotter.ui.wizard;
 
 import javax.swing.JPanel;
 
