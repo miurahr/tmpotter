@@ -311,7 +311,7 @@ public class PoFilter extends AbstractFilter {
 
   @Override
   public void processFile(File inFile, FilterContext fc) throws IOException {
-    inEncodingLastParsedFile = fc.getInEncoding();
+    inEncodingLastParsedFile = getInputEncoding(fc, inFile);
     try (BufferedReader reader = createReader(inFile, inEncodingLastParsedFile)) {
       processFile(reader, fc);
     }
