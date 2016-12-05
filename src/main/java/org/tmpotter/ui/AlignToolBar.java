@@ -32,7 +32,7 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
 
 /**
- * Toolbar UI.
+ * Align Toolbar.
  *
  * @author Hiroshi Miura
  */

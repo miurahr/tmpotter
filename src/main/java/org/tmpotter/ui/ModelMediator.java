@@ -20,11 +20,13 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * ************************************************************************/
+
 package org.tmpotter.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+
 
 /**
  * Model mediator for TM view and segment editors.
@@ -33,13 +35,14 @@ import java.io.IOException;
  */
 public interface ModelMediator {
 
+  // Menu/Toolbar actions.
   void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+
+  void onImportFile(String filterName) throws IOException;
 
   void setOriginalProperties(File filePath, String lang, String encoding);
 
   void setTargetProperties(File filePath, String lang, String encoding);
-
-  void onImportFile(String filterName) throws IOException;
 
   //for TMView
   void updateTmView();

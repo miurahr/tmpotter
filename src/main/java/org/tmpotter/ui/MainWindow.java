@@ -40,16 +40,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import javax.swing.table.TableColumn;
+
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXStatusBar;
@@ -79,11 +78,9 @@ import static org.tmpotter.util.StringUtil.restoreText;
  *
  * @author Hiroshi Miura
  */
-public class MainWindow extends JFrame implements ModelMediator, ActionListener,
-    WindowListener {
+public class MainWindow extends javax.swing.JFrame implements ModelMediator, ActionListener, WindowListener {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(MainWindow.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
   protected ActionHandler actionHandler;
 
   protected final JToolBar toolBar = new JToolBar();

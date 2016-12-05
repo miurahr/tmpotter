@@ -1,8 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/* *************************************************************************
+ *
+ *  TMPotter - Bi-text Aligner/TMX Editor
+ *
+ *  Copyright (C) 2016 Hiroshi Miura
+ *
+ *  This file is part of TMPotter.
+ *
+ *  TMPotter is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  TMPotter is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
+ *
+ * *************************************************************************/
+
 package org.tmpotter.ui;
 
 import java.awt.event.ActionEvent;
@@ -10,9 +28,10 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import javax.swing.JButton;
 
+
 /**
- *
- * @author miurahr
+ * Edit Toolbar.
+ * @author Hiroshi Miura
  */
 public class EditToolBar extends javax.swing.JPanel implements ActionListener {
 	
@@ -54,7 +73,7 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
 	public final void actionPerformed(final ActionEvent action) {
 		final Object actor = action.getSource();
 
-		if (actor instanceof JButton) {
+		if (actor instanceof javax.swing.JButton) {
 			if (actor == buttonUndo) {
 				modelMediator.undoChanges();
 				modelMediator.onUndo();
