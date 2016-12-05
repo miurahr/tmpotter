@@ -80,7 +80,7 @@ import static org.tmpotter.util.StringUtil.restoreText;
  * @author Hiroshi Miura
  */
 public class MainWindow extends JFrame implements ModelMediator, ActionListener,
-    MenuListener, WindowListener {
+    WindowListener {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MainWindow.class);
@@ -205,48 +205,6 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     menuItemTranslationJoin.setEnabled(enabled);
     menuItemTranslationDelete.setEnabled(enabled);
     menuItemTranslationSplit.setEnabled(enabled);
-  }
-
-  /**
-   * Code for dispatching events from components to event handlers.
-   *
-   * @param evt event info
-   */
-  @Override
-  public void menuSelected(MenuEvent evt) {
-    // Item what perform event.
-    JMenu menu = (JMenu) evt.getSource();
-
-    // Get item name from actionCommand.
-    String action = menu.getActionCommand();
-
-    // Find method by item name.
-    String methodName = action + "MenuSelected";
-    Method method = null;
-    try {
-      method = this.getClass().getMethod(methodName, JMenu.class);
-    } catch (NoSuchMethodException ex) {
-      // method not declared
-      return;
-    }
-
-    // Call ...MenuMenuSelected method.
-    try {
-      method.invoke(this, menu);
-    } catch (IllegalAccessException ex) {
-      throw new IncompatibleClassChangeError(
-          "Error invoke method handler for main menu");
-    } catch (InvocationTargetException ex) {
-      LOGGER.info("Error execute method", ex);
-      throw new IncompatibleClassChangeError(
-          "Error invoke method handler for main menu");
-    }
-  }
-
-  public void menuCanceled(MenuEvent evt) {
-  }
-
-  public void menuDeselected(MenuEvent evt) {
   }
 
   public final void setUndoEnabled(boolean enabled) {
