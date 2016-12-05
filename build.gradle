@@ -64,20 +64,22 @@ tasks.withType(FindBugs) {
 
 repositories {
   jcenter()
-  mavenCentral()
+  maven {
+    url 'http://dl.bintray.com/omegat-org/maven'
+  }
 }
 
 dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
           'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
           'org.slf4j:slf4j-api:1.7.21',
-          'com.google.code.findbugs:annotations:3.0.1'
-  compile fileTree(dir: 'libs', include: '*.jar')
+          'com.google.code.findbugs:annotations:3.0.1',
+          'org.omegat:lib-mnemonics:1.0'
   runtime 'org.slf4j:slf4j-jdk14:1.7.21'
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1',
           'commons-io:commons-io:2.4',
-	  'org.slf4j:slf4j-nop:1.7.21'
+	      'org.slf4j:slf4j-nop:1.7.21'
 
 }
 
