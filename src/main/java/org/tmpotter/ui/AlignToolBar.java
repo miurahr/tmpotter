@@ -90,15 +90,11 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
         modelMediator.onRemoveBlankRows();
       } else if (actor == buttonTUSplit) {
         modelMediator.onTuSplit();
-      } else if (actor == buttonUndo) {
-        modelMediator.undoChanges();
-        modelMediator.onUndo();
       }
     }
   }
 
   final void setFonts(final Font font) {
-    buttonUndo.setFont(font);
     buttonRemoveBlankRows.setFont(font);
     buttonTUSplit.setFont(font);
     buttonOriginalJoin.setFont(font);
@@ -118,10 +114,6 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
     buttonTranslationJoin.setEnabled(enabled);
     buttonTranslationDelete.setEnabled(enabled);
     buttonTranslationSplit.setEnabled(enabled);
-  }
-
-  public final void setUndoEnabled(boolean enabled) {
-    buttonUndo.setEnabled(enabled);
   }
 
   public final void setOriginalJoinEnabled(boolean enabled) {
@@ -145,29 +137,32 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                 buttonOriginalDelete = new javax.swing.JButton();
                 buttonOriginalJoin = new javax.swing.JButton();
                 buttonOriginalSplit = new javax.swing.JButton();
+                filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
                 panelTranslateUnit = new javax.swing.JPanel();
                 buttonRemoveBlankRows = new javax.swing.JButton();
                 buttonTUSplit = new javax.swing.JButton();
-                buttonUndo = new javax.swing.JButton();
-                jSeparator1 = new javax.swing.JToolBar.Separator();
+                filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
                 panelTranslation = new javax.swing.JPanel();
                 buttonTranslationDelete = new javax.swing.JButton();
                 buttonTranslationJoin = new javax.swing.JButton();
                 buttonTranslationSplit = new javax.swing.JButton();
 
-                setMinimumSize(new java.awt.Dimension(800, 0));
-                setPreferredSize(new java.awt.Dimension(1000, 64));
+                setMaximumSize(new java.awt.Dimension(32767, 92));
+                setMinimumSize(new java.awt.Dimension(750, 64));
+                setPreferredSize(new java.awt.Dimension(750, 64));
 
+                toolBar.setFloatable(false);
                 toolBar.setRollover(true);
                 toolBar.setMaximumSize(new java.awt.Dimension(1000, 94));
-                toolBar.setMinimumSize(new java.awt.Dimension(640, 48));
-                toolBar.setPreferredSize(new java.awt.Dimension(640, 64));
+                toolBar.setMinimumSize(new java.awt.Dimension(600, 48));
+                toolBar.setPreferredSize(new java.awt.Dimension(600, 48));
 
                 panelOriginal.setBorder(javax.swing.BorderFactory.createTitledBorder("Original"));
-                panelOriginal.setMaximumSize(new java.awt.Dimension(340, 90));
-                panelOriginal.setMinimumSize(new java.awt.Dimension(240, 0));
-                panelOriginal.setPreferredSize(new java.awt.Dimension(220, 90));
+                panelOriginal.setMaximumSize(new java.awt.Dimension(500, 90));
+                panelOriginal.setMinimumSize(new java.awt.Dimension(250, 60));
+                panelOriginal.setPreferredSize(new java.awt.Dimension(250, 60));
 
+                buttonOriginalDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
                 buttonOriginalDelete.setText("Delete");
                 setLocalizedText(buttonOriginalDelete, getString("BTN.DELETE.ORIGINAL"));
 
@@ -184,77 +179,68 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                         .addGroup(panelOriginalLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(buttonOriginalDelete)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(12, 12, 12)
                                 .addComponent(buttonOriginalJoin)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(12, 12, 12)
                                 .addComponent(buttonOriginalSplit)
-                                .addContainerGap(24, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 panelOriginalLayout.setVerticalGroup(
                         panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelOriginalLayout.createSequentialGroup()
-                                .addGroup(panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                         .addComponent(buttonOriginalDelete)
                                         .addComponent(buttonOriginalJoin)
                                         .addComponent(buttonOriginalSplit))
-                                .addGap(0, 11, Short.MAX_VALUE))
+                                .addGap(0, 8, Short.MAX_VALUE))
                 );
 
                 toolBar.add(panelOriginal);
+                toolBar.add(filler2);
 
-                panelTranslateUnit.setBorder(javax.swing.BorderFactory.createTitledBorder("Edit"));
+                panelTranslateUnit.setBorder(javax.swing.BorderFactory.createTitledBorder("TU"));
                 panelTranslateUnit.setMaximumSize(new java.awt.Dimension(500, 90));
-                panelTranslateUnit.setMinimumSize(new java.awt.Dimension(280, 0));
-                panelTranslateUnit.setPreferredSize(new java.awt.Dimension(310, 90));
-                panelTranslateUnit.setRequestFocusEnabled(false);
+                panelTranslateUnit.setMinimumSize(new java.awt.Dimension(250, 60));
+                panelTranslateUnit.setPreferredSize(new java.awt.Dimension(250, 60));
 
+                buttonRemoveBlankRows.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
                 buttonRemoveBlankRows.setText("Delete Blank Rows");
                 setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));
 
                 buttonTUSplit.setText("Split");
                 setLocalizedText(buttonTUSplit, getString("BTN.SPLIT.TU"));
 
-                buttonUndo.setMnemonic('Z');
-                buttonUndo.setText("Undo");
-                setLocalizedText(buttonUndo, getString("BTN.UNDO"));
-                buttonUndo.setEnabled(false);
-                buttonUndo.setFocusable(false);
-                buttonUndo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-                buttonUndo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
                 javax.swing.GroupLayout panelTranslateUnitLayout = new javax.swing.GroupLayout(panelTranslateUnit);
                 panelTranslateUnit.setLayout(panelTranslateUnitLayout);
                 panelTranslateUnitLayout.setHorizontalGroup(
                         panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelTranslateUnitLayout.createSequentialGroup()
-                                .addContainerGap()
+                                .addGap(12, 12, 12)
                                 .addComponent(buttonRemoveBlankRows)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonTUSplit)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonUndo)
-                                .addContainerGap(8, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 panelTranslateUnitLayout.setVerticalGroup(
                         panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelTranslateUnitLayout.createSequentialGroup()
-                                .addGroup(panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(buttonRemoveBlankRows)
-                                                .addComponent(buttonTUSplit))
-                                        .addComponent(buttonUndo))
-                                .addGap(0, 11, Short.MAX_VALUE))
+                                .addGroup(panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(buttonRemoveBlankRows)
+                                        .addComponent(buttonTUSplit))
+                                .addGap(0, 8, Short.MAX_VALUE))
                 );
 
                 toolBar.add(panelTranslateUnit);
                 panelTranslateUnit.getAccessibleContext().setAccessibleName("Translation");
 
-                toolBar.add(jSeparator1);
+                toolBar.add(filler1);
 
                 panelTranslation.setBorder(javax.swing.BorderFactory.createTitledBorder("Translation"));
-                panelTranslation.setMinimumSize(new java.awt.Dimension(180, 90));
-                panelTranslation.setPreferredSize(new java.awt.Dimension(220, 90));
+                panelTranslation.setMaximumSize(new java.awt.Dimension(500, 90));
+                panelTranslation.setMinimumSize(new java.awt.Dimension(250, 60));
+                panelTranslation.setPreferredSize(new java.awt.Dimension(250, 60));
 
+                buttonTranslationDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
                 buttonTranslationDelete.setText("Delete");
                 setLocalizedText(buttonTranslationDelete, getString("BTN.DELETE.TRANSLATION"));
 
@@ -269,22 +255,22 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                 panelTranslationLayout.setHorizontalGroup(
                         panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelTranslationLayout.createSequentialGroup()
-                                .addContainerGap()
+                                .addGap(18, 18, 18)
                                 .addComponent(buttonTranslationDelete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonTranslationJoin)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonTranslationSplit)
-                                .addContainerGap(25, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 panelTranslationLayout.setVerticalGroup(
                         panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelTranslationLayout.createSequentialGroup()
-                                .addGroup(panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(buttonTranslationDelete)
+                                .addGroup(panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(buttonTranslationSplit)
                                         .addComponent(buttonTranslationJoin)
-                                        .addComponent(buttonTranslationSplit))
-                                .addGap(0, 41, Short.MAX_VALUE))
+                                        .addComponent(buttonTranslationDelete))
+                                .addGap(0, 8, Short.MAX_VALUE))
                 );
 
                 toolBar.add(panelTranslation);
@@ -293,11 +279,11 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
                 );
         }// </editor-fold>//GEN-END:initComponents
 
@@ -310,8 +296,8 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
         private javax.swing.JButton buttonTranslationDelete;
         private javax.swing.JButton buttonTranslationJoin;
         private javax.swing.JButton buttonTranslationSplit;
-        private javax.swing.JButton buttonUndo;
-        private javax.swing.JToolBar.Separator jSeparator1;
+        private javax.swing.Box.Filler filler1;
+        private javax.swing.Box.Filler filler2;
         private javax.swing.JPanel panelOriginal;
         private javax.swing.JPanel panelTranslateUnit;
         private javax.swing.JPanel panelTranslation;

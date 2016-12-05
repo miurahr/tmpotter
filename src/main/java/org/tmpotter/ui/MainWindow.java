@@ -46,6 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.table.TableColumn;
@@ -72,6 +73,7 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
+
 /**
  * Main Frame for Main window.
  *
@@ -82,9 +84,11 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MainWindow.class);
-  protected ActionHandler menuHandler;
+  protected ActionHandler actionHandler;
 
-  protected final AlignToolBar toolBar = new AlignToolBar();
+  protected final JToolBar toolBar = new JToolBar();
+  protected final AlignToolBar alignToolBar = new AlignToolBar();
+  protected final EditToolBar editToolBar = new EditToolBar();
   protected final SegmentEditor editLeftSegment = new SegmentEditor();
   protected final SegmentEditor editRightSegment = new SegmentEditor();
   protected final TmView tmView = new TmView();
@@ -99,6 +103,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   protected JXLabel labelStatusBar;
   private JXLabel tableRows;
 
+
   /**
    * Creates new form MainFrame
    */
@@ -106,11 +111,12 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     initComponents();
     setActionCommands();
     tmView.setModelMediator(this);
-    toolBar.setModelMediator(this);
+    alignToolBar.setModelMediator(this);
+    editToolBar.setModelMediator(this);
     editLeftSegment.setModelMediator(this);
     editRightSegment.setModelMediator(this);
-    menuHandler = new ActionHandler(this, tmData);
-    menuHandler.setModelMediator(this);
+    actionHandler = new ActionHandler(this, tmData);
+    actionHandler.setModelMediator(this);
     labelStatusBar = new JXLabel(" ");
     panelStatusBar = new JXStatusBar();
     msp = new JXMultiSplitPane();
@@ -129,6 +135,10 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   }
 
   protected void makeUi() {
+    // Make tool bar
+    toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.PAGE_AXIS));
+    toolBar.add(editToolBar);
+    toolBar.add(alignToolBar);  
     // Make Status Bar
     panelStatusBar.setLayout(new BoxLayout(panelStatusBar, BoxLayout.LINE_AXIS));
     panelStatusBar.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -202,6 +212,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
    *
    * @param evt event info
    */
+  @Override
   public void menuSelected(MenuEvent evt) {
     // Item what perform event.
     JMenu menu = (JMenu) evt.getSource();
@@ -246,15 +257,14 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     // Get item name from actionCommand.
     String action = evt.getActionCommand();
 
-    //LOGGER.logRB("LOG_MENU_CLICK", action);
     // Find method by item name.
     String methodName = action + "ActionPerformed";
     Method method = null;
     try {
-      method = menuHandler.getClass().getMethod(methodName);
+      method = actionHandler.getClass().getMethod(methodName);
     } catch (NoSuchMethodException ignore) {
       try {
-        method = menuHandler.getClass()
+        method = actionHandler.getClass()
             .getMethod(methodName, Integer.TYPE);
       } catch (NoSuchMethodException ex) {
         throw new IncompatibleClassChangeError(
@@ -265,7 +275,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     // Call ...MenuItemActionPerformed method.
     Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
     try {
-      method.invoke(menuHandler, args);
+      method.invoke(actionHandler, args);
     } catch (IllegalAccessException ex) {
       throw new IncompatibleClassChangeError(
           "Error invoke method handler for main menu");
@@ -307,8 +317,8 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   private void setMacProxy() {
     //  Proxy callbacks from/to Mac OS X Aqua global menubar for Quit and About
     try {
-      AquaAdapter.connect(menuHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
-      AquaAdapter.connect(menuHandler, "quit", AquaAdapter.AquaEvent.QUIT);
+      AquaAdapter.connect(actionHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
+      AquaAdapter.connect(actionHandler, "quit", AquaAdapter.AquaEvent.QUIT);
     } catch (final NoClassDefFoundError e) {
       System.out.println(e);
     }
@@ -319,7 +329,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     addWindowListener(new WindowAdapter() {
       @Override
       public final void windowClosing(final WindowEvent event) {
-        menuHandler.quit();
+        actionHandler.quit();
       }
     });
   }
@@ -357,9 +367,9 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     }
     initializeTmView();
     updateTmView();
-    toolBar.enableButtons(true);
+    alignToolBar.enableButtons(true);
     enableEditMenus(true);
-    toolBar.setUndoEnabled(false);
+    editToolBar.setUndoEnabled(false);
     menuItemFileSave.setEnabled(true);
     menuItemFileSaveAs.setEnabled(true);
     menuItemFileClose.setEnabled(true);
@@ -449,11 +459,11 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         2).toString()));
     tmData.setBothIndex(tmView.getSelectedRow());
     if (tmData.isIdentTop()) {
-      toolBar.setTranslationJoinEnabled(false);
-      toolBar.setOriginalJoinEnabled(false);
+      alignToolBar.setTranslationJoinEnabled(false);
+      alignToolBar.setOriginalJoinEnabled(false);
     } else {
-      toolBar.setTranslationJoinEnabled(true);
-      toolBar.setOriginalJoinEnabled(true);
+      alignToolBar.setTranslationJoinEnabled(true);
+      alignToolBar.setOriginalJoinEnabled(true);
     }
     updateTmView();
   }
@@ -496,11 +506,11 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
             .toString()));
       }
       if (tmData.isIdentTop()) {
-        toolBar.setTranslationJoinEnabled(false);
-        toolBar.setOriginalJoinEnabled(false);
+        alignToolBar.setTranslationJoinEnabled(false);
+        alignToolBar.setOriginalJoinEnabled(false);
       } else {
-        toolBar.setTranslationJoinEnabled(true);
-        toolBar.setOriginalJoinEnabled(true);
+        alignToolBar.setTranslationJoinEnabled(true);
+        alignToolBar.setOriginalJoinEnabled(true);
       }
       tmData.indexPrevious = tmData.indexCurrent;
     }
@@ -515,7 +525,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.join(TmData.Side.ORIGINAL);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -527,7 +537,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.delete(TmData.Side.ORIGINAL);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -539,7 +549,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.split(TmData.Side.ORIGINAL);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -551,7 +561,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.join(TmData.Side.TRANSLATION);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -563,7 +573,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.delete(TmData.Side.TRANSLATION);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -575,7 +585,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.incrementChanges();
     tmData.split(TmData.Side.TRANSLATION);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     setUndoEnabled(true);
   }
 
@@ -586,7 +596,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     int currentChange = tmData.decrementChanges();
 
     if (currentChange == -1) {
-      toolBar.setUndoEnabled(false);
+      editToolBar.setUndoEnabled(false);
       setUndoEnabled(false);
     }
   }
@@ -640,7 +650,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
           0, TmData.Side.TRANSLATION, "", 0);
       tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
       changes.setNumEliminada(numCleared, cleanedLines);
-      toolBar.setUndoEnabled(true);
+      editToolBar.setUndoEnabled(true);
       menuItemUndo.setEnabled(true);
       updateTmView();
     }
@@ -654,7 +664,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
     tmData.tuSplit((tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
         : TmData.Side.TRANSLATION);
     updateTmView();
-    toolBar.setUndoEnabled(true);
+    editToolBar.setUndoEnabled(true);
     menuItemUndo.setEnabled(true);
   }
 
@@ -670,7 +680,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
   @Override
   public final void windowClosing(final WindowEvent evt) {
     if (evt.getSource() == this) {
-      menuHandler.menuItemFileQuitActionPerformed();
+      actionHandler.menuItemFileQuitActionPerformed();
     }
   }
 
@@ -762,16 +772,20 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuItemUndo = new javax.swing.JMenuItem();
                 menuItemRedo = new javax.swing.JMenuItem();
                 jSeparator1 = new javax.swing.JPopupMenu.Separator();
+                menuItemCut = new javax.swing.JMenuItem();
+                menuItemCopy = new javax.swing.JMenuItem();
+                menuItemPaste = new javax.swing.JMenuItem();
+                menuTu = new javax.swing.JMenu();
+                menuItemTuSplit = new javax.swing.JMenuItem();
+                menuItemRemoveBlankRows = new javax.swing.JMenuItem();
+                sourceMenu = new javax.swing.JMenu();
                 menuItemOriginalDelete = new javax.swing.JMenuItem();
                 menuItemOriginalJoin = new javax.swing.JMenuItem();
                 menuItemOriginalSplit = new javax.swing.JMenuItem();
-                jSeparator2 = new javax.swing.JPopupMenu.Separator();
+                menuTranslation = new javax.swing.JMenu();
                 menuItemTranslationDelete = new javax.swing.JMenuItem();
                 menuItemTranslationJoin = new javax.swing.JMenuItem();
                 menuItemTranslationSplit = new javax.swing.JMenuItem();
-                jSeparator3 = new javax.swing.JPopupMenu.Separator();
-                menuItemTuSplit = new javax.swing.JMenuItem();
-                menuItemRemoveBlankRows = new javax.swing.JMenuItem();
                 menuOptions = new javax.swing.JMenu();
                 menuItemSettings = new javax.swing.JMenuItem();
                 menuHelp = new javax.swing.JMenu();
@@ -783,14 +797,17 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuFile.setText("File");
                 setLocalizedText(menuFile, getString("MNU.FILE"));
 
+                menuItemFileImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/filenew.png"))); // NOI18N
                 menuItemFileImport.setText("New Import...");
                 menuFile.add(menuItemFileImport);
                 menuFile.add(jSeparator4);
 
+                menuItemFileOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/fileopen.png"))); // NOI18N
                 menuItemFileOpen.setText("Open");
                 setLocalizedText(menuItemFileOpen, getString("MNI.FILE.OPEN"));
                 menuFile.add(menuItemFileOpen);
 
+                menuItemFileSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/filesave.png"))); // NOI18N
                 menuItemFileSave.setText("Save");
                 setLocalizedText(menuItemFileSave, getString("MNI.FILE.SAVE"));
                 menuFile.add(menuItemFileSave);
@@ -799,11 +816,13 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 setLocalizedText(menuItemFileSaveAs, getString("MNI.FILE.SAVEAS"));
                 menuFile.add(menuItemFileSaveAs);
 
+                menuItemFileClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/fileclose.png"))); // NOI18N
                 menuItemFileClose.setText("Close");
                 setLocalizedText(menuItemFileClose, getString("MNI.FILE.ABORT"));
                 menuFile.add(menuItemFileClose);
                 menuFile.add(jSeparator5);
 
+                menuItemFileQuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/application-exit.png"))); // NOI18N
                 menuItemFileQuit.setText("Quit");
                 setLocalizedText(menuItemFileQuit, getString("MNI.FILE.EXIT"));
                 menuFile.add(menuItemFileQuit);
@@ -813,40 +832,65 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
                 menuEdit.setText("Edit");
                 setLocalizedText(menuEdit, getString("MNU.EDIT"));
 
+                menuItemUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/undo.png"))); // NOI18N
                 menuItemUndo.setText("Undo");
                 menuEdit.add(menuItemUndo);
 
+                menuItemRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/redo.png"))); // NOI18N
                 menuItemRedo.setText("Redo");
                 menuEdit.add(menuItemRedo);
                 menuEdit.add(jSeparator1);
 
-                menuItemOriginalDelete.setText("Delete Original");
-                menuEdit.add(menuItemOriginalDelete);
+                menuItemCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/cut.png"))); // NOI18N
+                menuItemCut.setText("Cut");
+                menuEdit.add(menuItemCut);
 
-                menuItemOriginalJoin.setText("Join Original");
-                menuEdit.add(menuItemOriginalJoin);
+                menuItemCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/editcopy.png"))); // NOI18N
+                menuItemCopy.setText("Copy");
+                menuEdit.add(menuItemCopy);
 
-                menuItemOriginalSplit.setText("Split Original");
-                menuEdit.add(menuItemOriginalSplit);
-                menuEdit.add(jSeparator2);
-
-                menuItemTranslationDelete.setText("Delete Translation");
-                menuEdit.add(menuItemTranslationDelete);
-
-                menuItemTranslationJoin.setText("Join Translation");
-                menuEdit.add(menuItemTranslationJoin);
-
-                menuItemTranslationSplit.setText("Split Translation");
-                menuEdit.add(menuItemTranslationSplit);
-                menuEdit.add(jSeparator3);
-
-                menuItemTuSplit.setText("Split Trans Unit");
-                menuEdit.add(menuItemTuSplit);
-
-                menuItemRemoveBlankRows.setText("Clean blanck rows");
-                menuEdit.add(menuItemRemoveBlankRows);
+                menuItemPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/editpaste.png"))); // NOI18N
+                menuItemPaste.setText("Paste");
+                menuEdit.add(menuItemPaste);
 
                 jMenuBar1.add(menuEdit);
+
+                menuTu.setText("TU");
+
+                menuItemTuSplit.setText("Split Trans Unit");
+                menuTu.add(menuItemTuSplit);
+
+                menuItemRemoveBlankRows.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
+                menuItemRemoveBlankRows.setText("Clean blanck rows");
+                menuTu.add(menuItemRemoveBlankRows);
+
+                jMenuBar1.add(menuTu);
+
+                sourceMenu.setText("Original");
+
+                menuItemOriginalDelete.setText("Delete Original");
+                sourceMenu.add(menuItemOriginalDelete);
+
+                menuItemOriginalJoin.setText("Join Original");
+                sourceMenu.add(menuItemOriginalJoin);
+
+                menuItemOriginalSplit.setText("Split Original");
+                sourceMenu.add(menuItemOriginalSplit);
+
+                jMenuBar1.add(sourceMenu);
+
+                menuTranslation.setText("Translation");
+
+                menuItemTranslationDelete.setText("Delete Translation");
+                menuTranslation.add(menuItemTranslationDelete);
+
+                menuItemTranslationJoin.setText("Join Translation");
+                menuTranslation.add(menuItemTranslationJoin);
+
+                menuItemTranslationSplit.setText("Split Translation");
+                menuTranslation.add(menuItemTranslationSplit);
+
+                jMenuBar1.add(menuTranslation);
 
                 menuOptions.setText("Options");
                 setLocalizedText(menuOptions, getString("MNU.OPTIONS"));
@@ -911,13 +955,13 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JMenuBar jMenuBar1;
         private javax.swing.JPopupMenu.Separator jSeparator1;
-        private javax.swing.JPopupMenu.Separator jSeparator2;
-        private javax.swing.JPopupMenu.Separator jSeparator3;
         private javax.swing.JPopupMenu.Separator jSeparator4;
         private javax.swing.JPopupMenu.Separator jSeparator5;
         protected javax.swing.JMenu menuEdit;
         protected javax.swing.JMenu menuFile;
         private javax.swing.JMenu menuHelp;
+        private javax.swing.JMenuItem menuItemCopy;
+        private javax.swing.JMenuItem menuItemCut;
         private javax.swing.JMenuItem menuItemFileClose;
         private javax.swing.JMenuItem menuItemFileImport;
         private javax.swing.JMenuItem menuItemFileOpen;
@@ -928,6 +972,7 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         private javax.swing.JMenuItem menuItemOriginalDelete;
         private javax.swing.JMenuItem menuItemOriginalJoin;
         private javax.swing.JMenuItem menuItemOriginalSplit;
+        private javax.swing.JMenuItem menuItemPaste;
         private javax.swing.JMenuItem menuItemRedo;
         private javax.swing.JMenuItem menuItemRemoveBlankRows;
         private javax.swing.JMenuItem menuItemSettings;
@@ -937,5 +982,8 @@ public class MainWindow extends JFrame implements ModelMediator, ActionListener,
         private javax.swing.JMenuItem menuItemTuSplit;
         private javax.swing.JMenuItem menuItemUndo;
         protected javax.swing.JMenu menuOptions;
+        private javax.swing.JMenu menuTranslation;
+        private javax.swing.JMenu menuTu;
+        private javax.swing.JMenu sourceMenu;
         // End of variables declaration//GEN-END:variables
 }

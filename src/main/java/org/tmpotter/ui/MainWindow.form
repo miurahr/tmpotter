@@ -15,6 +15,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/filenew.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="New Import..."/>
               </Properties>
             </MenuItem>
@@ -22,6 +25,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileOpen">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/fileopen.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Open"/>
               </Properties>
               <AuxValues>
@@ -30,6 +36,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileSave">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/filesave.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Save" postCode="setLocalizedText(menuItemFileSave, getString(&quot;MNI.FILE.SAVE&quot;));"/>
               </Properties>
             </MenuItem>
@@ -40,6 +49,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileClose">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/fileclose.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Close" postCode="setLocalizedText(menuItemFileClose, getString(&quot;MNI.FILE.ABORT&quot;));"/>
               </Properties>
             </MenuItem>
@@ -47,6 +59,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileQuit">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/application-exit.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Quit" postCode="setLocalizedText(menuItemFileQuit, getString(&quot;MNI.FILE.EXIT&quot;));"/>
               </Properties>
             </MenuItem>
@@ -62,16 +77,73 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemUndo">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/undo.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Undo"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemRedo">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/redo.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Redo"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemCut">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/cut.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Cut"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemCopy">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/editcopy.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Copy"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemPaste">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/editpaste.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Paste"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="menuTu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="TU"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemTuSplit">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Split Trans Unit"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemRemoveBlankRows">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/org/tmpotter/ui/resources/eraser.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Clean blanck rows"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="sourceMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Original"/>
+          </Properties>
+          <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemOriginalDelete">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Delete Original"/>
@@ -87,8 +159,13 @@
                 <Property name="text" type="java.lang.String" value="Split Original"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
-            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="menuTranslation">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Translation"/>
+          </Properties>
+          <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemTranslationDelete">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Delete Translation"/>
@@ -102,18 +179,6 @@
             <MenuItem class="javax.swing.JMenuItem" name="menuItemTranslationSplit">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Split Translation"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemTuSplit">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Split Trans Unit"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemRemoveBlankRows">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Clean blanck rows"/>
               </Properties>
             </MenuItem>
           </SubComponents>

@@ -243,7 +243,7 @@ public class WindowFontManager {
     setTableHeaderFont(font);
     setSourceEditorFont(font);
     setTargetEditorFont(font);
-    mainWindow.toolBar.setFonts(font);
+    mainWindow.alignToolBar.setFonts(font);
   }
 
 }

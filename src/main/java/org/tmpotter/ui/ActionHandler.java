@@ -122,9 +122,9 @@ final class ActionHandler {
 		  modelMediator.onImportFile(filter);
 		  initializeTmView(mainWindow);
 		  mainWindow.updateTmView();
-		  mainWindow.toolBar.enableButtons(true);
+		  mainWindow.alignToolBar.enableButtons(true);
 		  mainWindow.enableEditMenus(true);
-		  mainWindow.toolBar.setUndoEnabled(false);
+		  mainWindow.editToolBar.setUndoEnabled(false);
 		  mainWindow.enableMenuItemFileSaveAs(true);
 		  mainWindow.enableMenuItemFileClose(true);
 	  } catch (Exception ex) {
@@ -259,7 +259,7 @@ final class ActionHandler {
    */
   public void menuItemFileCloseActionPerformed() {
     clear();
-    mainWindow.toolBar.enableButtons(false);
+    mainWindow.alignToolBar.enableButtons(false);
     mainWindow.enableEditMenus(false);
     mainWindow.enableMenuItemFileSave(false);
     mainWindow.enableMenuItemFileSaveAs(false);
