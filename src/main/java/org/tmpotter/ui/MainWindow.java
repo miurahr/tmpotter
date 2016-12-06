@@ -43,9 +43,7 @@ import java.util.LinkedList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.table.TableColumn;
 
@@ -57,14 +55,10 @@ import org.jdesktop.swingx.MultiSplitLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
-import org.tmpotter.core.SegmentChanges;
-import org.tmpotter.core.TmxReader;
 import org.tmpotter.filters.FilterManager;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
-import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.AquaAdapter;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
@@ -81,11 +75,11 @@ import static org.tmpotter.util.StringUtil.restoreText;
 public class MainWindow extends javax.swing.JFrame implements ModelMediator, ActionListener, WindowListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
-  protected ActionHandler actionHandler;
+  private ActionHandler actionHandler;
+  private final AlignToolBar alignToolBar;
+  private final EditToolBar editToolBar;
 
   protected final JToolBar toolBar = new JToolBar();
-  protected final AlignToolBar alignToolBar = new AlignToolBar();
-  protected final EditToolBar editToolBar = new EditToolBar();
   protected final SegmentEditor editLeftSegment = new SegmentEditor();
   protected final SegmentEditor editRightSegment = new SegmentEditor();
   protected final TmView tmView = new TmView();
@@ -108,12 +102,12 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     initComponents();
     setActionCommands();
     tmView.setModelMediator(this);
-    alignToolBar.setModelMediator(this);
-    editToolBar.setModelMediator(this);
-    editLeftSegment.setModelMediator(this);
-    editRightSegment.setModelMediator(this);
     actionHandler = new ActionHandler(this, tmData);
     actionHandler.setModelMediator(this);
+    alignToolBar = new AlignToolBar(actionHandler);
+    editToolBar = new EditToolBar(actionHandler);
+    editLeftSegment.setModelMediator(this);
+    editRightSegment.setModelMediator(this);
     labelStatusBar = new JXLabel(" ");
     panelStatusBar = new JXStatusBar();
     msp = new JXMultiSplitPane();
@@ -131,7 +125,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     setMainFrameSize();
   }
 
-  protected void makeUi() {
+  private void makeUi() {
     // Make tool bar
     toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.PAGE_AXIS));
     toolBar.add(editToolBar);
@@ -172,7 +166,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   /**
    * Set 'actionCommand' for all menu items.
    */
-  protected void setActionCommands() {
+  private void setActionCommands() {
     try {
       for (Field f : this.getClass().getDeclaredFields()) {
         if (JMenuItem.class.isAssignableFrom(f.getType())) {
@@ -241,20 +235,12 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     }
   }
 
-  public final JMenu getMenuFile() {
-    return menuFile;
+  public final void enableAlignToolBar(final boolean val) {
+    alignToolBar.enableButtons(val);
   }
 
-  public final JMenu getMenuEdit() {
-    return menuEdit;
-  }
-
-  public final JMenu getMenuOptions() {
-    return menuOptions;
-  }
-
-  public final JMenu getMenuHelp() {
-    return menuHelp;
+  public final void enableEditToolBar(final boolean val) {
+    editToolBar.enableButtons(val);
   }
 
   public final void enableMenuItemFileSave(final boolean val) {
@@ -303,31 +289,32 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         (screenSize.height - frameSize.height) / 2);
   }
 
-  @Override
-  public void onOpenFile(File filePathOriginal,
-      String stringLangOriginal, String stringLangTranslation) {
-    prop.setFilePathOriginal(filePathOriginal);
-    prop.setFilePathTranslation(prop.getFilePathOriginal());
-    prop.setSourceLanguage(stringLangOriginal);
-    prop.setTargetLanguage(stringLangTranslation);
-    tmView.buildDisplay();
-    try {
-      TmxReader reader = new TmxReader(prop);
-      tmData.documentOriginal
-          = reader.getOriginalDocument(tmData.documentOriginal);
-      tmData.documentTranslation
-          = reader.getTranslationDocument(tmData.documentTranslation);
-    } catch (Exception ex) {
-      LOGGER.info(ex.getMessage());
-    }
-    initializeTmView();
-    updateTmView();
+  public void enableButtonsOnOpenFile(){
     alignToolBar.enableButtons(true);
-    enableEditMenus(true);
     editToolBar.setUndoEnabled(false);
     menuItemFileSave.setEnabled(true);
     menuItemFileSaveAs.setEnabled(true);
     menuItemFileClose.setEnabled(true);
+  }
+
+  @Override
+  public void setFilePathOriginal(File filePath) {
+    prop.setFilePathOriginal(filePath);
+  }
+
+  @Override
+  public void setFilePathTranslation(File filePath) {
+    prop.setFilePathTranslation(filePath);
+  }
+
+  @Override
+  public void setSourceLanguage(String lang) {
+    prop.setSourceLanguage(lang);
+  }
+
+  @Override
+  public void setTargetLanguage(String lang) {
+    prop.setTargetLanguage(lang);
   }
 
   @Override
@@ -342,15 +329,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     prop.setTranslationEncoding(encoding);
     prop.setFilePathTranslation(filePath);
     tmData.stringLangTranslation = lang;
-  }
-
-  @Override
-  public void onImportFile(String filterName) {
-    tmData.documentOriginal = new Document();
-    tmData.documentTranslation = new Document();
-    filterManager.loadFile(prop,
-        tmData.documentOriginal, tmData.documentTranslation, filterName);
-    tmData.matchArrays();
   }
 
   /**
@@ -473,90 +451,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   }
 
   /**
-   * Join on Original.
-   */
-  @Override
-  public final void onOriginalJoin() {
-    tmData.incrementChanges();
-    tmData.join(TmData.Side.ORIGINAL);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  /**
-   * Delete on original document.
-   */
-  @Override
-  public final void onOriginalDelete() {
-    tmData.incrementChanges();
-    tmData.delete(TmData.Side.ORIGINAL);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  /**
-   * Split on original document.
-   */
-  @Override
-  public final void onOriginalSplit() {
-    tmData.incrementChanges();
-    tmData.split(TmData.Side.ORIGINAL);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  /**
-   * join on translation document.
-   */
-  @Override
-  public final void onTranslationJoin() {
-    tmData.incrementChanges();
-    tmData.join(TmData.Side.TRANSLATION);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  /**
-   * delete on translation document.
-   */
-  @Override
-  public final void onTranslationDelete() {
-    tmData.incrementChanges();
-    tmData.delete(TmData.Side.TRANSLATION);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  /**
-   * split on translation document.
-   */
-  @Override
-  public final void onTranslationSplit() {
-    tmData.incrementChanges();
-    tmData.split(TmData.Side.TRANSLATION);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    setUndoEnabled(true);
-  }
-
-  //  Accessed by ControlView
-  @Override
-  public void onUndo() {
-    tmData.arrayListChanges.remove(tmData.getIdentChanges());
-    int currentChange = tmData.decrementChanges();
-
-    if (currentChange == -1) {
-      editToolBar.setUndoEnabled(false);
-      setUndoEnabled(false);
-    }
-  }
-
-  /**
    * Set position.
    *
    * @param position indicate where in int
@@ -564,63 +458,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   @Override
   public final void setTextAreaPosition(int position) {
     tmData.positionTextArea = position;
-  }
-
-  /**
-   * remove blank rows in TMView.
-   */
-  @Override
-  public final void onRemoveBlankRows() {
-    int maxTamArrays = 0;
-    int cont = 0;
-    int cleanedLines = 0;
-    final int[] numCleared = new int[1000];  // default = 1000 - why?
-    int cont2 = 0;
-
-    maxTamArrays = Utilities.largerSize(tmData.getDocumentOriginalSize(),
-        tmData.getDocumentTranslationSize()) - 1;
-
-    while (cont <= (maxTamArrays - cleanedLines)) {
-      if ((tmData.getDocumentOriginal(cont) == null
-          || tmData.getDocumentOriginal(cont).equals(""))
-          && (tmData.getDocumentTranslation(cont) == null
-          || tmData.getDocumentTranslation(cont).equals(""))) {
-        cleanedLines++;
-        numCleared[cont2] = cont + cont2;
-        cont2++;
-        tmData.documentOriginal.remove(cont);
-        tmData.documentTranslation.remove(cont);
-      } else {
-        cont++;
-      }
-    }
-
-    JOptionPane.showMessageDialog(this, getString("MSG.ERASED") + " "
-        + cleanedLines + " " + getString("MSG.BLANK_ROWS"));
-
-    if (cleanedLines > 0) {
-      tmData.incrementChanges();
-
-      SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
-          0, TmData.Side.TRANSLATION, "", 0);
-      tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
-      changes.setNumEliminada(numCleared, cleanedLines);
-      editToolBar.setUndoEnabled(true);
-      menuItemUndo.setEnabled(true);
-      updateTmView();
-    }
-  }
-
-  /**
-   * Split on TU.
-   */
-  @Override
-  public final void onTuSplit() {
-    tmData.tuSplit((tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
-        : TmData.Side.TRANSLATION);
-    updateTmView();
-    editToolBar.setUndoEnabled(true);
-    menuItemUndo.setEnabled(true);
   }
 
   //  WindowListener Overrides
@@ -669,40 +506,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   public final void editSegmentClear() {
     editLeftSegment.setText("");
     editRightSegment.setText("");
-  }
-
-  /**
-   * Undo last change.
-   *
-   */
-  @Override
-  public void undoChanges() {
-    SegmentChanges ultChanges;
-    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
-    tmData.indexCurrent = ultChanges.getIdent_linea();
-    SegmentChanges.OperationKind operationKind = ultChanges.getKind();
-    tmData.setIdentAntAsLabel();
-    switch (operationKind) {
-      case JOIN:
-        tmData.undoJoin();
-        break;
-      case DELETE:
-        tmData.undoDelete();
-        updateTmView();
-        break;
-      case SPLIT:
-        tmData.undoSplit();
-        break;
-      case REMOVE:
-        tmData.undoRemove();
-        break;
-      case TUSPLIT:
-        tmData.undoTuSplit(ultChanges.getSource());
-        break;
-      default:
-        break;
-    }
-    updateTmView();
   }
 
   /**

@@ -35,10 +35,13 @@ import java.io.IOException;
  */
 public interface ModelMediator {
 
-  // Menu/Toolbar actions.
-  void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+  void setFilePathOriginal(File filePath);
 
-  void onImportFile(String filterName) throws IOException;
+  void setFilePathTranslation(File filePath);
+
+  void setSourceLanguage(String lang);
+
+  void setTargetLanguage(String lang);
 
   void setOriginalProperties(File filePath, String lang, String encoding);
 
@@ -46,24 +49,6 @@ public interface ModelMediator {
 
   //for TMView
   void updateTmView();
-
-  void onOriginalJoin();
-
-  void onOriginalDelete();
-
-  void onOriginalSplit();
-
-  void onTranslationJoin();
-
-  void onTranslationDelete();
-
-  void onTranslationSplit();
-
-  void onUndo();
-
-  void onRemoveBlankRows();
-
-  void onTuSplit();
 
   // Segment Editor
   void setTextAreaPosition(int position);
@@ -80,5 +65,5 @@ public interface ModelMediator {
 
   void setUndoEnabled(boolean enable);
 
-  void undoChanges();
+  void enableAlignToolBar(boolean enable);
 }

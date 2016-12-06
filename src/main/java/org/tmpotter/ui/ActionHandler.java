@@ -30,6 +30,11 @@ package org.tmpotter.ui;
 
 import static org.tmpotter.util.Localization.getString;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tmpotter.core.Document;
+import org.tmpotter.core.SegmentChanges;
+import org.tmpotter.core.TmxReader;
 import org.tmpotter.core.TmxWriter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
@@ -48,6 +53,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 import org.tmpotter.ui.wizard.ImportPreference;
+import org.tmpotter.util.Utilities;
 
 
 /**
@@ -57,6 +63,7 @@ import org.tmpotter.ui.wizard.ImportPreference;
  */
 final class ActionHandler {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
   private final MainWindow mainWindow;
   private ModelMediator modelMediator;
   private final TmData tmData;
@@ -91,9 +98,31 @@ final class ActionHandler {
     dlg.setVisible(true);
     if (!dlg.isClosed()) {
       RuntimePreferences.setUserHome(dlg.getFilePath());
-      modelMediator.onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
+      onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
       dlg.dispose();
     }
+  }
+
+  private void onOpenFile(File filePathOriginal, String stringLangOriginal,
+                         String stringLangTranslation) {
+    modelMediator.setFilePathOriginal(filePathOriginal);
+    modelMediator.setFilePathTranslation(filePathOriginal);
+    modelMediator.setSourceLanguage(stringLangOriginal);
+    modelMediator.setTargetLanguage(stringLangTranslation);
+    mainWindow.tmView.buildDisplay();
+    try {
+      TmxReader reader = new TmxReader(mainWindow.prop);
+      tmData.documentOriginal
+          = reader.getOriginalDocument(tmData.documentOriginal);
+      tmData.documentTranslation
+          = reader.getTranslationDocument(tmData.documentTranslation);
+    } catch (Exception ex) {
+      LOGGER.info(ex.getMessage());
+    }
+    mainWindow.initializeTmView();
+    mainWindow.updateTmView();
+    mainWindow.enableEditMenus(true);
+    mainWindow.enableButtonsOnOpenFile();
   }
 
   /**
@@ -119,18 +148,178 @@ final class ActionHandler {
 	  mainWindow.tmView.buildDisplay();
 	  Segmenter.setSrx(Preferences.getSrx());
 	  try {
-		  modelMediator.onImportFile(filter);
+      tmData.documentOriginal = new Document();
+      tmData.documentTranslation = new Document();
+      mainWindow.filterManager.loadFile(mainWindow.prop,
+      tmData.documentOriginal, tmData.documentTranslation, filter);
+      tmData.matchArrays();
+
 		  initializeTmView(mainWindow);
 		  mainWindow.updateTmView();
-		  mainWindow.alignToolBar.enableButtons(true);
+		  mainWindow.enableAlignToolBar(true);
 		  mainWindow.enableEditMenus(true);
-		  mainWindow.editToolBar.setUndoEnabled(false);
+		  mainWindow.setUndoEnabled(false);
 		  mainWindow.enableMenuItemFileSaveAs(true);
 		  mainWindow.enableMenuItemFileClose(true);
 	  } catch (Exception ex) {
 		  JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERROR"),
 		      getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
 	  }
+  }
+
+    /**
+   * Join on Original.
+   */
+  public final void onOriginalJoin() {
+    tmData.incrementChanges();
+    tmData.join(TmData.Side.ORIGINAL);
+    mainWindow.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * Delete on original document.
+   */
+  public final void onOriginalDelete() {
+    tmData.incrementChanges();
+    tmData.delete(TmData.Side.ORIGINAL);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * Split on original document.
+   */
+  public final void onOriginalSplit() {
+    tmData.incrementChanges();
+    tmData.split(TmData.Side.ORIGINAL);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * delete on translation document.
+   */
+  public final void onTranslationDelete() {
+    tmData.incrementChanges();
+    tmData.delete(TmData.Side.TRANSLATION);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * join on translation document.
+   */
+  public final void onTranslationJoin() {
+    tmData.incrementChanges();
+    tmData.join(TmData.Side.TRANSLATION);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * split on translation document.
+   */
+  public final void onTranslationSplit() {
+    tmData.incrementChanges();
+    tmData.split(TmData.Side.TRANSLATION);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * remove blank rows in TMView.
+   */
+  public final void onRemoveBlankRows() {
+    int maxTamArrays = 0;
+    int cont = 0;
+    int cleanedLines = 0;
+    final int[] numCleared = new int[1000];  // default = 1000 - why?
+    int cont2 = 0;
+
+    maxTamArrays = Utilities.largerSize(tmData.getDocumentOriginalSize(),
+        tmData.getDocumentTranslationSize()) - 1;
+
+    while (cont <= (maxTamArrays - cleanedLines)) {
+      if ((tmData.getDocumentOriginal(cont) == null
+          || tmData.getDocumentOriginal(cont).equals(""))
+          && (tmData.getDocumentTranslation(cont) == null
+          || tmData.getDocumentTranslation(cont).equals(""))) {
+        cleanedLines++;
+        numCleared[cont2] = cont + cont2;
+        cont2++;
+        tmData.documentOriginal.remove(cont);
+        tmData.documentTranslation.remove(cont);
+      } else {
+        cont++;
+      }
+    }
+
+    JOptionPane.showMessageDialog(mainWindow, getString("MSG.ERASED") + " "
+        + cleanedLines + " " + getString("MSG.BLANK_ROWS"));
+
+    if (cleanedLines > 0) {
+      tmData.incrementChanges();
+
+      SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
+          0, TmData.Side.TRANSLATION, "", 0);
+      tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
+      changes.setNumEliminada(numCleared, cleanedLines);
+      modelMediator.setUndoEnabled(true);
+      modelMediator.updateTmView();
+    }
+  }
+
+  /**
+   * Split on TU.
+   */
+  public final void onTuSplit() {
+    tmData.tuSplit((mainWindow.tmView.getSelectedColumn() == 1) ? TmData.Side.ORIGINAL
+        : TmData.Side.TRANSLATION);
+    modelMediator.updateTmView();
+    modelMediator.setUndoEnabled(true);
+  }
+
+  /**
+   * Undo last change.
+   *
+   */
+  public void undoChanges() {
+    SegmentChanges ultChanges;
+    ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
+    tmData.indexCurrent = ultChanges.getIdent_linea();
+    SegmentChanges.OperationKind operationKind = ultChanges.getKind();
+    tmData.setIdentAntAsLabel();
+    switch (operationKind) {
+      case JOIN:
+        tmData.undoJoin();
+        break;
+      case DELETE:
+        tmData.undoDelete();
+        modelMediator.updateTmView();
+        break;
+      case SPLIT:
+        tmData.undoSplit();
+        break;
+      case REMOVE:
+        tmData.undoRemove();
+        break;
+      case TUSPLIT:
+        tmData.undoTuSplit(ultChanges.getSource());
+        break;
+      default:
+        break;
+    }
+    modelMediator.updateTmView();
+  }
+
+  public void onUndo() {
+    tmData.arrayListChanges.remove(tmData.getIdentChanges());
+    int currentChange = tmData.decrementChanges();
+
+    if (currentChange == -1) {
+      modelMediator.setUndoEnabled(false);
+    }
   }
 
   /**
@@ -259,7 +448,7 @@ final class ActionHandler {
    */
   public void menuItemFileCloseActionPerformed() {
     clear();
-    mainWindow.alignToolBar.enableButtons(false);
+    modelMediator.enableAlignToolBar(false);
     mainWindow.enableEditMenus(false);
     mainWindow.enableMenuItemFileSave(false);
     mainWindow.enableMenuItemFileSaveAs(false);
@@ -300,47 +489,80 @@ final class ActionHandler {
   }
 
   public void menuItemUndoActionPerformed() {
-    modelMediator.undoChanges();
-    modelMediator.onUndo();
+    undoChanges();
+    onUndo();
   }
 
   public void menuItemRedoActionPerformed() {
-
+    // FIXME: implement me.
   }
 
   public void menuItemOriginalDeleteActionPerformed() {
-    modelMediator.onOriginalDelete();
+    onOriginalDelete();
+  }
+
+  public void buttonOriginalDeleteActionPerformed() {
+    onOriginalDelete();
   }
 
   public void menuItemOriginalJoinActionPerformed() {
-    modelMediator.onOriginalJoin();
+    onOriginalJoin();
+  }
+
+  public void buttonOriginalJoinActionPerformed() {
+    onOriginalJoin();
   }
 
   public void menuItemOriginalSplitActionPerformed() {
-    modelMediator.onOriginalSplit();
+    onOriginalSplit();
+  }
+
+  public void buttonOriginalSplitActionPerformed() {
+    onOriginalSplit();
   }
 
   public void menuItemTranslationDeleteActionPerformed() {
-    modelMediator.onTranslationDelete();
+    onTranslationDelete();
+  }
+
+  public void buttonTranslationDeleteActionPerformed() {
+    onTranslationDelete();
   }
 
   public void menuItemTranslationJoinActionPerformed() {
-    modelMediator.onTranslationJoin();
+    onTranslationJoin();
+  }
+
+  public void buttonTranslationJoinActionPerformed() {
+    onTranslationJoin();
   }
 
   public void menuItemTranslationSplitActionPerformed() {
-    modelMediator.onTranslationSplit();
+    onTranslationSplit();
+  }
+
+  public void buttonTranslationSplitActionPerformed() {
+    onTranslationSplit();
   }
 
   public void menuItemRemoveBlankRowsActionPerformed() {
-    modelMediator.onRemoveBlankRows();
+    onRemoveBlankRows();
+  }
+
+  public void buttonRemoveBlankRowsActionPerformed() {
+    onRemoveBlankRows();
   }
 
   public void menuItemTuSplitActionPerformed() {
-    modelMediator.onTuSplit();
+    onTuSplit();
+  }
+
+  public void buttonTuSplitActionPerformed() {
+    onTuSplit();
   }
 
   public void menuItemSettingsActionPerformed() {
     // FIXME: Implement me.
   }
+
 }

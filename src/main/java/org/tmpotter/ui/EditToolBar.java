@@ -23,9 +23,14 @@
 
 package org.tmpotter.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import javax.swing.JButton;
 
 
@@ -34,23 +39,23 @@ import javax.swing.JButton;
  * @author Hiroshi Miura
  */
 public class EditToolBar extends javax.swing.JPanel implements ActionListener {
-	
-	private ModelMediator modelMediator;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(EditToolBar.class);
+  private ActionHandler actionHandler;
 
 	/**
 	 * Creates new form EditToolBar
 	 */
-	public EditToolBar() {
+	public EditToolBar(ActionHandler handler) {
 		initComponents();
+    this.actionHandler = handler;
+    setActionCommands();
 	}
 
 	public final void setUndoEnabled(boolean enabled) {
 		buttonUndo.setEnabled(enabled);
 	}
 
-	public void setModelMediator(ModelMediator mediator) {
-		this.modelMediator = mediator;
-	}
 
 	/**
 	 * Set 'actionCommand' for all menu items.
@@ -68,30 +73,39 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
-  
-	@Override
-	public final void actionPerformed(final ActionEvent action) {
-		final Object actor = action.getSource();
 
-		if (actor instanceof javax.swing.JButton) {
-			if (actor == buttonUndo) {
-				modelMediator.undoChanges();
-				modelMediator.onUndo();
-			} else if (actor == buttonRedo) {
-				
-			} else if (actor == buttonCut) {
-				
-			} else if (actor == buttonCopy) {
-				
-			} else if (actor == buttonPaste) {
-				
-			} else if (actor == buttonSave) {
-				
-			} else if (actor == buttonSaveAs) {
-				
-			}
-		}
-	}
+  public void actionPerformed(ActionEvent evt) {
+    // Get item name from actionCommand.
+    String action = evt.getActionCommand();
+
+    // Find method by item name.
+    String methodName = action + "ActionPerformed";
+    Method method = null;
+    try {
+      method = actionHandler.getClass().getMethod(methodName);
+    } catch (NoSuchMethodException ignore) {
+      try {
+        method = actionHandler.getClass()
+            .getMethod(methodName, Integer.TYPE);
+      } catch (NoSuchMethodException ex) {
+        throw new IncompatibleClassChangeError(
+            "Error invoke method handler for main menu: there is no method "
+                + methodName);
+      }
+    }
+    // Call ...MenuItemActionPerformed method.
+    Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
+    try {
+      method.invoke(actionHandler, args);
+    } catch (IllegalAccessException ex) {
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    } catch (InvocationTargetException ex) {
+      LOGGER.info("Error execute method", ex);
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    }
+  }
 
 	final void enableButtons(boolean enabled) {
 		buttonSave.setEnabled(enabled);

@@ -23,10 +23,15 @@
 
 package org.tmpotter.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import javax.swing.JButton;
 import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
@@ -38,14 +43,17 @@ import static org.tmpotter.util.Localization.getString;
  */
 public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
 
-  private ModelMediator modelMediator;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AlignToolBar.class);
+  private ActionHandler actionHandler;
 
   /**
    * Creates new form AlignToolBar
    */
-  public AlignToolBar() {
+  public AlignToolBar(ActionHandler handler) {
     initComponents();
+    this.actionHandler = handler;
     toolBar.setFloatable(false);
+    setActionCommands();
   }
 
   /**
@@ -65,32 +73,36 @@ public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
     }
   }
 
-  public void setModelMediator(ModelMediator mediator) {
-    this.modelMediator = mediator;
-  }
+  public void actionPerformed(ActionEvent evt) {
+    // Get item name from actionCommand.
+    String action = evt.getActionCommand();
 
-  @Override
-  public final void actionPerformed(final ActionEvent action) {
-    final Object actor = action.getSource();
-
-    if (actor instanceof JButton) {
-      if (actor == buttonOriginalDelete) {
-        modelMediator.onOriginalDelete();
-      } else if (actor == buttonOriginalJoin) {
-        modelMediator.onOriginalJoin();
-      } else if (actor == buttonOriginalSplit) {
-        modelMediator.onOriginalSplit();
-      } else if (actor == buttonTranslationDelete) {
-        modelMediator.onTranslationDelete();
-      } else if (actor == buttonTranslationJoin) {
-        modelMediator.onTranslationJoin();
-      } else if (actor == buttonTranslationSplit) {
-        modelMediator.onTranslationSplit();
-      } else if (actor == buttonRemoveBlankRows) {
-        modelMediator.onRemoveBlankRows();
-      } else if (actor == buttonTUSplit) {
-        modelMediator.onTuSplit();
+    // Find method by item name.
+    String methodName = action + "ActionPerformed";
+    Method method = null;
+    try {
+      method = actionHandler.getClass().getMethod(methodName);
+    } catch (NoSuchMethodException ignore) {
+      try {
+        method = actionHandler.getClass()
+            .getMethod(methodName, Integer.TYPE);
+      } catch (NoSuchMethodException ex) {
+        throw new IncompatibleClassChangeError(
+            "Error invoke method handler for main menu: there is no method "
+            + methodName);
       }
+    }
+    // Call ...MenuItemActionPerformed method.
+    Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
+    try {
+      method.invoke(actionHandler, args);
+    } catch (IllegalAccessException ex) {
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
+    } catch (InvocationTargetException ex) {
+      LOGGER.info("Error execute method", ex);
+      throw new IncompatibleClassChangeError(
+          "Error invoke method handler for main menu");
     }
   }
 
