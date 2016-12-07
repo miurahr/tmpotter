@@ -57,6 +57,7 @@ public class About extends javax.swing.JDialog {
                 buttonOK = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                setLocationByPlatform(true);
 
                 labelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/icon-medium.png"))); // NOI18N
 

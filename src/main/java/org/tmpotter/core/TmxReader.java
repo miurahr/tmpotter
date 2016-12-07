@@ -26,7 +26,6 @@ package org.tmpotter.core;
 import org.tmpotter.util.StringUtil;
 import org.tmpotter.util.TmxReader2;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

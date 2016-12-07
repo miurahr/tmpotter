@@ -88,8 +88,6 @@ final class ActionHandler {
     return true;
   }
 
-
-
   private void onOpenFile(File filePathOriginal, String stringLangOriginal,
                          String stringLangTranslation) {
     modelMediator.setFilePathOriginal(filePathOriginal);
@@ -528,9 +526,18 @@ final class ActionHandler {
     menuItemFileQuitActionPerformed();
   }
 
+  public void buttonUndoActionPerformed() {
+    undoChanges();
+    onUndo();
+  }
+
   public void menuItemUndoActionPerformed() {
     undoChanges();
     onUndo();
+  }
+
+  public void buttonRedoActionPerformed() {
+    // FIXME: implement me.
   }
 
   public void menuItemRedoActionPerformed() {
