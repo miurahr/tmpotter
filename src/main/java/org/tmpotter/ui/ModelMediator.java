@@ -23,9 +23,9 @@
 
 package org.tmpotter.ui;
 
-import java.awt.event.KeyEvent;
+import org.tmpotter.core.ProjectProperties;
+
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -34,10 +34,14 @@ import java.io.IOException;
  * @author Hiroshi Miura
  */
 public interface ModelMediator {
-
+  // Open/Import
   void setFilePathOriginal(File filePath);
 
+  String getFileNameOriginal();
+
   void setFilePathTranslation(File filePath);
+
+  String getFileNameTranslation();
 
   void setSourceLanguage(String lang);
 
@@ -47,15 +51,33 @@ public interface ModelMediator {
 
   void setTargetProperties(File filePath, String lang, String encoding);
 
-  //for TMView
+  // Props
+  ProjectProperties getProjectProperties();
+
+  void clearProjectProperties();
+
+  // Menus
+  void enableButtonsOnOpenFile(boolean val);
+
+  // TMView
+  void initializeTmView();
+
   void updateTmView();
+
+  void buildDisplay();
+
+  String getLeftSegment(int index);
+
+  String getRightSegment(int index);
+
+  int getTmViewRows();
+
+  int getTmViewSelectedRow();
+
+  int getTmViewSelectedColumn();
 
   // Segment Editor
   void setTextAreaPosition(int position);
-
-  void onTableClicked();
-
-  void onTablePressed(final KeyEvent event);
 
   void tmDataClear();
 
@@ -65,5 +87,21 @@ public interface ModelMediator {
 
   void setUndoEnabled(boolean enable);
 
+  void setLeftEdit(String edit);
+
+  void setRightEdit(String edit);
+
+  String getLeftEdit();
+
+  String getRightEdit();
+
+  // ToolBar
+  void setJoinEnabled(boolean val);
+
   void enableAlignToolBar(boolean enable);
+
+  void enableMenuItemFileSave(boolean val);
+
+  // Status Bar
+  void updateStatusBar();
 }

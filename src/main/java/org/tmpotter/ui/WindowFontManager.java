@@ -27,8 +27,6 @@
  * *************************************************************************/
 package org.tmpotter.ui;
 
-import org.tmpotter.util.Platform;
-
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 
@@ -244,6 +242,7 @@ public class WindowFontManager {
     setSourceEditorFont(font);
     setTargetEditorFont(font);
     mainWindow.alignToolBar.setFonts(font);
+    mainWindow.editToolBar.setFonts(font);
   }
 
 }

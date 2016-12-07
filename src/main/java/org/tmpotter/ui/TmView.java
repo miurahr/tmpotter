@@ -49,13 +49,14 @@ import org.tmpotter.core.Segment;
 @SuppressWarnings("serial")
 public class TmView extends javax.swing.JPanel {
 
-  private ModelMediator modelMediator;
+  private ActionHandler actionHandler;
   BitextModel bitextModel;
 
   /**
    * Creates new form TmView
    */
-  public TmView() {
+  public TmView(ActionHandler handler) {
+    this.actionHandler = handler;
   }
 
   final void buildDisplay() {
@@ -64,22 +65,18 @@ public class TmView extends javax.swing.JPanel {
     table.setEnabled(false);
     table.addKeyListener(new KeyAdapter() {
       public final void keyPressed(final KeyEvent event) {
-        modelMediator.onTablePressed(event);
+        actionHandler.onTablePressed(event);
       }
     });
 
     table.addMouseListener(new MouseAdapter() {
       public final void mouseClicked(final MouseEvent event) {
-        modelMediator.onTableClicked();
+        actionHandler.onTableClicked();
       }
     });
     scrollPane.setColumnHeader(null);
     scrollPane.setColumnHeaderView(table.getTableHeader());
     table.setEnabled(true);
-  }
-
-  public void setModelMediator(ModelMediator mediator) {
-    this.modelMediator = mediator;
   }
 
   public final void setTableFont(final Font font) {

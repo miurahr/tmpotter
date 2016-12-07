@@ -26,6 +26,7 @@ package org.tmpotter.ui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -105,6 +106,17 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
       throw new IncompatibleClassChangeError(
           "Error invoke method handler for main menu");
     }
+  }
+
+  final void setFonts(final Font font) {
+    buttonSave.setFont(font);
+		buttonSaveAs.setFont(font);
+		buttonClose.setFont(font);
+		buttonUndo.setFont(font);
+		buttonRedo.setFont(font);
+		buttonCut.setFont(font);
+		buttonCopy.setFont(font);
+		buttonPaste.setFont(font);
   }
 
 	final void enableButtons(boolean enabled) {

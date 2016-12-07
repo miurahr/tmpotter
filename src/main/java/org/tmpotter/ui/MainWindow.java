@@ -31,7 +31,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -64,7 +63,6 @@ import org.tmpotter.util.gui.AquaAdapter;
 import static org.openide.awt.Mnemonics.setLocalizedText;
 import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
-import static org.tmpotter.util.StringUtil.restoreText;
 
 
 /**
@@ -76,22 +74,24 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
   private ActionHandler actionHandler;
-  private final AlignToolBar alignToolBar;
-  private final EditToolBar editToolBar;
 
-  protected final JToolBar toolBar = new JToolBar();
-  protected final SegmentEditor editLeftSegment = new SegmentEditor();
-  protected final SegmentEditor editRightSegment = new SegmentEditor();
-  protected final TmView tmView = new TmView();
+  private JToolBar toolBar = new JToolBar();
 
-  protected TmData tmData = new TmData();
-  protected ProjectProperties prop = new ProjectProperties();
-  protected FilterManager filterManager = new FilterManager();
+  final AlignToolBar alignToolBar;
+  final EditToolBar editToolBar;
+  final SegmentEditor editLeftSegment = new SegmentEditor();
+  final SegmentEditor editRightSegment = new SegmentEditor();
+  final TmView tmView;
+
+  private TmData tmData = new TmData();
+  private ProjectProperties prop = new ProjectProperties();
+  private FilterManager filterManager;
 
   private JXMultiSplitPane msp;
+
   //  Statusbar
-  protected JXStatusBar panelStatusBar;
-  protected JXLabel labelStatusBar;
+  private JXStatusBar panelStatusBar;
+  private JXLabel labelStatusBar;
   private JXLabel tableRows;
 
 
@@ -101,9 +101,10 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   public MainWindow() {
     initComponents();
     setActionCommands();
-    tmView.setModelMediator(this);
-    actionHandler = new ActionHandler(this, tmData);
+    filterManager = new FilterManager();
+    actionHandler = new ActionHandler(this, tmData, filterManager);
     actionHandler.setModelMediator(this);
+    tmView = new TmView(actionHandler);
     alignToolBar = new AlignToolBar(actionHandler);
     editToolBar = new EditToolBar(actionHandler);
     editLeftSegment.setModelMediator(this);
@@ -183,23 +184,8 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
   /**
    * Updates status labels.
    */
-  protected void updateStatusBar() {
+  public void updateStatusBar() {
     tableRows.setText("" + tmView.getRowCount());
-  }
-
-  public final void enableEditMenus(boolean enabled) {
-    menuItemRemoveBlankRows.setEnabled(enabled);
-    menuItemTuSplit.setEnabled(enabled);
-    menuItemOriginalJoin.setEnabled(enabled);
-    menuItemOriginalDelete.setEnabled(enabled);
-    menuItemOriginalSplit.setEnabled(enabled);
-    menuItemTranslationJoin.setEnabled(enabled);
-    menuItemTranslationDelete.setEnabled(enabled);
-    menuItemTranslationSplit.setEnabled(enabled);
-  }
-
-  public final void setUndoEnabled(boolean enabled) {
-    menuItemUndo.setEnabled(enabled);
   }
 
   public void actionPerformed(ActionEvent evt) {
@@ -235,24 +221,44 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     }
   }
 
-  public final void enableAlignToolBar(final boolean val) {
-    alignToolBar.enableButtons(val);
+  public final ProjectProperties getProjectProperties() {
+    return prop;
   }
 
-  public final void enableEditToolBar(final boolean val) {
-    editToolBar.enableButtons(val);
+  public void clearProjectProperties() {
+    prop.clear();
+  }
+
+  public final void enableAlignToolBar(final boolean val) {
+    alignToolBar.enableButtons(val);
   }
 
   public final void enableMenuItemFileSave(final boolean val) {
     menuItemFileSave.setEnabled(val);
   }
 
-  public final void enableMenuItemFileSaveAs(final boolean val) {
-    menuItemFileSaveAs.setEnabled(val);
+  private final void enableEditMenus(boolean enabled) {
+    menuItemRemoveBlankRows.setEnabled(enabled);
+    menuItemTuSplit.setEnabled(enabled);
+    menuItemOriginalJoin.setEnabled(enabled);
+    menuItemOriginalDelete.setEnabled(enabled);
+    menuItemOriginalSplit.setEnabled(enabled);
+    menuItemTranslationJoin.setEnabled(enabled);
+    menuItemTranslationDelete.setEnabled(enabled);
+    menuItemTranslationSplit.setEnabled(enabled);
   }
 
-  public final void enableMenuItemFileClose(final boolean val) {
+  public final void setUndoEnabled(boolean enabled) {
+    menuItemUndo.setEnabled(enabled);
+  }
+
+  public void enableButtonsOnOpenFile(boolean val){
+    alignToolBar.enableButtons(val);
+    editToolBar.setUndoEnabled(false);
+    menuItemFileSave.setEnabled(val);
+    menuItemFileSaveAs.setEnabled(val);
     menuItemFileClose.setEnabled(val);
+    enableEditMenus(val);
   }
 
   private void setMacProxy() {
@@ -289,42 +295,35 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         (screenSize.height - frameSize.height) / 2);
   }
 
-  public void enableButtonsOnOpenFile(){
-    alignToolBar.enableButtons(true);
-    editToolBar.setUndoEnabled(false);
-    menuItemFileSave.setEnabled(true);
-    menuItemFileSaveAs.setEnabled(true);
-    menuItemFileClose.setEnabled(true);
-  }
-
-  @Override
   public void setFilePathOriginal(File filePath) {
     prop.setFilePathOriginal(filePath);
   }
 
-  @Override
+  public String getFileNameOriginal() {
+    return prop.getFilePathOriginal().getName();
+  }
   public void setFilePathTranslation(File filePath) {
     prop.setFilePathTranslation(filePath);
   }
 
-  @Override
+  public String getFileNameTranslation() {
+    return prop.getFilePathTranslation().getName();
+  }
+
   public void setSourceLanguage(String lang) {
     prop.setSourceLanguage(lang);
   }
 
-  @Override
   public void setTargetLanguage(String lang) {
     prop.setTargetLanguage(lang);
   }
 
-  @Override
   public void setOriginalProperties(File filePath, String lang, String encoding) {
     prop.setOriginalEncoding(encoding);
     prop.setFilePathOriginal(filePath);
     tmData.stringLangOriginal = lang;
   }
 
-  @Override
   public void setTargetProperties(File filePath, String lang, String encoding) {
     prop.setTranslationEncoding(encoding);
     prop.setFilePathTranslation(filePath);
@@ -341,7 +340,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
    * the table with one line for each left and right line
    *
    */
-  protected void initializeTmView() {
+  public void initializeTmView() {
     TableColumn col;
     col = tmView.getColumnModel().getColumn(1);
     col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
@@ -379,75 +378,47 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     editRightSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 2).toString()));
   }
 
-  @Override
-  public void onTableClicked() {
-    tmData.positionTextArea = 0;
-    if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
-      tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-      tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
-    }
-    editLeftSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
-        1).toString()));
-    editRightSegment.setText(formatText(tmView.getValueAt(tmView.getSelectedRow(),
-        2).toString()));
-    tmData.setBothIndex(tmView.getSelectedRow());
-    if (tmData.isIdentTop()) {
-      alignToolBar.setTranslationJoinEnabled(false);
-      alignToolBar.setOriginalJoinEnabled(false);
-    } else {
-      alignToolBar.setTranslationJoinEnabled(true);
-      alignToolBar.setOriginalJoinEnabled(true);
-    }
-    updateTmView();
+  public final void setLeftEdit(String edit) {
+    editLeftSegment.setText(edit);
   }
 
-  @Override
-  public void onTablePressed(final KeyEvent event) {
-    int fila;
-    if (tmView.getSelectedRow() != -1) {
-      fila = tmView.getSelectedRow();
-      tmData.positionTextArea = 0;
-    } else {
-      fila = 1;
-    }
-    if (fila < tmView.getRowCount() - 1) {
-      if ((event.getKeyCode() == KeyEvent.VK_DOWN)
-          || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-        if (tmData.indexPrevious < tmData.documentOriginal.size()) {
-          tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-          tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
-        }
-        editLeftSegment.setText(formatText(tmView.getValueAt(fila + 1, 1)
-            .toString()));
-        editRightSegment.setText(formatText(tmView.getValueAt(fila + 1, 2)
-            .toString()));
-        tmData.indexCurrent = fila + 1;
-      } else if ((event.getKeyCode() == KeyEvent.VK_UP)
-          || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
-        tmData.indexCurrent = fila - 1;
-        if (fila == 0) {
-          fila = 1;
-          tmData.indexCurrent = 0;
-        }
-        if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
-          tmData.setOriginalDocumentAnt(restoreText(editLeftSegment.getText()));
-          tmData.setTranslationDocumentAnt(restoreText(editRightSegment.getText()));
-        }
-        editLeftSegment.setText(formatText(tmView.getValueAt(fila - 1, 1)
-            .toString()));
-        editRightSegment.setText(formatText(tmView.getValueAt(fila - 1, 2)
-            .toString()));
-      }
-      if (tmData.isIdentTop()) {
-        alignToolBar.setTranslationJoinEnabled(false);
-        alignToolBar.setOriginalJoinEnabled(false);
-      } else {
-        alignToolBar.setTranslationJoinEnabled(true);
-        alignToolBar.setOriginalJoinEnabled(true);
-      }
-      tmData.indexPrevious = tmData.indexCurrent;
-    }
-    updateTmView();
+  public final void setRightEdit(String edit) {
+    editRightSegment.setText(edit);
+  }
+
+  public String getLeftEdit() {
+    return editLeftSegment.getText();
+  }
+
+  public String getRightEdit() {
+    return editRightSegment.getText();
+  }
+
+  public String getLeftSegment(int index) {
+    return tmView.getValueAt(index, 1)
+            .toString();
+  }
+
+  public String getRightSegment(int index) {
+    return tmView.getValueAt(index, 2)
+            .toString();
+  }
+
+  public int getTmViewRows() {
+    return tmView.getRowCount();
+  }
+
+  public int getTmViewSelectedRow() {
+    return tmView.getSelectedRow();
+  }
+
+  public int getTmViewSelectedColumn() {
+    return tmView.getSelectedColumn();
+  }
+
+  public void setJoinEnabled(boolean val) {
+        alignToolBar.setTranslationJoinEnabled(val);
+        alignToolBar.setOriginalJoinEnabled(val);
   }
 
   /**
@@ -455,57 +426,50 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
    *
    * @param position indicate where in int
    */
-  @Override
   public final void setTextAreaPosition(int position) {
     tmData.positionTextArea = position;
   }
 
   //  WindowListener Overrides
-  @Override
   public final void windowActivated(final WindowEvent evt) {
   }
 
-  @Override
   public final void windowClosed(final WindowEvent evt) {
   }
 
-  @Override
   public final void windowClosing(final WindowEvent evt) {
     if (evt.getSource() == this) {
       actionHandler.menuItemFileQuitActionPerformed();
     }
   }
 
-  @Override
   public final void windowDeactivated(final WindowEvent evt) {
   }
 
-  @Override
   public final void windowDeiconified(final WindowEvent evt) {
   }
 
-  @Override
   public final void windowIconified(final WindowEvent evt) {
   }
 
-  @Override
   public final void windowOpened(final WindowEvent evt) {
   }
 
-  @Override
   public final void tmDataClear() {
     tmData.clear();
   }
 
-  @Override
   public final void tmViewClear() {
     tmView.clear();
   }
 
-  @Override
   public final void editSegmentClear() {
     editLeftSegment.setText("");
     editRightSegment.setText("");
+  }
+
+  public final void buildDisplay() {
+    tmView.buildDisplay();
   }
 
   /**
