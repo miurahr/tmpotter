@@ -57,6 +57,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.util.Utilities;
+import org.tmpotter.util.gui.NegativeDefaultButtonJOptionPane;
 
 
 /**
@@ -86,10 +87,6 @@ final class ActionHandler {
   public boolean displayAbout() {
     menuItemHelpAboutActionPerformed();
     return true;
-  }
-
-  public void menuItemHelpAboutActionPerformed() {
-    new About(parent, true).setVisible(true);
   }
 
 
@@ -352,15 +349,6 @@ final class ActionHandler {
     }
   }
 
-  public void menuItemFileSaveAsActionPerformed() {
-    saveProject();
-  }
-
-  //  ToDo: implement proper functionality; not used currently
-  public void menuItemFileSaveActionPerformed() {
-    saveProject();
-  }
-
   /**
    * Necessary capabilities to store the bitext.
    *
@@ -473,7 +461,7 @@ final class ActionHandler {
    *
    * All action entry points named with +ActionPerformed().
    */
-  public void menuItemFileOpenActionPerformed() {
+  public void onFileOpen() {
     final OpenTmx dlg = new OpenTmx(parent, true);
     dlg.setFilePath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
@@ -485,15 +473,32 @@ final class ActionHandler {
     }
   }
 
-  public void menuItemFileImportActionPerformed() {
+  public void onNewImport() {
      final ImportWizard dlg = new ImportWizard(parent, true);
-    //dlg.setPath(RuntimePreferences.getUserHome());
+    //dlg.setFilePath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
     dlg.dispose();
     if (dlg.isFinished()) {
 	    doImport(dlg.getPref());
     }
+  }
+  
+  public void buttonSaveActionPerformed() {
+    saveProject();
+  }
+
+  public void buttonSaveAsActionPerformed() {
+    saveProject();
+  }
+ 
+  public void menuItemFileSaveAsActionPerformed() {
+    saveProject();
+  }
+
+  //  ToDo: implement proper functionality; not used currently
+  public void menuItemFileSaveActionPerformed() {
+    saveProject();
   }
 
   /**
@@ -507,13 +512,29 @@ final class ActionHandler {
     modelMediator.enableButtonsOnOpenFile(false);
   }
 
-  public void menuItemFileQuitActionPerformed() {
+  public void buttonCloseActionPerformed() {
+    menuItemFileCloseActionPerformed();
+  }
+
+  private void realCloseApplication() {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         parent.dispose();
       }
     });
+  }
+
+  public void menuItemFileQuitActionPerformed() {
+    int result = NegativeDefaultButtonJOptionPane.showConfirmDialog(null,
+        "Do you want to quit application?", "Warning", JOptionPane.YES_NO_OPTION);
+    if (result == JOptionPane.YES_OPTION) {
+      realCloseApplication();
+    }
+  }
+
+  public void buttonExitActionPerformed() {
+    menuItemFileQuitActionPerformed();
   }
 
   public void menuItemUndoActionPerformed() {
@@ -523,6 +544,22 @@ final class ActionHandler {
 
   public void menuItemRedoActionPerformed() {
     // FIXME: implement me.
+  }
+
+  public void buttonNewActionPerformed() {
+    onNewImport();
+  }
+
+  public void menuItemFileImportActionPerformed() {
+    onNewImport();
+  }
+
+  public void menuItemFileOpenActionPerformed() {
+    onFileOpen();
+  }
+
+  public void buttonOpenActionPerformed() {
+    onFileOpen();
   }
 
   public void menuItemOriginalDeleteActionPerformed() {
@@ -591,6 +628,10 @@ final class ActionHandler {
 
   public void menuItemSettingsActionPerformed() {
     // FIXME: Implement me.
+  }
+
+  public void menuItemHelpAboutActionPerformed() {
+    new About(parent, true).setVisible(true);
   }
 
 }
