@@ -49,6 +49,7 @@ public class ImportWizardController {
 	private final void registerPanels() {
 		wizard.registerWizardPanel(ImportWizardPOFile.id, new ImportWizardPOFile(this, pref));
 		wizard.registerWizardPanel(ImportWizardBiTextFile.id, new ImportWizardBiTextFile(this, pref));
+		wizard.registerWizardPanel(ImportWizardTmxFile.id, new ImportWizardTmxFile(this, pref));
 		wizard.registerWizardPanel(ImportWizardSelectTypePanel.id, new ImportWizardSelectTypePanel());
 	}
 

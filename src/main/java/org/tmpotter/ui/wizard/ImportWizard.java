@@ -31,7 +31,8 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
 
 
 /**
- *
+ * Import Wizard dialog.
+ * 
  * @author Hiroshi Miura
  */
 public class ImportWizard extends javax.swing.JDialog {

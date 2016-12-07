@@ -65,8 +65,8 @@
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="0"/>
-        <Property name="rows" type="int" value="1"/>
+        <Property name="columns" type="int" value="2"/>
+        <Property name="rows" type="int" value="2"/>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JRadioButton" name="radioButtonPO">
@@ -83,6 +83,22 @@
         <Component class="javax.swing.JLabel" name="labelDescPO">
           <Properties>
             <Property name="text" type="java.lang.String" value="Load PO message catalog file."/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="radioButtonTmx">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="buttonGroup"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="TMX file"/>
+            <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="ImportWizardTmxFile.id" type="code"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="labelDescTmx">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Load TMX file."/>
           </Properties>
         </Component>
       </SubComponents>

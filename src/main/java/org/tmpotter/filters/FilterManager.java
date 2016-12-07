@@ -52,6 +52,7 @@ public class FilterManager {
     filterList = new ArrayList<>();
     filterList.add(new BiTextFilter());
     filterList.add(new PoFilter());
+    filterList.add(new TmxFilter());
   }
   
   /**

@@ -78,6 +78,8 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
                 panelSingle = new javax.swing.JPanel();
                 radioButtonPO = new javax.swing.JRadioButton();
                 labelDescPO = new javax.swing.JLabel();
+                radioButtonTmx = new javax.swing.JRadioButton();
+                labelDescTmx = new javax.swing.JLabel();
 
                 setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
@@ -96,7 +98,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
                 add(panelBiText);
 
                 panelSingle.setBorder(javax.swing.BorderFactory.createTitledBorder("Single file import"));
-                panelSingle.setLayout(new java.awt.GridLayout(1, 0));
+                panelSingle.setLayout(new java.awt.GridLayout(2, 2));
 
                 buttonGroup.add(radioButtonPO);
                 radioButtonPO.setText("PO file");
@@ -106,6 +108,14 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
                 labelDescPO.setText("Load PO message catalog file.");
                 panelSingle.add(labelDescPO);
 
+                buttonGroup.add(radioButtonTmx);
+                radioButtonTmx.setText("TMX file");
+                radioButtonTmx.setActionCommand(ImportWizardTmxFile.id);
+                panelSingle.add(radioButtonTmx);
+
+                labelDescTmx.setText("Load TMX file.");
+                panelSingle.add(labelDescTmx);
+
                 add(panelSingle);
         }// </editor-fold>//GEN-END:initComponents
 
@@ -114,9 +124,11 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
         private javax.swing.ButtonGroup buttonGroup;
         private javax.swing.JLabel labelDescPO;
         private javax.swing.JLabel labelDescPlain;
+        private javax.swing.JLabel labelDescTmx;
         private javax.swing.JPanel panelBiText;
         private javax.swing.JPanel panelSingle;
         private javax.swing.JRadioButton radioButtonPO;
         private javax.swing.JRadioButton radioButtonPlain;
+        private javax.swing.JRadioButton radioButtonTmx;
         // End of variables declaration//GEN-END:variables
 }
