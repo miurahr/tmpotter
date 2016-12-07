@@ -49,7 +49,7 @@ import static org.tmpotter.util.Localization.getString;
  * @author Hiroshi Miura
  */
 @SuppressWarnings("serial")
-public class OpenTmx extends javax.swing.JDialog implements ActionListener {
+public class OpenProject extends javax.swing.JDialog implements ActionListener {
 
   private File filePath;
   private boolean closed;
@@ -63,7 +63,7 @@ public class OpenTmx extends javax.swing.JDialog implements ActionListener {
   /**
    * Creates new form OpenTmx
    */
-  public OpenTmx(java.awt.Frame parent, boolean modal) {
+  public OpenProject(java.awt.Frame parent, boolean modal) {
     super(parent, modal);
     initComponents();
     addListener();
@@ -105,7 +105,7 @@ if (filePath == null) {
     }
     fc.setCurrentDirectory(filePath);
     FileNameExtensionFilter filter = new FileNameExtensionFilter(
-        "TMX File", "tmx");
+        "Project File(.tmpx)", "tmpx");
     fc.setFileFilter(filter);
     fc.setMultiSelectionEnabled(false);
     final int returnVal = fc.showOpenDialog(jPanel1);
@@ -114,7 +114,7 @@ if (filePath == null) {
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       filePath = fc.getSelectedFile();
 
-      if (fc.getName(filePath).endsWith(".tmx")
+      if (fc.getName(filePath).endsWith(".tmpx")
           && filePath.exists()) {
         originalDoc = fc.getName(filePath);
         fieldOpenTmxFile.setText(filePath.getPath());
@@ -254,7 +254,7 @@ if (filePath == null) {
                                 .addGap(15, 15, 15))
                 );
 
-                labelTmxFile.setText(bundle.getString("LBL.TMX.FILE")); // NOI18N
+                labelTmxFile.setText(bundle.getString("LBL.PROJECT.FILE")); // NOI18N
 
                 buttonSelectFile.setText("Select File");
                 setLocalizedText(buttonSelectFile, getString("BTN.BROWSE.TMX"));
@@ -293,7 +293,7 @@ if (filePath == null) {
                                                 .addComponent(fieldOpenTmxFile, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonSelectFile)
-                                .addContainerGap(15, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 jPanel2Layout.setVerticalGroup(
                         jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,20 +349,21 @@ if (filePath == null) {
         }
       }
     } catch (ClassNotFoundException ex) {
-      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(OpenProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (InstantiationException ex) {
-      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(OpenProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (IllegalAccessException ex) {
-      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(OpenProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-      java.util.logging.Logger.getLogger(OpenTmx.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(OpenProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
     //</editor-fold>
 
     /* Create and display the dialog */
     java.awt.EventQueue.invokeLater(new Runnable() {
       public void run() {
-        OpenTmx dialog = new OpenTmx(new javax.swing.JFrame(), true);
+        OpenProject dialog = new OpenProject(new javax.swing.JFrame(), true);
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
           @Override
           public void windowClosing(java.awt.event.WindowEvent e) {

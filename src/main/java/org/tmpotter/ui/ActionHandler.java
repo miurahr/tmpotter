@@ -41,9 +41,8 @@ import org.tmpotter.core.TmxWriter;
 import org.tmpotter.filters.FilterManager;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
-import org.tmpotter.ui.dialogs.Encodings;
 import org.tmpotter.ui.wizard.ImportWizard;
-import org.tmpotter.ui.dialogs.OpenTmx;
+import org.tmpotter.ui.dialogs.OpenProject;
 import org.tmpotter.preferences.Preferences;
 import org.tmpotter.preferences.RuntimePreferences;
 
@@ -366,10 +365,10 @@ final class ActionHandler {
       String outFileNameBase = outFileName.substring(0, outFileName.length() - 4);
       boolean save = false;
       boolean cancel = false;
-      File outFile = new File(outFileNameBase.concat(tmData.stringLangTranslation + ".tmx"));
+      File outFile = new File(outFileNameBase.concat(tmData.stringLangTranslation + ".tmpx"));
       while (!save && !cancel) {
         final JFileChooser fc = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TMX File", "tmx");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TMX File", "tmpx");
         fc.setFileFilter(filter);
         boolean nameOfUser = false;
         while (!nameOfUser) {
@@ -413,14 +412,6 @@ final class ActionHandler {
         }
       }
       String encoding = "UTF-8";
-      if (save) {
-        Encodings dlgEnc = new Encodings(parent, true);
-        dlgEnc.setVisible(true);
-        if (!dlgEnc.isClosed()) {
-          encoding = dlgEnc.getComboBoxEncoding();
-          dlgEnc.dispose();
-        }
-      }
       TmxWriter.writeTmxFileBody(outFile, tmData.documentOriginal,
           tmData.stringLangOriginal, tmData.documentTranslation,
           tmData.stringLangTranslation, encoding);
@@ -462,7 +453,7 @@ final class ActionHandler {
    * All action entry points named with +ActionPerformed().
    */
   public void onFileOpen() {
-    final OpenTmx dlg = new OpenTmx(parent, true);
+    final OpenProject dlg = new OpenProject(parent, true);
     dlg.setFilePath(RuntimePreferences.getUserHome());
     dlg.setModal(true);
     dlg.setVisible(true);
