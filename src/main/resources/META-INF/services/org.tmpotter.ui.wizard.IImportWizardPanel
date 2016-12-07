@@ -1,0 +1,3 @@
+org.tmpotter.filters.pofile.ImportWizardPOFile
+org.tmpotter.filters.bitext.ImportWizardBiTextFile
+org.tmpotter.filters.tmx.ImportWizardTmxFile

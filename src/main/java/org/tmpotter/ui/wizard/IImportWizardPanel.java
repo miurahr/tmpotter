@@ -31,8 +31,12 @@ import javax.swing.JPanel;
  * @author Hiroshi Miura
  */
 public interface IImportWizardPanel {
+  void init(ImportWizardController controller, ImportPreference pref);
 	String getId();
+	boolean isCombinedFormat();
 	JPanel getPanel();
+	String getName();
+	String getDesc();
 	String getNextFinishCommand();
 	String getBackCommand();
 	void updatePref();

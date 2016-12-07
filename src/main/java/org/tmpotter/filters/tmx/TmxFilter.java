@@ -21,11 +21,14 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.filters;
+package org.tmpotter.filters.tmx;
 
 import java.io.File;
 import java.util.Map;
 
+import org.tmpotter.filters.FilterContext;
+import org.tmpotter.filters.IFilter;
+import org.tmpotter.filters.IParseCallback;
 import org.tmpotter.util.TmxReader2;
 
 /**
@@ -34,7 +37,7 @@ import org.tmpotter.util.TmxReader2;
  */
 public class TmxFilter implements IFilter {
   private TmxFilter self;
-  
+
   public TmxFilter () {
 	  self = this;
   }

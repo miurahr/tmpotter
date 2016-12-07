@@ -1,0 +1,3 @@
+org.tmpotter.filters.pofile.PoFilter
+org.tmpotter.filters.bitext.BiTextFilter
+org.tmpotter.filters.tmx.TmxFilter

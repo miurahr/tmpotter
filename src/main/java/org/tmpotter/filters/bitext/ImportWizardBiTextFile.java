@@ -21,7 +21,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.ui.wizard;
+package org.tmpotter.filters.bitext;
 
 import java.io.File;
 import java.util.Locale;
@@ -30,6 +30,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static org.openide.awt.Mnemonics.setLocalizedText;
+
+import org.tmpotter.ui.wizard.IImportWizardPanel;
+import org.tmpotter.ui.wizard.ImportPreference;
+import org.tmpotter.ui.wizard.ImportWizardController;
+import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Localization;
 import static org.tmpotter.util.Localization.getString;
@@ -45,11 +50,14 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
 	private final String[] idiom = Localization.getLanguageList();
 	private ImportWizardController wizardController;
 	private ImportPreference pref;
-	
+
 	/**
 	 * Creates new form ImportWizardBiTextFile.
 	 */
-	public ImportWizardBiTextFile(final ImportWizardController controller,
+	public ImportWizardBiTextFile() {
+	}
+
+	public void init(final ImportWizardController controller,
 	    final ImportPreference preference) {
 		wizardController = controller;
 		pref = preference;
@@ -61,10 +69,22 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
 		return id;
 	}
 
+	public boolean isCombinedFormat() {
+		return false;
+	}
+
 	public JPanel getPanel() {
 		return this;
 	}
-	
+
+	public String getName() {
+		return "Bi-text file";
+	}
+
+	public String getDesc() {
+		return "Bi-text file.";
+	}
+
 	public void updatePref() {
 		pref.setCurrentPath(new File(getOriginalFile()));
 		pref.setEncoding(getOriginalEncoding());
