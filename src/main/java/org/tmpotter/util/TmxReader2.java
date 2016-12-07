@@ -29,6 +29,8 @@
 package org.tmpotter.util;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -45,8 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.namespace.QName;
@@ -61,10 +61,6 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import org.tmpotter.util.InlineTagHandler;
-import org.tmpotter.util.KvProp;
-import org.tmpotter.util.Language;
-import org.tmpotter.util.StringUtil;
 
 import static org.tmpotter.util.Localization.getString;
 
@@ -104,7 +100,7 @@ public class TmxReader2 {
   private boolean isOmegaT = false;
   private boolean extTmxLevel2;
   private boolean useSlash;
-  private static final Logger LOG = Logger.getLogger(TmxReader2.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(TmxReader2.class);
 
   ParsedTu currentTu = new ParsedTu();
 
@@ -121,12 +117,7 @@ public class TmxReader2 {
   public TmxReader2() {
     factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
-    factory.setXMLReporter(new XMLReporter() {
-      public void report(String message, String errorType, Object info, Location location)
-              throws XMLStreamException {
-        LOG.log(Level.INFO, "{0}:{1}", new Object[]{message, info});
-      }
-    });
+    factory.setXMLReporter((message, errorType, info, location) -> LOGGER.info(String.format("{0}:{1}", message, info)));
     factory.setXMLResolver(TMX_DTD_RESOLVER_2);
     dateFormat1 = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'", Locale.ENGLISH);
     dateFormat1.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -156,7 +147,7 @@ public class TmxReader2 {
     this.useSlash = useSlash;
 
     // log the parsing attempt
-    LOG.info(String.format("%s: %s", getString("TMXR.INFO.READING_FILE"),
+    LOGGER.info(String.format("%s: %s", getString("TMXR.INFO.READING_FILE"),
             file.getAbsolutePath()));
 
     boolean allFound = true;
@@ -193,9 +184,9 @@ public class TmxReader2 {
     }
 
     if (!allFound) {
-      LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.WARNING.SOURCE_NOT_FOUND", "");
+      LOGGER.info(String.format("%s:%s %s", "TMXReader2", "readTMX", "TMXR.WARNING.SOURCE_NOT_FOUND"));
     }
-    LOG.logrb(Level.INFO, "TMXReader2", "readTMX", "TMXR.INFO.READING_COMPLETE", "");
+    LOGGER.info(String.format("%s:%s %s", "TMXReader2", "readTMX", "TMXR.INFO.READING_COMPLETE"));
   }
 
   protected void parseHeader(StartElement element, final Language sourceLanguage) {
@@ -203,22 +194,22 @@ public class TmxReader2 {
     isOmegaT = CT_APP.equals(getAttributeValue(element, "creationtool"));
 
     // log some details
-    LOG.info(String.format("%s %s",
+    LOGGER.info(String.format("%s %s",
             getString("TMXR.INFO.CREATION_TOOL"), getAttributeValue(element,
                     "creationtool")));
-    LOG.info(String.format("%s %s",
+    LOGGER.info(String.format("%s %s",
             getString("TMXR.INFO.CREATION_TOOL_VERSION"), getAttributeValue(element,
                     "creationtoolversion")));
-    LOG.info(String.format("%s %s",
+    LOGGER.info(String.format("%s %s",
             getString("TMXR.INFO.SEG_TYPE"), getAttributeValue(element, "segtype")));
-    LOG.info(String.format("%s %s",
+    LOGGER.info(String.format("%s %s",
             getString("TMXR.INFO.SOURCE_LANG"), getAttributeValue(element, "srclang")));
 
     // give a warning if the TMX source language is
     // different from the project source language
     String tmxSourceLanguage = getAttributeValue(element, "srclang");
     if (!tmxSourceLanguage.equalsIgnoreCase(sourceLanguage.getLanguage())) {
-      LOG.info(String.format("%s %s %s",
+      LOGGER.info(String.format("%s %s %s",
               getString("TMXR.WARNING.INCORRECT_SOURCE_LANG"), tmxSourceLanguage,
               sourceLanguage));
       // TODO: Override source language by header's one
@@ -508,7 +499,7 @@ public class TmxReader2 {
           }
           if (tagN == null) {
             // check error of TMX reading
-            LOG.info(
+            LOGGER.info(
                     getString("TMX.ERROR.READING_LEVEL2"));
             segContent.setLength(0);
             // wait for end seg
