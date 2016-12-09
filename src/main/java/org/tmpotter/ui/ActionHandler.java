@@ -380,10 +380,9 @@ final class ActionHandler {
           int returnVal;
           returnVal = fc.showSaveDialog(parent);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
-            returnVal = 1;
             outFile = fc.getSelectedFile();
-            if (!outFile.getName().endsWith(".tmx")) {
-              outFileName = outFile.getName().concat(".tmx");
+            if (!outFile.getName().endsWith(".tmpx")) {
+              outFileName = outFile.getName().concat(".tmpx");
               outFile = new File(outFileName);
             }
             nameOfUser = true;
