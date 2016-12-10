@@ -23,23 +23,21 @@
 
 package org.tmpotter.filters.pofile;
 
-
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import static org.tmpotter.util.Localization.getString;
 
 import org.tmpotter.ui.wizard.IImportWizardPanel;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizardController;
 import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
 import org.tmpotter.util.AppConstants;
-
-import static org.openide.awt.Mnemonics.setLocalizedText;
 import org.tmpotter.util.Localization;
 
-import static org.tmpotter.util.Localization.getString;
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 /**
@@ -48,267 +46,269 @@ import static org.tmpotter.util.Localization.getString;
  * @author Hiroshi Miura
  */
 public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWizardPanel {
-	public static final String id = "PoFilter";
+    public static final String id = "PoFilter";
 
-	private final String[] idiom = Localization.getLanguageList();
-	private ImportWizardController wizardController;
-	private ImportPreference pref;
+    private final String[] idiom = Localization.getLanguageList();
+    private ImportWizardController wizardController;
+    private ImportPreference pref;
 
-	/**
-	 * Creates new form ImportWizardPOFile
-	 */
-	public ImportWizardPOFile() {
-	}
+    /**
+     * Creates new form ImportWizardPOFile
+     */
+    public ImportWizardPOFile() {
+    }
 
-	public void init(final ImportWizardController controller,
-	    ImportPreference pref) {
-		wizardController = controller;
-		this.pref = pref;
-		initComponents();
-		wizardController.setButtonNextEnabled(false);
-	}
-	
-	public String getId() {
-		return id;
-	}
+    public void init(final ImportWizardController controller,
+                     ImportPreference pref) {
+        wizardController = controller;
+        this.pref = pref;
+        initComponents();
+        wizardController.setButtonNextEnabled(false);
+    }
 
-	public boolean isCombinedFormat() {
-		return true;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public JPanel getPanel() {
-		return this;
-	}
+    public boolean isCombinedFormat() {
+        return true;
+    }
 
-	public String getName() {
-		return "PO file";
-	}
+    public JPanel getPanel() {
+        return this;
+    }
 
-	public String getDesc() {
-		return "PO file.";
-	}
-	public final File getPath() {
-		return new File(fieldImportFile.getText());
-	}
+    public String getName() {
+        return "PO file";
+    }
 
-	public final void setPath(final File filePath) {
-		fieldImportFile.setText(filePath.getName());
-	}
+    public String getDesc() {
+        return "PO file.";
+    }
 
-	public final String getSourceLocale() {
-		return Localization.getLanguageCode(comboSourceLang.getSelectedIndex());
-	}
-	
-	public final void setSourceLocale(String locale) {
-		String[] codes = Localization.getLanguageList();
-		comboSourceLang.setSelectedItem(locale);
-		// FIXME
-	}
+    public final File getPath() {
+        return new File(fieldImportFile.getText());
+    }
 
-	public final String getTargetLocale() {
-		return  Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
-	}
-	
-	public final void setTargetLocale(String locale) {
-		String[] codes = Localization.getLanguageList();
-		comboTranslationLang.setSelectedItem(locale);
-		// FIXME
-	}
+    public final void setPath(final File filePath) {
+        fieldImportFile.setText(filePath.getName());
+    }
 
-	public final String getOriginalEncoding() {
-		return (String) comboEncoding.getSelectedItem();
-	}
+    public final String getSourceLocale() {
+        return Localization.getLanguageCode(comboSourceLang.getSelectedIndex());
+    }
 
-	public final void setOriginalEncoding(String encoding) {
-		comboEncoding.setSelectedItem(encoding);
-	}
+    public final void setSourceLocale(String locale) {
+        String[] codes = Localization.getLanguageList();
+        comboSourceLang.setSelectedItem(locale);
+        // FIXME
+    }
 
-	public final String getOriginalFile() {
-		return fieldImportFile.getText();
-	}
-	
-	public final void setOriginalFile(String file) {
-		fieldImportFile.setText(file);
-	}
+    public final String getTargetLocale() {
+        return Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
+    }
 
-	public final String getTranslationFile() {
-		return null;
-	}
-	
-	public void setTranslationFile(String file) {
-	}
-	
-	public final String getTranslationEncoding() {
-		return null;
-	}
-	
-	public void setTranslationEncoding(String file) {
-	}
-	
-	public String getBackCommand() {
-		return ImportWizardSelectTypePanel.id;
-	}
+    public final void setTargetLocale(String locale) {
+        String[] codes = Localization.getLanguageList();
+        comboTranslationLang.setSelectedItem(locale);
+        // FIXME
+    }
 
-	public String getNextFinishCommand() {
-		return "finish";
-	}
+    public final String getOriginalEncoding() {
+        return (String) comboEncoding.getSelectedItem();
+    }
 
-	public void updatePref() {
-		pref.setFilter(id);
-		pref.setOriginalFilePath(new File(getOriginalFile()));
-		pref.setTranslationFilePath(new File(getOriginalFile()));
-		pref.setEncoding(getOriginalEncoding());
-		pref.setOriginalLang(getSourceLocale());
-		pref.setTranslationLang(getTargetLocale());
-	}
+    public final void setOriginalEncoding(String encoding) {
+        comboEncoding.setSelectedItem(encoding);
+    }
 
-	public void onImportFile(final IImportWizardPanel panel) {
-		final JFileChooser fc = new JFileChooser();
-		fc.setCurrentDirectory(pref.getCurrentPath());
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		    "PO File", "po");
-		fc.setFileFilter(filter);
-		fc.setMultiSelectionEnabled(false);
-		final int returnVal = fc.showOpenDialog(this);
-		pref.setCurrentPath(fc.getCurrentDirectory());
+    public final String getOriginalFile() {
+        return fieldImportFile.getText();
+    }
 
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File filePath = fc.getSelectedFile();
-			if (fc.getName(filePath).endsWith(".po") && filePath.exists()) {
-				setOriginalFile(filePath.getPath());
-				pref.setOriginalFilePath(filePath);
-				wizardController.setButtonNextEnabled(true);
-			} else {
-				JOptionPane.showMessageDialog(this,
-				    getString("MSG.ERROR.FILE_NOTFOUND"),
-				    getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
-				setOriginalFile("");
-			}
-		}
-	}
-	/**
-	 * This method is called from within the constructor to initialize the form. WARNING: Do NOT
-	 * modify this code. The content of this method is always regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
-        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-        private void initComponents() {
+    public final void setOriginalFile(String file) {
+        fieldImportFile.setText(file);
+    }
 
-                labelImportFile = new javax.swing.JLabel();
-                fieldImportFile = new javax.swing.JTextField();
-                labelEncoding = new javax.swing.JLabel();
-                comboEncoding = new javax.swing.JComboBox<>();
-                labelSourceLanguage = new javax.swing.JLabel();
-                comboSourceLang = new javax.swing.JComboBox<>();
-                labelTargetLanguage = new javax.swing.JLabel();
-                comboTranslationLang = new javax.swing.JComboBox<>();
-                buttonImportFile = new javax.swing.JButton();
-                jLabel1 = new javax.swing.JLabel();
+    public final String getTranslationFile() {
+        return null;
+    }
 
-                setMaximumSize(new java.awt.Dimension(800, 600));
-                setMinimumSize(new java.awt.Dimension(400, 300));
-                setPreferredSize(new java.awt.Dimension(400, 300));
+    public void setTranslationFile(String file) {
+    }
 
-                labelImportFile.setText(getString("LBL.IMPORT.FILE"
-                ));
+    public final String getTranslationEncoding() {
+        return null;
+    }
 
-                java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/tmpotter/Bundle"); // NOI18N
-                labelEncoding.setText(bundle.getString("LBL.ENCODING")); // NOI18N
+    public void setTranslationEncoding(String file) {
+    }
 
-                comboEncoding.setModel(new javax.swing.DefaultComboBoxModel(AppConstants.straEncodings.toArray()));
+    public String getBackCommand() {
+        return ImportWizardSelectTypePanel.id;
+    }
 
-                labelSourceLanguage.setText(bundle.getString("LBL.SOURCE.LANG")); // NOI18N
+    public String getNextFinishCommand() {
+        return "finish";
+    }
 
-                comboSourceLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
-                comboSourceLang.setToolTipText(getString("CB.LANG.SOURCE.TOOLTIP"));
+    public void updatePref() {
+        pref.setFilter(id);
+        pref.setOriginalFilePath(new File(getOriginalFile()));
+        pref.setTranslationFilePath(new File(getOriginalFile()));
+        pref.setEncoding(getOriginalEncoding());
+        pref.setOriginalLang(getSourceLocale());
+        pref.setTranslationLang(getTargetLocale());
+    }
 
-                labelTargetLanguage.setText(bundle.getString("LBL.TARGET.LANG")); // NOI18N
+    public void onImportFile(final IImportWizardPanel panel) {
+        final JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(pref.getCurrentPath());
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "PO File", "po");
+        fc.setFileFilter(filter);
+        fc.setMultiSelectionEnabled(false);
+        final int returnVal = fc.showOpenDialog(this);
+        pref.setCurrentPath(fc.getCurrentDirectory());
 
-                comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File filePath = fc.getSelectedFile();
+            if (fc.getName(filePath).endsWith(".po") && filePath.exists()) {
+                setOriginalFile(filePath.getPath());
+                pref.setOriginalFilePath(filePath);
+                wizardController.setButtonNextEnabled(true);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    getString("MSG.ERROR.FILE_NOTFOUND"),
+                    getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+                setOriginalFile("");
+            }
+        }
+    }
 
-                buttonImportFile.setText("Select");
-                buttonImportFile.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                buttonImportFileActionPerformed(evt);
-                        }
-                });
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+     * modify this code. The content of this method is always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-                jLabel1.setText("Load PO File...");
+        labelImportFile = new javax.swing.JLabel();
+        fieldImportFile = new javax.swing.JTextField();
+        labelEncoding = new javax.swing.JLabel();
+        comboEncoding = new javax.swing.JComboBox<>();
+        labelSourceLanguage = new javax.swing.JLabel();
+        comboSourceLang = new javax.swing.JComboBox<>();
+        labelTargetLanguage = new javax.swing.JLabel();
+        comboTranslationLang = new javax.swing.JComboBox<>();
+        buttonImportFile = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-                this.setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        setMaximumSize(new java.awt.Dimension(800, 600));
+        setMinimumSize(new java.awt.Dimension(400, 300));
+        setPreferredSize(new java.awt.Dimension(400, 300));
+
+        labelImportFile.setText(getString("LBL.IMPORT.FILE"
+        ));
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/tmpotter/Bundle"); // NOI18N
+        labelEncoding.setText(bundle.getString("LBL.ENCODING")); // NOI18N
+
+        comboEncoding.setModel(new javax.swing.DefaultComboBoxModel(AppConstants.straEncodings.toArray()));
+
+        labelSourceLanguage.setText(bundle.getString("LBL.SOURCE.LANG")); // NOI18N
+
+        comboSourceLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
+        comboSourceLang.setToolTipText(getString("CB.LANG.SOURCE.TOOLTIP"));
+
+        labelTargetLanguage.setText(bundle.getString("LBL.TARGET.LANG")); // NOI18N
+
+        comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
+
+        buttonImportFile.setText("Select");
+        buttonImportFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonImportFileActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Load PO File...");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(labelImportFile))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(41, 41, 41)
-                                                .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(buttonImportFile))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(25, 25, 25)
-                                                .addComponent(jLabel1))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(labelTargetLanguage)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(labelEncoding)
-                                                                        .addComponent(labelSourceLanguage))
-                                                                .addGap(62, 62, 62)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                        .addComponent(comboTranslationLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                        .addComponent(comboSourceLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                                .addContainerGap(53, Short.MAX_VALUE))
-                );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addContainerGap()
+                            .addComponent(labelImportFile))
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabel1)
-                                .addGap(27, 27, 27)
-                                .addComponent(labelImportFile)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(buttonImportFile))
-                                .addGap(34, 34, 34)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addGap(41, 41, 41)
+                            .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(buttonImportFile))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(25, 25, 25)
+                            .addComponent(jLabel1))
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labelTargetLanguage)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(labelEncoding)
-                                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(labelSourceLanguage))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(labelTargetLanguage)
-                                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(64, Short.MAX_VALUE))
-                );
-        }// </editor-fold>//GEN-END:initComponents
+                                    .addGap(62, 62, 62)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(comboTranslationLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(comboSourceLang, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addContainerGap(53, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(27, 27, 27)
+                    .addComponent(jLabel1)
+                    .addGap(27, 27, 27)
+                    .addComponent(labelImportFile)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fieldImportFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonImportFile))
+                    .addGap(34, 34, 34)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelEncoding)
+                        .addComponent(comboEncoding, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelSourceLanguage))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelTargetLanguage)
+                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(64, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
 
-        private void buttonImportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonImportFileActionPerformed
-		onImportFile(this);
-        }//GEN-LAST:event_buttonImportFileActionPerformed
+    private void buttonImportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonImportFileActionPerformed
+        onImportFile(this);
+    }//GEN-LAST:event_buttonImportFileActionPerformed
 
 
-        // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JButton buttonImportFile;
-        private javax.swing.JComboBox<String> comboEncoding;
-        private javax.swing.JComboBox<String> comboSourceLang;
-        private javax.swing.JComboBox<String> comboTranslationLang;
-        private javax.swing.JTextField fieldImportFile;
-        private javax.swing.JLabel jLabel1;
-        private javax.swing.JLabel labelEncoding;
-        private javax.swing.JLabel labelImportFile;
-        private javax.swing.JLabel labelSourceLanguage;
-        private javax.swing.JLabel labelTargetLanguage;
-        // End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonImportFile;
+    private javax.swing.JComboBox<String> comboEncoding;
+    private javax.swing.JComboBox<String> comboSourceLang;
+    private javax.swing.JComboBox<String> comboTranslationLang;
+    private javax.swing.JTextField fieldImportFile;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelEncoding;
+    private javax.swing.JLabel labelImportFile;
+    private javax.swing.JLabel labelSourceLanguage;
+    private javax.swing.JLabel labelTargetLanguage;
+    // End of variables declaration//GEN-END:variables
 }

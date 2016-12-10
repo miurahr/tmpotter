@@ -63,8 +63,9 @@ public class XMLBlock {
     }
 
     private void setAttribute(XMLAttribute attr) {
-        if (m_attrList == null)
+        if (m_attrList == null) {
             m_attrList = new ArrayList<XMLAttribute>(8);
+        }
 
         // assume that this attribute doesn't exist already
         m_attrList.add(attr);
@@ -96,10 +97,11 @@ public class XMLBlock {
 
     public String getShortcut() {
         if (m_shortcut != null && !m_shortcut.equals("")) {
-            if (m_isClose)
+            if (m_isClose) {
                 return "/" + m_shortcut;
-            else if (m_isComment)
+            } else if (m_isComment) {
                 return "!comment";
+            }
         }
         return m_shortcut;
     }
@@ -215,47 +217,54 @@ public class XMLBlock {
             }
             tag.append('>');
             return tag.toString();
-        } else
+        } else {
             return m_text;
+        }
     }
 
     public String getTagName() {
-        if (isTag())
+        if (isTag()) {
             return m_text;
-        else
+        } else {
             return "";
+        }
     }
 
     public int numAttributes() {
-        if (m_attrList == null)
+        if (m_attrList == null) {
             return 0;
-        else
+        } else {
             return m_attrList.size();
+        }
     }
 
     public XMLAttribute getAttribute(int n) {
         if (n < 0 || !isTag() || m_attrList == null || n > m_attrList.size()) {
             return null;
-        } else
+        } else {
             return m_attrList.get(n);
+        }
     }
 
     public String getAttribute(String name) {
-        if (!isTag() || m_attrList == null)
+        if (!isTag() || m_attrList == null) {
             return null;
+        }
         XMLAttribute attr = null;
 
         for (int i = 0; i < m_attrList.size(); i++) {
             attr = m_attrList.get(i);
-            if (attr.name.equals(name))
+            if (attr.name.equals(name)) {
                 break;
-            else
+            } else {
                 attr = null;
+            }
         }
-        if (attr == null)
+        if (attr == null) {
             return null;
-        else
+        } else {
             return attr.value;
+        }
     }
 
     private String m_text; // tagname if tag; text if not

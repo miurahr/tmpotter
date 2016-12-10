@@ -26,6 +26,7 @@
 
 package org.tmpotter.util;
 
+
 /**
  * Class for store key-value pair.
  *
@@ -33,19 +34,19 @@ package org.tmpotter.util;
  */
 public class KvProp {
 
-  private final String type;
-  private final String value;
+    private final String type;
+    private final String value;
 
-  public KvProp(String key, String value) {
-    this.type = key;
-    this.value = value;
-  }
+    public KvProp(String key, String value) {
+        this.type = key;
+        this.value = value;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 }

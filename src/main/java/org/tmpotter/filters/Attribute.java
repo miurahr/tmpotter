@@ -35,49 +35,49 @@ package org.tmpotter.filters;
  */
 public class Attribute {
 
-  private String name;
+    private String name;
 
-  /**
-   * Returns attribute's name.
-   */
-  public String getName() {
-    return name;
-  }
+    /**
+     * Returns attribute's name.
+     */
+    public String getName() {
+        return name;
+    }
 
-  private String value;
+    private String value;
 
-  /**
-   * Returns attribute's value.
-   */
-  public String getValue() {
-    return value;
-  }
+    /**
+     * Returns attribute's value.
+     */
+    public String getValue() {
+        return value;
+    }
 
-  /**
-   * Sets attribute's value.
-   * <p>
-   * Actually an ugly hack to allow quick & dirty translation of attributes.
-   * Normal solution requires too much time :-(
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
+    /**
+     * Sets attribute's value.
+     * <p>
+     * Actually an ugly hack to allow quick & dirty translation of attributes.
+     * Normal solution requires too much time :-(
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-  /**
-   * Creates a new instance of Attribute.
-   * 
-   * @param name attribute name
-   * @param value attribute val
-   */
-  public Attribute(String name, String value) {
-    this.name = name;
-    this.value = value;
-  }
+    /**
+     * Creates a new instance of Attribute.
+     *
+     * @param name  attribute name
+     * @param value attribute val
+     */
+    public Attribute(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-  /**
-   * Returns a string representation of the attribute. name="value".
-   */
-  public String toString() {
-    return name + "=\"" + value + "\"";
-  }
+    /**
+     * Returns a string representation of the attribute. name="value".
+     */
+    public String toString() {
+        return name + "=\"" + value + "\"";
+    }
 }

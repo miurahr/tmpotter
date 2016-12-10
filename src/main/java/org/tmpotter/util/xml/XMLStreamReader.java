@@ -30,9 +30,8 @@ package org.tmpotter.util.xml;
 import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.format;
 
-import org.tmpotter.util.DefaultEntityFilter;
 import org.tmpotter.exceptions.TranslationException;
-import org.tmpotter.util.StringUtil;
+import org.tmpotter.util.DefaultEntityFilter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,12 +45,15 @@ import java.util.Stack;
 
 /**
  * A reader for XML stream.
- * 
+ *
  * @author Keith Godfrey
  */
 public class XMLStreamReader {
     private DefaultEntityFilter entityFilter;
 
+    /**
+     * Constructor.
+     */
     public XMLStreamReader() {
         m_pos = -1;
         m_stringStream = "";
@@ -64,13 +66,30 @@ public class XMLStreamReader {
         m_headBlock = null;
     }
 
+    /**
+     * Set source stream for this XML stream reader.
+     * @param name file name.
+     * @throws FileNotFoundException when not found a specified file.
+     * @throws UnsupportedEncodingException when can not recognize encoding for the file.
+     * @throws IOException when I/O error is happened.
+     * @throws TranslationException when interpretation error is happened.
+     */
     public void setStream(File name) throws FileNotFoundException,
-            UnsupportedEncodingException, IOException, TranslationException {
+        UnsupportedEncodingException, IOException, TranslationException {
         setStream(name, "UTF-8");
     }
 
+    /**
+     * Set source stream for this XML stream reader.
+     * @param name file name.
+     * @param encoding encoding.
+     * @throws FileNotFoundException when not found a specified file.
+     * @throws UnsupportedEncodingException when specified encoding is not supported.
+     * @throws IOException when I/O error is happened.
+     * @throws TranslationException when interpretation error is happened.
+     */
     public void setStream(String name, String encoding) throws FileNotFoundException,
-            UnsupportedEncodingException, IOException, TranslationException {
+        UnsupportedEncodingException, IOException, TranslationException {
         setStream(new File(name), encoding);
     }
 
@@ -80,7 +99,7 @@ public class XMLStreamReader {
      * encoding.
      */
     private void setStream(File file, String encoding) throws FileNotFoundException,
-            UnsupportedEncodingException, IOException, TranslationException {
+        UnsupportedEncodingException, IOException, TranslationException {
         XMLReader ear = new XMLReader(file.getAbsolutePath(), encoding);
         m_bufferedReader = new BufferedReader(ear);
         _setStream();
@@ -100,9 +119,9 @@ public class XMLStreamReader {
         // make sure XML file is proper
         XMLBlock blk = getNextBlock();
         if (blk == null) {
-            throw new IOException("XSR-001:" 
-                    + getString("XSR.ERROR.NONVALID_XML") + "\n"
-                    + getString("XSR.ERROR.UNABLE_INIT_READ_XML"));
+            throw new IOException("XSR-001:"
+                + getString("XSR.ERROR.NONVALID_XML") + "\n"
+                + getString("XSR.ERROR.UNABLE_INIT_READ_XML"));
         }
         if (blk.getTagName().equals("xml")) {
             String ver = blk.getAttribute("version");
@@ -113,13 +132,13 @@ public class XMLStreamReader {
                 throw new IOException("XSR-002:"
                     + getString("XSR.ERROR.NONVALID_XML") + "\n"
                     + format(getString("XSR.ERROR.UNSUPPORTED_XML_VERSION"),
-                            ver));
+                    ver));
             }
             m_headBlock = blk;
         } else {
             // not a valid XML file
             throw new IOException("XSR-003:"
-                    + getString("XSR.ERROR.NONVALID_XML"));
+                + getString("XSR.ERROR.NONVALID_XML"));
         }
     }
 
@@ -211,8 +230,9 @@ public class XMLStreamReader {
      * Pushes cached chars onto the stack, in effect rewinding stream.
      */
     private void revertToCached() {
-        for (int i = m_charCache.size() - 1; i >= 0; i--)
+        for (int i = m_charCache.size() - 1; i >= 0; i--) {
             m_charStack.push(m_charCache.get(i));
+        }
     }
 
     /**
@@ -261,8 +281,9 @@ public class XMLStreamReader {
                                 if (b != '\n') {
                                     // not a cr/lf pair - make sure not
                                     // another cr and then push char
-                                    if (b == 13)
+                                    if (b == 13) {
                                         pushChar('\n');
+                                    }
                                 }
                                 // else - do nothing; swallow the 13
                             } else {
@@ -274,8 +295,8 @@ public class XMLStreamReader {
                     }
                     return b;
                 } catch (IOException e) {
+                    return 0;
                 }
-                return 0;
             }
         }
     }
@@ -328,11 +349,11 @@ public class XMLStreamReader {
                         if (wsCnt == 0) {
                             strBuf.append(' ');
                             wsCnt = 1;
-                        } else
+                        } else {
                             continue;
+                        }
                     }
-                } else // compressWhitespace == false
-                {
+                } else { // compressWhitespace == false
                     strBuf.appendCodePoint(cp);
                 }
             } else {
@@ -401,11 +422,10 @@ public class XMLStreamReader {
      * <p>
      * For comments we copy "--" into tagname and '...' into first attribute.
      * For CDATA we eat CDATA prefix, setup a "hack" flag and return.
-     * 
+     *
      * @author Maxym Mykhalchuk
-     * @bugfixes 
-     *           http://sourceforge.net/tracker/?func=detail&atid=520347&aid=1109089
-     *           &group_id=68187
+     * @bugfixes http://sourceforge.net/tracker/?func=detail&atid=520347&aid=1109089
+     * &group_id=68187
      */
     private XMLBlock getNextTagExclamation() throws TranslationException {
         final int state_start = 1;
@@ -436,192 +456,193 @@ public class XMLStreamReader {
         while ((cp = getNextChar()) != 0) {
             type = getCharType(cp);
             switch (state) {
-            case state_start:
-                switch (type) {
-                case type_ws:
-                    // this is OK - do nothing
-                    break;
+                case state_start:
+                    switch (type) {
+                        case type_ws:
+                            // this is OK - do nothing
+                            break;
 
-                case type_text:
-                    // name - start copying
-                    state = state_name;
-                    name.appendCodePoint(cp);
-                    break;
+                        case type_text:
+                            // name - start copying
+                            state = state_name;
+                            name.appendCodePoint(cp);
+                            break;
 
-                case type_opBrac:
-                    blk.setTagName("CDATA");
-                    state = state_cdata;
+                        case type_opBrac:
+                            blk.setTagName("CDATA");
+                            state = state_cdata;
 
-                    break;
+                            break;
 
-                case type_dash:
-                    state = state_commentStart;
-                    blk.setComment();
-                    break;
+                        case type_dash:
+                            state = state_commentStart;
+                            blk.setComment();
+                            break;
 
-                default:
-                    err = true;
-                    msg = "XSR-004:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                        default:
+                            err = true;
+                            msg = "XSR-004:"
+                                + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
                                 String.valueOf(Character.toChars(cp)), state);
-                }
-                break;
-
-            case state_commentStart:
-                // verify start of comment string
-                if (cp == '-') {
-                    state = state_comment;
-                } else {
-                    err = true;
-                    msg = "XSR-005:" + getString("XSR.ERROR.CONFUSED");
-                }
-                break;
-
-            case state_comment:
-                // verify comment string - copy until -->
-                switch (type) {
-                case type_dash:
-                    if (dashCnt >= 2)
-                        data.appendCodePoint(cp);
-                    else
-                        dashCnt++;
-                    break;
-
-                case type_gt:
-                    if (dashCnt >= 2) {
-                        // all done
-                        // blk.setAttribute(data, "");
-                        blk.setText(data.toString());
-                        state = state_finish;
                     }
                     break;
 
-                default:
-                    if (dashCnt > 0) {
-                        // false signal for comment end - return '-'
-                        // to stream
-                        while (dashCnt > 0) {
-                            data.append('-');
-                            dashCnt--;
-                        }
+                case state_commentStart:
+                    // verify start of comment string
+                    if (cp == '-') {
+                        state = state_comment;
+                    } else {
+                        err = true;
+                        msg = "XSR-005:" + getString("XSR.ERROR.CONFUSED");
                     }
+                    break;
+
+                case state_comment:
+                    // verify comment string - copy until -->
+                    switch (type) {
+                        case type_dash:
+                            if (dashCnt >= 2) {
+                                data.appendCodePoint(cp);
+                            } else {
+                                dashCnt++;
+                            }
+                            break;
+
+                        case type_gt:
+                            if (dashCnt >= 2) {
+                                // all done
+                                // blk.setAttribute(data, "");
+                                blk.setText(data.toString());
+                                state = state_finish;
+                            }
+                            break;
+
+                        default:
+                            if (dashCnt > 0) {
+                                // false signal for comment end - return '-'
+                                // to stream
+                                while (dashCnt > 0) {
+                                    data.append('-');
+                                    dashCnt--;
+                                }
+                            }
+                            data.appendCodePoint(cp);
+                    }
+                    break;
+
+                case state_cdata:
+                    // copy until ]]> encountered
+                    switch (type) {
+                        case type_opBrac:
+                            // the end of CDATA declaration
+                            state = state_finish;
+                            cdata_flag = true;
+                            break;
+
+                        default:
+                    }
+                    break;
+
+                case state_name:
+                    switch (type) {
+                        case type_text:
+                            // continue copying name
+                            name.appendCodePoint(cp);
+                            break;
+
+                        case type_ws:
+                            // name done - store it and move on
+                            blk.setTagName(name.toString());
+                            state = state_record;
+                            break;
+
+                        case type_gt:
+                            // no declared data - strange, but allow it
+                            state = state_finish;
+                            break;
+
+                        default:
+                            err = true;
+                            msg = "XSR-006:"
+                                + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                String.valueOf(Character.toChars(cp)), state);
+                    }
+                    break;
+
+                case state_record:
+                    switch (type) {
+                        case type_apos:
+                            // continue copying in 'safe' mode
+                            state = state_recordSingle;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        case type_quote:
+                            // continue copying in 'safe' mode
+                            state = state_recordDouble;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        case type_gt:
+                            // tag done - record data and close
+                            state = state_finish;
+                            blk.setAttribute(data.toString(), "");
+                            break;
+
+                        default:
+                            data.appendCodePoint(cp);
+                    }
+                    break;
+
+                case state_recordSingle:
+                    switch (type) {
+                        case type_apos:
+                            // continue copying normally
+                            state = state_record;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        case type_backSlash:
+                            // ignore meaning of next char
+                            state = state_escSingle;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        default:
+                            data.appendCodePoint(cp);
+                    }
+                    break;
+
+                case state_escSingle:
+                    // whatever happens, just remember character
                     data.appendCodePoint(cp);
-                }
-                break;
-
-            case state_cdata:
-                // copy until ]]> encountered
-                switch (type) {
-                case type_opBrac:
-                    // the end of CDATA declaration
-                    state = state_finish;
-                    cdata_flag = true;
-                    break;
-
-                default:
-                }
-                break;
-
-            case state_name:
-                switch (type) {
-                case type_text:
-                    // continue copying name
-                    name.appendCodePoint(cp);
-                    break;
-
-                case type_ws:
-                    // name done - store it and move on
-                    blk.setTagName(name.toString());
-                    state = state_record;
-                    break;
-
-                case type_gt:
-                    // no declared data - strange, but allow it
-                    state = state_finish;
-                    break;
-
-                default:
-                    err = true;
-                    msg = "XSR-006:"
-			    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                            String.valueOf(Character.toChars(cp)), state);
-                }
-                break;
-
-            case state_record:
-                switch (type) {
-                case type_apos:
-                    // continue copying in 'safe' mode
                     state = state_recordSingle;
-                    data.appendCodePoint(cp);
                     break;
 
-                case type_quote:
-                    // continue copying in 'safe' mode
+                case state_recordDouble:
+                    switch (type) {
+                        case type_quote:
+                            // continue copying normally
+                            state = state_record;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        case type_backSlash:
+                            // ignore meaning of next char
+                            state = state_escDouble;
+                            data.appendCodePoint(cp);
+                            break;
+
+                        default:
+                            data.appendCodePoint(cp);
+                    }
+                    break;
+
+                case state_escDouble:
+                    // whatever happens, just remember character
+                    data.appendCodePoint(cp);
                     state = state_recordDouble;
-                    data.appendCodePoint(cp);
                     break;
-
-                case type_gt:
-                    // tag done - record data and close
-                    state = state_finish;
-                    blk.setAttribute(data.toString(), "");
-                    break;
-
-                default:
-                    data.appendCodePoint(cp);
-                }
-                break;
-
-            case state_recordSingle:
-                switch (type) {
-                case type_apos:
-                    // continue copying normally
-                    state = state_record;
-                    data.appendCodePoint(cp);
-                    break;
-
-                case type_backSlash:
-                    // ignore meaning of next char
-                    state = state_escSingle;
-                    data.appendCodePoint(cp);
-                    break;
-
-                default:
-                    data.appendCodePoint(cp);
-                }
-                break;
-
-            case state_escSingle:
-                // whatever happens, just remember character
-                data.appendCodePoint(cp);
-                state = state_recordSingle;
-                break;
-
-            case state_recordDouble:
-                switch (type) {
-                case type_quote:
-                    // continue copying normally
-                    state = state_record;
-                    data.appendCodePoint(cp);
-                    break;
-
-                case type_backSlash:
-                    // ignore meaning of next char
-                    state = state_escDouble;
-                    data.appendCodePoint(cp);
-                    break;
-
-                default:
-                    data.appendCodePoint(cp);
-                }
-                break;
-
-            case state_escDouble:
-                // whatever happens, just remember character
-                data.appendCodePoint(cp);
-                state = state_recordDouble;
-                break;
 
                 default:
                     // TODO What should do here?
@@ -631,8 +652,8 @@ public class XMLStreamReader {
                 // TODO construct error message with correct state data
                 // for now, just throw a parse error
                 String str = "XSR-007:"
-			+ getString("XSR.ERROR.TAG_NAME") + blk.getTagName()
-			+ " ";
+                        + getString("XSR.ERROR.TAG_NAME") + blk.getTagName()
+                        + " ";
                 if (blk.isComment()) {
                     str += getString("XSR.ERROR.COMMENT_TAG");
                 }
@@ -651,13 +672,15 @@ public class XMLStreamReader {
         // TODO construct error message with correct state data
         // for now, just throw a parse error
         String data = getString("XSR.ERROR.TAG_NAME") + blk.getTagName() + " ";
-        if (blk.isStandalone())
+        if (blk.isStandalone()) {
             data += getString("XSR.ERROR.EMPTY_TAG");
-        else if (blk.isClose())
+        } else if (blk.isClose()) {
             data += getString("XSR.ERROR.CLOSE_TAG");
-        if (blk.numAttributes() > 0)
+        }
+        if (blk.numAttributes() > 0) {
             data += getString("XSR.ERROR.LOADED") + blk.numAttributes()
                     + getString("XSR.ERROR.ATTRIBUTES");
+        }
         throw new TranslationException(msg + data);
     }
 
@@ -702,236 +725,237 @@ public class XMLStreamReader {
         while (cp != 0) {
             type = getCharType(cp);
             switch (state) {
-            case state_start:
-                switch (type) {
-                case type_slash:
-                    blk.setCloseFlag();
-                    state = state_setCloseFlag;
+                case state_start:
+                    switch (type) {
+                        case type_slash:
+                            blk.setCloseFlag();
+                            state = state_setCloseFlag;
+                            break;
+
+                        case type_text:
+                            name.appendCodePoint(cp);
+                            state = state_buildName;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-008:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                case type_text:
-                    name.appendCodePoint(cp);
-                    state = state_buildName;
+                case state_buildName:
+                    switch (type) {
+                        case type_dash:
+                        case type_text:
+                            // more name text
+                            name.appendCodePoint(cp);
+                            break;
+
+                        case type_ws:
+                            // name is done - move on
+                            state = state_attrStandby;
+                            blk.setTagName(name.toString());
+                            break;
+
+                        case type_slash:
+                            // name done - standalone tag slash encountered
+                            blk.setTagName(name.toString());
+                            blk.setStandaloneFlag();
+                            state = state_setStandaloneFlag;
+                            break;
+
+                        case type_gt:
+                            // all done
+                            blk.setTagName(name.toString());
+                            state = state_finish;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-009:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-008:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
+                case state_setCloseFlag:
+                    switch (type) {
+                        case type_text:
+                            // close flag marked not text - start copy
+                            name.appendCodePoint(cp);
+                            state = state_buildName;
+                            break;
 
-            case state_buildName:
-                switch (type) {
-                case type_dash:
-                case type_text:
-                    // more name text
-                    name.appendCodePoint(cp);
+                        case type_ws:
+                            // space after close flag - ignore and continue
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-010:"
+                                    + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                case type_ws:
-                    // name is done - move on
-                    state = state_attrStandby;
-                    blk.setTagName(name.toString());
+                case state_setStandaloneFlag:
+                    switch (type) {
+                        case type_ws:
+                            // allow white space to be lenient
+                            break;
+
+                        case type_gt:
+                            // all done with standalone tag
+                            state = state_finish;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-011:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                case type_slash:
-                    // name done - standalone tag slash encountered
-                    blk.setTagName(name.toString());
-                    blk.setStandaloneFlag();
-                    state = state_setStandaloneFlag;
+                case state_attrStandby:
+                    switch (type) {
+                        case type_text:
+                            // start of attribute name - start recording
+                            attr.appendCodePoint(cp);
+                            state = state_buildAttr;
+                            break;
+
+                        case type_ques:
+                            // allow question mark so <? ?> tags can
+                            // be read by standard parser
+                            state = state_xmlDeclaration;
+                            break;
+
+                        case type_ws:
+                            // unexpected space - allow for now because
+                            // it isn't ambiguous (be lenient)
+                            break;
+
+                        case type_slash:
+                            blk.setStandaloneFlag();
+                            state = state_setStandaloneFlag;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-012:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                case type_gt:
-                    // all done
-                    blk.setTagName(name.toString());
-                    state = state_finish;
+                case state_xmlDeclaration:
+                    if (cp != '>') {
+                        // parse error - got '?' followed by something
+                        // unexpected
+                        throwErrorInGetNextTag(blk, "XSR-013:"
+                                + getString("XSR.ERROR.FLOATING_QUESTION_MARK"));
+                    } else {
+                        state = state_finish;
+                    }
                     break;
 
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-009:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
+                case state_buildAttr:
+                    switch (type) {
+                        case type_dash:
+                        case type_text:
+                            // more name - keep recording
+                            attr.appendCodePoint(cp);
+                            break;
 
-            case state_setCloseFlag:
-                switch (type) {
-                case type_text:
-                    // close flag marked not text - start copy
-                    name.appendCodePoint(cp);
-                    state = state_buildName;
+                        case type_equals:
+                            // attr done - begin move to value
+                            state = state_transitionFromAttr;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-014:"
+                                    + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                case type_ws:
-                    // space after close flag - ignore and continue
+                case state_transitionFromAttr:
+                    switch (type) {
+                        case type_quote:
+                        case type_apos:
+                            // the only valid next character
+                            state = state_buildValue;
+                            buildValueStartType = type;
+                            break;
+
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-015:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
+                    }
                     break;
 
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-010:"
-                            + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
+                case state_buildValue:
+                    switch (type) {
+                        case type_quote:
+                        case type_apos:
+                            // checking if it's the char that opened value
+                            if (type == buildValueStartType) {
+                                // done recording value
+                                // store it and move on
+                                blk.setAttribute(attr.toString(), val.toString());
+                                attr = new StringBuilder();
+                                val = new StringBuilder();
+                                state = state_closeValueQuote;
+                            } // else -- an error!
+                            else {
+                                // this is a quoted value - be lenient on OK chars
+                                val.appendCodePoint(cp);
+                            }
+                            break;
 
-            case state_setStandaloneFlag:
-                switch (type) {
-                case type_ws:
-                    // allow white space to be lenient
+                        default:
+                            // this is a quoted value - be lenient on OK chars
+                            val.appendCodePoint(cp);
+                            break;
+                    }
                     break;
 
-                case type_gt:
-                    // all done with standalone tag
-                    state = state_finish;
-                    break;
+                case state_closeValueQuote:
+                    switch (type) {
+                        case type_text:
+                            // new attribute - start recording
+                            attr.appendCodePoint(cp);
+                            state = state_buildAttr;
+                            break;
 
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-011:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
+                        case type_ws:
+                            // allow this for now
+                            break;
 
-            case state_attrStandby:
-                switch (type) {
-                case type_text:
-                    // start of attribute name - start recording
-                    attr.appendCodePoint(cp);
-                    state = state_buildAttr;
-                    break;
+                        case type_slash:
+                            // standalone tag with attributes
+                            blk.setStandaloneFlag();
+                            state = state_setStandaloneFlag;
+                            break;
 
-                case type_ques:
-                    // allow question mark so <? ?> tags can
-                    // be read by standard parser
-                    state = state_xmlDeclaration;
-                    break;
+                        case type_gt:
+                            // finished
+                            state = state_finish;
+                            break;
 
-                case type_ws:
-                    // unexpected space - allow for now because
-                    // it isn't ambiguous (be lenient)
-                    break;
+                        case type_ques:
+                            // allow question mark so <? ?> tags can
+                            // be read by standard parser
+                            state = state_xmlDeclaration;
+                            break;
 
-                case type_slash:
-                    blk.setStandaloneFlag();
-                    state = state_setStandaloneFlag;
-                    break;
-
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-012:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
-
-            case state_xmlDeclaration:
-                if (cp != '>') {
-                    // parse error - got '?' followed by something
-                    // unexpected
-                    throwErrorInGetNextTag(blk, "XSR-013:"
-			    + getString("XSR.ERROR.FLOATING_QUESTION_MARK"));
-                } else
-                    state = state_finish;
-                break;
-
-            case state_buildAttr:
-                switch (type) {
-                case type_dash:
-                case type_text:
-                    // more name - keep recording
-                    attr.appendCodePoint(cp);
-                    break;
-
-                case type_equals:
-                    // attr done - begin move to value
-                    state = state_transitionFromAttr;
-                    break;
-
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-014:"
-                            + format(getString("XSR_ERROR_UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
-
-            case state_transitionFromAttr:
-                switch (type) {
-                case type_quote:
-                case type_apos:
-                    // the only valid next character
-                    state = state_buildValue;
-                    buildValueStartType = type;
-                    break;
-
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-015:"
-			    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
-
-            case state_buildValue:
-                switch (type) {
-                case type_quote:
-                case type_apos:
-                    // checking if it's the char that opened value
-                    if (type == buildValueStartType) {
-                        // done recording value
-                        // store it and move on
-                        blk.setAttribute(attr.toString(), val.toString());
-                        attr = new StringBuilder();
-                        val = new StringBuilder();
-                        state = state_closeValueQuote;
-                    } // else -- an error!
-                    else {
-                        // this is a quoted value - be lenient on OK chars
-                        val.appendCodePoint(cp);
+                        default:
+                            throwErrorInGetNextTag(blk, "XSR-016:"
+                                    + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
+                                    String.valueOf(Character.toChars(cp)), state));
                     }
                     break;
 
                 default:
-                    // this is a quoted value - be lenient on OK chars
-                    val.appendCodePoint(cp);
-                    break;
-                }
-                break;
-
-            case state_closeValueQuote:
-                switch (type) {
-                case type_text:
-                    // new attribute - start recording
-                    attr.appendCodePoint(cp);
-                    state = state_buildAttr;
-                    break;
-
-                case type_ws:
-                    // allow this for now
-                    break;
-
-                case type_slash:
-                    // standalone tag with attributes
-                    blk.setStandaloneFlag();
-                    state = state_setStandaloneFlag;
-                    break;
-
-                case type_gt:
-                    // finished
-                    state = state_finish;
-                    break;
-
-                case type_ques:
-                    // allow question mark so <? ?> tags can
-                    // be read by standard parser
-                    state = state_xmlDeclaration;
-                    break;
-
-                default:
-                    throwErrorInGetNextTag(blk, "XSR-016:"
-                            + format(getString("XSR.ERROR.UNEXPECTED_CHAR"),
-                                String.valueOf(Character.toChars(cp)), state));
-                }
-                break;
-
-            default:
             }
 
             if (state == state_finish) {
@@ -964,64 +988,64 @@ public class XMLStreamReader {
     private int getCharType(int cp) {
         int type = type_text;
         switch (cp) {
-          case 0x20:
-          case 0x0a:
-          case 0x0d:
-          case 0x09:
-              type = type_ws;
-              break;
+            case 0x20:
+            case 0x0a:
+            case 0x0d:
+            case 0x09:
+                type = type_ws;
+                break;
 
-          case '"':
-              type = type_quote;
-              break;
+            case '"':
+                type = type_quote;
+                break;
 
-          case '\'':
-              type = type_apos;
-              break;
+            case '\'':
+                type = type_apos;
+                break;
 
-          case '&':
-              type = type_amp;
-              break;
+            case '&':
+                type = type_amp;
+                break;
 
-          case '<':
-              type = type_lt;
-              break;
+            case '<':
+                type = type_lt;
+                break;
 
-          case '>':
-              type = type_gt;
-              break;
+            case '>':
+                type = type_gt;
+                break;
 
-          case '?':
-              type = type_ques;
-              break;
+            case '?':
+                type = type_ques;
+                break;
 
-          case '/':
-              type = type_slash;
-              break;
+            case '/':
+                type = type_slash;
+                break;
 
-          case '=':
-              type = type_equals;
-              break;
+            case '=':
+                type = type_equals;
+                break;
 
-          case '[':
-              type = type_opBrac;
-              break;
+            case '[':
+                type = type_opBrac;
+                break;
 
-          case ']':
-              type = type_clBrac;
-              break;
+            case ']':
+                type = type_clBrac;
+                break;
 
-          case '-':
-              type = type_dash;
-              break;
+            case '-':
+                type = type_dash;
+                break;
 
-          case '\\':
-              type = type_backSlash;
-              break;
+            case '\\':
+                type = type_backSlash;
+                break;
 
-          default:
-              type = type_text;
-              break;
+            default:
+                type = type_text;
+                break;
         }
         return type;
     }
@@ -1062,16 +1086,18 @@ public class XMLStreamReader {
      * elements between open and close, a null is returned.
      */
     public List<XMLBlock> closeBlock(XMLBlock block, boolean includeTerminationBlock)
-            throws TranslationException {
+        throws TranslationException {
         List<XMLBlock> lst = new ArrayList<XMLBlock>();
 
         // sanity check
-        if (block == null)
+        if (block == null) {
             return lst;
+        }
 
         // if block is a standalone tag, return straight away
-        if (block.isStandalone())
+        if (block.isStandalone()) {
             return lst;
+        }
 
         // start search
         int depth = 0;
@@ -1081,18 +1107,20 @@ public class XMLStreamReader {
             if (blk == null) {
                 // stream ended without finding match
                 throw new TranslationException("XSR-017:"
-			+ getString("XSR.ERROR.END_OF_STREAM"));
+                        + getString("XSR.ERROR.END_OF_STREAM"));
             }
 
             if (blk.isTag() && blk.getTagName().equals(block.getTagName())) {
                 if (blk.isClose()) {
                     if (depth == 0) {
                         // found the closing tag
-                        if (includeTerminationBlock)
+                        if (includeTerminationBlock) {
                             lst.add(blk);
+                        }
                         break;
-                    } else
+                    } else {
                         depth--;
+                    }
                 } else {
                     // imbedded tag of same name - increase stack count
                     depth++;
@@ -1148,7 +1176,7 @@ public class XMLStreamReader {
             val.appendCodePoint(cp);
             if (cp == 0) {
                 throw new TranslationException("XSR-019:"
-			+ getString("XSR.ERROR.UNTERMINATED_ESCAPE_CHAR"));
+                    + getString("XSR.ERROR.UNTERMINATED_ESCAPE_CHAR"));
             }
             cp = getNextCharCache();
             if (ctr++ > 13) {
@@ -1185,22 +1213,22 @@ public class XMLStreamReader {
                 cp = Integer.valueOf(valString, 16);
             } catch (NumberFormatException ex) {
                 throw new TranslationException("XSR-020:"
-			+ format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val), ex);
+                        + format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val), ex);
             }
             if (!XMLUtil.isValidXMLChar(cp)) {
                 throw new TranslationException("XSR-021:"
-			+ format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val));
+                        + format(getString("XSR.ERROR.BAD_BINARY_CHAR"), val));
             }
         } else {
             try {
                 cp = Integer.valueOf(valString, 10);
             } catch (NumberFormatException ex) {
                 throw new TranslationException("XSR-022:"
-			+ format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val), ex);
+                        + format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val), ex);
             }
             if (!XMLUtil.isValidXMLChar(cp)) {
                 throw new TranslationException("XSR-023:"
-			+ format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val));
+                        + format(getString("XSR.ERROR.BAD_DECIMAL_CHAR"), val));
             }
         }
 
@@ -1211,7 +1239,9 @@ public class XMLStreamReader {
         return m_headBlock;
     }
 
-    /** Closes the TMX file */
+    /**
+     * Closes the TMX file
+     */
     public void close() throws IOException {
         if (m_bufferedReader != null) {
             m_bufferedReader.close();

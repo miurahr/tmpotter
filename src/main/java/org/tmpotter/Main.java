@@ -25,6 +25,8 @@
 
 package org.tmpotter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.tmpotter.ui.Icons;
 import org.tmpotter.ui.MainWindow;
@@ -36,87 +38,81 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * Main class.
- * 
  */
 public class Main {
-  /**
-   * Main constructor.
-   * 
-   */
-  public Main() {
-    setLnF();
-    displaySplash();
+    /**
+     * Main constructor.
+     */
+    public Main() {
+        setLnF();
+        displaySplash();
 
-    final MainWindow windowMain = new MainWindow();
+        final MainWindow windowMain = new MainWindow();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        windowMain.setVisible( true ); 
-      } 
-    });
-  }
-  
-  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-
-  /**
-   * main method.
-   * 
-   * @param straArgs command line argument
-   */
-  public static void main(String[] straArgs) {
-    new Main();
-  }
-  
-  /** 
-   * Set the Swing Look and Feel.
-   */
-  private void setLnF() {
-    try {
-      if (Platform.isMacOsx()) {
-        System.setProperty( "apple.awt.graphics.UseQuartz", "true" );
-        System.setProperty( "apple.laf.useScreenMenuBar", "true" );
-        System.setProperty( "com.apple.mrj.application.apple.menu.about.name",
-             "tmpotter" );
-        //  ToDo: create (OS X) dock icon
-        AquaAdapter.setDockIconImage(Icons.getIcon( "icon-large.png" ).getImage() );
-      }
-      // Workaround for JDK bug 6389282
-      // it should be called before setLookAndFeel() for GTK LookandFeel
-      UIManager.getInstalledLookAndFeels();
-      UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-      System.setProperty("swing.aatext", "true");
-    
-    } catch (final ClassNotFoundException 
-            | IllegalAccessException 
-            | InstantiationException 
-            | UnsupportedLookAndFeelException cnfe) {
-      //LOGGER.INFO(Main", "setLnF", "MW.ERROR.LOOK_AND_FEEL_EXCEPTION", "", cnfe);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                windowMain.setVisible(true);
+            }
+        });
     }
-  }
 
-  private void displaySplash() {
-    new Thread() {
-        @Override
-        public void run() {
-          final SplashScreen splash = new SplashScreen();
-          splash.display();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-          try {
-            sleep(5000); 
-          } catch (InterruptedException ie) {
-            LOGGER.info("Splash try to be Interrupted.");
-          }
+    /**
+     * main method.
+     *
+     * @param straArgs command line argument
+     */
+    public static void main(String[] straArgs) {
+        new Main();
+    }
 
-          splash.remove();
+    /**
+     * Set the Swing Look and Feel.
+     */
+    private void setLnF() {
+        try {
+            if (Platform.isMacOsx()) {
+                System.setProperty("apple.awt.graphics.UseQuartz", "true");
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "tmpotter");
+                //  ToDo: create (OS X) dock icon
+                AquaAdapter.setDockIconImage(Icons.getIcon("icon-large.png").getImage());
+            }
+            // Workaround for JDK bug 6389282
+            // it should be called before setLookAndFeel() for GTK LookandFeel
+            UIManager.getInstalledLookAndFeels();
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            System.setProperty("swing.aatext", "true");
+
+        } catch (final ClassNotFoundException
+                | IllegalAccessException
+                | InstantiationException
+                | UnsupportedLookAndFeelException cnfe) {
+            //LOGGER.INFO(Main", "setLnF", "MW.ERROR.LOOK_AND_FEEL_EXCEPTION", "", cnfe);
         }
-      }.start();
-  }
+    }
+
+    private void displaySplash() {
+        new Thread() {
+            @Override
+            public void run() {
+                final SplashScreen splash = new SplashScreen();
+                splash.display();
+
+                try {
+                    sleep(5000);
+                } catch (InterruptedException ie) {
+                    LOGGER.info("Splash try to be Interrupted.");
+                }
+
+                splash.remove();
+            }
+        }.start();
+    }
 
 }

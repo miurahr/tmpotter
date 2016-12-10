@@ -40,179 +40,183 @@ import java.util.logging.Logger;
 
 
 public final class AquaAdapter implements InvocationHandler {
-  static Object _objAquaApp;
+    static Object _objAquaApp;
 
-  protected final Object objectReciever;
-  protected final Method methodHandler;
-  protected final String aquaEvt;
-  
-  private static final Logger LOG = Logger.getLogger(AquaAdapter.class.getName());
+    protected final Object objectReciever;
+    protected final Method methodHandler;
+    protected final String aquaEvt;
 
-  public enum AquaEvent { ABOUT, OPEN, PREFERENCES, QUIT }
+    private static final Logger LOG = Logger.getLogger(AquaAdapter.class.getName());
 
-  static final String[] _straAquaEvents = {
-    "handleAbout",
-    "handleOpenFile",
-    "handlePreferences",
-    "handleQuit"
-  };
-
-  protected AquaAdapter( final Object objReceiver, final Method mtdHandler,
-      final String strAquaEvent ) {
-    objectReciever  = objReceiver;
-    methodHandler   = mtdHandler;
-    aquaEvt = strAquaEvent;
-  }
-
-  /**
-   * Connect to object receiver.
-   * 
-   * @param objReceiver object to be connected.
-   * @param strHandler handler
-   * @param evtAqua event
-   */
-  @SuppressWarnings("unchecked")
-  public static void connect(final Object objReceiver,
-          final String strHandler, final AquaEvent evtAqua) {
-    if (!Platform.isMacOsx()) {
-      return;
+    public enum AquaEvent {
+        ABOUT,
+        OPEN,
+        PREFERENCES,
+        QUIT
     }
 
-    if (objReceiver == null || strHandler == null || evtAqua == null) {
-      return;
+    static final String[] _straAquaEvents = {
+        "handleAbout",
+        "handleOpenFile",
+        "handlePreferences",
+        "handleQuit"
+    };
+
+    protected AquaAdapter(final Object objReceiver, final Method mtdHandler,
+                          final String strAquaEvent) {
+        objectReciever = objReceiver;
+        methodHandler = mtdHandler;
+        aquaEvt = strAquaEvent;
     }
 
-    try {
-      final Method mtdHandler;
+    /**
+     * Connect to object receiver.
+     *
+     * @param objReceiver object to be connected.
+     * @param strHandler  handler
+     * @param evtAqua     event
+     */
+    @SuppressWarnings("unchecked")
+    public static void connect(final Object objReceiver,
+                               final String strHandler, final AquaEvent evtAqua) {
+        if (!Platform.isMacOsx()) {
+            return;
+        }
 
-      mtdHandler = objReceiver.getClass()
-        .getDeclaredMethod(strHandler, (Class[])null);
+        if (objReceiver == null || strHandler == null || evtAqua == null) {
+            return;
+        }
 
-      final Class clsApplication = Class.forName("com.apple.eawt.Application");
+        try {
+            final Method mtdHandler;
 
-      if (_objAquaApp == null) {
-        _objAquaApp = clsApplication
-          .getConstructor((Class[])null).newInstance((Object[])null);
-      }
-      
-      final Class clsApplicationListener = Class
-              .forName("com.apple.eawt.ApplicationListener");
+            mtdHandler = objReceiver.getClass()
+                .getDeclaredMethod(strHandler, (Class[]) null);
 
-      final Object objProxy = Proxy
-          .newProxyInstance( AquaAdapter.class.getClassLoader(),
-          new Class[] {clsApplicationListener }, new AquaAdapter(objReceiver,
-            mtdHandler, _straAquaEvents[evtAqua.ordinal()]));
+            final Class clsApplication = Class.forName("com.apple.eawt.Application");
 
-      final Method mtdSender = clsApplication
-          .getDeclaredMethod("addApplicationListener",
-          new Class[] {clsApplicationListener});
-      final Object result = mtdSender.invoke(_objAquaApp,
-              new Object[] {objProxy});
-    } catch ( final ClassNotFoundException cnfe) {
-      System.err.println("Mac OS X version does not support Apple EAWT");
-      System.err.println("ApplicationEvent handling is disabled: " + cnfe );
-    } catch ( final Exception e ) {
-      LOG.log(Level.WARNING, "AquaAdapter could not communicate with EAWT:", e );
+            if (_objAquaApp == null) {
+                _objAquaApp = clsApplication
+                    .getConstructor((Class[]) null).newInstance((Object[]) null);
+            }
+
+            final Class clsApplicationListener = Class
+                    .forName("com.apple.eawt.ApplicationListener");
+
+            final Object objProxy = Proxy
+                    .newProxyInstance(AquaAdapter.class.getClassLoader(),
+                    new Class[]{clsApplicationListener}, new AquaAdapter(objReceiver,
+                        mtdHandler, _straAquaEvents[evtAqua.ordinal()]));
+
+            final Method mtdSender = clsApplication
+                    .getDeclaredMethod("addApplicationListener",
+                    new Class[]{clsApplicationListener});
+            final Object result = mtdSender.invoke(_objAquaApp,
+                    new Object[]{objProxy});
+        } catch (final ClassNotFoundException cnfe) {
+            System.err.println("Mac OS X version does not support Apple EAWT");
+            System.err.println("ApplicationEvent handling is disabled: " + cnfe);
+        } catch (final Exception e) {
+            LOG.log(Level.WARNING, "AquaAdapter could not communicate with EAWT:", e);
+        }
+
+        if (evtAqua == AquaEvent.PREFERENCES) {
+            try {
+                final Method mtdEnablePrefs = _objAquaApp.getClass()
+                        .getDeclaredMethod("setEnabledPreferencesMenu",
+                        new Class[]{boolean.class});
+                mtdEnablePrefs.invoke(_objAquaApp,
+                        new Object[]{Boolean.valueOf(true)});
+            } catch (final Exception e) {
+                LOG.log(Level.WARNING, "AquaAdapter could not enable Preferences", e);
+            }
+        }
     }
 
-    if ( evtAqua == AquaEvent.PREFERENCES ) {
-      try {
-        final Method mtdEnablePrefs = _objAquaApp.getClass()
-            .getDeclaredMethod( "setEnabledPreferencesMenu",
-            new Class[] {boolean.class});
-        mtdEnablePrefs.invoke( _objAquaApp,
-                new Object[] { Boolean.valueOf( true ) } );
-      } catch (final Exception e) {
-        LOG.log(Level.WARNING, "AquaAdapter could not enable Preferences", e);
-      }
-    }
-  }
-
-  /**
-   * Invoke aqua action.
-   * 
-   * @param objProxy TBD
-   * @param mtdAqua TBD
-   * @param objaArgs TBD
-   * @return object
-   * @throws Throwable exception
-   */
-  @Override
-  public final Object invoke( final Object objProxy, final Method mtdAqua,
-      final Object[] objaArgs ) throws Throwable {
-    if (methodHandler != null && objaArgs.length == 1
-        && aquaEvt.equals(mtdAqua.getName()) && objaArgs[0] != null) {
-      try {
-        //  setHandled must be called to inform the Aqua side of the
-        //  expected behavior, else it will go default
-        final Method mtdSetHandled = objaArgs[0].getClass()
-            .getDeclaredMethod("setHandled", new Class[]{boolean.class});
-        mtdSetHandled.invoke(objaArgs[0],
-            new Object[]{Boolean.valueOf(fireHandler(objaArgs[0]))});
-      } catch ( RuntimeException e) {
-        throw e;
-      } catch ( Exception e) {
-        LOG.log(Level.WARNING, e.getMessage());
-        LOG.log(Level.WARNING,
-                "AquaAdapter was unable to handle ApplicationEvent: "
-                + objaArgs[0]);
-      }
-    }
-    return null;
-  }
-
-  /**
-   * fire handler for aqua app.
-   * 
-   * @param objEvent object fired
-   * @return true when success
-   * @throws InvocationTargetException TBD
-   * @throws IllegalAccessException TBD
-   */
-  public final boolean fireHandler(Object objEvent)
-    throws InvocationTargetException, IllegalAccessException {
-    final Object objResult = methodHandler.invoke(objectReciever, (Object[])null);
-
-    //  Default return value is true, this will cause whatever default
-    //  behavior is associated on the Aqua side - app close in the case
-    //  of firing off a quit event
-    return (objResult == null ? true :
-            Boolean.valueOf(objResult.toString()));
-  }
-
-  /**
-   * Set Icon Image for dock.
-   * 
-   * @param image icon image
-   */
-  public static void setDockIconImage(final Image image) {
-    if (!Platform.isMacOsx() || image == null) {
-      return;
+    /**
+     * Invoke aqua action.
+     *
+     * @param objProxy TBD
+     * @param mtdAqua  TBD
+     * @param objaArgs TBD
+     * @return object
+     * @throws Throwable exception
+     */
+    @Override
+    public final Object invoke(final Object objProxy, final Method mtdAqua,
+                               final Object[] objaArgs) throws Throwable {
+        if (methodHandler != null && objaArgs.length == 1
+                && aquaEvt.equals(mtdAqua.getName()) && objaArgs[0] != null) {
+            try {
+                //  setHandled must be called to inform the Aqua side of the
+                //  expected behavior, else it will go default
+                final Method mtdSetHandled = objaArgs[0].getClass()
+                        .getDeclaredMethod("setHandled", new Class[]{boolean.class});
+                mtdSetHandled.invoke(objaArgs[0],
+                        new Object[]{Boolean.valueOf(fireHandler(objaArgs[0]))});
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, e.getMessage());
+                LOG.log(Level.WARNING,
+                        "AquaAdapter was unable to handle ApplicationEvent: "
+                        + objaArgs[0]);
+            }
+        }
+        return null;
     }
 
-    try {
-      final Class clsApplication = Class
-              .forName("com.apple.eawt.Application");
+    /**
+     * fire handler for aqua app.
+     *
+     * @param objEvent object fired
+     * @return true when success
+     * @throws InvocationTargetException TBD
+     * @throws IllegalAccessException    TBD
+     */
+    public final boolean fireHandler(Object objEvent)
+        throws InvocationTargetException, IllegalAccessException {
+        final Object objResult = methodHandler.invoke(objectReciever, (Object[]) null);
 
-      if (_objAquaApp == null) {
-        _objAquaApp = clsApplication
-          .getConstructor( (Class[])null).newInstance((Object[])null);
-      }
-      final Method mtdSetDockIconImage = _objAquaApp.getClass()
-          .getDeclaredMethod("setDockIconImage",
-          new Class[] {Image.class});
-
-      mtdSetDockIconImage.invoke(_objAquaApp, new Object[] {image});
-    
-    } catch (final ClassNotFoundException cnfe) {
-      System.err.println("Mac OS X version does not support Apple EAWT");
-      System.err.println("ApplicationEvent handling is disabled: " + cnfe);
-    
-    } catch (final Exception e) {
-      LOG.log(Level.WARNING, "AquaAdapter could not communicate with EAWT", e );
+        //  Default return value is true, this will cause whatever default
+        //  behavior is associated on the Aqua side - app close in the case
+        //  of firing off a quit event
+        return (objResult == null ? true :
+                Boolean.valueOf(objResult.toString()));
     }
-  }
+
+    /**
+     * Set Icon Image for dock.
+     *
+     * @param image icon image
+     */
+    public static void setDockIconImage(final Image image) {
+        if (!Platform.isMacOsx() || image == null) {
+            return;
+        }
+
+        try {
+            final Class clsApplication = Class
+                    .forName("com.apple.eawt.Application");
+
+            if (_objAquaApp == null) {
+                _objAquaApp = clsApplication
+                    .getConstructor((Class[]) null).newInstance((Object[]) null);
+            }
+            final Method mtdSetDockIconImage = _objAquaApp.getClass()
+                    .getDeclaredMethod("setDockIconImage",
+                    new Class[]{Image.class});
+
+            mtdSetDockIconImage.invoke(_objAquaApp, new Object[]{image});
+
+        } catch (final ClassNotFoundException cnfe) {
+            System.err.println("Mac OS X version does not support Apple EAWT");
+            System.err.println("ApplicationEvent handling is disabled: " + cnfe);
+
+        } catch (final Exception e) {
+            LOG.log(Level.WARNING, "AquaAdapter could not communicate with EAWT", e);
+        }
+    }
 
 }
-
 

@@ -17,9 +17,9 @@ import javax.xml.bind.annotation.XmlValue;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -28,37 +28,33 @@ import javax.xml.bind.annotation.XmlValue;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+        "content"
 })
 @XmlRootElement(name = "afterbreak")
 public class Afterbreak {
 
-  @XmlValue
-  protected String content;
+    @XmlValue
+    protected String content;
 
-  /**
-   * Gets the value of the content property.
-   *
-   * @return possible object is {@link String }
-   *
-   */
-  public String getContent() {
-    return content;
-  }
+    /**
+     * Gets the value of the content property.
+     *
+     * @return possible object is {@link String }
+     */
+    public String getContent() {
+        return content;
+    }
 
-  /**
-   * Sets the value of the content property.
-   *
-   * @param value allowed object is {@link String }
-   *
-   */
-  public void setContent(String value) {
-    this.content = value;
-  }
+    /**
+     * Sets the value of the content property.
+     *
+     * @param value allowed object is {@link String }
+     */
+    public void setContent(String value) {
+        this.content = value;
+    }
 
 }

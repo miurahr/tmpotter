@@ -23,7 +23,7 @@
  * ************************************************************************/
 
 package org.tmpotter.util;
-  
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,37 +39,36 @@ import java.util.ResourceBundle.Control;
 /**
  * ResourceBundle control which loads UTF-8 encoded properties files.
  * Adapted from <a href="http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle">this Stack Overflow article</a>.
- *
  */
 public class Utf8ResourceBundleControl extends Control {
-  @Override
-  public ResourceBundle newBundle(String baseName, Locale locale,
-            String format, ClassLoader loader, boolean reload)
-            throws IllegalAccessException, InstantiationException, IOException {
-    String bundleName = toBundleName(baseName, locale);
-    String resourceName = toResourceName(bundleName, "properties");
-    ResourceBundle bundle = null;
-    InputStream stream = null;
-    if (reload) {
-      URL url = loader.getResource(resourceName);
-      if (url != null) {
-        URLConnection connection = url.openConnection();
-        if (connection != null) {
-          connection.setUseCaches(false);
-          stream = connection.getInputStream();
+    @Override
+    public ResourceBundle newBundle(String baseName, Locale locale,
+                                    String format, ClassLoader loader, boolean reload)
+        throws IllegalAccessException, InstantiationException, IOException {
+        String bundleName = toBundleName(baseName, locale);
+        String resourceName = toResourceName(bundleName, "properties");
+        ResourceBundle bundle = null;
+        InputStream stream = null;
+        if (reload) {
+            URL url = loader.getResource(resourceName);
+            if (url != null) {
+                URLConnection connection = url.openConnection();
+                if (connection != null) {
+                    connection.setUseCaches(false);
+                    stream = connection.getInputStream();
+                }
+            }
+        } else {
+            stream = loader.getResourceAsStream(resourceName);
         }
-      }
-    } else {
-      stream = loader.getResourceAsStream(resourceName);
+        if (stream != null) {
+            try {
+                bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
+                    stream, "UTF-8")));
+            } finally {
+                stream.close();
+            }
+        }
+        return bundle;
     }
-    if (stream != null) {
-      try {
-        bundle = new PropertyResourceBundle(new BufferedReader(new InputStreamReader(
-               stream, "UTF-8")));
-      } finally {
-        stream.close();
-      }
-    }
-    return bundle;
-  }
 }

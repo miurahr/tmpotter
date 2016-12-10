@@ -54,6 +54,12 @@ checkstyle {
 // Force prevent checkstyle/findbugs on Test.
 task checkstyleTest(overwrite: true) << {}
 task findbugsTest(overwrite: true) << {}
+tasks.withType(Checkstyle) {
+  exclude '**/gen/core/**'
+  exclude '**/org/tmpotter/filters/*/ImportWizard*/'
+  exclude '**/org/tmpotter/ui/**'
+  exclude '**/org/tmpotter/util/xml/**'
+}
 tasks.withType(FindBugs) {
   reports {
     xml.enabled = false

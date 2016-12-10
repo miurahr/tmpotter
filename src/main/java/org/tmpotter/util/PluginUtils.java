@@ -31,42 +31,43 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 /**
- *
  * @author Hiroshi Miura
  */
 public class PluginUtils {
 
-  /** Private constructor to disallow creation */
-  private PluginUtils() {
-  }
+    /**
+     * Private constructor to disallow creation
+     */
+    private PluginUtils() {
+    }
 
-	public static List<IFilter> getFilters() {
-		return filterClasses;
-	}
+    public static List<IFilter> getFilters() {
+        return filterClasses;
+    }
 
-	public static List<IImportWizardPanel> getWizards() {
-		return wizardClasses;
-	}
+    public static List<IImportWizardPanel> getWizards() {
+        return wizardClasses;
+    }
 
-  static List<IFilter> filterClasses = collectAllImportFilterPlugins();
-	static List<IImportWizardPanel> wizardClasses = collectAllPanelPlugins();
+    static List<IFilter> filterClasses = collectAllImportFilterPlugins();
+    static List<IImportWizardPanel> wizardClasses = collectAllPanelPlugins();
 
-  private static List<IImportWizardPanel> collectAllPanelPlugins() {
+    private static List<IImportWizardPanel> collectAllPanelPlugins() {
         List<IImportWizardPanel> list = new ArrayList<>();
         ServiceLoader<IImportWizardPanel> loader = ServiceLoader.load(IImportWizardPanel.class, Thread.currentThread().getContextClassLoader());
-        for (IImportWizardPanel panel: loader) {
+        for (IImportWizardPanel panel : loader) {
             list.add(panel);
         }
         return list;
-  }
+    }
 
-  private static List<IFilter> collectAllImportFilterPlugins() {
-      List<IFilter> list = new ArrayList<>();
-      ServiceLoader<IFilter> loader = ServiceLoader.load(IFilter.class, Thread.currentThread().getContextClassLoader());
-      for (IFilter filter: loader) {
-          list.add(filter);
-      }
-      return list;
-  }
+    private static List<IFilter> collectAllImportFilterPlugins() {
+        List<IFilter> list = new ArrayList<>();
+        ServiceLoader<IFilter> loader = ServiceLoader.load(IFilter.class, Thread.currentThread().getContextClassLoader());
+        for (IFilter filter : loader) {
+            list.add(filter);
+        }
+        return list;
+    }
 
 }

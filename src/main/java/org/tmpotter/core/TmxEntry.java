@@ -39,7 +39,7 @@ import java.util.List;
  * ProjectTMX. We can't use just parameters in the setTranslation() method since
  * count of parameters is too much. Structure of this class is almost the save
  * like TMXEntry.
- *
+ * <p>
  * Instead, we will set all parameters into this class, then ProjectTMX will
  * convert in into TMXEntry than save internally.
  *
@@ -49,75 +49,75 @@ import java.util.List;
  */
 public class TmxEntry {
 
-  public String source;
-  public String translation;
-  public String changer;
-  public long changeDate;
-  public String creator;
-  public long creationDate;
-  public String note;
-  public List<KvProp> otherProperties;
+    public String source;
+    public String translation;
+    public String changer;
+    public long changeDate;
+    public String creator;
+    public long creationDate;
+    public String note;
+    public List<KvProp> otherProperties;
 
-  public TmxEntry() {
-  }
-
-  /**
-   * TMX entry class.
-   * 
-   * @param ent Entry for base
-   */
-  public TmxEntry(TmxEntry ent) {
-    source = ent.source;
-    translation = ent.translation;
-    changer = ent.changer;
-    changeDate = ent.changeDate;
-    creator = ent.creator;
-    creationDate = ent.creationDate;
-    note = ent.note;
-    otherProperties = ent.otherProperties;
-  }
-
-  /**
-   * get properties value.
-   * 
-   * @param propType propertiy type
-   * @return value
-   */
-  public String getPropValue(String propType) {
-    if (otherProperties == null) {
-      return null;
+    public TmxEntry() {
     }
-    for (int i = 0; i < otherProperties.size(); i++) {
-      KvProp kv = otherProperties.get(i);
-      if (propType.equals(kv.getType())) {
-        return kv.getValue();
-      }
-    }
-    return null;
-  }
 
-  /**
-   * Ask property type has value.
-   * 
-   * @param propType property type to ask
-   * @param propValue property value to be equal
-   * @return true  property of the type has the value
-   */
-  public boolean hasPropValue(String propType, String propValue) {
-    if (otherProperties == null) {
-      return false;
+    /**
+     * TMX entry class.
+     *
+     * @param ent Entry for base
+     */
+    public TmxEntry(TmxEntry ent) {
+        source = ent.source;
+        translation = ent.translation;
+        changer = ent.changer;
+        changeDate = ent.changeDate;
+        creator = ent.creator;
+        creationDate = ent.creationDate;
+        note = ent.note;
+        otherProperties = ent.otherProperties;
     }
-    for (int i = 0; i < otherProperties.size(); i++) {
-      KvProp kv = otherProperties.get(i);
-      if (propType.equals(kv.getType())) {
-        if (propValue == null) {
-          return true;
+
+    /**
+     * get properties value.
+     *
+     * @param propType propertiy type
+     * @return value
+     */
+    public String getPropValue(String propType) {
+        if (otherProperties == null) {
+            return null;
         }
-        if (propValue.equals(kv.getValue())) {
-          return true;
+        for (int i = 0; i < otherProperties.size(); i++) {
+            KvProp kv = otherProperties.get(i);
+            if (propType.equals(kv.getType())) {
+                return kv.getValue();
+            }
         }
-      }
+        return null;
     }
-    return false;
-  }
+
+    /**
+     * Ask property type has value.
+     *
+     * @param propType  property type to ask
+     * @param propValue property value to be equal
+     * @return true  property of the type has the value
+     */
+    public boolean hasPropValue(String propType, String propValue) {
+        if (otherProperties == null) {
+            return false;
+        }
+        for (int i = 0; i < otherProperties.size(); i++) {
+            KvProp kv = otherProperties.get(i);
+            if (propType.equals(kv.getType())) {
+                if (propValue == null) {
+                    return true;
+                }
+                if (propValue.equals(kv.getValue())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

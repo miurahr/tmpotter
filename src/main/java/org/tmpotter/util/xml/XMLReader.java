@@ -28,6 +28,7 @@
 package org.tmpotter.util.xml;
 
 import org.tmpotter.util.AppConstants;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,6 +38,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
+
 
 /**
  * This class automatically detects encoding of an inner XML file and constructs
@@ -106,12 +108,15 @@ public class XMLReader extends Reader {
         int char2 = is.read();
         int char3 = is.read();
         String encoding = null;
-        if (char1 == 0xFE && char2 == 0xFF)
+        if (char1 == 0xFE && char2 == 0xFF) {
             encoding = "UTF-16BE";
-        if (char1 == 0xFF && char2 == 0xFE)
+        }
+        if (char1 == 0xFF && char2 == 0xFE) {
             encoding = "UTF-16LE";
-        if (char1 == 0xEF && char2 == 0xBB && char3 == 0xBF)
+        }
+        if (char1 == 0xEF && char2 == 0xBB && char3 == 0xBF) {
             encoding = "UTF-8";
+        }
 
         is.reset();
         if (encoding != null) {
@@ -125,8 +130,9 @@ public class XMLReader extends Reader {
             String buffer = new String(buf, 0, len, StandardCharsets.UTF_8);
 
             Matcher matcher_xml = AppConstants.XML_ENCODING.matcher(buffer);
-            if (matcher_xml.find())
+            if (matcher_xml.find()) {
                 encoding = matcher_xml.group(1);
+            }
         }
 
         is.reset();
@@ -154,8 +160,9 @@ public class XMLReader extends Reader {
             readFirstTime = false;
             reader.mark(1);
             int ch = reader.read();
-            if (ch != 0xFEFF)
+            if (ch != 0xFEFF) {
                 reader.reset();
+            }
         }
         return reader.read(cbuf, off, len);
     }

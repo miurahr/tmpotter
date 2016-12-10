@@ -35,43 +35,43 @@ import java.util.HashMap;
 
 /**
  * save to TMX file.
- * 
+ *
  * @author miurahr
  */
 public class TmxWriter {
 
-  /**
-   * Write TMX file.
-   * 
-   * @param outFile filename for output
-   * @param originalDocument original document object
-   * @param langOriginal original document language
-   * @param translationDocument translation document object
-   * @param langTranslation translation language
-   * @throws Exception when file write error
-   */
-  public static void writeTmx( final File outFile,
-          Document originalDocument, String langOriginal,
-          Document translationDocument, String langTranslation
-          ) throws Exception {
-    Language sourceLanguage = new Language(langOriginal);
-    Language targetLanguage = new Language(langTranslation);
+    /**
+     * Write TMX file.
+     *
+     * @param outFile             filename for output
+     * @param originalDocument    original document object
+     * @param langOriginal        original document language
+     * @param translationDocument translation document object
+     * @param langTranslation     translation language
+     * @throws Exception when file write error
+     */
+    public static void writeTmx(final File outFile,
+                                Document originalDocument, String langOriginal,
+                                Document translationDocument, String langTranslation
+    ) throws Exception {
+        Language sourceLanguage = new Language(langOriginal);
+        Language targetLanguage = new Language(langTranslation);
 
-    TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
-            targetLanguage,  true, false, false);
-    try {
-        HashMap<String, String> prop = new HashMap<>();
-        for (int i = 0; i < originalDocument.size(); i++) {
-          TmxEntry te = new TmxEntry();
-          te.source = originalDocument.get(i);
-          te.translation = translationDocument.get(i);
-          wr.writeEntry(te.source, te.translation, te, prop);
+        TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
+            targetLanguage, true, false, false);
+        try {
+            HashMap<String, String> prop = new HashMap<>();
+            for (int i = 0; i < originalDocument.size(); i++) {
+                TmxEntry te = new TmxEntry();
+                te.source = originalDocument.get(i);
+                te.translation = translationDocument.get(i);
+                wr.writeEntry(te.source, te.translation, te, prop);
+            }
+        } finally {
+            wr.close();
         }
-    } finally {
-      wr.close();
     }
-  }
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TmxWriter.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TmxWriter.class.getName());
 
 }

@@ -34,16 +34,16 @@ package org.tmpotter.filters;
  */
 public interface IAlignCallback {
 
-  /**
-   * New found aligned data.
-   *
-   * @param id entry id
-   * @param source source text
-   * @param translation translated text
-   * @param isFuzzy true if translation is fuzzy
-   * @param path path
-   * @param filter filter which produces entry
-   */
-  void addTranslation(String id, String source, String translation, boolean isFuzzy, String path,
-      IFilter filter);
+    /**
+     * New found aligned data.
+     *
+     * @param id          entry id
+     * @param source      source text
+     * @param translation translated text
+     * @param isFuzzy     true if translation is fuzzy
+     * @param path        path
+     * @param filter      filter which produces entry
+     */
+    void addTranslation(String id, String source, String translation, boolean isFuzzy, String path,
+                        IFilter filter);
 }

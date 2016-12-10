@@ -42,107 +42,110 @@ import java.io.Writer;
 
 /**
  * Utility class for copying untranslatable files.
- * 
+ *
  * @author Keith Godfrey
  * @author Kim Bruning
  * @author Maxym Mykhalchuk
  */
 public class LFileCopy {
-  private static int BUFSIZE = 1024;
+    private static int BUFSIZE = 1024;
 
-  /** Copies one file. Creates directories on the path to dest if necessary. */
-  public static void copy(File src, File dest) throws IOException {
-    if (!src.exists()) {
-      throw new IOException("LFC-001:" + StringUtil
+    /**
+     * Copies one file. Creates directories on the path to dest if necessary.
+     */
+    public static void copy(File src, File dest) throws IOException {
+        if (!src.exists()) {
+            throw new IOException("LFC-001:" + StringUtil
                 .format(getString("LFC.ERROR.FILE_DOESNT_EXIST"),
-                src.getAbsolutePath()));
+                    src.getAbsolutePath()));
+        }
+        if (!dest.getParentFile().mkdirs()) {
+            // FIXME: destination directory has already existed.
+        }
+        try (FileOutputStream fos = new FileOutputStream(dest);
+             FileInputStream fis = new FileInputStream(src)) {
+            byte[] ba = new byte[BUFSIZE];
+            int readBytes;
+            while ((readBytes = fis.read(ba)) > 0) {
+                fos.write(ba, 0, readBytes);
+            }
+            fis.close();
+            fos.close();
+        }
     }
-    if (!dest.getParentFile().mkdirs()) {
-      // FIXME: destination directory has already existed.
-    }
-    try (FileOutputStream fos = new FileOutputStream(dest);
-        FileInputStream fis = new FileInputStream(src)) {
-      byte[] ba = new byte[BUFSIZE];
-      int readBytes;
-      while ((readBytes = fis.read(ba)) > 0) {
-        fos.write(ba, 0, readBytes);
-      }
-      fis.close();
-      fos.close();
-    }
-  }
 
-  /** 
-   * Stores a file from input stream.
-   * 
-   * <p>Input stream is not closed.
-   * 
-   * @param src input
-   * @param dest output
-   * @throws java.io.IOException if stream has error.
-   */
-  public static void copy(InputStream src, File dest) throws IOException {
-    if (!dest.getParentFile().mkdirs()) {
-      // FIXME: Destination directory has already existed.
+    /**
+     * Stores a file from input stream.
+     * <p>
+     * <p>Input stream is not closed.
+     *
+     * @param src  input
+     * @param dest output
+     * @throws java.io.IOException if stream has error.
+     */
+    public static void copy(InputStream src, File dest) throws IOException {
+        if (!dest.getParentFile().mkdirs()) {
+            // FIXME: Destination directory has already existed.
+        }
+        try (FileOutputStream fos = new FileOutputStream(dest)) {
+            byte[] ba = new byte[BUFSIZE];
+            int readBytes;
+            while ((readBytes = src.read(ba)) > 0) {
+                fos.write(ba, 0, readBytes);
+            }
+            fos.close();
+        }
     }
-    try (FileOutputStream fos = new FileOutputStream(dest)) {
-      byte[] ba = new byte[BUFSIZE];
-      int readBytes;
-      while ((readBytes = src.read(ba)) > 0) {
-        fos.write(ba, 0, readBytes);
-      }
-      fos.close();
-    }
-  }
 
-  /**
-   * Transfers all the input stream to the output stream.
-   * 
-   * <p>Input and output
-   * streams are not closed.
-   * @param src input
-   * @param dest output
-   * @throws java.io.IOException if input, output has error
-   */
-  public static void copy(InputStream src, OutputStream dest) throws IOException {
-    byte[] ba = new byte[BUFSIZE];
-    int readBytes;
-    while ((readBytes = src.read(ba)) > 0) {
-      dest.write(ba, 0, readBytes);
+    /**
+     * Transfers all the input stream to the output stream.
+     * <p>
+     * <p>Input and output
+     * streams are not closed.
+     *
+     * @param src  input
+     * @param dest output
+     * @throws java.io.IOException if input, output has error
+     */
+    public static void copy(InputStream src, OutputStream dest) throws IOException {
+        byte[] ba = new byte[BUFSIZE];
+        int readBytes;
+        while ((readBytes = src.read(ba)) > 0) {
+            dest.write(ba, 0, readBytes);
+        }
     }
-  }
 
-  /**
-   * Transfers all data from reader to writer.
-   * 
-   * <p>Reader and writer are not
-   * closed.
-   */
-  public static void copy(Reader src, Writer dest) throws IOException {
-    char[] ba = new char[BUFSIZE];
-    int readChars;
-    while ((readChars = src.read(ba)) > 0) {
-      dest.write(ba, 0, readChars);
+    /**
+     * Transfers all data from reader to writer.
+     * <p>
+     * <p>Reader and writer are not
+     * closed.
+     */
+    public static void copy(Reader src, Writer dest) throws IOException {
+        char[] ba = new char[BUFSIZE];
+        int readChars;
+        while ((readChars = src.read(ba)) > 0) {
+            dest.write(ba, 0, readChars);
+        }
     }
-  }
 
-  /**
-   * Loads contents of a file into output stream. Output stream is not closed.
-   */
-  public static void copy(File src, OutputStream dest) throws IOException {
-    if (!src.exists()) {
-      throw new IOException("LFC-002:" + StringUtil
-              .format(getString("LFC.ERROR.FILE_DOESNT_EXIST"),
-              src.getAbsolutePath()));
+    /**
+     * Loads contents of a file into output stream. Output stream is not closed.
+     */
+    public static void copy(File src, OutputStream dest) throws IOException {
+        if (!src.exists()) {
+            throw new IOException("LFC-002:" + StringUtil
+                .format(getString("LFC.ERROR.FILE_DOESNT_EXIST"),
+                    src.getAbsolutePath()));
+        }
+        try (FileInputStream fis = new FileInputStream(src)) {
+            byte[] ba = new byte[BUFSIZE];
+            int readBytes;
+            while ((readBytes = fis.read(ba)) > 0) {
+                dest.write(ba, 0, readBytes);
+            }
+            fis.close();
+        }
     }
-    try (FileInputStream fis = new FileInputStream(src)) {
-      byte[] ba = new byte[BUFSIZE];
-      int readBytes;
-      while ((readBytes = fis.read(ba)) > 0) {
-        dest.write(ba, 0, readBytes);
-      }
-      fis.close();
-    }
-  }
 
 }

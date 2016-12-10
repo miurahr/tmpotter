@@ -38,28 +38,28 @@ package org.tmpotter.filters;
  */
 public interface Element {
 
-  /**
-   * Returns shortcut string representation of the element. E.g. for
-   * &lt;strong&gt; tag should return &lt;s3&gt;.
-   */
-  String toShortcut();
+    /**
+     * Returns shortcut string representation of the element. E.g. for
+     * &lt;strong&gt; tag should return &lt;s3&gt;.
+     */
+    String toShortcut();
 
-  /**
-   * Returns shorcuts like '\b_i0_\b' for statistics calculation.
-   */
-  String toSafeCalcShortcut();
+    /**
+     * Returns shorcuts like '\b_i0_\b' for statistics calculation.
+     */
+    String toSafeCalcShortcut();
 
-  /**
-   * Returns long XML-encoded representation of the element for storing in TMX.
-   * E.g. for &lt;strong&gt; tag should return &lt;bpt
-   * i="3"&gt;&amp;lt;strong&amp;gt;&lt;/bpt&gt;.
-   */
-  String toTmx();
+    /**
+     * Returns long XML-encoded representation of the element for storing in TMX.
+     * E.g. for &lt;strong&gt; tag should return &lt;bpt
+     * i="3"&gt;&amp;lt;strong&amp;gt;&lt;/bpt&gt;.
+     */
+    String toTmx();
 
-  /**
-   * Returns the element in its original form as it was in original document.
-   * E.g. for &lt;strong&gt; tag should return &lt;bpt
-   * i="3"&gt;&amp;lt;strong&amp;gt;&lt;/bpt&gt;.
-   */
-  String toOriginal();
+    /**
+     * Returns the element in its original form as it was in original document.
+     * E.g. for &lt;strong&gt; tag should return &lt;bpt
+     * i="3"&gt;&amp;lt;strong&amp;gt;&lt;/bpt&gt;.
+     */
+    String toOriginal();
 }

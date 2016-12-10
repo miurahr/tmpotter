@@ -36,53 +36,53 @@ import java.io.InputStream;
 
 public class EncodingDetector {
 
-  /**
-   * Detect the encoding of the supplied file. Convenience method for
-   * {@link #detectEncoding(java.io.InputStream)}.
-   */
-  public static String detectEncoding(File inFile) throws IOException {
-    FileInputStream stream = new FileInputStream(inFile);
-    try {
-      return detectEncoding(stream);
-    } finally {
-      stream.close();
-    }
-  }
-
-  /**
-   * Detect the encoding of the supplied file.
-   *
-   * @see <a href="https://code.google.com/p/juniversalchardet/">Original</a>
-   * @see <a href="https://github.com/amake/juniversalchardet">Fork</a>
-   */
-  public static String detectEncoding(InputStream stream) throws IOException {
-    UniversalDetector detector = new UniversalDetector(null);
-
-    byte[] buffer = new byte[4096];
-    int read;
-    while ((read = stream.read(buffer)) > 0 && !detector.isDone()) {
-      detector.handleData(buffer, 0, read);
+    /**
+     * Detect the encoding of the supplied file. Convenience method for
+     * {@link #detectEncoding(java.io.InputStream)}.
+     */
+    public static String detectEncoding(File inFile) throws IOException {
+        FileInputStream stream = new FileInputStream(inFile);
+        try {
+            return detectEncoding(stream);
+        } finally {
+            stream.close();
+        }
     }
 
-    detector.dataEnd();
+    /**
+     * Detect the encoding of the supplied file.
+     *
+     * @see <a href="https://code.google.com/p/juniversalchardet/">Original</a>
+     * @see <a href="https://github.com/amake/juniversalchardet">Fork</a>
+     */
+    public static String detectEncoding(InputStream stream) throws IOException {
+        UniversalDetector detector = new UniversalDetector(null);
 
-    String encoding = detector.getDetectedCharset();
-    detector.reset();
+        byte[] buffer = new byte[4096];
+        int read;
+        while ((read = stream.read(buffer)) > 0 && !detector.isDone()) {
+            detector.handleData(buffer, 0, read);
+        }
 
-    return encoding;
-  }
+        detector.dataEnd();
 
-  /**
-   * Detect the encoding of the supplied file. If detection fails, return the supplied default
-   * encoding.
-   */
-  public static String detectEncodingDefault(File inFile, String defaultEncoding) {
-    String detected = null;
-    try {
-      detected = detectEncoding(inFile);
-    } catch (IOException ex) {
-      // Ignore
+        String encoding = detector.getDetectedCharset();
+        detector.reset();
+
+        return encoding;
     }
-    return detected == null ? defaultEncoding : detected;
-  }
+
+    /**
+     * Detect the encoding of the supplied file. If detection fails, return the supplied default
+     * encoding.
+     */
+    public static String detectEncodingDefault(File inFile, String defaultEncoding) {
+        String detected = null;
+        try {
+            detected = detectEncoding(inFile);
+        } catch (IOException ex) {
+            // Ignore
+        }
+        return detected == null ? defaultEncoding : detected;
+    }
 }
