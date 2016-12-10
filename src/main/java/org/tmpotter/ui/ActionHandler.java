@@ -408,11 +408,10 @@ final class ActionHandler {
           }
         }
       }
-      String encoding = "UTF-8";
-      TmxWriter.writeTmxFileBody(outFile, tmData.documentOriginal,
+      TmxWriter.writeTmx(outFile, tmData.documentOriginal,
           tmData.stringLangOriginal, tmData.documentTranslation,
-          tmData.stringLangTranslation, encoding);
-    } catch (IOException ex) {
+          tmData.stringLangTranslation);
+    } catch (Exception ex) {
       JOptionPane.showMessageDialog(parent,
           tmData.stringLangOriginal, tmData.stringLangTranslation,
           JOptionPane.ERROR_MESSAGE);

@@ -34,10 +34,7 @@ package org.tmpotter.util;
 import org.tmpotter.core.TmxEntry;
 import org.tmpotter.util.xml.XMLUtil;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -47,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.FileUtil;
@@ -107,7 +105,7 @@ public class TmxWriter2 {
    */
   public TmxWriter2(File file, final Language sourceLanguage,
           final Language targetLanguage, boolean sentenceSegmentingEnabled,
-          boolean levelTwo, boolean forceValidTmx) throws Exception {
+          boolean levelTwo, boolean forceValidTmx) throws XMLStreamException, FileNotFoundException {
     this.levelTwo = levelTwo;
     this.forceValidTmx = forceValidTmx;
 
@@ -148,7 +146,7 @@ public class TmxWriter2 {
    * 
    * @throws Exception when io error
    */
-  public void close() throws Exception {
+  public void close() throws XMLStreamException, IOException {
     try {
       xml.writeCharacters("  ");
       xml.writeEndElement(); // body
@@ -164,7 +162,7 @@ public class TmxWriter2 {
     }
   }
 
-  public void writeComment(String comment) throws Exception {
+  public void writeComment(String comment) throws XMLStreamException {
     xml.writeComment(comment);
     xml.writeCharacters(FileUtil.LINE_SEPARATOR);
   }
@@ -179,7 +177,7 @@ public class TmxWriter2 {
    * @throws java.lang.Exception when file write error occord.
    */
   public void writeEntry(String source, String translation,
-          TmxEntry entry, Map<String,String> properties) throws Exception {
+          TmxEntry entry, Map<String,String> properties) throws XMLStreamException {
     xml.writeCharacters("    ");
     xml.writeStartElement("tu");
     xml.writeCharacters(FileUtil.LINE_SEPARATOR);
@@ -277,7 +275,7 @@ public class TmxWriter2 {
   }
 
   private void writeHeader(final Language sourceLanguage, final Language targetLanguage,
-          boolean sentenceSegmentingEnabled) throws Exception {
+          boolean sentenceSegmentingEnabled) throws XMLStreamException {
     xml.writeCharacters("  ");
     xml.writeEmptyElement("header");
 
@@ -299,7 +297,7 @@ public class TmxWriter2 {
   /**
    * Create simple segment.
    */
-  private void writeLevelOne(String segment) throws Exception {
+  private void writeLevelOne(String segment) throws XMLStreamException {
     xml.writeCharacters("        ");
     xml.writeStartElement("seg");
     xml.writeCharacters(segment);
@@ -310,7 +308,7 @@ public class TmxWriter2 {
 
   enum TagType { SINGLE, START, END }
 
-  private void writeLevelTwo(String segment) throws Exception {
+  private void writeLevelTwo(String segment) throws XMLStreamException {
     xml.writeCharacters("        ");
     xml.writeStartElement("seg");
 
