@@ -1,8 +1,0 @@
-Licenses:
-
-mnemonics.jar is distributed under the GNU General Public License
-version 2.0 and later. Sources are placed at src/lib-mnemonics.tar.bz2
-
-liquidlnf.jar version 2.9.1 is dictributted under the GNU Lesser
-General Public License version 2.1 and later. Sources are placed
-at src/liquidlnf-2.9.1-src.tar.bz2

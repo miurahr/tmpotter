@@ -24,7 +24,7 @@
 package org.tmpotter.core;
 
 import org.tmpotter.util.Language;
-import org.tmpotter.util.Preferences;
+import org.tmpotter.preferences.Preferences;
 import org.tmpotter.util.StringUtil;
 
 import java.io.File;

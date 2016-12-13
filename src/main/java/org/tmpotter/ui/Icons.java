@@ -20,7 +20,6 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
-
 package org.tmpotter.ui;
 
 import org.tmpotter.util.Platform;
@@ -36,11 +35,11 @@ import javax.swing.ImageIcon;
 
 /**
  * Icon resource accessor.
- * 
+ *
  * @author Hiroshi Miura
  */
 public class Icons {
-  
+
   static final Map<String, Image> ICONS = new HashMap<String, Image>();
   static final String RESOURCES = "/org/tmpotter/ui/resources/";
 
@@ -58,15 +57,15 @@ public class Icons {
 
   /**
    * Accessor for Icon image.
-   * 
+   *
    * @param iconName to retrieve
    * @return icon image
    */
-  public static final ImageIcon getIcon( final String iconName ) {
+  public static final ImageIcon getIcon(final String iconName) {
     if (!ICONS.containsKey(iconName)) {
       Image image;
       try {
-        image = ResourceUtil.getImage(RESOURCES + iconName );
+        image = ResourceUtil.getImage(RESOURCES + iconName);
       } catch (FileNotFoundException ex) {
         image = ICONS.get("icon-broken.png");
       }
@@ -77,8 +76,8 @@ public class Icons {
 
   protected ImageIcon getDesktopIcon(final String iconName, MainWindow mainWindow) {
     if (Platform.isMacOsx()) {
-      return mainWindow.mainMenu.getIcon("desktop/osx/" + iconName);
+      return Icons.getIcon("desktop/osx/" + iconName);
     }
-    return mainWindow.mainMenu.getIcon("desktop/" + iconName);
+    return Icons.getIcon("desktop/" + iconName);
   }
 }

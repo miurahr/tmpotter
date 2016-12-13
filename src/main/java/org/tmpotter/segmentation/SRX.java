@@ -48,12 +48,12 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class with all the segmentation data possible -- rules, languages, etc.
@@ -88,7 +88,7 @@ public class SRX implements Serializable, Cloneable {
     }
   }
 
-  private static final Logger LOG = Logger.getLogger(SRX.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(SRX.class);
 
   /**
    * Initializes SRX rules to defaults.
@@ -138,7 +138,7 @@ public class SRX implements Serializable, Cloneable {
       xmlenc.writeObject(srx);
       xmlenc.close();
     } catch (IOException ioe) {
-      LOG.log(Level.WARNING, "IO Error", ioe);
+      LOG.warn("IO Error", ioe);
       throw ioe;
     }
   }
@@ -170,8 +170,7 @@ public class SRX implements Serializable, Cloneable {
           sb.append(ex);
           sb.append("\n");
         }
-        LOG.logrb(Level.SEVERE, "SRX", "loadSRX",
-                "SRX.ERROR.LOADING_SEG_RULES", sb.toString());
+        LOG.warn(getString("SRX.ERROR.LOADING_SEG_RULES"), sb.toString());
         res = new SRX();
         res.initDefaults();
         return res;
@@ -190,7 +189,7 @@ public class SRX implements Serializable, Cloneable {
     } catch (Exception e) {
       // silently ignoring FNF
       if (!(e instanceof FileNotFoundException)) {
-        LOG.log(Level.INFO, getString("SRX.ERROR.FILE_NOT_FOUND"), e);
+        LOG.info(getString("SRX.ERROR.FILE_NOT_FOUND"), e);
       }
       res = new SRX();
       res.initDefaults();

@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015,2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -24,7 +24,6 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
-
 package org.tmpotter.ui;
 
 import java.awt.Dimension;
@@ -34,7 +33,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
-
 @SuppressWarnings("serial")
 public class SplashScreen extends JWindow {
 
@@ -43,31 +41,31 @@ public class SplashScreen extends JWindow {
    */
   public SplashScreen() {
     ImageIcon image = null;
-    JLabel    label;
+    JLabel label;
 
     try {
-      label = new JLabel( Icons.getIcon( "splash.png") );
-    
-    } catch ( Exception ex ) {
-      label = new JLabel( "Error: unable to load image!" );
+      label = new JLabel(Icons.getIcon("splash.png"));
+
+    } catch (Exception ex) {
+      label = new JLabel("Error: unable to load image!");
     }
 
-    getContentPane().add( label );
+    getContentPane().add(label);
     pack();
 
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-    int locationX = (int)( dim.getWidth() - getWidth() ) / 2;
-    int localtionY = (int)( dim.getHeight() - getHeight() ) / 2;
-    setLocation( locationX, localtionY );
+    int locationX = (int) (dim.getWidth() - getWidth()) / 2;
+    int localtionY = (int) (dim.getHeight() - getHeight()) / 2;
+    setLocation(locationX, localtionY);
   }
 
   public void display() {
     pack();
-    setVisible( true );
+    setVisible(true);
   }
-  
+
   public void remove() {
-    setVisible( false );
+    setVisible(false);
     dispose();
   }
 }

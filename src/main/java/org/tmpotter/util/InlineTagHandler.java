@@ -3,7 +3,7 @@
  *  TMPotter - Bi-text Aligner/TMX Editor.
  *
  *  Copyright (C) 2005-2009  Raymond: Martin
- *            (C) 2015 Hiroshi Miura
+ *            (C) 2015,2016 Hiroshi Miura
  *
  *  Copyright (C) 2013 Alex Buloichik, Aaron Madlon-Kay
  *
@@ -80,7 +80,7 @@ public class InlineTagHandler {
     currentI = attrI;
     int index = tagIndex++;
     try {
-            // If a value for the @x attr was provided, base the tag
+      // If a value for the @x attr was provided, base the tag
       // number off of it for matching purposes.
       // Subtract 1 because OmegaT 0-indexes tags, while TMX
       // seems to start at 1 (though the spec only says it must be

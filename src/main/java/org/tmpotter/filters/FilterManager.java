@@ -23,6 +23,8 @@
 
 package org.tmpotter.filters;
 
+import org.tmpotter.filters.pofile.PoFilter;
+import org.tmpotter.filters.bitext.BiTextFilter;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.util.Localization;
@@ -50,6 +52,7 @@ public class FilterManager {
     filterList = new ArrayList<>();
     filterList.add(new BiTextFilter());
     filterList.add(new PoFilter());
+    filterList.add(new TmxFilter());
   }
   
   /**

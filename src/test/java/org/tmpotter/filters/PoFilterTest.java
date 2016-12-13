@@ -28,9 +28,10 @@ package org.tmpotter.filters;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import org.tmpotter.util.Localization;
+import org.tmpotter.filters.pofile.PoFilter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 

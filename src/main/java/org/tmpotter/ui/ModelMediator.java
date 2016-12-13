@@ -23,9 +23,10 @@
 
 package org.tmpotter.ui;
 
-import java.awt.event.KeyEvent;
+import org.tmpotter.core.ProjectProperties;
+
 import java.io.File;
-import java.io.IOException;
+
 
 /**
  * Model mediator for TM view and segment editors.
@@ -33,42 +34,50 @@ import java.io.IOException;
  * @author Hiroshi Miura
  */
 public interface ModelMediator {
+  // Open/Import
+  void setFilePathOriginal(File filePath);
 
-  void onOpenFile(File filePathOriginal, String stringLangOriginal, String stringLangTranslation);
+  String getFileNameOriginal();
 
-  void setOriginalProperties(File filePath, String text, String lang, String encoding);
+  void setFilePathTranslation(File filePath);
 
-  void setTargetProperties(File filePath, String text, String lang, String encoding);
+  String getFileNameTranslation();
 
-  void onImportFile(String filterName) throws IOException;
+  void setSourceLanguage(String lang);
 
-  //for TMView
+  void setTargetLanguage(String lang);
+
+  void setOriginalProperties(File filePath, String lang, String encoding);
+
+  void setTargetProperties(File filePath, String lang, String encoding);
+
+  // Props
+  ProjectProperties getProjectProperties();
+
+  void clearProjectProperties();
+
+  // Menus
+  void enableButtonsOnOpenFile(boolean val);
+
+  // TMView
+  void initializeTmView();
+
   void updateTmView();
 
-  void onOriginalJoin();
+  void buildDisplay();
 
-  void onOriginalDelete();
+  String getLeftSegment(int index);
 
-  void onOriginalSplit();
+  String getRightSegment(int index);
 
-  void onTranslationJoin();
+  int getTmViewRows();
 
-  void onTranslationDelete();
+  int getTmViewSelectedRow();
 
-  void onTranslationSplit();
-
-  void onUndo();
-
-  void onRemoveBlankRows();
-
-  void onTuSplit();
+  int getTmViewSelectedColumn();
 
   // Segment Editor
   void setTextAreaPosition(int position);
-
-  void onTableClicked();
-
-  void onTablePressed(final KeyEvent event);
 
   void tmDataClear();
 
@@ -78,5 +87,21 @@ public interface ModelMediator {
 
   void setUndoEnabled(boolean enable);
 
-  void undoChanges();
+  void setLeftEdit(String edit);
+
+  void setRightEdit(String edit);
+
+  String getLeftEdit();
+
+  String getRightEdit();
+
+  // ToolBar
+  void setJoinEnabled(boolean val);
+
+  void enableAlignToolBar(boolean enable);
+
+  void enableMenuItemFileSave(boolean val);
+
+  // Status Bar
+  void updateStatusBar();
 }
