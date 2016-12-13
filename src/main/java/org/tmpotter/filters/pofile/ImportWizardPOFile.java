@@ -21,7 +21,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.ui.wizard;
+package org.tmpotter.filters.pofile;
 
 
 import java.io.File;
@@ -30,6 +30,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.tmpotter.ui.wizard.IImportWizardPanel;
+import org.tmpotter.ui.wizard.ImportPreference;
+import org.tmpotter.ui.wizard.ImportWizardController;
+import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
 import org.tmpotter.util.AppConstants;
 
 import static org.openide.awt.Mnemonics.setLocalizedText;
@@ -53,7 +57,10 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
 	/**
 	 * Creates new form ImportWizardPOFile
 	 */
-	public ImportWizardPOFile(final ImportWizardController controller,
+	public ImportWizardPOFile() {
+	}
+
+	public void init(final ImportWizardController controller,
 	    ImportPreference pref) {
 		wizardController = controller;
 		this.pref = pref;
@@ -65,10 +72,21 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
 		return id;
 	}
 
+	public boolean isCombinedFormat() {
+		return true;
+	}
+
 	public JPanel getPanel() {
 		return this;
 	}
-	
+
+	public String getName() {
+		return "PO file";
+	}
+
+	public String getDesc() {
+		return "PO file.";
+	}
 	public final File getPath() {
 		return new File(fieldImportFile.getText());
 	}

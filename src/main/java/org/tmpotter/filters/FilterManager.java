@@ -23,14 +23,12 @@
 
 package org.tmpotter.filters;
 
-import org.tmpotter.filters.pofile.PoFilter;
-import org.tmpotter.filters.bitext.BiTextFilter;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.util.Localization;
+import org.tmpotter.util.PluginUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,10 +47,7 @@ public class FilterManager {
    * Constructor.
    */
   public FilterManager() {
-    filterList = new ArrayList<>();
-    filterList.add(new BiTextFilter());
-    filterList.add(new PoFilter());
-    filterList.add(new TmxFilter());
+    filterList = PluginUtils.getFilters();
   }
   
   /**

@@ -69,7 +69,6 @@ public class ImportWizard extends javax.swing.JDialog {
 	}
 		
 	String getButtonBackCommand() {
-		
 		return wizardPanels.get(currentPanel).getBackCommand();
 	}
 

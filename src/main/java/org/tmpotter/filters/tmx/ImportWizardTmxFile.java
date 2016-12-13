@@ -21,13 +21,18 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.ui.wizard;
+package org.tmpotter.filters.tmx;
 
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.tmpotter.ui.wizard.IImportWizardPanel;
+import org.tmpotter.ui.wizard.ImportPreference;
+import org.tmpotter.ui.wizard.ImportWizardController;
+import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Localization;
 import static org.tmpotter.util.Localization.getString;
@@ -45,8 +50,10 @@ public class ImportWizardTmxFile extends javax.swing.JPanel implements IImportWi
 	/**
 	 * Creates new form ImportWizardTmxFile
 	 */
-	public ImportWizardTmxFile(final ImportWizardController controller,
-	    ImportPreference pref) {
+	public ImportWizardTmxFile() {
+	}
+
+	public void init(final ImportWizardController controller, ImportPreference pref) {
 		wizardController = controller;
 		this.pref = pref;
 		initComponents();
@@ -57,10 +64,22 @@ public class ImportWizardTmxFile extends javax.swing.JPanel implements IImportWi
 		return id;
 	}
 
+	public boolean isCombinedFormat() {
+		return true;
+	}
+
 	public JPanel getPanel() {
 		return this;
 	}
-	
+
+	public String getName() {
+		return "TMX file";
+	}
+
+	public String getDesc() {
+		return "TMX file.";
+	}
+
 	public final File getPath() {
 		return new File(fieldImportFile.getText());
 	}

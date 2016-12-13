@@ -23,6 +23,8 @@
 
 package org.tmpotter.ui.wizard;
 
+import org.tmpotter.util.PluginUtils;
+
 import java.io.File;
 
 
@@ -36,21 +38,20 @@ public class ImportWizardController {
 	private ImportPreference pref;
 	private boolean finished = false;
 
-	protected File userPathFile = new File(System.getProperty("user.dir"));
-
 	public ImportWizardController(final ImportWizard wizard) {
 		this.wizard = wizard;
 		pref = wizard.getPref();
-		// TODO: get wizards from parameter or manifest.
 		registerPanels();
 		onStartup();
 	}
 
-	private final void registerPanels() {
-		wizard.registerWizardPanel(ImportWizardPOFile.id, new ImportWizardPOFile(this, pref));
-		wizard.registerWizardPanel(ImportWizardBiTextFile.id, new ImportWizardBiTextFile(this, pref));
-		wizard.registerWizardPanel(ImportWizardTmxFile.id, new ImportWizardTmxFile(this, pref));
-		wizard.registerWizardPanel(ImportWizardSelectTypePanel.id, new ImportWizardSelectTypePanel());
+	private void registerPanels() {
+		IImportWizardPanel p = new ImportWizardSelectTypePanel();
+		wizard.registerWizardPanel(p.getId(), p);
+		for (IImportWizardPanel panel: PluginUtils.getWizards()) {
+      panel.init(this, pref);
+      wizard.registerWizardPanel(panel.getId(), panel);
+		}
 	}
 
 	public final void onStartup() {

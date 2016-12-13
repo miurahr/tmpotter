@@ -67,7 +67,6 @@ import org.tmpotter.filters.FilterContext;
  * @author Hiroshi Miura
  */
 public class PoFilter extends AbstractFilter {
-
   /**
    * Pattern for detecting the placeholders in a printf-function string which can occur in languages
    * like php, C and others. placeholder ::= "%" [ARGUMENTSWAPSPECIFIER] [SIGNSPECIFIER]
