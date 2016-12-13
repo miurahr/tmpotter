@@ -25,124 +25,126 @@ package org.tmpotter.ui.wizard;
 
 import org.tmpotter.util.PluginUtils;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+
 /**
- * 
  * @author Hiroshi Miura
  */
 public class ImportWizardSelectTypePanel extends JPanel implements IImportWizardPanel {
-	public static final String id = "selecttype";
-  private ImportWizardController wizardController;
-  private List<JRadioButton> buttons = new ArrayList<>();
-  private List<JLabel> labels = new ArrayList<>();
+    public static final String id = "selecttype";
+    private ImportWizardController wizardController;
+    private List<JRadioButton> buttons = new ArrayList<>();
+    private List<JLabel> labels = new ArrayList<>();
 
-	/**
-   *
-	 * Creates new form ImportWizardSelectTypePanel
-	 */
-	public ImportWizardSelectTypePanel() {
-		initComponents();
-    setOptions();
-	}
-
-  public void init(final ImportWizardController controller, ImportPreference pref) {
-  }
-
-  // dummy methods.
-	public String getId() {
-		return id;
-	}
-
-	public boolean isCombinedFormat() {
-    return true;
-  }
-
-	public JPanel getPanel() {
-		return this;
-	}
-
-	public String getName() {
-    return null;
-  }
-
-  public String getDesc() {
-    return null;
-  }
-
-	public String getNextFinishCommand() {
-		return getSelection();
-	}
-	
-	public String getBackCommand() {
-		return null;
-	}
-
-	public String getSelection() {
-		if (buttonGroup.getSelection() != null) {
-      return buttonGroup.getSelection().getActionCommand();
+    /**
+     * Creates new form ImportWizardSelectTypePanel
+     */
+    public ImportWizardSelectTypePanel() {
+        initComponents();
+        setOptions();
     }
-    return "";
-	}
-	
-	public void updatePref() {
-	}
 
-	private void setOptions() {
-      // count panels.
-      int combined = 0;
-      int bitext = 0;
-      List<IImportWizardPanel> panels = PluginUtils.getWizards();
-      for (IImportWizardPanel panel : panels) {
-        if (panel.isCombinedFormat()) {
-          combined++;
-        } else {
-          bitext++;
+    public void init(final ImportWizardController controller, ImportPreference pref) {
+    }
+
+    // dummy methods.
+    public String getId() {
+        return id;
+    }
+
+    public boolean isCombinedFormat() {
+        return true;
+    }
+
+    public JPanel getPanel() {
+        return this;
+    }
+
+    public String getName() {
+        return null;
+    }
+
+    public String getDesc() {
+        return null;
+    }
+
+    public String getNextFinishCommand() {
+        return getSelection();
+    }
+
+    public String getBackCommand() {
+        return null;
+    }
+
+    public String getSelection() {
+        if (buttonGroup.getSelection() != null) {
+            return buttonGroup.getSelection().getActionCommand();
         }
-      }
-      // set place holder size.
-      panelBiText.setLayout(new java.awt.GridLayout(2, bitext));
-      panelSingle.setLayout(new java.awt.GridLayout(2, combined));
-      // create radioButtons and labels.
-      for (IImportWizardPanel panel : panels) {
-          JLabel label = new JLabel();
-          label.setText(panel.getDesc());
-          JRadioButton button = new JRadioButton();
-          button.setText(panel.getName());
-          button.setActionCommand(panel.getId());
-          if (panel.isCombinedFormat()) {
-            panelSingle.add(button);
-            panelSingle.add(label);
-          } else {
-            panelBiText.add(button);
-            panelBiText.add(label);
-          }
-          buttonGroup.add(button);
-          buttons.add(button);
-          labels.add(label);
-      }
-      add(panelBiText);
-      add(panelSingle);
-  }
+        return "";
+    }
 
-  private void initComponents() {
-      buttonGroup = new javax.swing.ButtonGroup();
-      panelBiText = new javax.swing.JPanel();
-      panelSingle = new javax.swing.JPanel();
+    public void updatePref() {
+    }
 
-      setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
+    private void setOptions() {
+        // count panels.
+        int combined = 0;
+        int bitext = 0;
+        List<IImportWizardPanel> panels = PluginUtils.getWizards();
+        for (IImportWizardPanel panel : panels) {
+            if (panel.isCombinedFormat()) {
+                combined++;
+            } else {
+                bitext++;
+            }
+        }
+        // set place holder size.
+        panelBiText.setLayout(new java.awt.GridLayout(2, bitext));
+        panelSingle.setLayout(new java.awt.GridLayout(2, combined));
+        // create radioButtons and labels.
+        for (IImportWizardPanel panel : panels) {
+            JLabel label = new JLabel();
+            label.setText(panel.getDesc());
+            JRadioButton button = new JRadioButton();
+            button.setText(panel.getName());
+            button.setActionCommand(panel.getId());
+            if (panel.isCombinedFormat()) {
+                panelSingle.add(button);
+                panelSingle.add(label);
+            } else {
+                panelBiText.add(button);
+                panelBiText.add(label);
+            }
+            buttonGroup.add(button);
+            buttons.add(button);
+            labels.add(label);
+        }
+        add(panelBiText);
+        add(panelSingle);
+    }
 
-      panelBiText.setBorder(javax.swing.BorderFactory.createTitledBorder("Bi-Text imports"));
-      panelBiText.setLayout(new java.awt.GridLayout(1, 0));
+    private void initComponents() {
+        buttonGroup = new javax.swing.ButtonGroup();
+        panelBiText = new javax.swing.JPanel();
+        panelSingle = new javax.swing.JPanel();
 
-      panelSingle.setBorder(javax.swing.BorderFactory.createTitledBorder("Single file import"));
-      panelSingle.setLayout(new java.awt.GridLayout(2, 2));
-  }
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-      private javax.swing.ButtonGroup buttonGroup;
-      private javax.swing.JPanel panelBiText;
-      private javax.swing.JPanel panelSingle;
+        panelBiText.setBorder(javax.swing.BorderFactory.createTitledBorder("Bi-Text imports"));
+        panelBiText.setLayout(new java.awt.GridLayout(1, 0));
+
+        panelSingle.setBorder(javax.swing.BorderFactory.createTitledBorder("Single file import"));
+        panelSingle.setLayout(new java.awt.GridLayout(2, 2));
+    }
+
+    private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JPanel panelBiText;
+    private javax.swing.JPanel panelSingle;
 
 }

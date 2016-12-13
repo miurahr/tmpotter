@@ -27,55 +27,63 @@
 
 package org.tmpotter.util.xml;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Utilities for XML processing.
- * 
+ *
  * @author Hiroshi Miura
  */
 public class XMLUtil {
 
-  private static final String RE_TAG = "<\\/?[a-zA-Z]+[0-9]+\\/?>";
-  
-  /**
-   *  Converts a single char into a valid XML character
-   *
-   *  Output stream must convert stream to UTF-8 when saving to disk.
-   */
-  private static String getValidXMLChar( final char ch )
-  {
-    switch( ch )
-    {
-      //case '\'': return "&apos;";
-      case '&': return "&amp;";
-      case '>': return "&gt;";
-      case '<': return "&lt;";
-      case '"': return "&quot;";
-      default : return String.valueOf( ch );
-    }
-  }
+    private static final String RE_TAG = "<\\/?[a-zA-Z]+[0-9]+\\/?>";
 
     /**
-   *  Converts a plaintext string into valid XML string
-   *
-   *  Output stream must convert stream to UTF-8 when saving to disk.
-   * 
-   * @param plaintext
-   * @return 
-   */
-  final public static String getValidXMLText( final String plaintext )
-  {
-    final StringBuilder out = new StringBuilder();
-    final String text = fixChars( plaintext );
+     * Converts a single char into a valid XML character
+     * <p>
+     * Output stream must convert stream to UTF-8 when saving to disk.
+     */
+    private static String getValidXMLChar(final char ch) {
+        switch (ch) {
+            //case '\'': return "&apos;";
+            case '&':
+                return "&amp;";
+            case '>':
+                return "&gt;";
+            case '<':
+                return "&lt;";
+            case '"':
+                return "&quot;";
+            default:
+                return String.valueOf(ch);
+        }
+    }
 
-    for( int i=0; i<text.length(); i++ )
-      out.append( getValidXMLChar( text.charAt( i ) ) );
+    /**
+     * Converts a plaintext string into valid XML string
+     * <p>
+     * Output stream must convert stream to UTF-8 when saving to disk.
+     *
+     * @param plaintext source text.
+     * @return string that is valid as XML text.
+     */
+    public static String getValidXMLText(final String plaintext) {
+        final StringBuilder out = new StringBuilder();
+        final String text = fixChars(plaintext);
 
-    return( out.toString() );
-  }
-  
+        for (int i = 0; i < text.length(); i++) {
+            out.append(getValidXMLChar(text.charAt(i)));
+        }
+
+        return (out.toString());
+    }
+
+    /**
+     * Remove invalid string from text.
+     * @param str input string.
+     * @return valid text.
+     */
     public static String removeXMLInvalidChars(String str) {
         StringBuilder sb = new StringBuilder(str.length());
         for (int c, i = 0; i < str.length(); i += Character.charCount(c)) {
@@ -88,14 +96,22 @@ public class XMLUtil {
         return sb.toString();
     }
 
+    /**
+     * Check codepoint is valid for XML or not.
+     * @param codePoint char.
+     * @return true if valid, otherwise false.
+     */
     public static boolean isValidXMLChar(int codePoint) {
         if (codePoint < 0x20) {
             if (codePoint != 0x09 && codePoint != 0x0A && codePoint != 0x0D) {
                 return false;
             }
         } else if (codePoint >= 0x20 && codePoint <= 0xD7FF) {
+            return true;
         } else if (codePoint >= 0xE000 && codePoint <= 0xFFFD) {
+            return true;
         } else if (codePoint >= 0x10000 && codePoint <= 0x10FFFF) {
+            return true;
         } else {
             return false;
         }
@@ -105,27 +121,33 @@ public class XMLUtil {
     /**
      * Converts a single code point into valid XML. Output stream must convert stream
      * to UTF-8 when saving to disk.
+     *
+     * @param cp code point.
+     * @return plain char.
      */
     public static String escapeXMLChars(int cp) {
         switch (cp) {
-        // case '\'':
-        // return "&apos;";
-        case '&':
-            return "&amp;";
-        case '>':
-            return "&gt;";
-        case '<':
-            return "&lt;";
-        case '"':
-            return "&quot;";
-        default:
-            return String.valueOf(Character.toChars(cp));
+            // case '\'':
+            // return "&apos;";
+            case '&':
+                return "&amp;";
+            case '>':
+                return "&gt;";
+            case '<':
+                return "&lt;";
+            case '"':
+                return "&quot;";
+            default:
+                return String.valueOf(Character.toChars(cp));
         }
     }
 
     /**
      * Converts a stream of plaintext into valid XML. Output stream must convert
      * stream to UTF-8 when saving to disk.
+     *
+     * @param plaintext input text.
+     * @return string that is valid for XML.
      */
     public static String makeValidXML(String plaintext) {
         StringBuilder out = new StringBuilder();
@@ -137,30 +159,32 @@ public class XMLUtil {
         return out.toString();
     }
 
-  /**
-   *  Replace invalid XML chars by spaces. See supported chars at
-   *  http://www.w3.org/TR/2006/REC-xml-20060816/#charsets.
-   *
-   *  @param str input stream
-   *  @return result stream
-   */
-  final public static String fixChars(final String str) {
-    StringBuffer result = new StringBuffer(str.length());
-    for (int i = 0; i < str.length(); i++) {
-        int c = str.codePointAt(i);
-        if (!isValidXMLChar(c)) {
-           c = ' ';
+    /**
+     * Replace invalid XML chars by spaces. See supported chars at
+     * http://www.w3.org/TR/2006/REC-xml-20060816/#charsets.
+     *
+     * @param str input stream
+     * @return result stream
+     */
+    public static String fixChars(final String str) {
+        StringBuffer result = new StringBuffer(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            int c = str.codePointAt(i);
+            if (!isValidXMLChar(c)) {
+                c = ' ';
+            }
+            result.append(Character.toChars(c));
         }
-        result.append(Character.toChars(c));
+        return result.toString();
     }
-    return result.toString();
-  }
 
     /**
-   * Strips all XML tags (converts to plain text). Tags detected only by
-   * pattern. Protected parts are not used.
-   */
-  public static String stripXmlTags(String xml) {
-    return Pattern.compile(RE_TAG).matcher(xml).replaceAll("");
-  }
+     * Strips all XML tags (converts to plain text). Tags detected only by
+     * pattern. Protected parts are not used.
+     * @param xml input xml.
+     * @return string that stripped xml tags.
+     */
+    public static String stripXmlTags(String xml) {
+        return Pattern.compile(RE_TAG).matcher(xml).replaceAll("");
+    }
 }

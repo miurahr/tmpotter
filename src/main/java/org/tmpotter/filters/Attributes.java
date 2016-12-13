@@ -36,60 +36,60 @@ import java.util.List;
 
 /**
  * A list of Tag's attritutes.
- * 
+ *
  * @author Maxym Mykhalchuk
  */
 public class Attributes {
-  List<Attribute> list = new ArrayList<Attribute>();
+    List<Attribute> list = new ArrayList<Attribute>();
 
-  /**
-   * Number of attributes.
-   */
-  public int size() {
-    return list.size();
-  }
-
-  /**
-   * Adds an attribute to the list.
-   */
-  public void add(Attribute attr) {
-    list.add(attr);
-  }
-
-  /**
-   * Gets one of the attributes from the list.
-   */
-  public Attribute get(int index) {
-    return list.get(index);
-  }
-
-  /**
-   * Find attribute value by name.
-   *
-   * @param attrName attribute name, case insensitive
-   * @return attribute value, or null if not found
-   */
-  public String getValueByName(String attrName) {
-    for (int i = 0; i < list.size(); i++) {
-      Attribute oneAttribute = list.get(i);
-      if (attrName.equalsIgnoreCase(oneAttribute.getName())) {
-        return oneAttribute.getValue();
-      }
+    /**
+     * Number of attributes.
+     */
+    public int size() {
+        return list.size();
     }
-    return null;
-  }
 
-  /**
-   * Returns a string representation of the list of attributes. ' name1="value1"
-   * name2="value2" ...'
-   */
-  public String toString() {
-    StringBuilder buf = new StringBuilder();
-    for (Attribute attr : list) {
-      buf.append(' ');
-      buf.append(attr.toString());
+    /**
+     * Adds an attribute to the list.
+     */
+    public void add(Attribute attr) {
+        list.add(attr);
     }
-    return buf.toString();
-  }
+
+    /**
+     * Gets one of the attributes from the list.
+     */
+    public Attribute get(int index) {
+        return list.get(index);
+    }
+
+    /**
+     * Find attribute value by name.
+     *
+     * @param attrName attribute name, case insensitive
+     * @return attribute value, or null if not found
+     */
+    public String getValueByName(String attrName) {
+        for (int i = 0; i < list.size(); i++) {
+            Attribute oneAttribute = list.get(i);
+            if (attrName.equalsIgnoreCase(oneAttribute.getName())) {
+                return oneAttribute.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a string representation of the list of attributes. ' name1="value1"
+     * name2="value2" ...'
+     */
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        for (Attribute attr : list) {
+            buf.append(' ');
+            buf.append(attr.toString());
+        }
+        return buf.toString();
+    }
 
 }

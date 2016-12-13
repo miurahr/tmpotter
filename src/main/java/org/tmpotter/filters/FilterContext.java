@@ -35,95 +35,101 @@ import org.tmpotter.util.Language;
  */
 public class FilterContext {
 
-  private final ProjectProperties props;
+    private final ProjectProperties props;
 
-  private final Language sourceLang;
+    private final Language sourceLang;
 
-  private final Language targetLang;
+    private final Language targetLang;
 
-  private String inEncoding;
+    private String inEncoding;
 
-  private String outEncoding;
+    private String outEncoding;
 
-  /**
-   * Constructor from existent procps.
-   * 
-   * @param props Project Properties
-   */
-  public FilterContext(ProjectProperties props) {
-    this.props = props;
-    this.sourceLang = props.getSourceLanguage();
-    this.targetLang = props.getTargetLanguage();
-  }
+    /**
+     * Constructor from existent procps.
+     *
+     * @param props Project Properties
+     */
+    public FilterContext(ProjectProperties props) {
+        this.props = props;
+        this.sourceLang = props.getSourceLanguage();
+        this.targetLang = props.getTargetLanguage();
+    }
 
-  /**
-   * Constructor.
-   * 
-   * @param sourceLang source langauge
-   * @param targetLang target language
-   * @param sentenceSegmentingEnabled true when enables segmentation by sentence
-   */
-  public FilterContext(Language sourceLang, Language targetLang,
-      boolean sentenceSegmentingEnabled) {
-    this.props = null;
-    this.sourceLang = sourceLang;
-    this.targetLang = targetLang;
-  }
+    /**
+     * Constructor.
+     *
+     * @param sourceLang                source langauge
+     * @param targetLang                target language
+     * @param sentenceSegmentingEnabled true when enables segmentation by sentence
+     */
+    public FilterContext(Language sourceLang, Language targetLang,
+                         boolean sentenceSegmentingEnabled) {
+        this.props = null;
+        this.sourceLang = sourceLang;
+        this.targetLang = targetLang;
+    }
 
-  /**
-   * Source language of project.
-   * @return source language
-   */
-  public Language getSourceLang() {
-    return sourceLang;
-  }
+    /**
+     * Source language of project.
+     *
+     * @return source language
+     */
+    public Language getSourceLang() {
+        return sourceLang;
+    }
 
-  /**
-   * Target language of project.
-   * @return target language
-   */
-  public Language getTargetLang() {
-    return targetLang;
-  }
+    /**
+     * Target language of project.
+     *
+     * @return target language
+     */
+    public Language getTargetLang() {
+        return targetLang;
+    }
 
-  /**
-   * Source file encoding, but can be 'null'.
-   * @return encoding for file input
-   */
-  public String getInEncoding() {
-    return inEncoding;
-  }
+    /**
+     * Source file encoding, but can be 'null'.
+     *
+     * @return encoding for file input
+     */
+    public String getInEncoding() {
+        return inEncoding;
+    }
 
-  /**
-   * Set encoding for file input.
-   *
-   * @param inEncoding set character encoding for file input.
-   */
-  public void setInEncoding(String inEncoding) {
-    this.inEncoding = inEncoding;
-  }
+    /**
+     * Set encoding for file input.
+     *
+     * @param inEncoding set character encoding for file input.
+     */
+    public void setInEncoding(String inEncoding) {
+        this.inEncoding = inEncoding;
+    }
 
-  /**
-   * get Target file encoding, but can be 'null'.
-   * @return charactor encoding for file output.
-   */
-  public String getOutEncoding() {
-    return outEncoding;
-  }
+    /**
+     * get Target file encoding, but can be 'null'.
+     *
+     * @return charactor encoding for file output.
+     */
+    public String getOutEncoding() {
+        return outEncoding;
+    }
 
-  /**
-   * Set file encoding for output.
-   * @param outEncoding encoding name
-   */
-  public void setOutEncoding(String outEncoding) {
-    this.outEncoding = outEncoding;
-  }
+    /**
+     * Set file encoding for output.
+     *
+     * @param outEncoding encoding name
+     */
+    public void setOutEncoding(String outEncoding) {
+        this.outEncoding = outEncoding;
+    }
 
-  /**
-   * get project properties.
-   * @return project properties
-   */
-  public ProjectProperties getProjectProperties() {
-    return props;
-  }
+    /**
+     * get project properties.
+     *
+     * @return project properties
+     */
+    public ProjectProperties getProjectProperties() {
+        return props;
+    }
 }

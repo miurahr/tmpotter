@@ -54,9 +54,8 @@ public class TmxWriterTest extends TmxTestBase {
     translationDocument.add("Sentense one in Japanese.");
     translationDocument.add("Sentense two in Japanese.");
     String langTranslation = "JA";
-    String encoding = AppConstants.ENCODINGS_UTF8;
     TmxWriter.writeTmx(outputFile, originalDocument, langOriginal,
-            translationDocument, langTranslation, encoding);
+            translationDocument, langTranslation);
     compareTmx(outputFile, expectedFile, 4);
     outputFile.delete();
   }

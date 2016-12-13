@@ -38,82 +38,82 @@ import java.util.List;
  * @author Hiroshi Miura
  */
 public class FilterManager {
-  private final List<IFilter> filterList;
+    private final List<IFilter> filterList;
 
-  private Document documentOriginal;
-  private Document documentTranslation;
-  
-  /**
-   * Constructor.
-   */
-  public FilterManager() {
-    filterList = PluginUtils.getFilters();
-  }
-  
-  /**
-   * return filter instance according to its name.
-   * 
-   * @param name to get
-   * @return IFilter filter instance
-   * @throws FilterNotFoundException when filter not found
-   */
-  public IFilter getFilterInstance(String name) throws FilterNotFoundException {
-    for (IFilter filter: filterList) {
-      String fileterName = filter.getClass().getSimpleName();
-      if (fileterName.equals(name)) {
-        return filter;
-      }
-    }
-    throw new FilterNotFoundException("Filter " + name + " not found.");
-  }
-  
-  /**
-   * Load file from source file set to properties.
-   * 
-   * @param prop project properties
-   * @param docOriginal document to return
-   * @param docTranslation document to return
-   * @param filterName filter to use
-   */
-  public void loadFile(ProjectProperties prop, Document docOriginal, Document docTranslation,
-      String filterName) {
-    IFilter filter = null;
-    this.documentOriginal = docOriginal;
-    this.documentTranslation = docTranslation;
+    private Document documentOriginal;
+    private Document documentTranslation;
 
-    FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(), true);
-    File inFile = prop.getFilePathOriginal();
-    File outFile = prop.getFilePathTranslation();
-    if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
-      fc.setInEncoding(null);
-    } else {
-      fc.setInEncoding(prop.getOriginalEncoding());
+    /**
+     * Constructor.
+     */
+    public FilterManager() {
+        filterList = PluginUtils.getFilters();
     }
-    try {
-      filter = getFilterInstance(filterName);
-    } catch (Exception ex) {
-      System.out.println(ex);
+
+    /**
+     * return filter instance according to its name.
+     *
+     * @param name to get
+     * @return IFilter filter instance
+     * @throws FilterNotFoundException when filter not found
+     */
+    public IFilter getFilterInstance(String name) throws FilterNotFoundException {
+        for (IFilter filter : filterList) {
+            String fileterName = filter.getClass().getSimpleName();
+            if (fileterName.equals(name)) {
+                return filter;
+            }
+        }
+        throw new FilterNotFoundException("Filter " + name + " not found.");
     }
-    if (filter != null) {
-      try {
-        filter.parseFile(inFile, outFile, null, fc, new ParseCb());
-      } catch (Exception ex) {
-        System.out.println(ex);
-      }
+
+    /**
+     * Load file from source file set to properties.
+     *
+     * @param prop           project properties
+     * @param docOriginal    document to return
+     * @param docTranslation document to return
+     * @param filterName     filter to use
+     */
+    public void loadFile(ProjectProperties prop, Document docOriginal, Document docTranslation,
+                         String filterName) {
+        IFilter filter = null;
+        this.documentOriginal = docOriginal;
+        this.documentTranslation = docTranslation;
+
+        FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(), true);
+        File inFile = prop.getFilePathOriginal();
+        File outFile = prop.getFilePathTranslation();
+        if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+            fc.setInEncoding(null);
+        } else {
+            fc.setInEncoding(prop.getOriginalEncoding());
+        }
+        try {
+            filter = getFilterInstance(filterName);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        if (filter != null) {
+            try {
+                filter.parseFile(inFile, outFile, null, fc, new ParseCb());
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
     }
-  }
-  
-  public class ParseCb implements IParseCallback {
-    @Override
-    public void addEntry(String id, String source, String translation, boolean isFuzzy,
-        String comment, String path, IFilter filter) {
-      if (source != null) {
-        documentOriginal.add(source);
-      }
-      if (translation != null) {
-        documentTranslation.add(translation);
-      } 
+
+    public class ParseCb implements IParseCallback {
+        @Override
+        public void addEntry(String id, String source, String translation, boolean isFuzzy,
+                             String comment, String path, IFilter filter) {
+            if (source != null) {
+                documentOriginal.add(source);
+            }
+            if (translation != null) {
+                documentTranslation.add(translation);
+            }
+        }
     }
-  }
 
 }

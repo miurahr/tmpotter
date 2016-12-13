@@ -29,86 +29,85 @@ import java.io.File;
 
 
 /**
- *
  * @author Hiroshi Miura
  */
 public class ImportWizardController {
 
-	private ImportWizard wizard;
-	private ImportPreference pref;
-	private boolean finished = false;
+    private ImportWizard wizard;
+    private ImportPreference pref;
+    private boolean finished = false;
 
-	public ImportWizardController(final ImportWizard wizard) {
-		this.wizard = wizard;
-		pref = wizard.getPref();
-		registerPanels();
-		onStartup();
-	}
+    public ImportWizardController(final ImportWizard wizard) {
+        this.wizard = wizard;
+        pref = wizard.getPref();
+        registerPanels();
+        onStartup();
+    }
 
-	private void registerPanels() {
-		IImportWizardPanel p = new ImportWizardSelectTypePanel();
-		wizard.registerWizardPanel(p.getId(), p);
-		for (IImportWizardPanel panel: PluginUtils.getWizards()) {
-      panel.init(this, pref);
-      wizard.registerWizardPanel(panel.getId(), panel);
-		}
-	}
+    private void registerPanels() {
+        IImportWizardPanel p = new ImportWizardSelectTypePanel();
+        wizard.registerWizardPanel(p.getId(), p);
+        for (IImportWizardPanel panel : PluginUtils.getWizards()) {
+            panel.init(this, pref);
+            wizard.registerWizardPanel(panel.getId(), panel);
+        }
+    }
 
-	public final void onStartup() {
-		wizard.setButtonBackEnabled(false);
-		wizard.setButtonNextEnabled(true);
-		wizard.showPanel(ImportWizardSelectTypePanel.id);
-	}
+    public final void onStartup() {
+        wizard.setButtonBackEnabled(false);
+        wizard.setButtonNextEnabled(true);
+        wizard.showPanel(ImportWizardSelectTypePanel.id);
+    }
 
-	public final String getSourceLocale() {
-		return pref.getOriginalLang();
-	}
+    public final String getSourceLocale() {
+        return pref.getOriginalLang();
+    }
 
-	public final String getTargetLocale() {
-		return pref.getTranslationLang();
-	}
+    public final String getTargetLocale() {
+        return pref.getTranslationLang();
+    }
 
-	public final File getSourcePath() {
-		return pref.getOriginalFilePath();
-	}
+    public final File getSourcePath() {
+        return pref.getOriginalFilePath();
+    }
 
-	public final File getTargetPath() {
-		return pref.getTranslationFilePath();
-	}
-	
-	public final void finish() {
-		finished = true;
-		wizard.updatePref();
-	}
-	
-	public final void setButtonNextEnabled(boolean b) {
-		wizard.setButtonNextEnabled(b);
-	}
-	
-	public final boolean isFinished() {
-		return finished;
-	}
-	
-	public void onBack() {
-		String command = wizard.getButtonBackCommand();
-		wizard.showPanel(command);
-		if (command.equals(ImportWizardSelectTypePanel.id)) {
-			wizard.setButtonBackEnabled(false);
-		}
-	}
+    public final File getTargetPath() {
+        return pref.getTranslationFilePath();
+    }
 
-	public void onNextFinish() {
-		String command = wizard.getButtonNextCommand();
-		if ("finish".equals(command)) {
-			finish();
-			wizard.dispose();
-		} else {
-			wizard.showPanel(command);
-			wizard.setButtonBackEnabled(true);
-		}
-	}
+    public final void finish() {
+        finished = true;
+        wizard.updatePref();
+    }
 
-	public void onCancel() {	
-		wizard.dispose();
-	}
+    public final void setButtonNextEnabled(boolean b) {
+        wizard.setButtonNextEnabled(b);
+    }
+
+    public final boolean isFinished() {
+        return finished;
+    }
+
+    public void onBack() {
+        String command = wizard.getButtonBackCommand();
+        wizard.showPanel(command);
+        if (command.equals(ImportWizardSelectTypePanel.id)) {
+            wizard.setButtonBackEnabled(false);
+        }
+    }
+
+    public void onNextFinish() {
+        String command = wizard.getButtonNextCommand();
+        if ("finish".equals(command)) {
+            finish();
+            wizard.dispose();
+        } else {
+            wizard.showPanel(command);
+            wizard.setButtonBackEnabled(true);
+        }
+    }
+
+    public void onCancel() {
+        wizard.dispose();
+    }
 }

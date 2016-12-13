@@ -27,75 +27,76 @@ import java.io.File;
 
 
 /**
+ * Preference get by import wizard.
  *
- * @author miurahr
+ * @author Hiroshi Miura
  */
 public class ImportPreference {
-	private File originalFilePath;
-	private File translationFilePath;
-	private String originalLang;
-	private String translationLang;
-	private String encoding;
-	private String filter;
-	private File currentPath;
+    private File originalFilePath;
+    private File translationFilePath;
+    private String originalLang;
+    private String translationLang;
+    private String encoding;
+    private String filter;
+    private File currentPath;
 
-	public File getOriginalFilePath() {
-		return originalFilePath;
-	}
+    public File getOriginalFilePath() {
+        return originalFilePath;
+    }
 
-	public void setOriginalFilePath(File originalFilePath) {
-		this.originalFilePath = originalFilePath;
-	}
+    public void setOriginalFilePath(File originalFilePath) {
+        this.originalFilePath = originalFilePath;
+    }
 
-	public File getTranslationFilePath() {
-		return translationFilePath;
-	}
+    public File getTranslationFilePath() {
+        return translationFilePath;
+    }
 
-	public void setTranslationFilePath(File translationFilePath) {
-		this.translationFilePath = translationFilePath;
-	}
+    public void setTranslationFilePath(File translationFilePath) {
+        this.translationFilePath = translationFilePath;
+    }
 
-	public String getOriginalLang() {
-		return originalLang;
-	}
+    public String getOriginalLang() {
+        return originalLang;
+    }
 
-	public void setOriginalLang(String originalLang) {
-		this.originalLang = originalLang;
-	}
+    public void setOriginalLang(String originalLang) {
+        this.originalLang = originalLang;
+    }
 
-	public String getTranslationLang() {
-		return translationLang;
-	}
+    public String getTranslationLang() {
+        return translationLang;
+    }
 
-	public void setTranslationLang(String translationLang) {
-		this.translationLang = translationLang;
-	}
+    public void setTranslationLang(String translationLang) {
+        this.translationLang = translationLang;
+    }
 
-	public String getEncoding() {
-		return encoding;
-	}
+    public String getEncoding() {
+        return encoding;
+    }
 
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
 
-	public String getFilter() {
-		return filter;
-	}
+    public String getFilter() {
+        return filter;
+    }
 
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
-	public File getCurrentPath() {
-		if (currentPath != null) {
-			return currentPath;		
-		} else {
-			return originalFilePath;
-		}
-	}
-	
-	public void setCurrentPath(File path) {
-		currentPath = path;
-	}
+    public File getCurrentPath() {
+        if (currentPath != null) {
+            return currentPath;
+        } else {
+            return originalFilePath;
+        }
+    }
+
+    public void setCurrentPath(File path) {
+        currentPath = path;
+    }
 }

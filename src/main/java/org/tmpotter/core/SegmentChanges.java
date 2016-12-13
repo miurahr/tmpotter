@@ -32,171 +32,172 @@ import org.tmpotter.ui.TmData;
 
 
 /**
- *  Action when segument changing.
- * 
+ * Action when segment changing.
+ *
+ * @author Hiroshi Miura
  */
 public class SegmentChanges {
-  OperationKind kind;
-  int pos;
-  TmData.Side source;
-  String phrase;
-  int indexLine;
-  int [] numEliminada;
+    OperationKind kind;
+    int pos;
+    TmData.Side source;
+    String phrase;
+    int indexLine;
+    int[] numEliminada;
 
 
-  /**
-   * Constructor.
-   */
-  public SegmentChanges() {
-    kind        = OperationKind.JOIN;
-    pos         = 0;
-    source      = TmData.Side.TRANSLATION;
-    phrase       = "";
-    indexLine = -1;
-  }
-
-  /**
-   * Constructor.
-   * 
-   * @param kind tipo
-   * @param position  pos
-   * @param source fuente
-   * @param phrase frase
-   * @param index ident line
-   */
-  public SegmentChanges( OperationKind kind, int position, TmData.Side source, 
-      String phrase, int index )  {
-    this.kind        = kind;
-    this.pos         = position;
-    this.source      = source;
-    this.phrase      = phrase;
-    this.indexLine   = index;
-  }
-
-  /**
-   * Accessor for kind.
-   * 
-   * @return kind
-   */
-  public OperationKind getKind() {
-    return ( kind );
-  }
-  
-  /**
-   * Accessor for position.
-   * 
-   * @return position
-   */
-  public int getPosition() {
-    return  ( pos );
-  }
-  
-  /**
-   * Accessor for frase.
-   * 
-   * @return frase
-   */
-  public String  getFrase()        {
-    return ( phrase );
-  }
-
-  /**
-   * Accessor for ident line.
-   * 
-   * @return ident
-   */
-  public int     getIdent_linea()  {
-    return ( indexLine );
-  }
-
-  /**
-   * Accessor for source/translation indicator.
-   * 
-   * @return source
-   */
-  public TmData.Side getSource()       {
-    return ( source );
-  }
-  
-  /**
-   * Accessor for num eliminada.
-   * 
-   * @return numEliminada
-   */
-  public int  getNumEliminada(final int index) {
-    assert(index >= 0);
-    assert(index < numEliminada.length);
-    return ( numEliminada[index] );
-  }
-
-  /**
-   * Accessor for TAM.
-   * 
-   * @return length of numEliminada
-   */
-  public int getTam() {
-    int tam = numEliminada.length;
-
-    return ( tam );
-  }
-
-  /**
-   * Setter for OperationKind.
-   * 
-   * @param kind to set
-   */
-  public void setKind( OperationKind kind )         {
-    this.kind   = kind;
-  }
-  
-  /**
-   * Setter for position.
-   * 
-   * @param kpos to set
-   */
-  public void setPos( int kpos )           {
-    pos    = kpos;
-  }
-  
-  /**
-   * Setter for fuente.
-   * 
-   * @param source to set boolean
-   */
-  public void setSource( TmData.Side source ) {
-    this.source = source;
-  }
-  
-  /**
-   * Setter for frase.
-   * 
-   * @param kfrase string to set
-   */
-  public void setFrase( String kfrase )    {
-    phrase  = kfrase;
-  }
-
-  /**
-   * Setter for line ident.
-   * 
-   * @param index to set
-   */
-  public void setIdent_linea( int index ) {
-    indexLine = index;
-  }
-
-  /**
-   * Setter for num of Eliminada.
-   * 
-   * @param keliminadas eliminada
-   * @param tam number of array
-   */
-  public void setNumEliminada( int[] keliminadas, int tam ) {
-    numEliminada = new int[tam];
-    for ( int cont = 0; cont < tam; cont++ ) {
-      numEliminada[cont] = keliminadas[cont];
+    /**
+     * Constructor.
+     */
+    public SegmentChanges() {
+        kind = OperationKind.JOIN;
+        pos = 0;
+        source = TmData.Side.TRANSLATION;
+        phrase = "";
+        indexLine = -1;
     }
-  }
 
-  public enum OperationKind { JOIN, SPLIT, DELETE, REMOVE, TUSPLIT }
+    /**
+     * Constructor.
+     *
+     * @param kind     tipo
+     * @param position pos
+     * @param source   fuente
+     * @param phrase   frase
+     * @param index    ident line
+     */
+    public SegmentChanges(OperationKind kind, int position, TmData.Side source,
+                          String phrase, int index) {
+        this.kind = kind;
+        this.pos = position;
+        this.source = source;
+        this.phrase = phrase;
+        this.indexLine = index;
+    }
+
+    /**
+     * Accessor for kind.
+     *
+     * @return kind
+     */
+    public OperationKind getKind() {
+        return (kind);
+    }
+
+    /**
+     * Accessor for position.
+     *
+     * @return position
+     */
+    public int getPosition() {
+        return (pos);
+    }
+
+    /**
+     * Accessor for frase.
+     *
+     * @return frase
+     */
+    public String getFrase() {
+        return (phrase);
+    }
+
+    /**
+     * Accessor for ident line.
+     *
+     * @return ident
+     */
+    public int getIdent_linea() {
+        return (indexLine);
+    }
+
+    /**
+     * Accessor for source/translation indicator.
+     *
+     * @return source
+     */
+    public TmData.Side getSource() {
+        return (source);
+    }
+
+    /**
+     * Accessor for num eliminada.
+     *
+     * @return numEliminada
+     */
+    public int getNumEliminada(final int index) {
+        assert (index >= 0);
+        assert (index < numEliminada.length);
+        return (numEliminada[index]);
+    }
+
+    /**
+     * Accessor for TAM.
+     *
+     * @return length of numEliminada
+     */
+    public int getTam() {
+        int tam = numEliminada.length;
+
+        return (tam);
+    }
+
+    /**
+     * Setter for OperationKind.
+     *
+     * @param kind to set
+     */
+    public void setKind(OperationKind kind) {
+        this.kind = kind;
+    }
+
+    /**
+     * Setter for position.
+     *
+     * @param kpos to set
+     */
+    public void setPos(int kpos) {
+        pos = kpos;
+    }
+
+    /**
+     * Setter for fuente.
+     *
+     * @param source to set boolean
+     */
+    public void setSource(TmData.Side source) {
+        this.source = source;
+    }
+
+    /**
+     * Setter for frase.
+     *
+     * @param kfrase string to set
+     */
+    public void setFrase(String kfrase) {
+        phrase = kfrase;
+    }
+
+    /**
+     * Setter for line ident.
+     *
+     * @param index to set
+     */
+    public void setIdent_linea(int index) {
+        indexLine = index;
+    }
+
+    /**
+     * Setter for num of Eliminada.
+     *
+     * @param keliminadas eliminada
+     * @param tam         number of array
+     */
+    public void setNumEliminada(int[] keliminadas, int tam) {
+        numEliminada = new int[tam];
+        for (int cont = 0; cont < tam; cont++) {
+            numEliminada[cont] = keliminadas[cont];
+        }
+    }
+
+    public enum OperationKind {JOIN, SPLIT, DELETE, REMOVE, TUSPLIT}
 }

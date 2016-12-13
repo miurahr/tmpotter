@@ -23,6 +23,9 @@
 
 package org.tmpotter.ui;
 
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import static org.tmpotter.util.Localization.getString;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +35,9 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import javax.swing.JButton;
-import static org.openide.awt.Mnemonics.setLocalizedText;
-import static org.tmpotter.util.Localization.getString;
+
 
 /**
  * Align Toolbar.
@@ -43,276 +46,296 @@ import static org.tmpotter.util.Localization.getString;
  */
 public class AlignToolBar extends javax.swing.JPanel implements ActionListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AlignToolBar.class);
-  private ActionHandler actionHandler;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlignToolBar.class);
+    private ActionHandler actionHandler;
 
-  /**
-   * Creates new form AlignToolBar
-   */
-  public AlignToolBar(ActionHandler handler) {
-    initComponents();
-    this.actionHandler = handler;
-    toolBar.setFloatable(false);
-    setActionCommands();
-  }
+    /**
+     * Creates new form AlignToolBar.
+     */
+    public AlignToolBar(ActionHandler handler) {
+        initComponents();
+        this.actionHandler = handler;
+        toolBar.setFloatable(false);
+        setActionCommands();
+    }
 
-  /**
-   * Set 'actionCommand' for all menu items.
-   */
-  protected void setActionCommands() {
-    try {
-      for (Field f : this.getClass().getDeclaredFields()) {
-        if (JButton.class.isAssignableFrom(f.getType())) {
-          JButton button = (JButton) f.get(this);
-          button.setActionCommand(f.getName());
-          button.addActionListener(this);
+    /**
+     * Set 'actionCommand' for all menu items.
+     */
+    protected void setActionCommands() {
+        try {
+            for (Field f : this.getClass().getDeclaredFields()) {
+                if (JButton.class.isAssignableFrom(f.getType())) {
+                    JButton button = (JButton) f.get(this);
+                    button.setActionCommand(f.getName());
+                    button.addActionListener(this);
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            throw new ExceptionInInitializerError(ex);
         }
-      }
-    } catch (IllegalAccessException ex) {
-      throw new ExceptionInInitializerError(ex);
     }
-  }
 
-  public void actionPerformed(ActionEvent evt) {
-    // Get item name from actionCommand.
-    String action = evt.getActionCommand();
+    /**
+     * Action handler for toobar.
+     * @param evt event emitted.
+     */
+    public void actionPerformed(ActionEvent evt) {
+        // Get item name from actionCommand.
+        String action = evt.getActionCommand();
 
-    // Find method by item name.
-    String methodName = action + "ActionPerformed";
-    Method method = null;
-    try {
-      method = actionHandler.getClass().getMethod(methodName);
-    } catch (NoSuchMethodException ignore) {
-      try {
-        method = actionHandler.getClass()
-            .getMethod(methodName, Integer.TYPE);
-      } catch (NoSuchMethodException ex) {
-        throw new IncompatibleClassChangeError(
-            "Error invoke method handler for main menu: there is no method "
-            + methodName);
-      }
+        // Find method by item name.
+        String methodName = action + "ActionPerformed";
+        Method method = null;
+        try {
+            method = actionHandler.getClass().getMethod(methodName);
+        } catch (NoSuchMethodException ignore) {
+            try {
+                method = actionHandler.getClass()
+                    .getMethod(methodName, Integer.TYPE);
+            } catch (NoSuchMethodException ex) {
+                throw new IncompatibleClassChangeError(
+                    "Error invoke method handler for main menu: there is no method "
+                        + methodName);
+            }
+        }
+        // Call ...MenuItemActionPerformed method.
+        Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt
+                .getModifiers()};
+        try {
+            method.invoke(actionHandler, args);
+        } catch (IllegalAccessException ex) {
+            throw new IncompatibleClassChangeError(
+                "Error invoke method handler for main menu");
+        } catch (InvocationTargetException ex) {
+            LOGGER.info("Error execute method", ex);
+            throw new IncompatibleClassChangeError(
+                "Error invoke method handler for main menu");
+        }
     }
-    // Call ...MenuItemActionPerformed method.
-    Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
-    try {
-      method.invoke(actionHandler, args);
-    } catch (IllegalAccessException ex) {
-      throw new IncompatibleClassChangeError(
-          "Error invoke method handler for main menu");
-    } catch (InvocationTargetException ex) {
-      LOGGER.info("Error execute method", ex);
-      throw new IncompatibleClassChangeError(
-          "Error invoke method handler for main menu");
+
+    final void setFonts(final Font font) {
+        buttonRemoveBlankRows.setFont(font);
+        buttonTUSplit.setFont(font);
+        buttonOriginalJoin.setFont(font);
+        buttonOriginalDelete.setFont(font);
+        buttonOriginalSplit.setFont(font);
+        buttonTranslationJoin.setFont(font);
+        buttonTranslationDelete.setFont(font);
+        buttonTranslationSplit.setFont(font);
     }
-  }
 
-  final void setFonts(final Font font) {
-    buttonRemoveBlankRows.setFont(font);
-    buttonTUSplit.setFont(font);
-    buttonOriginalJoin.setFont(font);
-    buttonOriginalDelete.setFont(font);
-    buttonOriginalSplit.setFont(font);
-    buttonTranslationJoin.setFont(font);
-    buttonTranslationDelete.setFont(font);
-    buttonTranslationSplit.setFont(font);
-  }
+    final void enableButtons(boolean enabled) {
+        buttonRemoveBlankRows.setEnabled(enabled);
+        buttonTUSplit.setEnabled(enabled);
+        buttonOriginalJoin.setEnabled(enabled);
+        buttonOriginalDelete.setEnabled(enabled);
+        buttonOriginalSplit.setEnabled(enabled);
+        buttonTranslationJoin.setEnabled(enabled);
+        buttonTranslationDelete.setEnabled(enabled);
+        buttonTranslationSplit.setEnabled(enabled);
+    }
 
-  final void enableButtons(boolean enabled) {
-    buttonRemoveBlankRows.setEnabled(enabled);
-    buttonTUSplit.setEnabled(enabled);
-    buttonOriginalJoin.setEnabled(enabled);
-    buttonOriginalDelete.setEnabled(enabled);
-    buttonOriginalSplit.setEnabled(enabled);
-    buttonTranslationJoin.setEnabled(enabled);
-    buttonTranslationDelete.setEnabled(enabled);
-    buttonTranslationSplit.setEnabled(enabled);
-  }
+    public final void setOriginalJoinEnabled(boolean enabled) {
+        buttonOriginalJoin.setEnabled(enabled);
+    }
 
-  public final void setOriginalJoinEnabled(boolean enabled) {
-    buttonOriginalJoin.setEnabled(enabled);
-  }
+    public final void setTranslationJoinEnabled(boolean enabled) {
+        buttonTranslationJoin.setEnabled(enabled);
+    }
 
-  public final void setTranslationJoinEnabled(boolean enabled) {
-    buttonTranslationJoin.setEnabled(enabled);
-  }
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+     * modify this code. The content of this method is always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-  /**
-   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
-   * modify this code. The content of this method is always regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
-        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-        private void initComponents() {
+        toolBar = new javax.swing.JToolBar();
+        panelOriginal = new javax.swing.JPanel();
+        buttonOriginalDelete = new javax.swing.JButton();
+        buttonOriginalJoin = new javax.swing.JButton();
+        buttonOriginalSplit = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0,
+                0), new java.awt.Dimension(32767, 0));
+        panelTranslateUnit = new javax.swing.JPanel();
+        buttonRemoveBlankRows = new javax.swing.JButton();
+        buttonTUSplit = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0,
+                0), new java.awt.Dimension(32767, 0));
+        panelTranslation = new javax.swing.JPanel();
+        buttonTranslationDelete = new javax.swing.JButton();
+        buttonTranslationJoin = new javax.swing.JButton();
+        buttonTranslationSplit = new javax.swing.JButton();
 
-                toolBar = new javax.swing.JToolBar();
-                panelOriginal = new javax.swing.JPanel();
-                buttonOriginalDelete = new javax.swing.JButton();
-                buttonOriginalJoin = new javax.swing.JButton();
-                buttonOriginalSplit = new javax.swing.JButton();
-                filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-                panelTranslateUnit = new javax.swing.JPanel();
-                buttonRemoveBlankRows = new javax.swing.JButton();
-                buttonTUSplit = new javax.swing.JButton();
-                filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-                panelTranslation = new javax.swing.JPanel();
-                buttonTranslationDelete = new javax.swing.JButton();
-                buttonTranslationJoin = new javax.swing.JButton();
-                buttonTranslationSplit = new javax.swing.JButton();
+        setMaximumSize(new java.awt.Dimension(32767, 92));
+        setMinimumSize(new java.awt.Dimension(750, 64));
+        setPreferredSize(new java.awt.Dimension(750, 64));
 
-                setMaximumSize(new java.awt.Dimension(32767, 92));
-                setMinimumSize(new java.awt.Dimension(750, 64));
-                setPreferredSize(new java.awt.Dimension(750, 64));
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+        toolBar.setMaximumSize(new java.awt.Dimension(1000, 94));
+        toolBar.setMinimumSize(new java.awt.Dimension(600, 48));
+        toolBar.setPreferredSize(new java.awt.Dimension(600, 48));
 
-                toolBar.setFloatable(false);
-                toolBar.setRollover(true);
-                toolBar.setMaximumSize(new java.awt.Dimension(1000, 94));
-                toolBar.setMinimumSize(new java.awt.Dimension(600, 48));
-                toolBar.setPreferredSize(new java.awt.Dimension(600, 48));
+        panelOriginal.setBorder(javax.swing.BorderFactory.createTitledBorder("Original"));
+        panelOriginal.setMaximumSize(new java.awt.Dimension(500, 90));
+        panelOriginal.setMinimumSize(new java.awt.Dimension(250, 60));
+        panelOriginal.setPreferredSize(new java.awt.Dimension(250, 60));
 
-                panelOriginal.setBorder(javax.swing.BorderFactory.createTitledBorder("Original"));
-                panelOriginal.setMaximumSize(new java.awt.Dimension(500, 90));
-                panelOriginal.setMinimumSize(new java.awt.Dimension(250, 60));
-                panelOriginal.setPreferredSize(new java.awt.Dimension(250, 60));
+        buttonOriginalDelete.setIcon(new javax.swing.ImageIcon(getClass()
+                .getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
+        buttonOriginalDelete.setText("Delete");
+        setLocalizedText(buttonOriginalDelete, getString("BTN.DELETE.ORIGINAL"));
 
-                buttonOriginalDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
-                buttonOriginalDelete.setText("Delete");
-                setLocalizedText(buttonOriginalDelete, getString("BTN.DELETE.ORIGINAL"));
+        buttonOriginalJoin.setText("Join");
+        setLocalizedText(buttonOriginalJoin, getString("BTN.JOIN.ORIGINAL"));
 
-                buttonOriginalJoin.setText("Join");
-                setLocalizedText(buttonOriginalJoin, getString("BTN.JOIN.ORIGINAL"));
+        buttonOriginalSplit.setText("Split");
+        setLocalizedText(buttonOriginalSplit, getString("BTN.SPLIT.ORIGINAL"));
+        javax.swing.GroupLayout panelOriginalLayout = new javax.swing.GroupLayout(panelOriginal);
+        panelOriginal.setLayout(panelOriginalLayout);
+        panelOriginalLayout.setHorizontalGroup(
+                panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelOriginalLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(buttonOriginalDelete)
+                    .addGap(12, 12, 12)
+                    .addComponent(buttonOriginalJoin)
+                    .addGap(12, 12, 12)
+                    .addComponent(buttonOriginalSplit)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelOriginalLayout.setVerticalGroup(
+                panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelOriginalLayout.createSequentialGroup()
+                    .addGroup(panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout
+                            .Alignment.CENTER)
+                        .addComponent(buttonOriginalDelete)
+                        .addComponent(buttonOriginalJoin)
+                        .addComponent(buttonOriginalSplit))
+                    .addGap(0, 8, Short.MAX_VALUE))
+        );
 
-                buttonOriginalSplit.setText("Split");
-                setLocalizedText(buttonOriginalSplit, getString("BTN.SPLIT.ORIGINAL"));
+        toolBar.add(panelOriginal);
+        toolBar.add(filler2);
 
-                javax.swing.GroupLayout panelOriginalLayout = new javax.swing.GroupLayout(panelOriginal);
-                panelOriginal.setLayout(panelOriginalLayout);
-                panelOriginalLayout.setHorizontalGroup(
-                        panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelOriginalLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(buttonOriginalDelete)
-                                .addGap(12, 12, 12)
-                                .addComponent(buttonOriginalJoin)
-                                .addGap(12, 12, 12)
-                                .addComponent(buttonOriginalSplit)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                panelOriginalLayout.setVerticalGroup(
-                        panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelOriginalLayout.createSequentialGroup()
-                                .addGroup(panelOriginalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(buttonOriginalDelete)
-                                        .addComponent(buttonOriginalJoin)
-                                        .addComponent(buttonOriginalSplit))
-                                .addGap(0, 8, Short.MAX_VALUE))
-                );
+        panelTranslateUnit.setBorder(javax.swing.BorderFactory.createTitledBorder("TU"));
+        panelTranslateUnit.setMaximumSize(new java.awt.Dimension(500, 90));
+        panelTranslateUnit.setMinimumSize(new java.awt.Dimension(250, 60));
+        panelTranslateUnit.setPreferredSize(new java.awt.Dimension(250, 60));
 
-                toolBar.add(panelOriginal);
-                toolBar.add(filler2);
+        buttonRemoveBlankRows.setIcon(new javax.swing.ImageIcon(getClass()
+                .getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
+        buttonRemoveBlankRows.setText("Delete Blank Rows");
+        setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));
 
-                panelTranslateUnit.setBorder(javax.swing.BorderFactory.createTitledBorder("TU"));
-                panelTranslateUnit.setMaximumSize(new java.awt.Dimension(500, 90));
-                panelTranslateUnit.setMinimumSize(new java.awt.Dimension(250, 60));
-                panelTranslateUnit.setPreferredSize(new java.awt.Dimension(250, 60));
+        buttonTUSplit.setText("Split");
+        setLocalizedText(buttonTUSplit, getString("BTN.SPLIT.TU"));
 
-                buttonRemoveBlankRows.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
-                buttonRemoveBlankRows.setText("Delete Blank Rows");
-                setLocalizedText(buttonRemoveBlankRows, getString("BTN.DELETE.BLANK.ROWS"));
+        javax.swing.GroupLayout panelTranslateUnitLayout = new javax.swing
+                .GroupLayout(panelTranslateUnit);
+        panelTranslateUnit.setLayout(panelTranslateUnitLayout);
+        panelTranslateUnitLayout.setHorizontalGroup(
+                panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment
+                        .LEADING)
+                .addGroup(panelTranslateUnitLayout.createSequentialGroup()
+                    .addGap(12, 12, 12)
+                    .addComponent(buttonRemoveBlankRows)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(buttonTUSplit)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelTranslateUnitLayout.setVerticalGroup(
+                panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment
+                        .LEADING)
+                .addGroup(panelTranslateUnitLayout.createSequentialGroup()
+                    .addGroup(panelTranslateUnitLayout.createParallelGroup(
+                            javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(buttonRemoveBlankRows)
+                        .addComponent(buttonTUSplit))
+                    .addGap(0, 8, Short.MAX_VALUE))
+        );
 
-                buttonTUSplit.setText("Split");
-                setLocalizedText(buttonTUSplit, getString("BTN.SPLIT.TU"));
+        toolBar.add(panelTranslateUnit);
+        panelTranslateUnit.getAccessibleContext().setAccessibleName("Translation");
 
-                javax.swing.GroupLayout panelTranslateUnitLayout = new javax.swing.GroupLayout(panelTranslateUnit);
-                panelTranslateUnit.setLayout(panelTranslateUnitLayout);
-                panelTranslateUnitLayout.setHorizontalGroup(
-                        panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelTranslateUnitLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(buttonRemoveBlankRows)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonTUSplit)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                panelTranslateUnitLayout.setVerticalGroup(
-                        panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelTranslateUnitLayout.createSequentialGroup()
-                                .addGroup(panelTranslateUnitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(buttonRemoveBlankRows)
-                                        .addComponent(buttonTUSplit))
-                                .addGap(0, 8, Short.MAX_VALUE))
-                );
+        toolBar.add(filler1);
 
-                toolBar.add(panelTranslateUnit);
-                panelTranslateUnit.getAccessibleContext().setAccessibleName("Translation");
+        panelTranslation.setBorder(javax.swing.BorderFactory.createTitledBorder("Translation"));
+        panelTranslation.setMaximumSize(new java.awt.Dimension(500, 90));
+        panelTranslation.setMinimumSize(new java.awt.Dimension(250, 60));
+        panelTranslation.setPreferredSize(new java.awt.Dimension(250, 60));
 
-                toolBar.add(filler1);
+        buttonTranslationDelete.setIcon(new javax.swing.ImageIcon(getClass()
+                .getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
+        buttonTranslationDelete.setText("Delete");
+        setLocalizedText(buttonTranslationDelete, getString("BTN.DELETE.TRANSLATION"));
 
-                panelTranslation.setBorder(javax.swing.BorderFactory.createTitledBorder("Translation"));
-                panelTranslation.setMaximumSize(new java.awt.Dimension(500, 90));
-                panelTranslation.setMinimumSize(new java.awt.Dimension(250, 60));
-                panelTranslation.setPreferredSize(new java.awt.Dimension(250, 60));
+        buttonTranslationJoin.setText("Join");
+        setLocalizedText(buttonTranslationJoin, getString("BTN.JOIN.TRANSLATION"));
 
-                buttonTranslationDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/eraser.png"))); // NOI18N
-                buttonTranslationDelete.setText("Delete");
-                setLocalizedText(buttonTranslationDelete, getString("BTN.DELETE.TRANSLATION"));
+        buttonTranslationSplit.setText("Split");
+        setLocalizedText(buttonTranslationSplit, getString("BTN.SPLIT.TRANSLATION"));
 
-                buttonTranslationJoin.setText("Join");
-                setLocalizedText(buttonTranslationJoin, getString("BTN.JOIN.TRANSLATION"));
+        javax.swing.GroupLayout panelTranslationLayout = new javax.swing
+                .GroupLayout(panelTranslation);
+        panelTranslation.setLayout(panelTranslationLayout);
+        panelTranslationLayout.setHorizontalGroup(
+                panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment
+                        .LEADING)
+                .addGroup(panelTranslationLayout.createSequentialGroup()
+                    .addGap(18, 18, 18)
+                    .addComponent(buttonTranslationDelete)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(buttonTranslationJoin)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(buttonTranslationSplit)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelTranslationLayout.setVerticalGroup(
+                panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment
+                        .LEADING)
+                .addGroup(panelTranslationLayout.createSequentialGroup()
+                    .addGroup(panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout
+                            .Alignment.CENTER)
+                        .addComponent(buttonTranslationSplit)
+                        .addComponent(buttonTranslationJoin)
+                        .addComponent(buttonTranslationDelete))
+                    .addGap(0, 8, Short.MAX_VALUE))
+        );
 
-                buttonTranslationSplit.setText("Split");
-                setLocalizedText(buttonTranslationSplit, getString("BTN.SPLIT.TRANSLATION"));
+        toolBar.add(panelTranslation);
 
-                javax.swing.GroupLayout panelTranslationLayout = new javax.swing.GroupLayout(panelTranslation);
-                panelTranslation.setLayout(panelTranslationLayout);
-                panelTranslationLayout.setHorizontalGroup(
-                        panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelTranslationLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(buttonTranslationDelete)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonTranslationJoin)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonTranslationSplit)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                panelTranslationLayout.setVerticalGroup(
-                        panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panelTranslationLayout.createSequentialGroup()
-                                .addGroup(panelTranslationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(buttonTranslationSplit)
-                                        .addComponent(buttonTranslationJoin)
-                                        .addComponent(buttonTranslationDelete))
-                                .addGap(0, 8, Short.MAX_VALUE))
-                );
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 750,
+                            Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                     .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 64,
+                             Short.MAX_VALUE)
+        );
+    }// </editor-fold>//GEN-END:initComponents
 
-                toolBar.add(panelTranslation);
-
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-                this.setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
-                );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
-                );
-        }// </editor-fold>//GEN-END:initComponents
-
-        // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JButton buttonOriginalDelete;
-        private javax.swing.JButton buttonOriginalJoin;
-        private javax.swing.JButton buttonOriginalSplit;
-        private javax.swing.JButton buttonRemoveBlankRows;
-        private javax.swing.JButton buttonTUSplit;
-        private javax.swing.JButton buttonTranslationDelete;
-        private javax.swing.JButton buttonTranslationJoin;
-        private javax.swing.JButton buttonTranslationSplit;
-        private javax.swing.Box.Filler filler1;
-        private javax.swing.Box.Filler filler2;
-        private javax.swing.JPanel panelOriginal;
-        private javax.swing.JPanel panelTranslateUnit;
-        private javax.swing.JPanel panelTranslation;
-        private javax.swing.JToolBar toolBar;
-        // End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonOriginalDelete;
+    private javax.swing.JButton buttonOriginalJoin;
+    private javax.swing.JButton buttonOriginalSplit;
+    private javax.swing.JButton buttonRemoveBlankRows;
+    private javax.swing.JButton buttonTUSplit;
+    private javax.swing.JButton buttonTranslationDelete;
+    private javax.swing.JButton buttonTranslationJoin;
+    private javax.swing.JButton buttonTranslationSplit;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.JPanel panelOriginal;
+    private javax.swing.JPanel panelTranslateUnit;
+    private javax.swing.JPanel panelTranslation;
+    private javax.swing.JToolBar toolBar;
+    // End of variables declaration//GEN-END:variables
 }

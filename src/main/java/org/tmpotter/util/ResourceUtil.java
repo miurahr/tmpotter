@@ -33,26 +33,26 @@ import java.awt.Toolkit;
 import java.io.FileNotFoundException;
 import java.net.URL;
 
+
 /**
  * Resource management utility.
- * 
+ *
  * @author Hiroshi Miura
  */
 public class ResourceUtil {
-  /**
-   * Load icon.
-   * 
-   * @param resourceName
-   *            resource name
-   * @return Image
-   *            An image retrieved by resource name
-   * @throws FileNotFoundException  when icon file not found
-   */
-  public static Image getImage(final String resourceName) throws FileNotFoundException {
-    URL resourceUrl = ResourceUtil.class.getResource(resourceName);
-    if (resourceUrl == null) {
-      throw new FileNotFoundException(resourceName);
+    /**
+     * Load icon.
+     *
+     * @param resourceName resource name
+     * @return Image
+     * An image retrieved by resource name
+     * @throws FileNotFoundException when icon file not found
+     */
+    public static Image getImage(final String resourceName) throws FileNotFoundException {
+        URL resourceUrl = ResourceUtil.class.getResource(resourceName);
+        if (resourceUrl == null) {
+            throw new FileNotFoundException(resourceName);
+        }
+        return Toolkit.getDefaultToolkit().getImage(resourceUrl);
     }
-    return Toolkit.getDefaultToolkit().getImage(resourceUrl);
-  }
 }

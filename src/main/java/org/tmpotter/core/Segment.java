@@ -30,8 +30,9 @@ package org.tmpotter.core;
 
 
 /**
-* Segment class.
-*/
+ * Segment class.
+ * @author Hiroshi Miura
+ */
 /*
   This class is not strictly correct
 
@@ -41,75 +42,75 @@ package org.tmpotter.core;
   or it is a row in the table
 */
 public class Segment {
-  private String num;
-  private String original;
-  private String translation;
+    private String num;
+    private String original;
+    private String translation;
 
-  /**
-   * Constructor.
-   * 
-   * @param num row number
-   * @param original original pharase
-   * @param translation translation pharase
-   */
-  public Segment( final String num, final String original,
-          final String translation ) {
-    this.num         = num;
-    this.original    = original;
-    this.translation = translation;
-  }
+    /**
+     * Constructor.
+     *
+     * @param num         row number
+     * @param original    original pharase
+     * @param translation translation pharase
+     */
+    public Segment(final String num, final String original,
+                   final String translation) {
+        this.num = num;
+        this.original = original;
+        this.translation = translation;
+    }
 
-  /**
-   * Accessor to num.
-   * 
-   * @return num
-   */
-  public String getNum() {
-    return num;
-  }
-  
-  /**
-   * get original string.
-   * 
-   * @return original string in segument.
-   */
-  public String getOriginal()    {
-    return original;
-  }
-  
-  /**
-   * get translation string.
-   *
-   * @return translation string in segument.
-   */
-  public String getTranslation() {
-    return translation;
-  }
+    /**
+     * Accessor to num.
+     *
+     * @return num
+     */
+    public String getNum() {
+        return num;
+    }
 
-  /**
-   * set number of segment.
-   * 
-   * @param num  string to set
-   */
-  public void setNum( final String num ) {
-    this.num = num;
-  }
+    /**
+     * get original string.
+     *
+     * @return original string in segument.
+     */
+    public String getOriginal() {
+        return original;
+    }
 
-  /**
-   * set original string.
-   * 
-   * @param original to set
-   */
-  public void setOriginal( final String original ) {
-    this.original = original;
-  }
+    /**
+     * get translation string.
+     *
+     * @return translation string in segument.
+     */
+    public String getTranslation() {
+        return translation;
+    }
 
-  /**
-   * set translation string.
-   * 
-   * @param translation to set
-   */
-  public void setTranslation( final String translation ) {
-    this.translation = translation;
-  }
+    /**
+     * set number of segment.
+     *
+     * @param num string to set
+     */
+    public void setNum(final String num) {
+        this.num = num;
+    }
+
+    /**
+     * set original string.
+     *
+     * @param original to set
+     */
+    public void setOriginal(final String original) {
+        this.original = original;
+    }
+
+    /**
+     * set translation string.
+     *
+     * @param translation to set
+     */
+    public void setTranslation(final String translation) {
+        this.translation = translation;
+    }
 }

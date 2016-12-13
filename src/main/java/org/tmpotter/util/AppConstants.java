@@ -34,120 +34,124 @@ import java.util.regex.Pattern;
 
 
 /**
- *  Constants - class level (global scope).
- *
+ * Constants - class level (global scope).
  */
 public class AppConstants {
-  private static final String __VERSION_KEY = "version";
-  private static final String __UPDATE_KEY = "update";
-  private static final String __REVISION_KEY = "revision";
-  private static String BRANDING = "";
-  private static final String NAME = getString( "WND.APP.TITLE" );
-  private static final String VERSION = ResourceBundle
-          .getBundle("org/tmpotter/Version")
-          .getString(__VERSION_KEY);
-  private static final String UPDATE = ResourceBundle
-          .getBundle("org/tmpotter/Version")
-          .getString(__UPDATE_KEY);
-  private static final String REVISION = ResourceBundle
-          .getBundle("org/tmpotter/Version")
-          .getString(__REVISION_KEY);
-  public static final String COPYRIGHT   = "Copyright (C) 2015";
-  public static final String LICENSE     = 
-          "Released as Free Software under GPL v3 and later";
-  public static final String AUTHORS     = 
-          "Hiroshi Miura";
-  public static final String CONTRIBUTORS =
-          "TMPotter used components of OmegaT and bitext2tmx.\n"
-          + "OmegaT: Alex Buloichik, Thomas Cordonnier,\n"
-          + " Aaron Madlon-Kay, Zoltan Bartko,\n"
-          + " Didier Briel, Maxym Mykhalchuk, "
-          + "Keith Godfrey\n"
-          + "bitext2tmx: Susana Santos Antón,\n"
-          + " Raymond: Martin et al.";
-  public static final String BUILDCLASSPATH = "build"
-          + File.separator + "classes";
-  public static final int READ_AHEAD_LIMIT = 65536;
+    private static final String __VERSION_KEY = "version";
+    private static final String __UPDATE_KEY = "update";
+    private static final String __REVISION_KEY = "revision";
+    private static String BRANDING = "";
+    private static final String NAME = getString("WND.APP.TITLE");
+    private static final String VERSION = ResourceBundle
+            .getBundle("org/tmpotter/Version")
+            .getString(__VERSION_KEY);
+    private static final String UPDATE = ResourceBundle
+            .getBundle("org/tmpotter/Version")
+            .getString(__UPDATE_KEY);
+    private static final String REVISION = ResourceBundle
+            .getBundle("org/tmpotter/Version")
+            .getString(__REVISION_KEY);
+    public static final String COPYRIGHT = "Copyright (C) 2015";
+    public static final String LICENSE =
+            "Released as Free Software under GPL v3 and later";
+    public static final String AUTHORS =
+            "Hiroshi Miura";
+    public static final String CONTRIBUTORS =
+            "TMPotter used components of OmegaT and bitext2tmx.\n"
+                    + "OmegaT: Alex Buloichik, Thomas Cordonnier,\n"
+                    + " Aaron Madlon-Kay, Zoltan Bartko,\n"
+                    + " Didier Briel, Maxym Mykhalchuk, "
+                    + "Keith Godfrey\n"
+                    + "bitext2tmx: Susana Santos Antón,\n"
+                    + " Raymond: Martin et al.";
+    public static final String BUILDCLASSPATH = "build"
+            + File.separator + "classes";
+    public static final int READ_AHEAD_LIMIT = 65536;
 
-  public static final Pattern XML_ENCODING = Pattern
+    public static final Pattern XML_ENCODING = Pattern
             .compile("<\\?xml.*?encoding\\s*=\\s*\"(\\S+?)\".*?\\?>");
 
-  public static final String APPLICATION_JAR = "tmpotter.jar";
-  public static final String DEBUG_CLASSPATH = File.separator + "classes";
+    public static final String APPLICATION_JAR = "tmpotter.jar";
+    public static final String DEBUG_CLASSPATH = File.separator + "classes";
 
-  // Encodings.java
-  public static final String ENCODINGS_UTF8        = "UTF-8";
-  public static final String ENCODINGS_ISO8859_1   = "ISO-8859-1";
-  public static final String ENCODINGS_CP932       = "CP932";
-  public static final String ENCODINGS_DEFAULT     = "Default";
-  public static final List<String> straEncodings = Collections.unmodifiableList(
-      new ArrayList<String>() {{
-	      add(ENCODINGS_DEFAULT);
-	      add(ENCODINGS_UTF8);
-	      add(ENCODINGS_ISO8859_1);
-	      add(ENCODINGS_CP932);
-      }});
-  public static final String TAG_REPLACEMENT = "\b";
-  
-  /**
-   * Char which should be used instead protected parts. 
-   * 
-   * <p>It should be non-letter char, to be able to have
-   * correct words counter.
-   *
-   * <p>This char can be placed around protected text for 
-   * separate words inside protected text and words
-   * outside if there are no spaces between they.
-   */
-  public static final char TAG_REPLACEMENT_CHAR = '\b';
-  
-  /** Pattern that detects language and country,
-   * with an optional script in the middle.
-   */
-  public static final Pattern LANG_AND_COUNTRY = Pattern
-          .compile("([A-Za-z]{1,8})(?:(?:-|_)(?:[A-Za-z]{4}(?:-|_))?([A-Za-z0-9]{1,8}))?");
-  
-  public static final Pattern SPACY_REGEX = Pattern
-          .compile("((\\s|\\\\n|\\\\t|\\\\s)(\\+|\\*)?)+");
+    // Encodings.java
+    public static final String ENCODINGS_UTF8 = "UTF-8";
+    public static final String ENCODINGS_ISO8859_1 = "ISO-8859-1";
+    public static final String ENCODINGS_CP932 = "CP932";
+    public static final String ENCODINGS_DEFAULT = "Default";
+    public static final List<String> straEncodings = Collections.unmodifiableList(
+            new ArrayList<String>() {
+                {
+                    add(ENCODINGS_DEFAULT);
+                    add(ENCODINGS_UTF8);
+                    add(ENCODINGS_ISO8859_1);
+                    add(ENCODINGS_CP932);
+                }
+            }
+    );
+    public static final String TAG_REPLACEMENT = "\b";
 
-  /**
-   * Make app name and version string for human.
-   *
-   * @return string to indicate for human reading
-   */
-  public static String getDisplayNameAndVersion() {
-    if (!UPDATE.equals("0")) {
-      return StringUtil.format(getString("app-version-template-pretty-update"),
+    /**
+     * Char which should be used instead protected parts.
+     * <p>
+     * <p>It should be non-letter char, to be able to have
+     * correct words counter.
+     * <p>
+     * <p>This char can be placed around protected text for
+     * separate words inside protected text and words
+     * outside if there are no spaces between they.
+     */
+    public static final char TAG_REPLACEMENT_CHAR = '\b';
+
+    /**
+     * Pattern that detects language and country,
+     * with an optional script in the middle.
+     */
+    public static final Pattern LANG_AND_COUNTRY = Pattern
+            .compile("([A-Za-z]{1,8})(?:(?:-|_)(?:[A-Za-z]{4}(?:-|_))?([A-Za-z0-9]{1,8}))?");
+
+    public static final Pattern SPACY_REGEX = Pattern
+            .compile("((\\s|\\\\n|\\\\t|\\\\s)(\\+|\\*)?)+");
+
+    /**
+     * Make app name and version string for human.
+     *
+     * @return string to indicate for human reading
+     */
+    public static String getDisplayNameAndVersion() {
+        if (!UPDATE.equals("0")) {
+            return StringUtil.format(getString("app-version-template-pretty-update"),
                     getApplicationDisplayName(), VERSION, UPDATE);
-    } else {
-      return StringUtil.format(getString("app-version-template-pretty"),
+        } else {
+            return StringUtil.format(getString("app-version-template-pretty"),
                     getApplicationDisplayName(), VERSION);
+        }
     }
-  }
 
-  /**
-   * Get the application name for display purposes (includes branding).
-   *
-   * @return  application name for human reading.
-   */
-  public static String getApplicationDisplayName() {
-    return BRANDING.isEmpty() ? NAME : NAME + " " + BRANDING;
-  }
-  
-  /**
-   * Get the application description.
-   * 
-   * @return string to describe application
-   */
-  public static String getApplicationDescription() {
-    return getString("WND.APP.DESCRIPTION");
-  }
-  
-  public static String getAppNameAndVersion() {
-    return StringUtil.format(getString("app-version-template"), NAME, VERSION, UPDATE, REVISION);
-  }
+    /**
+     * Get the application name for display purposes (includes branding).
+     *
+     * @return application name for human reading.
+     */
+    public static String getApplicationDisplayName() {
+        return BRANDING.isEmpty() ? NAME : NAME + " " + BRANDING;
+    }
 
-  public static String getVersion() {
-    return StringUtil.format(getString("version-template"), VERSION, UPDATE, REVISION);
-  }
+    /**
+     * Get the application description.
+     *
+     * @return string to describe application
+     */
+    public static String getApplicationDescription() {
+        return getString("WND.APP.DESCRIPTION");
+    }
+
+    public static String getAppNameAndVersion() {
+        return StringUtil.format(getString("app-version-template"), NAME, VERSION, UPDATE,
+                REVISION);
+    }
+
+    public static String getVersion() {
+        return StringUtil.format(getString("version-template"), VERSION, UPDATE, REVISION);
+    }
 }

@@ -33,133 +33,132 @@ import javax.swing.JToggleButton;
 
 
 /**
- * 
  * @author Maxym Mykhalchuk
  */
 @SuppressWarnings("serial")
 public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
-  protected SRX srx;
+    protected SRX srx;
 
-  /**
-   * Creates a new instance of SRXOptionsModel
-   */
-  protected SRXOptionsModel(SRX srx) {
-    this.srx = srx;
-  }
-
-  /**
-   * a model for segment subflows checkbox
-   */
-  private static class SegmentSubflowsModel extends SRXOptionsModel {
-
-    SegmentSubflowsModel(SRX srx) {
-      super(srx);
+    /**
+     * Creates a new instance of SRXOptionsModel
+     */
+    protected SRXOptionsModel(SRX srx) {
+        this.srx = srx;
     }
 
-    public void setSelected(boolean b) {
-      srx.setSegmentSubflows(b);
-      super.setSelected(b);
+    /**
+     * a model for segment subflows checkbox
+     */
+    private static class SegmentSubflowsModel extends SRXOptionsModel {
+
+        SegmentSubflowsModel(SRX srx) {
+            super(srx);
+        }
+
+        public void setSelected(boolean b) {
+            srx.setSegmentSubflows(b);
+            super.setSelected(b);
+        }
+
+        public boolean isSelected() {
+            return srx.isSegmentSubflows();
+        }
+
     }
 
-    public boolean isSelected() {
-      return srx.isSegmentSubflows();
+    /**
+     * a model for segment subflows checkbox
+     */
+    public static ButtonModel getSegmentSubflowsModel(SRX srx) {
+        return new SegmentSubflowsModel(srx);
     }
 
-  }
+    /**
+     * a model for including starting formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    private static class IncludeStartingTagsModel extends SRXOptionsModel {
 
-  /**
-   * a model for segment subflows checkbox
-   */
-  public static ButtonModel getSegmentSubflowsModel(SRX srx) {
-    return new SegmentSubflowsModel(srx);
-  }
+        IncludeStartingTagsModel(SRX srx) {
+            super(srx);
+        }
 
-  /**
-   * a model for including starting formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  private static class IncludeStartingTagsModel extends SRXOptionsModel {
+        public void setSelected(boolean b) {
+            srx.setIncludeStartingTags(b);
+            super.setSelected(b);
+        }
 
-    IncludeStartingTagsModel(SRX srx) {
-      super(srx);
+        public boolean isSelected() {
+            return srx.isIncludeStartingTags();
+        }
+
     }
 
-    public void setSelected(boolean b) {
-      srx.setIncludeStartingTags(b);
-      super.setSelected(b);
+    /**
+     * a model for including starting formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    public static ButtonModel getIncludeStartingTagsModel(SRX srx) {
+        return new IncludeStartingTagsModel(srx);
     }
 
-    public boolean isSelected() {
-      return srx.isIncludeStartingTags();
+    /**
+     * a model for including ending formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    private static class IncludeEndingTagsModel extends SRXOptionsModel {
+
+        IncludeEndingTagsModel(SRX srx) {
+            super(srx);
+        }
+
+        public void setSelected(boolean b) {
+            srx.setIncludeEndingTags(b);
+            super.setSelected(b);
+        }
+
+        public boolean isSelected() {
+            return srx.isIncludeEndingTags();
+        }
+
     }
 
-  }
-
-  /**
-   * a model for including starting formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  public static ButtonModel getIncludeStartingTagsModel(SRX srx) {
-    return new IncludeStartingTagsModel(srx);
-  }
-
-  /**
-   * a model for including ending formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  private static class IncludeEndingTagsModel extends SRXOptionsModel {
-
-    IncludeEndingTagsModel(SRX srx) {
-      super(srx);
+    /**
+     * a model for including ending formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    public static ButtonModel getIncludeEndingTagsModel(SRX srx) {
+        return new IncludeEndingTagsModel(srx);
     }
 
-    public void setSelected(boolean b) {
-      srx.setIncludeEndingTags(b);
-      super.setSelected(b);
+    /**
+     * a model for including isolated formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    private static class IncludeIsolatedTagsModel extends SRXOptionsModel {
+
+        IncludeIsolatedTagsModel(SRX srx) {
+            super(srx);
+        }
+
+        public void setSelected(boolean b) {
+            srx.setIncludeIsolatedTags(b);
+            super.setSelected(b);
+        }
+
+        public boolean isSelected() {
+            return srx.isIncludeIsolatedTags();
+        }
+
     }
 
-    public boolean isSelected() {
-      return srx.isIncludeEndingTags();
+    /**
+     * a model for including isolated formatting tags at the end boundary of the
+     * segment checkbox
+     */
+    public static ButtonModel getIncludeIsolatedTagsModel(SRX srx) {
+        return new IncludeIsolatedTagsModel(srx);
     }
-
-  }
-
-  /**
-   * a model for including ending formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  public static ButtonModel getIncludeEndingTagsModel(SRX srx) {
-    return new IncludeEndingTagsModel(srx);
-  }
-
-  /**
-   * a model for including isolated formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  private static class IncludeIsolatedTagsModel extends SRXOptionsModel {
-
-    IncludeIsolatedTagsModel(SRX srx) {
-      super(srx);
-    }
-
-    public void setSelected(boolean b) {
-      srx.setIncludeIsolatedTags(b);
-      super.setSelected(b);
-    }
-
-    public boolean isSelected() {
-      return srx.isIncludeIsolatedTags();
-    }
-
-  }
-
-  /**
-   * a model for including isolated formatting tags at the end boundary of the
-   * segment checkbox
-   */
-  public static ButtonModel getIncludeIsolatedTagsModel(SRX srx) {
-    return new IncludeIsolatedTagsModel(srx);
-  }
 
 }

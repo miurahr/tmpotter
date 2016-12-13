@@ -35,18 +35,18 @@ package org.tmpotter.filters;
  */
 public interface IParseCallback {
 
-  /**
-   * Read entry from source file.
-   *
-   * @param id ID in source file, or null if ID not supported by format
-   * @param source source entry text
-   * @param translation exist translation text
-   * @param isFuzzy true if translation is fuzzy
-   * @param comment comment for entry, if format supports it
-   * @param path path of segment
-   * @param filter filter which produces entry
-   */
-  void addEntry(String id, String source, String translation, boolean isFuzzy, String comment,
-      String path, IFilter filter);
+    /**
+     * Read entry from source file.
+     *
+     * @param id          ID in source file, or null if ID not supported by format
+     * @param source      source entry text
+     * @param translation exist translation text
+     * @param isFuzzy     true if translation is fuzzy
+     * @param comment     comment for entry, if format supports it
+     * @param path        path of segment
+     * @param filter      filter which produces entry
+     */
+    void addEntry(String id, String source, String translation, boolean isFuzzy, String comment,
+                  String path, IFilter filter);
 
 }

@@ -32,33 +32,33 @@ package org.tmpotter.filters;
 @SuppressWarnings("serial")
 public class FilterNotFoundException extends Exception {
 
-  /**
-   * Constructs an instance of <code>FilterNotFoundException</code> with the specified detail
-   * message.
-   *
-   * @param msg the detail message.
-   */
-  public FilterNotFoundException(String msg) {
-    super(msg);
-  }
+    /**
+     * Constructs an instance of <code>FilterNotFoundException</code> with the specified detail
+     * message.
+     *
+     * @param msg the detail message.
+     */
+    public FilterNotFoundException(String msg) {
+        super(msg);
+    }
 
-  /**
-   * Constructs an instance of <code>FilterNotFoundException</code> with the specified detail
-   * message and cause.
-   *
-   * @param msg the detail message.
-   * @param cause cause the cause
-   */
-  public FilterNotFoundException(String msg, Throwable cause) {
-    super(msg, cause);
-  }
+    /**
+     * Constructs an instance of <code>FilterNotFoundException</code> with the specified detail
+     * message and cause.
+     *
+     * @param msg   the detail message.
+     * @param cause cause the cause
+     */
+    public FilterNotFoundException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
-  /**
-   * Constructs an instance of <code>FilterNotFoundException</code> with the specified cause.
-   *
-   * @param cause cause the cause
-   */
-  public FilterNotFoundException(Throwable cause) {
-    super(cause);
-  }
+    /**
+     * Constructs an instance of <code>FilterNotFoundException</code> with the specified cause.
+     *
+     * @param cause cause the cause
+     */
+    public FilterNotFoundException(Throwable cause) {
+        super(cause);
+    }
 }

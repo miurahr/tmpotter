@@ -28,6 +28,9 @@
 
 package org.tmpotter.ui;
 
+import org.tmpotter.core.BitextModel;
+import org.tmpotter.core.Segment;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
@@ -38,8 +41,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.tmpotter.core.BitextModel;
-import org.tmpotter.core.Segment;
 
 /**
  * Alignment Table view for parallel texts.
@@ -49,193 +50,193 @@ import org.tmpotter.core.Segment;
 @SuppressWarnings("serial")
 public class TmView extends javax.swing.JPanel {
 
-  private ActionHandler actionHandler;
-  BitextModel bitextModel;
+    private ActionHandler actionHandler;
+    BitextModel bitextModel;
 
-  /**
-   * Creates new form TmView
-   */
-  public TmView(ActionHandler handler) {
-    this.actionHandler = handler;
-  }
-
-  final void buildDisplay() {
-    bitextModel = new BitextModel();
-    initComponents();
-    table.setEnabled(false);
-    table.addKeyListener(new KeyAdapter() {
-      public final void keyPressed(final KeyEvent event) {
-        actionHandler.onTablePressed(event);
-      }
-    });
-
-    table.addMouseListener(new MouseAdapter() {
-      public final void mouseClicked(final MouseEvent event) {
-        actionHandler.onTableClicked();
-      }
-    });
-    scrollPane.setColumnHeader(null);
-    scrollPane.setColumnHeaderView(table.getTableHeader());
-    table.setEnabled(true);
-  }
-
-  public final void setTableFont(final Font font) {
-    if (table != null) {
-      int size = font.getSize();
-      if (size <= 10) {
-        table.setRowHeight(10);
-      } else {
-        table.setRowHeight(size);
-      }
-      table.setFont(font);
+    /**
+     * Creates new form TmView
+     */
+    public TmView(ActionHandler handler) {
+        this.actionHandler = handler;
     }
-  }
 
-  public final TableColumnModel getColumnModel() {
-    return (table.getColumnModel());
-  }
+    final void buildDisplay() {
+        bitextModel = new BitextModel();
+        initComponents();
+        table.setEnabled(false);
+        table.addKeyListener(new KeyAdapter() {
+            public final void keyPressed(final KeyEvent event) {
+                actionHandler.onTablePressed(event);
+            }
+        });
 
-  public final void setColumnHeaderView() {
-    scrollPane.setColumnHeaderView(table.getTableHeader());
-  }
-
-  public final void setRowSelectionInterval(final int row, final int len) {
-    if (row > 0 && len > 0) {
-      table.setRowSelectionInterval(row, len);
+        table.addMouseListener(new MouseAdapter() {
+            public final void mouseClicked(final MouseEvent event) {
+                actionHandler.onTableClicked();
+            }
+        });
+        scrollPane.setColumnHeader(null);
+        scrollPane.setColumnHeaderView(table.getTableHeader());
+        table.setEnabled(true);
     }
-  }
 
-  public final void setValueAt(final String str, final int row, final int column) {
-    table.setValueAt(str, row, column);
-  }
-
-  public final void setPreferredSize(final int width,
-	  final int height, final int offset) {
-    table.setPreferredSize(new Dimension(width, (table.getRowCount() * height) + offset));
-	 
-  }
-
-  public final int getRowCount() {
-    return (table.getRowCount());
-  }
-
-  public final void setModelValueAt(final Object obj, int row, int column) {
-    bitextModel.setValueAt(obj, row, column);
-  }
-
-  public final void removeSegment(final int row) {
-    bitextModel.removeSegment(row);
-    revalidate();
-  }
-
-  public final void addModelSegment(final Segment segment) {
-    bitextModel.addSegment(segment);
-  }
-
-  public final Object getValueAt(final int row, final int column) {
-    if (row < 0 || column < 0) {
-      return "";
+    public final void setTableFont(final Font font) {
+        if (table != null) {
+            int size = font.getSize();
+            if (size <= 10) {
+                table.setRowHeight(10);
+            } else {
+                table.setRowHeight(size);
+            }
+            table.setFont(font);
+        }
     }
-    return (table.getValueAt(row, column));
-  }
 
-  public final int getSelectedRow() {
-    return (table.getSelectedRow());
-  }
-
-  public final int getSelectedColumn() {
-    return (table.getSelectedColumn());
-  }
-
-  public final JTableHeader getTableHeader() {
-    return (table.getTableHeader());
-  }
-
-  final void clear() {
-    table.removeAll();
-    table.revalidate();
-    scrollPane.remove(table);
-    scrollPane.revalidate();
-    remove(scrollPane);
-    revalidate();
-    removeAll();
-    repaint(100);
-  }
-
-  void clearAllView() {
-    for (int i = 0; i < getRowCount(); i++) {
-      setModelValueAt("", i, 0);
-      setModelValueAt("", i, 1);
-      setModelValueAt("", i, 2);
+    public final TableColumnModel getColumnModel() {
+        return (table.getColumnModel());
     }
-  }
 
-  void adjustOriginalView(int size) {
-    if ((getRowCount() > size) && (size > 25)) {
-      while (getRowCount() != size) {
-        removeSegment(getRowCount() - 1);
-        setPreferredSize(805, 15, -1);
-      }
-    } else if (getRowCount() < size) {
-      while (getRowCount() != size) {
-        addModelSegment(new Segment(null, null, null));
-        setPreferredSize(805, 15, 1);
-      }
+    public final void setColumnHeaderView() {
+        scrollPane.setColumnHeaderView(table.getTableHeader());
     }
-  }
 
-  void setViewData(TmData tmData) {
-    for (int cont = 0; cont < tmData.getDocumentOriginalSize(); cont++) {
-      setModelValueAt(Integer.toString(cont + 1), cont, 0);
-      setModelValueAt(tmData.getDocumentOriginal(cont), cont, 1);
+    public final void setRowSelectionInterval(final int row, final int len) {
+        if (row > 0 && len > 0) {
+            table.setRowSelectionInterval(row, len);
+        }
     }
-    for (int cont = 0; cont < tmData.getDocumentTranslationSize(); cont++) {
-      setModelValueAt(tmData.getDocumentTranslation(cont), cont, 2);
+
+    public final void setValueAt(final String str, final int row, final int column) {
+        table.setValueAt(str, row, column);
     }
-  }
 
-  /**
-   * This method is called from within the constructor to initialize the form. WARNING: Do NOT
-   * modify this code. The content of this method is always regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
-        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-        private void initComponents() {
+    public final void setPreferredSize(final int width,
+                                       final int height, final int offset) {
+        table.setPreferredSize(new Dimension(width, (table.getRowCount() * height) + offset));
 
-                scrollPane = new javax.swing.JScrollPane();
-                table = new javax.swing.JTable();
+    }
 
-                setLayout(new java.awt.BorderLayout());
+    public final int getRowCount() {
+        return (table.getRowCount());
+    }
 
-                table.setModel(bitextModel
-                );
-                table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-                scrollPane.setViewportView(table);
-                TableColumn column;
+    public final void setModelValueAt(final Object obj, int row, int column) {
+        bitextModel.setValueAt(obj, row, column);
+    }
 
-                //  Segment
-                column = table.getColumnModel().getColumn(0);
-                column.setPreferredWidth(60);
-                column.setHeaderValue(table.getColumnName(0));
+    public final void removeSegment(final int row) {
+        bitextModel.removeSegment(row);
+        revalidate();
+    }
 
-                //  Original
-                column = table.getColumnModel().getColumn(1);
-                column.setHeaderValue(table.getColumnName(1));
-                column.setPreferredWidth(600);
-                column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
+    public final void addModelSegment(final Segment segment) {
+        bitextModel.addSegment(segment);
+    }
 
-                //  Translation
-                column = table.getColumnModel().getColumn(2);
-                column.setPreferredWidth(600);
-                column.setHeaderValue(table.getColumnName(2));
-                column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
+    public final Object getValueAt(final int row, final int column) {
+        if (row < 0 || column < 0) {
+            return "";
+        }
+        return (table.getValueAt(row, column));
+    }
 
-                add(scrollPane, java.awt.BorderLayout.CENTER);
-        }// </editor-fold>//GEN-END:initComponents
+    public final int getSelectedRow() {
+        return (table.getSelectedRow());
+    }
+
+    public final int getSelectedColumn() {
+        return (table.getSelectedColumn());
+    }
+
+    public final JTableHeader getTableHeader() {
+        return (table.getTableHeader());
+    }
+
+    final void clear() {
+        table.removeAll();
+        table.revalidate();
+        scrollPane.remove(table);
+        scrollPane.revalidate();
+        remove(scrollPane);
+        revalidate();
+        removeAll();
+        repaint(100);
+    }
+
+    void clearAllView() {
+        for (int i = 0; i < getRowCount(); i++) {
+            setModelValueAt("", i, 0);
+            setModelValueAt("", i, 1);
+            setModelValueAt("", i, 2);
+        }
+    }
+
+    void adjustOriginalView(int size) {
+        if ((getRowCount() > size) && (size > 25)) {
+            while (getRowCount() != size) {
+                removeSegment(getRowCount() - 1);
+                setPreferredSize(805, 15, -1);
+            }
+        } else if (getRowCount() < size) {
+            while (getRowCount() != size) {
+                addModelSegment(new Segment(null, null, null));
+                setPreferredSize(805, 15, 1);
+            }
+        }
+    }
+
+    void setViewData(TmData tmData) {
+        for (int cont = 0; cont < tmData.getDocumentOriginalSize(); cont++) {
+            setModelValueAt(Integer.toString(cont + 1), cont, 0);
+            setModelValueAt(tmData.getDocumentOriginal(cont), cont, 1);
+        }
+        for (int cont = 0; cont < tmData.getDocumentTranslationSize(); cont++) {
+            setModelValueAt(tmData.getDocumentTranslation(cont), cont, 2);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT
+     * modify this code. The content of this method is always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        scrollPane = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+
+        setLayout(new java.awt.BorderLayout());
+
+        table.setModel(bitextModel
+        );
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        scrollPane.setViewportView(table);
+        TableColumn column;
+
+        //  Segment
+        column = table.getColumnModel().getColumn(0);
+        column.setPreferredWidth(60);
+        column.setHeaderValue(table.getColumnName(0));
+
+        //  Original
+        column = table.getColumnModel().getColumn(1);
+        column.setHeaderValue(table.getColumnName(1));
+        column.setPreferredWidth(600);
+        column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
+
+        //  Translation
+        column = table.getColumnModel().getColumn(2);
+        column.setPreferredWidth(600);
+        column.setHeaderValue(table.getColumnName(2));
+        column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
+
+        add(scrollPane, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
 
 
-        // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JScrollPane scrollPane;
-        private javax.swing.JTable table;
-        // End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JTable table;
+    // End of variables declaration//GEN-END:variables
 }

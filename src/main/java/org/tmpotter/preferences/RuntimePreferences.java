@@ -32,32 +32,33 @@ import java.io.File;
 
 /**
  * Preference that remember only run time.
- * 
+ *
  * @author Hiroshi Miura
  */
 public class RuntimePreferences {
-  private static File userHome = new File(System.getProperty("user.home"));
-  
-  /**
-   * Set user home directory.
-   * 
-   * @param home user home directory
-   */
-  public static void setUserHome(File home) {
-    userHome = home;
-  }
+    private static File userHome = new File(System.getProperty("user.home"));
 
-  /**
-   * Get user home directory.
-   * 
-   * @return string user home
-   */
-  public static File getUserHome() {
-    return userHome;
-  }
+    /**
+     * Set user home directory.
+     *
+     * @param home user home directory
+     */
+    public static void setUserHome(File home) {
+        userHome = home;
+    }
 
-  /**
-   * Privated constructor for global preference.
-   */
-  private RuntimePreferences() {}
+    /**
+     * Get user home directory.
+     *
+     * @return string user home
+     */
+    public static File getUserHome() {
+        return userHome;
+    }
+
+    /**
+     * Privated constructor for global preference.
+     */
+    private RuntimePreferences() {
+    }
 }

@@ -34,74 +34,74 @@ import java.io.File;
  * @author Hiroshi Miura
  */
 public interface ModelMediator {
-  // Open/Import
-  void setFilePathOriginal(File filePath);
+    // Open/Import
+    void setFilePathOriginal(File filePath);
 
-  String getFileNameOriginal();
+    String getFileNameOriginal();
 
-  void setFilePathTranslation(File filePath);
+    void setFilePathTranslation(File filePath);
 
-  String getFileNameTranslation();
+    String getFileNameTranslation();
 
-  void setSourceLanguage(String lang);
+    void setSourceLanguage(String lang);
 
-  void setTargetLanguage(String lang);
+    void setTargetLanguage(String lang);
 
-  void setOriginalProperties(File filePath, String lang, String encoding);
+    void setOriginalProperties(File filePath, String lang, String encoding);
 
-  void setTargetProperties(File filePath, String lang, String encoding);
+    void setTargetProperties(File filePath, String lang, String encoding);
 
-  // Props
-  ProjectProperties getProjectProperties();
+    // Props
+    ProjectProperties getProjectProperties();
 
-  void clearProjectProperties();
+    void clearProjectProperties();
 
-  // Menus
-  void enableButtonsOnOpenFile(boolean val);
+    // Menus
+    void enableButtonsOnOpenFile(boolean val);
 
-  // TMView
-  void initializeTmView();
+    // TMView
+    void initializeTmView();
 
-  void updateTmView();
+    void updateTmView();
 
-  void buildDisplay();
+    void buildDisplay();
 
-  String getLeftSegment(int index);
+    String getLeftSegment(int index);
 
-  String getRightSegment(int index);
+    String getRightSegment(int index);
 
-  int getTmViewRows();
+    int getTmViewRows();
 
-  int getTmViewSelectedRow();
+    int getTmViewSelectedRow();
 
-  int getTmViewSelectedColumn();
+    int getTmViewSelectedColumn();
 
-  // Segment Editor
-  void setTextAreaPosition(int position);
+    // Segment Editor
+    void setTextAreaPosition(int position);
 
-  void tmDataClear();
+    void tmDataClear();
 
-  void tmViewClear();
+    void tmViewClear();
 
-  void editSegmentClear();
+    void editSegmentClear();
 
-  void setUndoEnabled(boolean enable);
+    void setUndoEnabled(boolean enable);
 
-  void setLeftEdit(String edit);
+    void setLeftEdit(String edit);
 
-  void setRightEdit(String edit);
+    void setRightEdit(String edit);
 
-  String getLeftEdit();
+    String getLeftEdit();
 
-  String getRightEdit();
+    String getRightEdit();
 
-  // ToolBar
-  void setJoinEnabled(boolean val);
+    // ToolBar
+    void setJoinEnabled(boolean val);
 
-  void enableAlignToolBar(boolean enable);
+    void enableAlignToolBar(boolean enable);
 
-  void enableMenuItemFileSave(boolean val);
+    void enableMenuItemFileSave(boolean val);
 
-  // Status Bar
-  void updateStatusBar();
+    // Status Bar
+    void updateStatusBar();
 }
