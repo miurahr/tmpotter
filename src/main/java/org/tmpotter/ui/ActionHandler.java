@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015,2016 Hiroshi Miura
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -34,6 +34,7 @@ import static org.tmpotter.util.StringUtil.restoreText;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.tmpotter.core.Document;
 import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TmxReader;
@@ -56,6 +57,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 /**
  * Action Handlers.

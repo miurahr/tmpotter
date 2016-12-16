@@ -122,6 +122,7 @@ public class SegmentChanges {
     /**
      * Accessor for num eliminada.
      *
+	 * @param index index to get line number.
      * @return numEliminada
      */
     public int getNumEliminada(final int index) {
