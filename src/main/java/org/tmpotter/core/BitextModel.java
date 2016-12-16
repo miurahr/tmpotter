@@ -221,8 +221,8 @@ public final class BitextModel extends AbstractTableModel {
     }
 
     private void fireTableModelEvent(final TableModelEvent event) {
-        for (TableModelListener listener : tableModelListeners) {
-            listener.tableChanged(event);
-        }
+		tableModelListeners.forEach((listener) -> {
+			listener.tableChanged(event);
+		});
     }
 }
