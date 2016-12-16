@@ -26,25 +26,9 @@
 
 package org.tmpotter.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.LinkedList;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JMenuItem;
-import javax.swing.JToolBar;
-import javax.swing.table.TableColumn;
+import static org.openide.awt.Mnemonics.setLocalizedText;
+import static org.tmpotter.util.Localization.getString;
+import static org.tmpotter.util.StringUtil.formatText;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMultiSplitPane;
@@ -60,9 +44,27 @@ import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.gui.AquaAdapter;
 
-import static org.openide.awt.Mnemonics.setLocalizedText;
-import static org.tmpotter.util.Localization.getString;
-import static org.tmpotter.util.StringUtil.formatText;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JMenuItem;
+import javax.swing.JToolBar;
+import javax.swing.table.TableColumn;
+import javax.swing.text.DefaultEditorKit;
 
 
 /**
@@ -73,9 +75,9 @@ import static org.tmpotter.util.StringUtil.formatText;
 public class MainWindow extends javax.swing.JFrame implements ModelMediator, ActionListener, WindowListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
-    private ActionHandler actionHandler;
+    private final ActionHandler actionHandler;
 
-    private JToolBar toolBar = new JToolBar();
+    private final JToolBar toolBar = new JToolBar();
 
     final AlignToolBar alignToolBar;
     final EditToolBar editToolBar;
@@ -83,16 +85,16 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     final SegmentEditor editRightSegment = new SegmentEditor();
     final TmView tmView;
 
-    private TmData tmData = new TmData();
-    private ProjectProperties prop = new ProjectProperties();
-    private FilterManager filterManager;
+    private final TmData tmData = new TmData();
+    private final ProjectProperties prop = new ProjectProperties();
+    private final FilterManager filterManager;
 
-    private JXMultiSplitPane msp;
+    private final JXMultiSplitPane msp;
 
     //  Statusbar
-    private JXStatusBar panelStatusBar;
-    private JXLabel labelStatusBar;
-    private JXLabel tableRows;
+    private final JXStatusBar panelStatusBar;
+    private final JXLabel labelStatusBar;
+    private final JXLabel tableRows;
 
 
     /**
@@ -184,10 +186,16 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     /**
      * Updates status labels.
      */
+	@Override
     public void updateStatusBar() {
         tableRows.setText("" + tmView.getRowCount());
     }
 
+	/**
+	 *
+	 * @param evt
+	 */
+	@Override
     public void actionPerformed(ActionEvent evt) {
         // Get item name from actionCommand.
         String action = evt.getActionCommand();
@@ -221,23 +229,42 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         }
     }
 
-    public final ProjectProperties getProjectProperties() {
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public final ProjectProperties getProjectProperties() {
         return prop;
     }
 
+	/**
+	 *
+	 */
+	@Override
     public void clearProjectProperties() {
         prop.clear();
     }
 
+	/**
+	 *
+	 * @param val
+	 */
+	@Override
     public final void enableAlignToolBar(final boolean val) {
         alignToolBar.enableButtons(val);
     }
 
+	/**
+	 *
+	 * @param val
+	 */
+	@Override
     public final void enableMenuItemFileSave(final boolean val) {
         menuItemFileSave.setEnabled(val);
     }
 
-    private final void enableEditMenus(boolean enabled) {
+    private void enableEditMenus(boolean enabled) {
         menuItemRemoveBlankRows.setEnabled(enabled);
         menuItemTuSplit.setEnabled(enabled);
         menuItemOriginalJoin.setEnabled(enabled);
@@ -248,6 +275,11 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuItemTranslationSplit.setEnabled(enabled);
     }
 
+	/**
+	 *
+	 * @param enabled
+	 */
+	@Override
     public final void setUndoEnabled(boolean enabled) {
         menuItemUndo.setEnabled(enabled);
     }
@@ -487,6 +519,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuItemFileOpen = new javax.swing.JMenuItem();
         menuItemFileSave = new javax.swing.JMenuItem();
         menuItemFileSaveAs = new javax.swing.JMenuItem();
+        menuItemFileExport = new javax.swing.JMenuItem();
         menuItemFileClose = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuItemFileQuit = new javax.swing.JMenuItem();
@@ -685,6 +718,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     private javax.swing.JMenuItem menuItemCopy;
     private javax.swing.JMenuItem menuItemCut;
     private javax.swing.JMenuItem menuItemFileClose;
+    private javax.swing.JMenuItem menuItemFileExport;
     private javax.swing.JMenuItem menuItemFileImport;
     private javax.swing.JMenuItem menuItemFileOpen;
     private javax.swing.JMenuItem menuItemFileQuit;

@@ -36,13 +36,15 @@ import static org.openide.awt.Mnemonics.setLocalizedText;
  * @author Hiroshi Miura
  */
 public class ImportWizard extends javax.swing.JDialog {
-    private ImportWizardController wizardController;
-    private ImportPreference pref;
-    private Map<String, IImportWizardPanel> wizardPanels = new TreeMap<>();
+    private final ImportWizardController wizardController;
+    private final ImportPreference pref;
+    private final Map<String, IImportWizardPanel> wizardPanels = new TreeMap<>();
     private String currentPanel;
 
     /**
      * Creates new form ImportWizard
+     * @param parent parent gui parts.
+     * @param modal set true if wizard is modal, otherwise false.
      */
     public ImportWizard(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

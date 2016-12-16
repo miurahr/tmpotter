@@ -37,16 +37,29 @@ public class KvProp {
     private final String type;
     private final String value;
 
-    public KvProp(String key, String value) {
+	/**
+	 * Constructor with kv.
+     * @param key key.
+     * @param value value.
+	 */
+	public KvProp(String key, String value) {
         this.type = key;
         this.value = value;
     }
 
-    public String getType() {
+	/**
+	 * Get key.
+     * @return key.
+	 */
+	public String getType() {
         return type;
     }
 
-    public String getValue() {
+	/**
+     * Get value.
+     * @return value.
+	 */
+	public String getValue() {
         return value;
     }
 }

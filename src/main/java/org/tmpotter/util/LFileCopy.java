@@ -52,6 +52,9 @@ public class LFileCopy {
 
     /**
      * Copies one file. Creates directories on the path to dest if necessary.
+     * @param src source file to read.
+     * @param dest destination file to write.
+     * @throws java.io.IOException throws when error happened.
      */
     public static void copy(File src, File dest) throws IOException {
         if (!src.exists()) {
@@ -120,6 +123,9 @@ public class LFileCopy {
      * <p>
      * <p>Reader and writer are not
      * closed.
+     * @param src source to read.
+     * @param dest destination to write.
+     * @throws java.io.IOException when file error happened.
      */
     public static void copy(Reader src, Writer dest) throws IOException {
         char[] ba = new char[BUFSIZE];
@@ -131,6 +137,9 @@ public class LFileCopy {
 
     /**
      * Loads contents of a file into output stream. Output stream is not closed.
+     * @param src source file to read.
+     * @param dest destination stream.
+     * @throws java.io.IOException when stream error happened.
      */
     public static void copy(File src, OutputStream dest) throws IOException {
         if (!src.exists()) {

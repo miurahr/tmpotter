@@ -62,22 +62,27 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
         return true;
     }
 
+    @Override
     public JPanel getPanel() {
         return this;
     }
 
+    @Override
     public String getName() {
         return null;
     }
 
+    @Override
     public String getDesc() {
         return null;
     }
 
+    @Override
     public String getNextFinishCommand() {
         return getSelection();
     }
 
+    @Override
     public String getBackCommand() {
         return null;
     }
@@ -89,6 +94,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
         return "";
     }
 
+    @Override
     public void updatePref() {
     }
 

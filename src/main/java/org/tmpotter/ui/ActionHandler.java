@@ -45,6 +45,8 @@ import org.tmpotter.preferences.RuntimePreferences;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.dialogs.OpenProject;
+import org.tmpotter.ui.wizard.ExportPreference;
+import org.tmpotter.ui.wizard.ExportWizard;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizard;
 import org.tmpotter.util.Utilities;
@@ -132,6 +134,19 @@ final class ActionHandler {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),
                     getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void doExport(ExportPreference pref) {
+        String filter = pref.getFilter(); // Now support "TmxFilter"
+        String outFile = pref.getFilePath();
+	System.out.println(filter);
+        try {
+            filterManager.saveFile(modelMediator.getProjectProperties(), outFile,
+                    tmData.documentOriginal, tmData.documentTranslation, filter);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),
+                    getString("MSG.ERROR.FILE_WRITE"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -474,6 +489,18 @@ final class ActionHandler {
         }
     }
 
+    public void onExport() {
+        final ExportWizard dlg = new ExportWizard(parent, true);
+        dlg.setModal(true);
+        dlg.setVisible(true);
+        if (dlg.isFinished()) {
+            ExportPreference pref = new ExportPreference();
+            pref.setFilePath(dlg.getFilePath());
+            pref.setFilter("TmxFilter");
+            doExport(pref);
+	}
+    }
+
     public void buttonSaveActionPerformed() {
         saveProject();
     }
@@ -513,6 +540,10 @@ final class ActionHandler {
                 parent.dispose();
             }
         });
+    }
+
+    public void menuItemFileExportActionPerformed() {
+        onExport();
     }
 
     public void menuItemFileQuitActionPerformed() {
