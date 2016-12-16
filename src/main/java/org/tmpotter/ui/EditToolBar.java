@@ -32,7 +32,9 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import javax.swing.JButton;
+import javax.swing.text.DefaultEditorKit;
 
 
 /**
@@ -152,9 +154,9 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         buttonUndo = new javax.swing.JButton();
         buttonRedo = new javax.swing.JButton();
-        buttonCut = new javax.swing.JButton();
-        buttonCopy = new javax.swing.JButton();
-        buttonPaste = new javax.swing.JButton();
+        buttonCut = new javax.swing.JButton(new DefaultEditorKit.CutAction());
+        buttonCopy = new javax.swing.JButton(new DefaultEditorKit.CopyAction());
+        buttonPaste = new javax.swing.JButton(new DefaultEditorKit.PasteAction());
 
         setMinimumSize(new java.awt.Dimension(300, 52));
         setPreferredSize(new java.awt.Dimension(300, 52));
@@ -248,11 +250,11 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(editToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+            .addComponent(editToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(editToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(editToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

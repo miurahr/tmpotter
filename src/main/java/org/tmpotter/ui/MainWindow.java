@@ -527,9 +527,9 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuItemUndo = new javax.swing.JMenuItem();
         menuItemRedo = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        menuItemCut = new javax.swing.JMenuItem();
-        menuItemCopy = new javax.swing.JMenuItem();
-        menuItemPaste = new javax.swing.JMenuItem();
+        menuItemCut = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
+        menuItemCopy = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
+        menuItemPaste = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
         menuTu = new javax.swing.JMenu();
         menuItemTuSplit = new javax.swing.JMenuItem();
         menuItemRemoveBlankRows = new javax.swing.JMenuItem();
@@ -552,16 +552,19 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuFile.setText("File");
         setLocalizedText(menuFile, getString("MNU.FILE"));
 
+        menuItemFileImport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/filenew.png"))); // NOI18N
         menuItemFileImport.setText("New Import...");
         menuFile.add(menuItemFileImport);
         menuFile.add(jSeparator4);
 
+        menuItemFileOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/fileopen.png"))); // NOI18N
         menuItemFileOpen.setText("Open");
         setLocalizedText(menuItemFileOpen, getString("MNI.FILE.OPEN"));
         menuFile.add(menuItemFileOpen);
 
+        menuItemFileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/filesave.png"))); // NOI18N
         menuItemFileSave.setText("Save");
         setLocalizedText(menuItemFileSave, getString("MNI.FILE.SAVE"));
@@ -571,12 +574,18 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         setLocalizedText(menuItemFileSaveAs, getString("MNI.FILE.SAVEAS"));
         menuFile.add(menuItemFileSaveAs);
 
+        menuItemFileExport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemFileExport.setText("Export TMX");
+        menuFile.add(menuItemFileExport);
+
+        menuItemFileClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/fileclose.png"))); // NOI18N
         menuItemFileClose.setText("Close");
         setLocalizedText(menuItemFileClose, getString("MNI.FILE.ABORT"));
         menuFile.add(menuItemFileClose);
         menuFile.add(jSeparator5);
 
+        menuItemFileQuit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileQuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/application-exit.png"))); // NOI18N
         menuItemFileQuit.setText("Quit");
         setLocalizedText(menuItemFileQuit, getString("MNI.FILE.EXIT"));
@@ -587,23 +596,28 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuEdit.setText("Edit");
         setLocalizedText(menuEdit, getString("MNU.EDIT"));
 
+        menuItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         menuItemUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/undo.png"))); // NOI18N
         menuItemUndo.setText("Undo");
         menuEdit.add(menuItemUndo);
 
+        menuItemRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         menuItemRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/redo.png"))); // NOI18N
         menuItemRedo.setText("Redo");
         menuEdit.add(menuItemRedo);
         menuEdit.add(jSeparator1);
 
+        menuItemCut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
         menuItemCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/cut.png"))); // NOI18N
         menuItemCut.setText("Cut");
         menuEdit.add(menuItemCut);
 
+        menuItemCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         menuItemCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/editcopy.png"))); // NOI18N
         menuItemCopy.setText("Copy");
         menuEdit.add(menuItemCopy);
 
+        menuItemPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         menuItemPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/tmpotter/ui/resources/editpaste.png"))); // NOI18N
         menuItemPaste.setText("Paste");
         menuEdit.add(menuItemPaste);

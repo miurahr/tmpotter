@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015,2016 Hiroshi Miura
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  This file come from bitext2tmx.
  *
@@ -65,12 +65,14 @@ public class TmView extends javax.swing.JPanel {
         initComponents();
         table.setEnabled(false);
         table.addKeyListener(new KeyAdapter() {
+			@Override
             public final void keyPressed(final KeyEvent event) {
                 actionHandler.onTablePressed(event);
             }
         });
 
         table.addMouseListener(new MouseAdapter() {
+			@Override
             public final void mouseClicked(final MouseEvent event) {
                 actionHandler.onTableClicked();
             }
