@@ -29,6 +29,7 @@ package org.tmpotter.filters;
 
 import java.io.File;
 import java.util.Map;
+import org.tmpotter.core.Document;
 
 
 /**
@@ -133,4 +134,20 @@ public interface IFilter {
     void parseFile(File sourceFile, File translateFile, Map<String, String> config,
                    FilterContext context, IParseCallback callback) throws Exception;
 
+    /**
+     * Returns whether filter support save method.
+     * 
+     * @return true if the filter support saveFile method, otherwise false.
+     */
+    boolean isSaveSupported();
+    
+    /**
+     * Save unified file with source and translation clauses.
+     * 
+     * @param outFile file to output.
+     * @param docOriginal document of original texts.
+     * @param docTranslation document of translate texts.
+     * @param fc processing context
+     */
+    void saveFile(File outFile, Document docOriginal, Document docTranslation, FilterContext fc);
 }

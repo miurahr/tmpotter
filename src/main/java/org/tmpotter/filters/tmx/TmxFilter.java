@@ -30,6 +30,8 @@ import org.tmpotter.util.TmxReader2;
 
 import java.io.File;
 import java.util.Map;
+import org.tmpotter.core.Document;
+import org.tmpotter.core.TmxWriter;
 
 
 /**
@@ -173,8 +175,25 @@ public class TmxFilter implements IFilter {
      * @param callback      callback for store aligned data
      * @throws Exception when error is happened.
      */
+    @Override
     public void parseFile(File sourceFile, File translateFile, Map<String, String> config,
                           FilterContext fc, IParseCallback callback) throws Exception {
         parseFile(sourceFile, config, fc, callback);
+    }
+    
+    @Override
+    public boolean isSaveSupported() {
+        return true;
+    }
+    
+    @Override
+    public void saveFile(File outFile, Document docOriginal, Document docTranslation, FilterContext fc) {
+	    try {
+		    TmxWriter.writeTmx(outFile, docOriginal,
+			    fc.getSourceLang().toString(), docTranslation,
+                            fc.getTargetLang().toString());
+	    } catch (Exception ex) {
+		    System.err.println(ex.getMessage());
+	    }
     }
 }

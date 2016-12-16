@@ -34,9 +34,11 @@ import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.tmpotter.core.Document;
 
 
 /**
@@ -165,4 +167,13 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
         return sb.toString();
     }
 
+    @Override
+    public boolean isSaveSupported() {
+	    return false;
+    }
+
+    @Override
+    public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
+
+    }
 }

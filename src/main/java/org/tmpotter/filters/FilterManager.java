@@ -103,6 +103,29 @@ public class FilterManager {
         }
     }
 
+    public void saveFile(ProjectProperties prop, String outFile, Document docOriginal,
+            Document docTranslation, String filterName) throws Exception {
+        IFilter filter = null;
+        this.documentOriginal = docOriginal;
+        this.documentTranslation = docTranslation;
+        FilterContext fc = new FilterContext(prop.getSourceLanguage(),
+                prop.getTargetLanguage(), true);
+	File outF = new File(outFile);
+        try {
+            filter = getFilterInstance(filterName);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        if (filter != null) {
+            try {
+                filter.saveFile(outF, docOriginal, docTranslation, fc);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+    }
+
+
     public class ParseCb implements IParseCallback {
         @Override
         public void addEntry(String id, String source, String translation, boolean isFuzzy,

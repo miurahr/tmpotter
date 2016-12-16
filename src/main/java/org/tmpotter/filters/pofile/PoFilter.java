@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.tmpotter.core.Document;
 
 
 
@@ -613,4 +614,12 @@ public class PoFilter extends AbstractFilter {
         return entry;
     }
 
+    public boolean isSaveSupported() {
+	    return false;
+    }
+
+    @Override
+    public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
+	    
+    }
 }
