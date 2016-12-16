@@ -95,12 +95,13 @@ public class TmxReader2 {
     private XMLEventReader xml;
 
     private boolean isParagraphSegtype = true;
-    private boolean isOmegaT = false;
+    private boolean isTmPotter = false;
     private boolean extTmxLevel2;
     private boolean useSlash;
     private static final Logger LOGGER = LoggerFactory.getLogger(TmxReader2.class);
 
     ParsedTu currentTu = new ParsedTu();
+    ParsedHeader header = new ParsedHeader();
 
     // buffers for parse texts
     StringBuilder propContent = new StringBuilder();
@@ -108,6 +109,9 @@ public class TmxReader2 {
     StringBuilder segContent = new StringBuilder();
     StringBuilder segInlineTag = new StringBuilder();
     InlineTagHandler inlineTagHandler = new InlineTagHandler();
+
+    private Language sourceLanguage;
+    private Language targetLanguage;
 
     /**
      * Constructor.
@@ -130,20 +134,22 @@ public class TmxReader2 {
      * Read TMX file.
      *
      * @param file           to read
-     * @param sourceLanguage source language such as EN-US
-     * @param targetLanguage target language such as JA-JP
+     * @param defaultSourceLanguage source language such as EN-US
+     * @param defaultTargetLanguage target language such as JA-JP
      * @param extTmxLevel2   frag to specify Tmx level2
      * @param useSlash       use slash for after tag such as &lt;tag/&gt;
      * @param callback       callback to accept result
      * @throws java.lang.Exception when file read fails.
      */
-    public void readTmx(File file, final Language sourceLanguage,
-                        final Language targetLanguage,
+    public void readTmx(File file, final Language defaultSourceLanguage,
+                        final Language defaultTargetLanguage,
                         final boolean extTmxLevel2,
                         final boolean useSlash,
                         final LoadCallback callback) throws Exception {
         this.extTmxLevel2 = extTmxLevel2;
         this.useSlash = useSlash;
+	this.sourceLanguage = defaultSourceLanguage;
+	this.targetLanguage = defaultTargetLanguage;
 
         // log the parsing attempt
         LOGGER.info(String.format("%s: %s", getString("TMXR.INFO.READING_FILE"),
@@ -171,7 +177,7 @@ public class TmxReader2 {
                             allFound &= callback.onEntry(currentTu, origTuv, targetTuv,
                                     isParagraphSegtype);
                         } else if ("header".equals(eleStart.getName().getLocalPart())) {
-                            parseHeader(eleStart, sourceLanguage);
+                            parseHeader(eleStart);
                         }
                         break;
                     default:
@@ -191,9 +197,9 @@ public class TmxReader2 {
                   "TMXR.INFO.READING_COMPLETE"));
     }
 
-    protected void parseHeader(StartElement element, final Language sourceLanguage) {
+    protected void parseHeader(StartElement element) throws Exception {
         isParagraphSegtype = SEG_PARAGRAPH.equals(getAttributeValue(element, "segtype"));
-        isOmegaT = CT_APP.equals(getAttributeValue(element, "creationtool"));
+        isTmPotter = CT_APP.equals(getAttributeValue(element, "creationtool"));
 
         // log some details
         LOGGER.info(String.format("%s %s",
@@ -214,10 +220,81 @@ public class TmxReader2 {
             LOGGER.info(String.format("%s %s %s",
                     getString("TMXR.WARNING.INCORRECT_SOURCE_LANG"), tmxSourceLanguage,
                     sourceLanguage));
-            // TODO: Override source language by header's one
+            sourceLanguage = new Language(tmxSourceLanguage);
+        }
+        while (true) {
+            XMLEvent evt = xml.nextEvent();
+            switch (evt.getEventType()) {
+                case XMLEvent.START_ELEMENT:
+                    StartElement eleStart = (StartElement) evt;
+                    if ("prop".equals(eleStart.getName().getLocalPart())) {
+                        parseHeaderProp(eleStart);
+                    } else if ("note".equals(eleStart.getName().getLocalPart())) {
+                        parseHeaderNote(eleStart);
+                    }
+                    break;
+                case XMLEvent.END_ELEMENT:
+                    EndElement eleEnd = (EndElement) evt;
+                    if ("header".equals(eleEnd.getName().getLocalPart())) {
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
+	/**
+	 * Parse prop elements in Header.
+	 * @param element
+	 * @throws Exception
+	 */
+	protected void parseHeaderProp(StartElement element) throws Exception {
+        String propType = getAttributeValue(element, "type");
+        propContent.setLength(0);
+
+        while (true) {
+            XMLEvent evt = xml.nextEvent();
+            switch (evt.getEventType()) {
+                case XMLEvent.END_ELEMENT:
+                    EndElement eleEnd = (EndElement) evt;
+                    if ("prop".equals(eleEnd.getName().getLocalPart())) {
+                        header.props.add(new KvProp(propType, propContent.toString()));
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    protected void parseHeaderNote(StartElement element) throws Exception {
+        noteContent.setLength(0);
+
+        while (true) {
+            XMLEvent evt = xml.nextEvent();
+            switch (evt.getEventType()) {
+                case XMLEvent.END_ELEMENT:
+                    EndElement eleEnd = (EndElement) evt;
+                    if ("note".equals(eleEnd.getName().getLocalPart())) {
+                        header.note = noteContent.toString();
+                        return;
+                    }
+                    break;
+                case XMLEvent.CHARACTERS:
+                    Characters ch = (Characters) evt;
+                    noteContent.append(ch.getData());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+ 
     protected void parseTu(StartElement element) throws Exception {
         currentTu.clear();
 
@@ -234,9 +311,9 @@ public class TmxReader2 {
                     if ("tuv".equals(eleStart.getName().getLocalPart())) {
                         parseTuv(eleStart);
                     } else if ("prop".equals(eleStart.getName().getLocalPart())) {
-                        parseProp(eleStart);
+                        parseTuProp(eleStart);
                     } else if ("note".equals(eleStart.getName().getLocalPart())) {
-                        parseNote(eleStart);
+                        parseTuNote(eleStart);
                     }
                     break;
                 case XMLEvent.END_ELEMENT:
@@ -250,8 +327,7 @@ public class TmxReader2 {
             }
         }
     }
-
-    @SuppressWarnigs("unchecked")
+    @SuppressWarnings("unchecked")
     protected void parseTuv(StartElement element) throws Exception {
         ParsedTuv tuv = new ParsedTuv();
         currentTu.tuvs.add(tuv);
@@ -276,7 +352,7 @@ public class TmxReader2 {
                 case XMLEvent.START_ELEMENT:
                     StartElement eleStart = (StartElement) evt;
                     if ("seg".equals(eleStart.getName().getLocalPart())) {
-                        if (isOmegaT) {
+                        if (isTmPotter) {
                             parseSegOmegaT();
                         } else if (extTmxLevel2) {
                             parseSegExtLevel2();
@@ -298,7 +374,7 @@ public class TmxReader2 {
         }
     }
 
-    protected void parseNote(StartElement element) throws Exception {
+    protected void parseTuNote(StartElement element) throws Exception {
         noteContent.setLength(0);
 
         while (true) {
@@ -321,7 +397,12 @@ public class TmxReader2 {
         }
     }
 
-    protected void parseProp(StartElement element) throws Exception {
+	/**
+	 * Parse prop elements in Tu element.
+	 * @param element
+	 * @throws Exception
+	 */
+	protected void parseTuProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
         propContent.setLength(0);
 
@@ -633,6 +714,31 @@ public class TmxReader2 {
          */
         boolean onEntry(ParsedTu tu, ParsedTuv tuvSource, ParsedTuv tuvTarget,
                         boolean isParagraphSegtype);
+    }
+
+    public static class ParsedHeader {
+
+        public String creationtool;
+        public String creationtoolversion;
+        public String datatype;
+        public String segtype;
+        public String adminlang;
+        public String srclang;
+        public String o_tmf;
+	public List<KvProp> props = new ArrayList<>();
+	public String note;
+
+        void clear() {
+            creationtool = null;
+            creationtoolversion = null;
+            datatype = null;
+            segtype = null;
+            adminlang = null;
+            srclang = null;
+            o_tmf = null;
+	    props = new ArrayList<>();
+	    note = null;
+        }
     }
 
     public static class ParsedTu {
