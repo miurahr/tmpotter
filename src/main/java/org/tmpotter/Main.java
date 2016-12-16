@@ -4,7 +4,7 @@
  *
  *  Copyright (C) 2005-2006 Susana Santos Antón
  *            (C) 2006-2009 Raymond: Martin et al
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
