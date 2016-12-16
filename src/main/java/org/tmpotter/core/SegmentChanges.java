@@ -195,9 +195,7 @@ public class SegmentChanges {
      */
     public void setNumEliminada(int[] keliminadas, int tam) {
         numEliminada = new int[tam];
-        for (int cont = 0; cont < tam; cont++) {
-            numEliminada[cont] = keliminadas[cont];
-        }
+		System.arraycopy(keliminadas, 0, numEliminada, 0, tam);
     }
 
     public enum OperationKind {JOIN, SPLIT, DELETE, REMOVE, TUSPLIT}
