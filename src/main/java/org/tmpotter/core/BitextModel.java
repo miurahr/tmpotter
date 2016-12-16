@@ -178,11 +178,7 @@ public final class BitextModel extends AbstractTableModel {
      */
     @Override
     public final boolean isCellEditable(final int row, final int column) {
-        if (column == 1 || column == 2) {
-            return true;
-        } else {
-            return false;
-        }
+		return (column == 1 || column == 2);
     }
 
     /**
