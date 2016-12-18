@@ -7,3 +7,4 @@ gradle.properties
 .gradle/
 /.nb-gradle/
 /.idea/workspace.xml
+*/build/

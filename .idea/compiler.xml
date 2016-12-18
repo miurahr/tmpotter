@@ -19,6 +19,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="segmentation_main" target="1.8" />
+      <module name="segmentation_test" target="1.8" />
       <module name="tmpotter_main" target="1.8" />
       <module name="tmpotter_test" target="1.8" />
     </bytecodeTargetLevel>

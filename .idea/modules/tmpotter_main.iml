@@ -14,6 +14,7 @@
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:annotations:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.omegat:lib-mnemonics:1.0" level="project" />
+    <orderEntry type="module" module-name="segmentation_main" />
     <orderEntry type="library" name="Gradle: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-jdk14:1.7.21" level="project" />
