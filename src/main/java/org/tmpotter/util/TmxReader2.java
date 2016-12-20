@@ -47,7 +47,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.namespace.QName;
@@ -245,12 +247,13 @@ public class TmxReader2 {
         }
     }
 
-	/**
-	 * Parse prop elements in Header.
-	 * @param element
-	 * @throws Exception
-	 */
-	protected void parseHeaderProp(StartElement element) throws Exception {
+    /**
+     * Parse prop elements in Header.
+     *
+     * @param element XML element.
+     * @throws Exception when error happend.
+     */
+    protected void parseHeaderProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
         propContent.setLength(0);
 
@@ -260,7 +263,7 @@ public class TmxReader2 {
                 case XMLEvent.END_ELEMENT:
                     EndElement eleEnd = (EndElement) evt;
                     if ("prop".equals(eleEnd.getName().getLocalPart())) {
-                        header.props.add(new KvProp(propType, propContent.toString()));
+                        header.props.put(propType, propContent.toString());
                         return;
                     }
                     break;
@@ -327,6 +330,7 @@ public class TmxReader2 {
             }
         }
     }
+
     @SuppressWarnings("unchecked")
     protected void parseTuv(StartElement element) throws Exception {
         ParsedTuv tuv = new ParsedTuv();
@@ -397,12 +401,13 @@ public class TmxReader2 {
         }
     }
 
-	/**
-	 * Parse prop elements in Tu element.
-	 * @param element
-	 * @throws Exception
-	 */
-	protected void parseTuProp(StartElement element) throws Exception {
+    /**
+     * Parse prop elements in Tu element.
+     *
+     * @param element XML element.
+     * @throws Exception when error happened.
+     */
+    protected void parseTuProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
         propContent.setLength(0);
 
@@ -412,7 +417,7 @@ public class TmxReader2 {
                 case XMLEvent.END_ELEMENT:
                     EndElement eleEnd = (EndElement) evt;
                     if ("prop".equals(eleEnd.getName().getLocalPart())) {
-                        currentTu.props.add(new KvProp(propType, propContent.toString()));
+                        currentTu.props.put(propType, propContent.toString());
                         return;
                     }
                     break;
@@ -725,8 +730,8 @@ public class TmxReader2 {
         public String adminlang;
         public String srclang;
         public String o_tmf;
-	public List<KvProp> props = new ArrayList<>();
-	public String note;
+        public Map<String, String> props = new TreeMap<>();
+        public String note;
 
         void clear() {
             creationtool = null;
@@ -736,8 +741,8 @@ public class TmxReader2 {
             adminlang = null;
             srclang = null;
             o_tmf = null;
-	    props = new ArrayList<>();
-	    note = null;
+            props = new TreeMap<>();
+            note = null;
         }
     }
 
@@ -748,7 +753,7 @@ public class TmxReader2 {
         public String creationid;
         public long creationdate;
         public String note;
-        public List<KvProp> props = new ArrayList<>();
+        public Map<String, String> props = new TreeMap<>();
         public List<ParsedTuv> tuvs = new ArrayList<>();
 
         void clear() {
@@ -756,7 +761,7 @@ public class TmxReader2 {
             changedate = 0;
             creationid = null;
             creationdate = 0;
-            props = new ArrayList<>(); // do not CLEAR, because it may be shared
+            props = new TreeMap<>(); // do not CLEAR, because it may be shared
             tuvs = new ArrayList<>();
             note = null;
         }

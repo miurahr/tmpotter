@@ -29,9 +29,7 @@
 
 package org.tmpotter.core;
 
-import org.tmpotter.util.KvProp;
-
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -56,7 +54,7 @@ public class TmxEntry {
     public String creator;
     public long creationDate;
     public String note;
-    public List<KvProp> otherProperties;
+    public Map<String, String> otherProperties;
 
     public TmxEntry() {
     }
@@ -87,9 +85,8 @@ public class TmxEntry {
         if (otherProperties == null) {
             return null;
         }
-        for (int i = 0; i < otherProperties.size(); i++) {
-            KvProp kv = otherProperties.get(i);
-            if (propType.equals(kv.getType())) {
+        for (Map.Entry<String, String> kv: otherProperties.entrySet()) {
+            if (propType.equals(kv.getKey())) {
                 return kv.getValue();
             }
         }
@@ -107,9 +104,8 @@ public class TmxEntry {
         if (otherProperties == null) {
             return false;
         }
-        for (int i = 0; i < otherProperties.size(); i++) {
-            KvProp kv = otherProperties.get(i);
-            if (propType.equals(kv.getType())) {
+        for (Map.Entry<String, String> kv: otherProperties.entrySet()) {
+            if (propType.equals(kv.getKey())) {
                 if (propValue == null) {
                     return true;
                 }

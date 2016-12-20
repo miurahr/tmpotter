@@ -41,10 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -129,7 +126,9 @@ public class TmxWriter2 {
         }
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
 
-        writeHeader(sourceLanguage, targetLanguage, sentenceSegmentingEnabled);
+        Map<String, String> headerProp = new TreeMap<>();
+        headerProp.put("targetLang", targetLanguage.toString());
+        writeHeader(sourceLanguage, headerProp, sentenceSegmentingEnabled);
 
         xml.writeCharacters("  ");
         xml.writeStartElement("body");
@@ -277,10 +276,10 @@ public class TmxWriter2 {
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
     }
 
-    private void writeHeader(final Language sourceLanguage, final Language targetLanguage,
+    private void writeHeader(final Language sourceLanguage, final Map<String, String> prop,
                              boolean sentenceSegmentingEnabled) throws XMLStreamException {
         xml.writeCharacters("  ");
-        xml.writeEmptyElement("header");
+        xml.writeStartElement("header");
 
         xml.writeAttribute("creationtool", AppConstants.getApplicationDisplayName());
         xml.writeAttribute("o-tmf", "tmpotter TMX");
@@ -294,6 +293,18 @@ public class TmxWriter2 {
 
         xml.writeAttribute("srclang", sourceLanguage.toString());
 
+        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+
+        for (Map.Entry<String, String> ent : prop.entrySet()) {
+            xml.writeCharacters("      ");
+            xml.writeStartElement("prop");
+            xml.writeAttribute("type", ent.getKey());
+            xml.writeCharacters(ent.getValue());
+            xml.writeEndElement();
+            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+        }
+
+        xml.writeEndElement(); // header
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
     }
 
