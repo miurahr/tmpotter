@@ -23,6 +23,8 @@
 
 package org.tmpotter.filters.tmx;
 
+import org.tmpotter.core.Document;
+import org.tmpotter.core.TmxWriter;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
 import org.tmpotter.filters.IParseCallback;
@@ -30,8 +32,6 @@ import org.tmpotter.util.TmxReader2;
 
 import java.io.File;
 import java.util.Map;
-import org.tmpotter.core.Document;
-import org.tmpotter.core.TmxWriter;
 
 
 /**
@@ -187,13 +187,13 @@ public class TmxFilter implements IFilter {
     }
     
     @Override
-    public void saveFile(File outFile, Document docOriginal, Document docTranslation, FilterContext fc) {
-	    try {
-		    TmxWriter.writeTmx(outFile, docOriginal,
-			    fc.getSourceLang().toString(), docTranslation,
-                            fc.getTargetLang().toString());
-	    } catch (Exception ex) {
-		    System.err.println(ex.getMessage());
-	    }
+    public void saveFile(File outFile, Document docOriginal, Document docTranslation,
+                         FilterContext fc) {
+        try {
+            TmxWriter.writeTmx(outFile, docOriginal,
+                    fc.getSourceLang().toString(), docTranslation, fc.getTargetLang().toString());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 }

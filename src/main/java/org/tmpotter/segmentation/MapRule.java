@@ -61,7 +61,7 @@ public class MapRule implements Serializable, Cloneable {
     }
 
     /**
-     * Language Name
+     * Language Name.
      */
     private String languageCode;
 
@@ -74,7 +74,7 @@ public class MapRule implements Serializable, Cloneable {
     }
 
     /**
-     * Sets Language Name
+     * Sets Language Name.
      */
     public void setLanguage(String language) {
         this.languageCode = language;
@@ -138,19 +138,19 @@ public class MapRule implements Serializable, Cloneable {
     }
 
     /**
-     * List of rules (of class {@link Rule}) for the language
+     * List of rules (of class {@link Rule}) for the language.
      */
     private List<Rule> rules;
 
     /**
-     * Returns List of rules (of class {@link Rule}) for the language
+     * Returns List of rules (of class {@link Rule}) for the language.
      */
     public List<Rule> getRules() {
         return rules;
     }
 
     /**
-     * Sets List of rules (of class {@link Rule}) for the language
+     * Sets List of rules (of class {@link Rule}) for the language.
      */
     public void setRules(List<Rule> rules) {
         this.rules = rules;

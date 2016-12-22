@@ -24,6 +24,7 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.segmentation.datamodels;
 
 import org.tmpotter.segmentation.SRX;
@@ -33,6 +34,8 @@ import javax.swing.JToggleButton;
 
 
 /**
+ * SRX Options model class.
+ *
  * @author Maxym Mykhalchuk
  */
 @SuppressWarnings("serial")
@@ -41,14 +44,14 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
     protected SRX srx;
 
     /**
-     * Creates a new instance of SRXOptionsModel
+     * Creates a new instance of SRXOptionsModel.
      */
     protected SRXOptionsModel(SRX srx) {
         this.srx = srx;
     }
 
     /**
-     * a model for segment subflows checkbox
+     * a model for segment subflows checkbox.
      */
     private static class SegmentSubflowsModel extends SRXOptionsModel {
 
@@ -68,7 +71,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
     }
 
     /**
-     * a model for segment subflows checkbox
+     * a model for segment subflows checkbox.
      */
     public static ButtonModel getSegmentSubflowsModel(SRX srx) {
         return new SegmentSubflowsModel(srx);
@@ -97,7 +100,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including starting formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     public static ButtonModel getIncludeStartingTagsModel(SRX srx) {
         return new IncludeStartingTagsModel(srx);
@@ -105,7 +108,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including ending formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     private static class IncludeEndingTagsModel extends SRXOptionsModel {
 
@@ -126,7 +129,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including ending formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     public static ButtonModel getIncludeEndingTagsModel(SRX srx) {
         return new IncludeEndingTagsModel(srx);
@@ -134,7 +137,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including isolated formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     private static class IncludeIsolatedTagsModel extends SRXOptionsModel {
 
@@ -155,7 +158,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including isolated formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     public static ButtonModel getIncludeIsolatedTagsModel(SRX srx) {
         return new IncludeIsolatedTagsModel(srx);

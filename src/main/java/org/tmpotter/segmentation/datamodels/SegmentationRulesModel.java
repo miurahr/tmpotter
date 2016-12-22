@@ -24,7 +24,11 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * *************************************************************************/
+
 package org.tmpotter.segmentation.datamodels;
+
+import org.tmpotter.segmentation.Rule;
+import org.tmpotter.util.Localization;
 
 import java.beans.ExceptionListener;
 import java.util.ArrayList;
@@ -33,8 +37,6 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.tmpotter.segmentation.Rule;
-import org.tmpotter.util.Localization;
 
 /**
  * Table Model for Segmentation Rules.
@@ -47,12 +49,18 @@ public class SegmentationRulesModel extends AbstractTableModel {
     private List<Rule> rules;
 
     /**
-     * Creates a new instance of SegmentationRulesModel
+     * Creates a new instance of SegmentationRulesModel.
      */
     public SegmentationRulesModel(List<Rule> rules) {
         this.rules = rules;
     }
 
+    /**
+     * Get value at index.
+     * @param rowIndex row index.
+     * @param columnIndex column index.
+     * @return value object.
+     */
     public Object getValueAt(int rowIndex, int columnIndex) {
         Rule rule = rules.get(rowIndex);
         switch (columnIndex) {
@@ -62,18 +70,33 @@ public class SegmentationRulesModel extends AbstractTableModel {
                 return rule.getBeforebreak();
             case 2:
                 return rule.getAfterbreak();
+            default:
+                break;
         }
         return null;
     }
 
+    /**
+     * Get row count.
+     * @return row caount.
+     */
     public int getRowCount() {
         return rules.size();
     }
 
+    /**
+     * Get column count.
+     * @return column count.
+     */
     public int getColumnCount() {
         return 3;
     }
 
+    /**
+     * Get column class.
+     * @param columnIndex column  index.
+     * @return class.
+     */
     public Class<?> getColumnClass(int columnIndex) {
         if (columnIndex == 0) {
             return Boolean.class;
@@ -89,6 +112,11 @@ public class SegmentationRulesModel extends AbstractTableModel {
         Localization.getString("CORE_SRX_TABLE_COLUMN_Before_Break"),
         Localization.getString("CORE_SRX_TABLE_COLUMN_After_Break")};
 
+    /**
+     * Get column name.
+     * @param column column index.
+     * @return name.
+     */
     public String getColumnName(int column) {
         return COLUMN_NAMES[column];
     }
@@ -118,6 +146,12 @@ public class SegmentationRulesModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Check if cell editorble or not.
+     * @param rowIndex row index.
+     * @param columnIndex column index.
+     * @return true if editable, otherwise false.
+     */
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return true;
     }
@@ -166,7 +200,7 @@ public class SegmentationRulesModel extends AbstractTableModel {
     // Managing Listeners of Errorneous Input
     //
     /**
-     * List of listeners
+     * List of listeners.
      */
     protected List<ExceptionListener> listeners = new ArrayList<ExceptionListener>();
 

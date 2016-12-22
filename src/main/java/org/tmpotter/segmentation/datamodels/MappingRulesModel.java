@@ -57,6 +57,12 @@ public class MappingRulesModel extends AbstractTableModel {
         this.srx = srx;
     }
 
+    /**
+     * Get value at index for row and column.
+     * @param rowIndex index for row.
+     * @param columnIndex index for column.
+     * @return value object
+     */
     public Object getValueAt(int rowIndex, int columnIndex) {
         MapRule maprule = srx.getMappingRules().get(rowIndex);
         switch (columnIndex) {
@@ -137,7 +143,8 @@ public class MappingRulesModel extends AbstractTableModel {
     public int addRow() {
         int rows = srx.getMappingRules().size();
         srx.getMappingRules().add(
-            new MapRule(Localization.getString("SEG_NEW_LN_CO"), "LN-CO", new ArrayList<Rule>()));
+                new MapRule(Localization.getString("SEG_NEW_LN_CO"),
+                        "LN-CO", new ArrayList<Rule>()));
         fireTableRowsInserted(rows, rows);
         return rows;
     }
@@ -176,7 +183,7 @@ public class MappingRulesModel extends AbstractTableModel {
     // Managing Listeners of Erroneous Input
     //
     /**
-     * List of listeners
+     * List of listeners.
      */
     protected List<ExceptionListener> listeners = new ArrayList<ExceptionListener>();
 

@@ -44,7 +44,7 @@ import javax.swing.table.AbstractTableModel;
 public final class BitextModel extends AbstractTableModel {
     private final LinkedList<Segment> data = new LinkedList<>();
     private final LinkedList<TableModelListener> tableModelListeners =
-        new LinkedList<>();
+            new LinkedList<>();
 
     /**
      * column sizes.
@@ -104,7 +104,7 @@ public final class BitextModel extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
 
         fireTableModelEvent(new TableModelEvent(this, row, row,
-            TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE));
+                TableModelEvent.ALL_COLUMNS, TableModelEvent.DELETE));
     }
 
     /**
@@ -116,7 +116,7 @@ public final class BitextModel extends AbstractTableModel {
         data.add(segment);
 
         fireTableModelEvent(new TableModelEvent(this, getRowCount() - 1,
-            getRowCount() - 1, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT));
+                getRowCount() - 1, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT));
     }
 
     /**
@@ -178,7 +178,7 @@ public final class BitextModel extends AbstractTableModel {
      */
     @Override
     public final boolean isCellEditable(final int row, final int column) {
-		return (column == 1 || column == 2);
+        return (column == 1 || column == 2);
     }
 
     /**
@@ -221,8 +221,8 @@ public final class BitextModel extends AbstractTableModel {
     }
 
     private void fireTableModelEvent(final TableModelEvent event) {
-		tableModelListeners.forEach((listener) -> {
-			listener.tableChanged(event);
-		});
+        tableModelListeners.forEach((listener) -> {
+            listener.tableChanged(event);
+        });
     }
 }

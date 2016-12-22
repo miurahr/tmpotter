@@ -32,6 +32,7 @@
 
 package org.tmpotter.filters.pofile;
 
+import org.tmpotter.core.Document;
 import org.tmpotter.filters.AbstractFilter;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.util.Language;
@@ -46,8 +47,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.tmpotter.core.Document;
-
 
 
 /**
@@ -71,23 +70,31 @@ import org.tmpotter.core.Document;
 public class PoFilter extends AbstractFilter {
     /**
      * Pattern for detecting the placeholders in a printf-function string which can occur in
-     * languages like php, C and others. placeholder ::= "%" [ARGUMENTSWAPSPECIFIER] [SIGNSPECIFIER]
+     * languages like php, C and others.
+     * placeholder ::= "%" [ARGUMENTSWAPSPECIFIER] [SIGNSPECIFIER]
      * [PADDINGSPECIFIER] [ALIGNMENTSPECIFIER] [WIDTHSPECIFIER] [PRECISIONSPECIFIER] TYPESPECIFIER
-     * NUMBER ::= { "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" } ARGUMENTSWAPSPECIFIER
-     * = NUMBER "$" SIGNSPECIFIER ::= "+" | "-" PADDINGSPECIFIER ::= " " | "0" | "'" CHARACTER
-     * ALIGNMENTSPECIFIER ::= "" | "-" WIDTHSPECIFIER ::= NUMBER PRECISIONSPECIFIER ::= "." NUMBER
-     * TYPESPECIFIER ::= "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "i" | "n" | "o" | "p" |
-     * "s" | "u" | "x" | "X" | "%" //c++: [cdieEfgGosuxXpn%] //php: [bcdeufFosxX%] NB: Because having
+     * NUMBER ::= { "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" }
+     * ARGUMENTSWAPSPECIFIER = NUMBER "$"
+     * SIGNSPECIFIER ::= "+" | "-"
+     * PADDINGSPECIFIER ::= " " | "0" | "'" CHARACTER
+     * ALIGNMENTSPECIFIER ::= "" | "-"
+     * WIDTHSPECIFIER ::= NUMBER
+     * PRECISIONSPECIFIER ::= "." NUMBER
+     * TYPESPECIFIER ::=
+     * "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "i" | "n" | "o" | "p" |
+     * "s" | "u" | "x" | "X" | "%" //c++: [cdieEfgGosuxXpn%] //php: [bcdeufFosxX%]
+     * NB: Because having
      * space as paddingspecifier leads to many false matches in regular text, and space being the
      * default padding specifier in php, and being able to have space or 0 as padding specifier by
-     * prefixing it with ', and having the padding specifier not being used frequently in most cases,
-     * the regular expression only corresponds with quote+paddingspecifier. NB2: The argument swap
-     * specifier gives explicit ordering of variables, without it, the ordering is implicit (first in
-     * sequence is first in order) Example in code:
+     * prefixing it with ', and having the padding specifier not being used frequently in most
+     * cases, the regular expression only corresponds with quote+paddingspecifier. NB2: The argument
+     * swap specifier gives explicit ordering of variables, without it, the ordering is implicit
+     * (first in sequence is first in order)
+     * Example in code:
      * <code>echo printf(gettext("%s is very %s"), "OmegaT", "great");</code>
      */
     private static final String RE_PRINTF_VARS =
-        "%([1-9]+\\$)?([+-])?('.)?(-)?([0-9]*)(\\.[0-9]*)?[bcdeEfFgGinopsuxX%]";
+            "%([1-9]+\\$)?([+-])?('.)?(-)?([0-9]*)(\\.[0-9]*)?[bcdeEfFgGinopsuxX%]";
     public static final Pattern PRINTF_VARS = Pattern.compile(RE_PRINTF_VARS);
           
     private static class PluralInfo {
@@ -271,7 +278,9 @@ public class PoFilter extends AbstractFilter {
     private static final Pattern MSG_CTX = Pattern.compile("msgctxt\\s+\"(.*)\"");
     private static final Pattern MSG_OTHER = Pattern.compile("\"(.*)\"");
 
-    enum Mode {MSGID, MSGSTR, MSGID_PLURAL, MSGSTR_PLURAL, MSGCTX}
+    enum Mode {
+        MSGID, MSGSTR, MSGID_PLURAL, MSGSTR_PLURAL, MSGCTX
+    }
 
     private StringBuilder[] sources;
     private StringBuilder[] targets;
@@ -332,8 +341,8 @@ public class PoFilter extends AbstractFilter {
         sources = new StringBuilder[2];
         sources[0] = new StringBuilder();
         sources[1] = new StringBuilder();
-        targets = new StringBuilder[2]; //can be overridden when header has been read and the number of
-        //plurals is different.
+        targets = new StringBuilder[2]; //can be overridden when header has been read and the number
+                                        //of plurals is different.
         targets[0] = new StringBuilder();
         targets[1] = new StringBuilder();
 
@@ -470,7 +479,8 @@ public class PoFilter extends AbstractFilter {
         if (pair > 0) {
             src = unescape(sources[1].toString());
             pathSuffix = "[" + pair + "]";
-            cmt += StringUtil.format(Localization.getString("POFILTER_PLURAL_FORM_COMMENT"), pair) + "\n";
+            cmt += StringUtil.format(Localization.getString("POFILTER_PLURAL_FORM_COMMENT"),
+                    pair) + "\n";
         } else {
             src = unescape(sources[pair].toString());
             pathSuffix = "";
@@ -499,13 +509,13 @@ public class PoFilter extends AbstractFilter {
      * @param source      source
      * @param translation translation
      * @param comments    comments
-     * @param pathSuffix  suffix for path to distinguish plural forms. It will be empty for first one,
-     *                    and [1],[2],... for next
+     * @param pathSuffix  suffix for path to distinguish plural forms. It will be empty for first
+     *                    one, and [1],[2],... for next
      */
     protected void align(String source, String translation, String comments, String pathSuffix) {
         if (entryParseCallback != null) {
-            entryParseCallback.addEntry(null, source, translation, fuzzy, comments, path + pathSuffix,
-                this);
+            entryParseCallback.addEntry(null, source, translation, fuzzy, comments, path
+                            + pathSuffix,this);
         } else {
             System.out.println("WARN: No ParseCallback defined!");
         }
@@ -525,7 +535,8 @@ public class PoFilter extends AbstractFilter {
                 return;
             } else {
                 // header
-                //check existing plural statement. If it contains the number of plurals, then use it!
+                //check existing plural statement.
+                // If it contains the number of plurals, then use it!
                 StringBuilder targets0 = targets[0];
                 String header = targets[0].toString();
                 Pattern pluralPattern = Pattern.compile(
@@ -610,16 +621,15 @@ public class PoFilter extends AbstractFilter {
         entry = R4.matcher(entry).replaceAll("\\\n");
         // Removes escape from backslash
         entry = entry.replace("\\\\", "\\");
-
         return entry;
     }
 
     public boolean isSaveSupported() {
-	    return false;
+        return false;
     }
 
     @Override
     public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
-	    
+
     }
 }

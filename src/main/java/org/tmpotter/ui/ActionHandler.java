@@ -140,7 +140,7 @@ final class ActionHandler {
     public void doExport(ExportPreference pref) {
         String filter = pref.getFilter(); // Now support "TmxFilter"
         String outFile = pref.getFilePath();
-	System.out.println(filter);
+        System.out.println(filter);
         try {
             filterManager.saveFile(modelMediator.getProjectProperties(), outFile,
                     tmData.documentOriginal, tmData.documentTranslation, filter);
@@ -498,7 +498,7 @@ final class ActionHandler {
             pref.setFilePath(dlg.getFilePath());
             pref.setFilter("TmxFilter");
             doExport(pref);
-	}
+        }
     }
 
     public void buttonSaveActionPerformed() {

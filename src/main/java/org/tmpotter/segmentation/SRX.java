@@ -202,6 +202,7 @@ public class SRX implements Serializable, Cloneable {
     }
 
     /**
+     * Check a configuration file existence.
      * Does a config file already exists for the project at the given location?
      *
      * @param configDir the project directory for storage of settings file
@@ -279,6 +280,17 @@ public class SRX implements Serializable, Cloneable {
      * Implements some upgrade heuristics.
      */
     private static SRX upgrade(SRX current, SRX defaults) {
+        List<Rule> rules = new ArrayList<>();
+        List<Rule> tmp;
+        if ((tmp = getRulesForLanguage(defaults, LanguageCodes.ENGLISH_CODE)) != null) {
+            rules.addAll(tmp);
+        }
+        if ((tmp = getRulesForLanguage(defaults, LanguageCodes.F_TEXT_CODE)) != null) {
+            rules.addAll(tmp);
+        }
+        if ((tmp = getRulesForLanguage(defaults, LanguageCodes.F_HTML_CODE)) != null) {
+            rules.addAll(tmp);
+        }
         // renaming "Default (English)" to "Default"
         // and removing English/Text/HTML-specific rules from there
         if (OT160RC9_VERSION.equals(CURRENT_VERSION)) {
@@ -287,9 +299,7 @@ public class SRX implements Serializable, Cloneable {
                 MapRule maprule = current.getMappingRules().get(i);
                 if (DEF.equals(maprule.getLanguageCode())) {
                     maprule.setLanguage(LanguageCodes.DEFAULT_CODE);
-                    maprule.getRules().removeAll(getRulesForLanguage(defaults, LanguageCodes.ENGLISH_CODE));
-                    maprule.getRules().removeAll(getRulesForLanguage(defaults, LanguageCodes.F_TEXT_CODE));
-                    maprule.getRules().removeAll(getRulesForLanguage(defaults, LanguageCodes.F_HTML_CODE));
+                    maprule.getRules().removeAll(rules);
                 }
             }
         }

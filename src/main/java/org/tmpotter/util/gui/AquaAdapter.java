@@ -175,7 +175,7 @@ public final class AquaAdapter implements InvocationHandler {
      * @throws IllegalAccessException    TBD
      */
     public final boolean fireHandler(Object objEvent)
-        throws InvocationTargetException, IllegalAccessException {
+            throws InvocationTargetException, IllegalAccessException {
         final Object objResult = methodHandler.invoke(objectReciever, (Object[]) null);
 
         //  Default return value is true, this will cause whatever default
@@ -190,6 +190,7 @@ public final class AquaAdapter implements InvocationHandler {
      *
      * @param image icon image
      */
+    @SuppressWarnings("unchecked")
     public static void setDockIconImage(final Image image) {
         if (!Platform.isMacOsx() || image == null) {
             return;
@@ -201,7 +202,7 @@ public final class AquaAdapter implements InvocationHandler {
 
             if (_objAquaApp == null) {
                 _objAquaApp = clsApplication
-                    .getConstructor((Class[]) null).newInstance((Object[]) null);
+                        .getConstructor((Class[]) null).newInstance((Object[]) null);
             }
             final Method mtdSetDockIconImage = _objAquaApp.getClass()
                     .getDeclaredMethod("setDockIconImage",
