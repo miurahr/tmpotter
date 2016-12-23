@@ -20,10 +20,10 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * ************************************************************************/
-package org.tmpotter.ui;
+package org.tmpotter.core;
 
+import org.tmpotter.core.AlignmentChanges;
 import org.tmpotter.core.Document;
-import org.tmpotter.core.SegmentChanges;
 
 import java.util.ArrayList;
 
@@ -35,14 +35,14 @@ import java.util.ArrayList;
  */
 public class TmData {
 
-    protected int topArrays; //  =  0;
-    protected final ArrayList<SegmentChanges> arrayListChanges = new ArrayList<>();
+    private int topArrays; //  =  0;
+    private final ArrayList<AlignmentChanges> arrayListChanges = new ArrayList<>();
     private int indexChanges = -1;
-    protected int indexCurrent; //  =  0;
-    protected int indexPrevious; //  =  0;
-    protected int positionTextArea; //  =  0;
-    protected Document documentOriginal;
-    protected Document documentTranslation;
+    private int indexCurrent; //  =  0;
+    private int indexPrevious; //  =  0;
+    private int positionTextArea; //  =  0;
+    private Document documentOriginal;
+    private Document documentTranslation;
 
     /**
      * Updates the changes adding a "join" change in the "undo" array and performs the "join". (not
@@ -50,10 +50,11 @@ public class TmData {
      *
      * @param textAreaIzq :TRUE if the left text (source text) has to be joined
      */
-    void join(Side textAreaIzq) {
+    public void join(Side textAreaIzq) {
         if (indexCurrent != topArrays) {
-            final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.JOIN,
-                positionTextArea, textAreaIzq, "", indexCurrent);
+            final AlignmentChanges Changes = new AlignmentChanges(
+                    AlignmentChanges.OperationKind.JOIN,
+                    positionTextArea, textAreaIzq, "", indexCurrent);
             arrayListChanges.add(indexChanges, Changes);
             if (textAreaIzq == Side.ORIGINAL) {
                 Changes.setFrase(documentOriginal.get(indexCurrent));
@@ -76,8 +77,8 @@ public class TmData {
      *
      * @param textAreaIzq :TRUE if the left hand (source text) has to be deleted
      */
-    void delete(Side textAreaIzq) {
-        final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.DELETE,
+    public void delete(Side textAreaIzq) {
+        final AlignmentChanges Changes = new AlignmentChanges(AlignmentChanges.OperationKind.DELETE,
             positionTextArea, textAreaIzq, "", indexCurrent);
         arrayListChanges.add(indexChanges, Changes);
         if (textAreaIzq == Side.ORIGINAL) {
@@ -100,7 +101,7 @@ public class TmData {
      *
      * @param textAreaIzq :TRUE if the left hand (source text) has to be split
      */
-    void split(Side textAreaIzq) {
+    public void split(Side textAreaIzq) {
         if (textAreaIzq == Side.ORIGINAL) {
             if (positionTextArea >= documentOriginal.get(indexCurrent).length()) {
                 positionTextArea = 0;
@@ -108,7 +109,7 @@ public class TmData {
         } else if (positionTextArea >= documentTranslation.get(indexCurrent).length()) {
             positionTextArea = 0;
         }
-        final SegmentChanges Changes = new SegmentChanges(SegmentChanges.OperationKind.SPLIT,
+        final AlignmentChanges Changes = new AlignmentChanges(AlignmentChanges.OperationKind.SPLIT,
             positionTextArea, textAreaIzq, "", indexCurrent);
         arrayListChanges.add(indexChanges, Changes);
         if (textAreaIzq == Side.ORIGINAL) {
@@ -123,9 +124,9 @@ public class TmData {
         }
     }
 
-    void tuSplit(Side side) {
+    public void tuSplit(Side side) {
         int cont;
-        SegmentChanges changes;
+        AlignmentChanges changes;
 
         incrementChanges();
         documentOriginal.duplicateLast();
@@ -133,7 +134,7 @@ public class TmData {
 
         if (side == Side.ORIGINAL) {
             // Left column.
-            changes = new SegmentChanges(SegmentChanges.OperationKind.TUSPLIT,
+            changes = new AlignmentChanges(AlignmentChanges.OperationKind.TUSPLIT,
                 0, Side.ORIGINAL, "", indexCurrent);
 
             for (cont = documentTranslation.size() - 1; cont > indexCurrent; cont--) {
@@ -148,7 +149,7 @@ public class TmData {
 
             documentTranslation.set(indexCurrent, "");
         } else {
-            changes = new SegmentChanges(SegmentChanges.OperationKind.TUSPLIT,
+            changes = new AlignmentChanges(AlignmentChanges.OperationKind.TUSPLIT,
                 0, Side.TRANSLATION, "", indexCurrent);
 
             for (cont = documentOriginal.size() - 1; cont > indexCurrent; cont--) {
@@ -170,7 +171,7 @@ public class TmData {
     /**
      * Function IgualarArrays: adds rows to the smallest array and deletes blank rows.
      */
-    void matchArrays() {
+    public void matchArrays() {
         int origLen = documentOriginal.size();
         int transLen = documentTranslation.size();
         if (origLen > transLen) {
@@ -191,76 +192,147 @@ public class TmData {
         }
     }
 
-    protected int getIdentChanges() {
+    public int getIdentChanges() {
         return indexChanges;
     }
 
-    protected int incrementChanges() {
+    public int incrementChanges() {
         return indexChanges++;
     }
 
-    protected int decrementChanges() {
+    public int decrementChanges() {
         return indexChanges--;
     }
 
-    protected String getDocumentTranslation(int cont) {
+
+
+    public String getDocumentTranslation(int cont) {
         return documentTranslation.get(cont);
     }
 
-    protected void removeDocumentTranslation(int cont) {
+    public void removeDocumentTranslation(int cont) {
         documentTranslation.remove(cont);
     }
 
-    protected void setDocumentTranslation(int cont, String text) {
+    public void setDocumentTranslation(int cont, String text) {
         documentTranslation.set(cont, text);
     }
 
-    protected int getDocumentTranslationSize() {
+    public boolean isDocumentTranslationEmpty(int cont) {
+        return (documentTranslation.get(cont) == null || documentTranslation.get(cont).equals(""));
+    }
+
+    public int getDocumentTranslationSize() {
         return documentTranslation.size();
     }
 
-    protected String getDocumentOriginal(int cont) {
+    public String getDocumentOriginal(int cont) {
         return documentOriginal.get(cont);
     }
 
-    protected void removeDocumentOriginal(int cont) {
+    public void removeDocumentOriginal(int cont) {
         documentOriginal.remove(cont);
     }
 
-    protected void setDocumentOriginal(int cont, String text) {
+    public void setDocumentOriginal(int cont, String text) {
         documentOriginal.set(cont, text);
     }
 
-    protected int getDocumentOriginalSize() {
+    public int getDocumentOriginalSize() {
         return documentOriginal.size();
     }
 
-    protected boolean isIdentTop() {
+    public boolean isDocumentOriginalEmpty(int cont) {
+        return (documentOriginal.get(cont) == null || documentOriginal.get(cont).equals(""));
+    }
+
+    public boolean isIdentTop() {
         return (indexCurrent == topArrays);
     }
 
-    protected boolean isSomeDocumentEmpty() {
+    public boolean isSomeDocumentEmpty() {
         return (documentOriginal.isEmpty() || documentTranslation.isEmpty());
     }
 
-    protected void setBothIndex(int ident) {
+    public void setBothIndex(int ident) {
         indexCurrent = ident;
         indexPrevious = indexCurrent;
     }
 
-    protected void setIdentAntAsLabel() {
+    public void setIndexCurrent(int indexCurrent) {
+        this.indexCurrent = indexCurrent;
+    }
+
+    public void setIndexPrevious(int indexPrevious) {
+        this.indexPrevious = indexPrevious;
+    }
+
+    public int getIndexCurrent() {
+        return indexCurrent;
+    }
+
+    public int getIndexPrevious() {
+        return indexPrevious;
+    }
+
+    public void setIdentAntAsLabel() {
         indexPrevious = indexCurrent;
     }
 
-    protected void setOriginalDocumentAnt(String text) {
+    public void setOriginalDocumentAnt(String text) {
         documentOriginal.set(indexPrevious, text);
     }
 
-    protected void setTranslationDocumentAnt(String text) {
+    public void setTranslationDocumentAnt(String text) {
         documentTranslation.set(indexPrevious, text);
     }
 
-    protected void clear() {
+    public int getTopArrays() {
+        return topArrays;
+    }
+
+    public void setTopArrays(int topArrays) {
+        this.topArrays = topArrays;
+    }
+
+    public void removeArrayListChanges(int cont) {
+        arrayListChanges.remove(cont);
+    }
+
+    public AlignmentChanges getArrayListChanges(int cont) {
+        return arrayListChanges.get(cont);
+    }
+
+    public void addArrayListChanges(int cont, AlignmentChanges changes) {
+        arrayListChanges.add(cont, changes);
+    }
+
+    public int getPositionTextArea() {
+        return positionTextArea;
+    }
+
+    public void setPositionTextArea(int positionTextArea) {
+        this.positionTextArea = positionTextArea;
+    }
+
+    public Document getDocumentOriginal() {
+        return documentOriginal;
+    }
+
+    public void setDocumentOriginal(Document documentOriginal) {
+        this.documentOriginal = documentOriginal;
+    }
+
+    public Document getDocumentTranslation() {
+        return documentTranslation;
+    }
+
+    public void setDocumentTranslation(Document documentTranslation) {
+        this.documentTranslation = documentTranslation;
+    }
+
+
+    public void clear() {
         documentOriginal.clean();
         documentTranslation.clean();
         int cont = arrayListChanges.size() - 1;
@@ -273,9 +345,9 @@ public class TmData {
         topArrays = 0;
     }
 
-    void undoJoin() {
+    public void undoJoin() {
         String cad;
-        SegmentChanges ultChanges;
+        AlignmentChanges ultChanges;
         ultChanges = arrayListChanges.get(getIdentChanges());
         indexCurrent = ultChanges.getIdent_linea();
         int position;
@@ -304,8 +376,8 @@ public class TmData {
     /**
      * Undoes the last delete.
      */
-    void undoDelete() {
-        SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+    public void undoDelete() {
+        AlignmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
         indexCurrent = ultChanges.getIdent_linea();
         if (ultChanges.getSource() == Side.ORIGINAL) {
             documentOriginal.add(indexCurrent, ultChanges.getFrase());
@@ -320,12 +392,12 @@ public class TmData {
         }
     }
 
-    void undoSplit() {
+    public void undoSplit() {
         // The complement of Split is Join
         String cad;
         int cont;
         cont = indexCurrent + 1;
-        SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+        AlignmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
         if (ultChanges.getSource() == Side.ORIGINAL) {
             cad = ultChanges.getFrase();
             documentOriginal.set(indexCurrent, cad.trim());
@@ -345,8 +417,8 @@ public class TmData {
         }
     }
 
-    void undoRemove() {
-        SegmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
+    public void undoRemove() {
+        AlignmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
         int tam = ultChanges.getTam();
         while (tam > 0) {
             documentTranslation.add(documentTranslation.size(), "");
@@ -369,7 +441,7 @@ public class TmData {
         }
     }
 
-    void undoTuSplit(Side izq) {
+    public void undoTuSplit(Side izq) {
         if (izq == Side.ORIGINAL) {
             documentTranslation.set(indexCurrent,
                 documentTranslation.get(indexCurrent + 1));

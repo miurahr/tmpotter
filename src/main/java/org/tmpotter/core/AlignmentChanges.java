@@ -28,15 +28,13 @@
 
 package org.tmpotter.core;
 
-import org.tmpotter.ui.TmData;
-
 
 /**
- * Action when segment changing.
+ * Action when alignment changing.
  *
  * @author Hiroshi Miura
  */
-public class SegmentChanges {
+public class AlignmentChanges {
     OperationKind kind;
     int pos;
     TmData.Side source;
@@ -48,7 +46,7 @@ public class SegmentChanges {
     /**
      * Constructor.
      */
-    public SegmentChanges() {
+    public AlignmentChanges() {
         kind = OperationKind.JOIN;
         pos = 0;
         source = TmData.Side.TRANSLATION;
@@ -65,8 +63,8 @@ public class SegmentChanges {
      * @param phrase   frase
      * @param index    ident line
      */
-    public SegmentChanges(OperationKind kind, int position, TmData.Side source,
-                          String phrase, int index) {
+    public AlignmentChanges(OperationKind kind, int position, TmData.Side source,
+                            String phrase, int index) {
         this.kind = kind;
         this.pos = position;
         this.source = source;

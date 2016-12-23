@@ -36,13 +36,13 @@ import javax.swing.table.AbstractTableModel;
 
 
 /**
- * Model for bitext.
+ * Model for the tmpotter alignment table.
  *
  * @author Hiroshi Miura
  */
 @SuppressWarnings("serial")
-public final class BitextModel extends AbstractTableModel {
-    private final LinkedList<Segment> data = new LinkedList<>();
+public final class AlignmentModel extends AbstractTableModel {
+    private final LinkedList<Alignment> data = new LinkedList<>();
     private final LinkedList<TableModelListener> tableModelListeners =
             new LinkedList<>();
 
@@ -80,15 +80,15 @@ public final class BitextModel extends AbstractTableModel {
             return null;
         }
 
-        final Segment segment = data.get(row);
+        final Alignment alignment = data.get(row);
 
         switch (column) {
             case 0:
-                return segment.getNum();
+                return alignment.getNum();
             case 1:
-                return segment.getOriginal();
+                return alignment.getOriginal();
             case 2:
-                return segment.getTranslation();
+                return alignment.getTranslation();
             default:
                 return null;
         }
@@ -110,10 +110,10 @@ public final class BitextModel extends AbstractTableModel {
     /**
      * Add segment.
      *
-     * @param segment to be added
+     * @param alignment to be added
      */
-    public final void addSegment(final Segment segment) {
-        data.add(segment);
+    public final void addSegment(final Alignment alignment) {
+        data.add(alignment);
 
         fireTableModelEvent(new TableModelEvent(this, getRowCount() - 1,
                 getRowCount() - 1, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT));
@@ -201,17 +201,17 @@ public final class BitextModel extends AbstractTableModel {
     @Override
     public final void setValueAt(final Object obj, final int row,
                                  final int column) {
-        final Segment segment = data.get(row);
+        final Alignment alignment = data.get(row);
 
         switch (column) {
             case 0:
-                segment.setNum(obj.toString());
+                alignment.setNum(obj.toString());
                 break;
             case 1:
-                segment.setOriginal(obj.toString());
+                alignment.setOriginal(obj.toString());
                 break;
             case 2:
-                segment.setTranslation(obj.toString());
+                alignment.setTranslation(obj.toString());
                 break;
             default:
                 break;

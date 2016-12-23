@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.core.TmData;
 import org.tmpotter.filters.FilterManager;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
@@ -49,7 +50,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -376,14 +376,14 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         TableColumn col;
         col = tmView.getColumnModel().getColumn(1);
         col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-            + prop.getFilePathOriginal().getName());
+                + prop.getFilePathOriginal().getName());
         col = tmView.getColumnModel().getColumn(2);
         col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-            + prop.getFilePathTranslation().getName());
+                + prop.getFilePathTranslation().getName());
         tmView.setColumnHeaderView();
         updateTmView();
-        tmData.topArrays = tmData.documentOriginal.size() - 1;
-        tmData.indexCurrent = 0;
+        tmData.setTopArrays(tmData.getDocumentOriginalSize() - 1);
+        tmData.setIndexCurrent(0);
     }
 
     /**
@@ -402,12 +402,14 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         tmView.adjustOriginalView(tmData.getDocumentOriginalSize());
         tmView.setViewData(tmData);
         if (tmData.isIdentTop()) {
-            tmView.setRowSelectionInterval(tmData.topArrays, tmData.topArrays);
+            tmView.setRowSelectionInterval(tmData.getTopArrays(), tmData.getTopArrays());
         }
         tmView.repaint(100);
         tmView.updateUI();
-        editLeftSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 1).toString()));
-        editRightSegment.setText(formatText(tmView.getValueAt(tmData.indexCurrent, 2).toString()));
+        editLeftSegment.setText(formatText(tmView.getValueAt(tmData.getIndexCurrent(),
+                1).toString()));
+        editRightSegment.setText(formatText(tmView.getValueAt(tmData.getIndexCurrent(),
+                2).toString()));
     }
 
     public final void setLeftEdit(String edit) {
@@ -459,7 +461,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
      * @param position indicate where in int
      */
     public final void setTextAreaPosition(int position) {
-        tmData.positionTextArea = position;
+        tmData.setPositionTextArea(position);
     }
 
     //  WindowListener Overrides

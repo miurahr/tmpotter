@@ -28,8 +28,9 @@
 
 package org.tmpotter.ui;
 
-import org.tmpotter.core.BitextModel;
-import org.tmpotter.core.Segment;
+import org.tmpotter.core.Alignment;
+import org.tmpotter.core.AlignmentModel;
+import org.tmpotter.core.TmData;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -51,7 +52,7 @@ import javax.swing.table.TableColumnModel;
 public class TmView extends javax.swing.JPanel {
 
     private ActionHandler actionHandler;
-    BitextModel bitextModel;
+    AlignmentModel alignmentModel;
 
     /**
      * Creates new form TmView
@@ -61,7 +62,7 @@ public class TmView extends javax.swing.JPanel {
     }
 
     final void buildDisplay() {
-        bitextModel = new BitextModel();
+        alignmentModel = new AlignmentModel();
         initComponents();
         table.setEnabled(false);
         table.addKeyListener(new KeyAdapter() {
@@ -123,16 +124,16 @@ public class TmView extends javax.swing.JPanel {
     }
 
     public final void setModelValueAt(final Object obj, int row, int column) {
-        bitextModel.setValueAt(obj, row, column);
+        alignmentModel.setValueAt(obj, row, column);
     }
 
     public final void removeSegment(final int row) {
-        bitextModel.removeSegment(row);
+        alignmentModel.removeSegment(row);
         revalidate();
     }
 
-    public final void addModelSegment(final Segment segment) {
-        bitextModel.addSegment(segment);
+    public final void addModelSegment(final Alignment alignment) {
+        alignmentModel.addSegment(alignment);
     }
 
     public final Object getValueAt(final int row, final int column) {
@@ -181,7 +182,7 @@ public class TmView extends javax.swing.JPanel {
             }
         } else if (getRowCount() < size) {
             while (getRowCount() != size) {
-                addModelSegment(new Segment(null, null, null));
+                addModelSegment(new Alignment(null, null, null));
                 setPreferredSize(805, 15, 1);
             }
         }
@@ -210,7 +211,7 @@ public class TmView extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        table.setModel(bitextModel
+        table.setModel(alignmentModel
         );
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollPane.setViewportView(table);
@@ -225,13 +226,13 @@ public class TmView extends javax.swing.JPanel {
         column = table.getColumnModel().getColumn(1);
         column.setHeaderValue(table.getColumnName(1));
         column.setPreferredWidth(600);
-        column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(1)));
+        column.setCellEditor(table.getDefaultEditor(alignmentModel.getColumnClass(1)));
 
         //  Translation
         column = table.getColumnModel().getColumn(2);
         column.setPreferredWidth(600);
         column.setHeaderValue(table.getColumnName(2));
-        column.setCellEditor(table.getDefaultEditor(bitextModel.getColumnClass(2)));
+        column.setCellEditor(table.getDefaultEditor(alignmentModel.getColumnClass(2)));
 
         add(scrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents

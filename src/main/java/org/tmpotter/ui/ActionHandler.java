@@ -36,9 +36,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.tmpotter.core.AlignmentChanges;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
-import org.tmpotter.core.SegmentChanges;
+import org.tmpotter.core.TmData;
 import org.tmpotter.core.TmpxReader;
 import org.tmpotter.core.TmxpWriter;
 import org.tmpotter.filters.FilterManager;
@@ -102,10 +103,10 @@ final class ActionHandler {
         modelMediator.buildDisplay();
         try {
             TmpxReader reader = new TmpxReader(modelMediator.getProjectProperties());
-            tmData.documentOriginal
-                = reader.getOriginalDocument(tmData.documentOriginal);
-            tmData.documentTranslation
-                = reader.getTranslationDocument(tmData.documentTranslation);
+            tmData.setDocumentOriginal(
+                reader.getOriginalDocument(tmData.getDocumentOriginal()));
+            tmData.setDocumentTranslation(
+                reader.getTranslationDocument(tmData.getDocumentTranslation()));
         } catch (Exception ex) {
             LOGGER.info(ex.getMessage());
         }
@@ -124,10 +125,10 @@ final class ActionHandler {
         modelMediator.buildDisplay();
         Segmenter.setSrx(Preferences.getSrx());
         try {
-            tmData.documentOriginal = new Document();
-            tmData.documentTranslation = new Document();
+            tmData.setDocumentOriginal(new Document());
+            tmData.setDocumentTranslation(new Document());
             filterManager.loadFile(modelMediator.getProjectProperties(),
-                    tmData.documentOriginal, tmData.documentTranslation, filter);
+                    tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
             tmData.matchArrays();
 
             modelMediator.initializeTmView();
@@ -145,7 +146,7 @@ final class ActionHandler {
         System.out.println(filter);
         try {
             filterManager.saveFile(modelMediator.getProjectProperties(), outFile,
-                    tmData.documentOriginal, tmData.documentTranslation, filter);
+                    tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),
                     getString("MSG.ERROR.FILE_WRITE"), JOptionPane.ERROR_MESSAGE);
@@ -153,8 +154,8 @@ final class ActionHandler {
     }
 
     public void onTableClicked() {
-        tmData.positionTextArea = 0;
-        if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
+        tmData.setPositionTextArea(0);
+        if (tmData.getIndexPrevious() < tmData.getDocumentOriginalSize()) {
             tmData.setOriginalDocumentAnt(restoreText(modelMediator.getLeftEdit()));
             tmData.setTranslationDocumentAnt(restoreText(modelMediator.getRightEdit()));
         }
@@ -175,28 +176,28 @@ final class ActionHandler {
         int index;
         if (modelMediator.getTmViewSelectedRow() != -1) {
             index = modelMediator.getTmViewSelectedRow();
-            tmData.positionTextArea = 0;
+            tmData.setPositionTextArea(0);
         } else {
             index = 1;
         }
         if (index < modelMediator.getTmViewRows() - 1) {
             if ((event.getKeyCode() == KeyEvent.VK_DOWN)
                     || (event.getKeyCode() == KeyEvent.VK_NUMPAD2)) {
-                if (tmData.indexPrevious < tmData.documentOriginal.size()) {
+                if (tmData.getIndexPrevious() < tmData.getDocumentOriginalSize()) {
                     tmData.setOriginalDocumentAnt(restoreText(modelMediator.getLeftEdit()));
                     tmData.setTranslationDocumentAnt(restoreText(modelMediator.getRightEdit()));
                 }
                 modelMediator.setLeftEdit(formatText(modelMediator.getLeftSegment(index + 1)));
                 modelMediator.setRightEdit(formatText(modelMediator.getRightSegment(index + 1)));
-                tmData.indexCurrent = index + 1;
+                tmData.setIndexCurrent(index + 1);
             } else if ((event.getKeyCode() == KeyEvent.VK_UP)
                     || (event.getKeyCode() == KeyEvent.VK_NUMPAD8)) {
-                tmData.indexCurrent = index - 1;
+                tmData.setIndexCurrent(index - 1);
                 if (index == 0) {
                     index = 1;
-                    tmData.indexCurrent = 0;
+                    tmData.setIndexCurrent(0);
                 }
-                if (tmData.indexPrevious < tmData.getDocumentOriginalSize()) {
+                if (tmData.getIndexPrevious() < tmData.getDocumentOriginalSize()) {
                     tmData.setOriginalDocumentAnt(restoreText(modelMediator.getLeftEdit()));
                     tmData.setTranslationDocumentAnt(restoreText(modelMediator.getRightEdit()));
                 }
@@ -208,7 +209,7 @@ final class ActionHandler {
             } else {
                 modelMediator.setJoinEnabled(true);
             }
-            tmData.indexPrevious = tmData.indexCurrent;
+            tmData.setIndexPrevious(tmData.getIndexCurrent());
         }
         modelMediator.updateTmView();
     }
@@ -287,15 +288,13 @@ final class ActionHandler {
             tmData.getDocumentTranslationSize()) - 1;
 
         while (cont <= (maxTamArrays - cleanedLines)) {
-            if ((tmData.getDocumentOriginal(cont) == null
-                    || tmData.getDocumentOriginal(cont).equals(""))
-                    && (tmData.getDocumentTranslation(cont) == null
-                    || tmData.getDocumentTranslation(cont).equals(""))) {
+            if (tmData.isDocumentOriginalEmpty(cont)
+                    && tmData.isDocumentTranslationEmpty(cont)) {
                 cleanedLines++;
                 numCleared[cont2] = cont + cont2;
                 cont2++;
-                tmData.documentOriginal.remove(cont);
-                tmData.documentTranslation.remove(cont);
+                tmData.removeDocumentOriginal(cont);
+                tmData.removeDocumentTranslation(cont);
             } else {
                 cont++;
             }
@@ -307,9 +306,9 @@ final class ActionHandler {
         if (cleanedLines > 0) {
             tmData.incrementChanges();
 
-            SegmentChanges changes = new SegmentChanges(SegmentChanges.OperationKind.REMOVE,
+            AlignmentChanges changes = new AlignmentChanges(AlignmentChanges.OperationKind.REMOVE,
                     0, TmData.Side.TRANSLATION, "", 0);
-            tmData.arrayListChanges.add(tmData.getIdentChanges(), changes);
+            tmData.addArrayListChanges(tmData.getIdentChanges(), changes);
             changes.setNumEliminada(numCleared, cleanedLines);
             modelMediator.setUndoEnabled(true);
             modelMediator.updateTmView();
@@ -330,10 +329,10 @@ final class ActionHandler {
      * Undo last change.
      */
     public void undoChanges() {
-        SegmentChanges ultChanges;
-        ultChanges = tmData.arrayListChanges.get(tmData.getIdentChanges());
-        tmData.indexCurrent = ultChanges.getIdent_linea();
-        SegmentChanges.OperationKind operationKind = ultChanges.getKind();
+        AlignmentChanges ultChanges;
+        ultChanges = tmData.getArrayListChanges(tmData.getIdentChanges());
+        tmData.setIndexCurrent(ultChanges.getIdent_linea());
+        AlignmentChanges.OperationKind operationKind = ultChanges.getKind();
         tmData.setIdentAntAsLabel();
         switch (operationKind) {
             case JOIN:
@@ -359,7 +358,7 @@ final class ActionHandler {
     }
 
     public void onUndo() {
-        tmData.arrayListChanges.remove(tmData.getIdentChanges());
+        tmData.removeArrayListChanges(tmData.getIdentChanges());
         int currentChange = tmData.decrementChanges();
 
         if (currentChange == -1) {
@@ -368,11 +367,11 @@ final class ActionHandler {
     }
 
     private void cleanTmData() {
-        for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
-            if (tmData.documentOriginal.get(cont).equals("")
-                    && tmData.documentTranslation.get(cont).equals("")) {
-                tmData.documentOriginal.remove(cont);
-                tmData.documentTranslation.remove(cont);
+        for (int cont = 0; cont < (tmData.getDocumentOriginalSize() - 1); cont++) {
+            if (tmData.isDocumentOriginalEmpty(cont)
+                    && tmData.isDocumentTranslationEmpty(cont)) {
+                tmData.removeDocumentOriginal(cont);
+                tmData.removeDocumentTranslation(cont);
             }
         }
     }
@@ -388,8 +387,8 @@ final class ActionHandler {
         try {
             cleanTmData();
             TmxpWriter.writeTmxp(prop,
-                tmData.documentOriginal,
-                tmData.documentTranslation);
+                tmData.getDocumentOriginal(),
+                tmData.getDocumentTranslation());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
         }
@@ -451,8 +450,8 @@ final class ActionHandler {
                 ProjectProperties prop = modelMediator.getProjectProperties();
                 prop.setFilePathProject(outFile);
                 TmxpWriter.writeTmxp(prop,
-                        tmData.documentOriginal,
-                        tmData.documentTranslation);
+                        tmData.getDocumentOriginal(),
+                        tmData.getDocumentTranslation());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);

@@ -38,10 +38,9 @@ package org.tmpotter.core;
 
   There should be separate segments for the original and translation
   this is really an alignment, it should contain the two segments
-  
   or it is a row in the table
 */
-public class Segment {
+public class Alignment {
     private String num;
     private String original;
     private String translation;
@@ -53,8 +52,8 @@ public class Segment {
      * @param original    original pharase
      * @param translation translation pharase
      */
-    public Segment(final String num, final String original,
-                   final String translation) {
+    public Alignment(final String num, final String original,
+                     final String translation) {
         this.num = num;
         this.original = original;
         this.translation = translation;
