@@ -49,12 +49,12 @@ public final class Segmenter {
 
     public static volatile SRX srx;
 
-    synchronized public static void setSrx(SRX newSrx) {
+    public static synchronized void setSrx(SRX newSrx) {
         srx = newSrx;
     }
 
     /**
-     * private to disallow creation
+     * private to disallow creation.
      */
     private Segmenter() {
     }
@@ -91,20 +91,20 @@ public final class Segmenter {
         spaces.clear();
         for (String one : segments) {
             int len = one.length();
-            int b = 0;
+            int beginPos = 0;
             StringBuilder bs = new StringBuilder();
-            for (int cp; b < len; b += Character.charCount(cp)) {
-                cp = one.codePointAt(b);
+            for (int cp; beginPos < len; beginPos += Character.charCount(cp)) {
+                cp = one.codePointAt(beginPos);
                 if (!Character.isWhitespace(cp)) {
                     break;
                 }
                 bs.appendCodePoint(cp);
             }
 
-            int e = len;
+            int endPos = len;
             StringBuilder es = new StringBuilder();
-            for (int cp; e > b; e -= Character.charCount(cp)) {
-                cp = one.codePointBefore(e);
+            for (int cp; endPos > beginPos; endPos -= Character.charCount(cp)) {
+                cp = one.codePointBefore(endPos);
                 if (!Character.isWhitespace(cp)) {
                     break;
                 }
@@ -112,7 +112,7 @@ public final class Segmenter {
             }
             es.reverse();
 
-            String trimmed = one.substring(b, e);
+            String trimmed = one.substring(beginPos, endPos);
             sentences.add(trimmed);
             spaces.add(bs);
             spaces.add(es);
@@ -284,8 +284,8 @@ public final class Segmenter {
          * Compares this break position with another.
          *
          * @return a negative integer if its position is less than the another's,
-         * zero if they are equal, or a positive integer as its position is greater
-         * than the another's.
+         *     zero if they are equal, or a positive integer as its position is greater
+         *     than the another's.
          * @throws ClassCastException if the specified object's type prevents it
          *                            from being compared to this Object.
          */
@@ -298,7 +298,7 @@ public final class Segmenter {
      * CJK languages.
      */
     private static final Pattern CJK_LINE_BREAK_OR_TAB_PATTERN = Pattern
-        .compile("^( *)[\\r\\n\\t]");
+            .compile("^( *)[\\r\\n\\t]");
     private static final Set<String> CJK_LANGUAGES = new HashSet<String>();
 
     static {

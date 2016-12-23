@@ -63,7 +63,7 @@ public class Utilities {
      */
     public static final String[] getFontNames() {
         final GraphicsEnvironment graphics =
-            GraphicsEnvironment.getLocalGraphicsEnvironment();
+                GraphicsEnvironment.getLocalGraphicsEnvironment();
         return (graphics.getAvailableFontFamilyNames());
     }
 
@@ -135,7 +135,7 @@ public class Utilities {
      * </ul>
      *
      * @return The full path of the directory containing the OmegaT
-     * configuration files, including trailing path separator.
+     *     configuration files, including trailing path separator.
      * @author Henry Pijffers (henry.pijffers@saxnot.com)
      */
     public static String getConfigDir() {
@@ -260,7 +260,7 @@ public class Utilities {
             String cp = System.getProperty("java.class.path");
             // See if we are running from a JAR
             String path = extractClasspathElement(cp, File.separator
-                + AppConstants.APPLICATION_JAR);
+                    + AppConstants.APPLICATION_JAR);
 
             if (path == null) {
                 // We're not running from a JAR; probably debug mode (in IDE, etc.)

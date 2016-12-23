@@ -199,7 +199,8 @@ public class Language implements Comparable<Object> {
      * Japanese are not space-delimited.
      */
     public boolean isSpaceDelimited() {
-        return !"ZH".equalsIgnoreCase(this.languageCode) && !"JA".equalsIgnoreCase(this.languageCode);
+        return !"ZH".equalsIgnoreCase(this.languageCode)
+                && !"JA".equalsIgnoreCase(this.languageCode);
     }
 
     // /////////////////////////////////////////////////////////////////////////

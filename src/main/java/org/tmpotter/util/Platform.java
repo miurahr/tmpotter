@@ -67,13 +67,13 @@ public final class Platform {
             } else if (osName.startsWith("Windows")) {
                 osType = is64 ? OsType.WIN64 : OsType.WIN32;
             } else if (osName.contains("AIX")
-                || osName.equals("Digital Unix")
-                || osName.equals("FreeBSD")
-                || osName.equals("HP UX")
-                || osName.equals("Irix")
-                || osName.equals("MPE/iX")
-                || osName.equals("Solaris")
-                || osName.equals("SunOS")) {
+                    || osName.equals("Digital Unix")
+                    || osName.equals("FreeBSD")
+                    || osName.equals("HP UX")
+                    || osName.equals("Irix")
+                    || osName.equals("MPE/iX")
+                    || osName.equals("Solaris")
+                    || osName.equals("SunOS")) {
                 osType = OsType.UNIX;
             }
         }

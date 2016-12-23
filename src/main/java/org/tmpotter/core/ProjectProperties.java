@@ -103,7 +103,7 @@ public final class ProjectProperties {
 
     /**
      * Sets The Source Language (language of the source files) of the Project.
-	 * @param sourceLanguage language to set.
+     * @param sourceLanguage language to set.
      */
     public void setSourceLanguage(Language sourceLanguage) {
         this.sourceLanguage = sourceLanguage;
@@ -111,7 +111,7 @@ public final class ProjectProperties {
 
     /**
      * Sets The Source Language (language of the source files) of the Project.
-	 * @param sourceLanguage language to set.
+     * @param sourceLanguage language to set.
      */
     public void setSourceLanguage(String sourceLanguage) {
         this.sourceLanguage = new Language(sourceLanguage);
@@ -120,7 +120,7 @@ public final class ProjectProperties {
     /**
      * Returns The Target Language (language of the translated files) of the
      * Project.
-	 * @return language for target.
+     * @return language for target.
      */
     public Language getTargetLanguage() {
         return targetLanguage;
@@ -128,7 +128,7 @@ public final class ProjectProperties {
 
     /**
      * Sets The Target Language (language of the translated files) of the Project.
-	 * @param targetLanguage language to set.
+     * @param targetLanguage language to set.
      */
     public void setTargetLanguage(Language targetLanguage) {
         this.targetLanguage = targetLanguage;
@@ -136,7 +136,7 @@ public final class ProjectProperties {
 
     /**
      * Sets The Target Language (language of the translated files) of the Project.
-	 * @param targetLanguage language for set as target.
+     * @param targetLanguage language for set as target.
      */
     public void setTargetLanguage(String targetLanguage) {
         this.targetLanguage = new Language(targetLanguage);

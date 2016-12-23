@@ -94,7 +94,7 @@ public class SegmentationRulesModel extends AbstractTableModel {
 
     /**
      * Get column class.
-     * @param columnIndex column  index.
+     * @param columnIndex column index.
      * @return class.
      */
     public Class<?> getColumnClass(int columnIndex) {
@@ -106,11 +106,12 @@ public class SegmentationRulesModel extends AbstractTableModel {
     }
 
     /**
-     * The names of table columns
+     * The names of table columns.
      */
-    private static String[] COLUMN_NAMES = new String[]{Localization.getString("CORE_SRX_TABLE_COLUMN_Break"),
-        Localization.getString("CORE_SRX_TABLE_COLUMN_Before_Break"),
-        Localization.getString("CORE_SRX_TABLE_COLUMN_After_Break")};
+    private static String[] COLUMN_NAMES = new String[]{
+            Localization.getString("CORE_SRX_TABLE_COLUMN_Break"),
+            Localization.getString("CORE_SRX_TABLE_COLUMN_Before_Break"),
+            Localization.getString("CORE_SRX_TABLE_COLUMN_After_Break")};
 
     /**
      * Get column name.
@@ -121,22 +122,28 @@ public class SegmentationRulesModel extends AbstractTableModel {
         return COLUMN_NAMES[column];
     }
 
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+    /**
+     * Set value at specified index.
+     * @param val value to set.
+     * @param rowIndex row index.
+     * @param columnIndex column index.
+     */
+    public void setValueAt(Object val, int rowIndex, int columnIndex) {
         Rule rule = rules.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                rule.setBreakRule(((Boolean) aValue).booleanValue());
+                rule.setBreakRule(((Boolean) val).booleanValue());
                 break;
             case 1:
                 try {
-                    rule.setBeforebreak((String) aValue);
+                    rule.setBeforebreak((String) val);
                 } catch (PatternSyntaxException pse) {
                     fireException(pse);
                 }
                 break;
             case 2:
                 try {
-                    rule.setAfterbreak((String) aValue);
+                    rule.setAfterbreak((String) val);
                 } catch (PatternSyntaxException pse) {
                     fireException(pse);
                 }
@@ -204,18 +211,22 @@ public class SegmentationRulesModel extends AbstractTableModel {
      */
     protected List<ExceptionListener> listeners = new ArrayList<ExceptionListener>();
 
-    public void addExceptionListener(ExceptionListener l) {
-        listeners.add(l);
+    public void addExceptionListener(ExceptionListener listener) {
+        listeners.add(listener);
     }
 
-    public void removeTableModelListener(ExceptionListener l) {
-        listeners.remove(l);
+    public void removeTableModelListener(ExceptionListener listener) {
+        listeners.remove(listener);
     }
 
-    public void fireException(Exception e) {
+    /**
+     * Exception for model.
+     * @param ex exception.
+     */
+    public void fireException(Exception ex) {
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            ExceptionListener l = listeners.get(i);
-            l.exceptionThrown(e);
+            ExceptionListener listener = listeners.get(i);
+            listener.exceptionThrown(ex);
         }
     }
 }

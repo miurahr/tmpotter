@@ -59,9 +59,9 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
             super(srx);
         }
 
-        public void setSelected(boolean b) {
-            srx.setSegmentSubflows(b);
-            super.setSelected(b);
+        public void setSelected(boolean selected) {
+            srx.setSegmentSubflows(selected);
+            super.setSelected(selected);
         }
 
         public boolean isSelected() {
@@ -79,7 +79,7 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
 
     /**
      * a model for including starting formatting tags at the end boundary of the
-     * segment checkbox
+     * segment checkbox.
      */
     private static class IncludeStartingTagsModel extends SRXOptionsModel {
 
@@ -87,9 +87,9 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
             super(srx);
         }
 
-        public void setSelected(boolean b) {
-            srx.setIncludeStartingTags(b);
-            super.setSelected(b);
+        public void setSelected(boolean selected) {
+            srx.setIncludeStartingTags(selected);
+            super.setSelected(selected);
         }
 
         public boolean isSelected() {
@@ -116,9 +116,9 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
             super(srx);
         }
 
-        public void setSelected(boolean b) {
-            srx.setIncludeEndingTags(b);
-            super.setSelected(b);
+        public void setSelected(boolean selected) {
+            srx.setIncludeEndingTags(selected);
+            super.setSelected(selected);
         }
 
         public boolean isSelected() {
@@ -145,9 +145,9 @@ public class SRXOptionsModel extends JToggleButton.ToggleButtonModel {
             super(srx);
         }
 
-        public void setSelected(boolean b) {
-            srx.setIncludeIsolatedTags(b);
-            super.setSelected(b);
+        public void setSelected(boolean selected) {
+            srx.setIncludeIsolatedTags(selected);
+            super.setSelected(selected);
         }
 
         public boolean isSelected() {

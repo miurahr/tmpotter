@@ -88,7 +88,7 @@ public class FileUtil {
      */
     public static String readTextFile(File file) throws IOException {
         BufferedReader rd = new BufferedReader(new InputStreamReader(
-            new FileInputStream(file), AppConstants.ENCODINGS_UTF8));
+                new FileInputStream(file), AppConstants.ENCODINGS_UTF8));
 
         try {
             StringWriter out = new StringWriter();
@@ -259,7 +259,7 @@ public class FileUtil {
                 break;
             }
             if (onCollision == null || onCollision.shouldReplace(e.getValue(),
-                count, collisions.size())) {
+                    count, collisions.size())) {
                 toReplace.add(e.getKey());
                 toDelete.add(e.getValue());
             }
@@ -270,7 +270,7 @@ public class FileUtil {
                 deleteTree(file);
             }
             copyFilesTo(destination, toReplace.toArray(new File[toReplace.size()]),
-                (File) null);
+                    (File) null);
         }
     }
 

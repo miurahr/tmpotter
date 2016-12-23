@@ -38,7 +38,7 @@ import java.util.HashMap;
  *
  * @author miurahr
  */
-public class TmxWriter {
+public class TmxpWriter {
 
     /**
      * Write TMX file.
@@ -50,15 +50,15 @@ public class TmxWriter {
      * @param langTranslation     translation language
      * @throws Exception when file write error
      */
-    public static void writeTmx(final File outFile,
-                                Document originalDocument, String langOriginal,
-                                Document translationDocument, String langTranslation
+    public static void writeTmxp(final File outFile,
+                                 Document originalDocument, String langOriginal,
+                                 Document translationDocument, String langTranslation
     ) throws Exception {
         Language sourceLanguage = new Language(langOriginal);
         Language targetLanguage = new Language(langTranslation);
 
         TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
-            targetLanguage, true, false, false);
+                targetLanguage, true, false, false);
         try {
             HashMap<String, String> prop = new HashMap<>();
             for (int i = 0; i < originalDocument.size(); i++) {
@@ -72,6 +72,6 @@ public class TmxWriter {
         }
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TmxWriter.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(TmxpWriter.class.getName());
 
 }

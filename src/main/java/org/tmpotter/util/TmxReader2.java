@@ -150,8 +150,8 @@ public class TmxReader2 {
                         final LoadCallback callback) throws Exception {
         this.extTmxLevel2 = extTmxLevel2;
         this.useSlash = useSlash;
-	this.sourceLanguage = defaultSourceLanguage;
-	this.targetLanguage = defaultTargetLanguage;
+        this.sourceLanguage = defaultSourceLanguage;
+        this.targetLanguage = defaultTargetLanguage;
 
         // log the parsing attempt
         LOGGER.info(String.format("%s: %s", getString("TMXR.INFO.READING_FILE"),

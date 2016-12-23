@@ -294,10 +294,10 @@ public class SRX implements Serializable, Cloneable {
         // renaming "Default (English)" to "Default"
         // and removing English/Text/HTML-specific rules from there
         if (OT160RC9_VERSION.equals(CURRENT_VERSION)) {
-            String DEF = "Default (English)";
+            String defaultLang = "Default (English)";
             for (int i = 0; i < current.getMappingRules().size(); i++) {
                 MapRule maprule = current.getMappingRules().get(i);
-                if (DEF.equals(maprule.getLanguageCode())) {
+                if (defaultLang.equals(maprule.getLanguageCode())) {
                     maprule.setLanguage(LanguageCodes.DEFAULT_CODE);
                     maprule.getRules().removeAll(rules);
                 }
@@ -328,12 +328,12 @@ public class SRX implements Serializable, Cloneable {
      */
     static class MyExceptionListener implements ExceptionListener {
 
-        private List<Exception> exceptionsList = new ArrayList<Exception>();
+        private List<Exception> exceptionsList = new ArrayList<>();
         private boolean exceptionOccured = false;
 
-        public void exceptionThrown(Exception e) {
+        public void exceptionThrown(Exception ex) {
             exceptionOccured = true;
-            exceptionsList.add(e);
+            exceptionsList.add(ex);
         }
 
         /**
@@ -377,7 +377,7 @@ public class SRX implements Serializable, Cloneable {
                 for (gen.core.segmentation.Rule r : rules.getRule()) {
                     boolean isBreak = "yes".equalsIgnoreCase(r.getBreak());
                     rulesList.add(new Rule(isBreak, r.getBeforebreak().getContent(),
-                          r.getAfterbreak().getContent()));
+                            r.getAfterbreak().getContent()));
                 }
                 newMap.add(new MapRule(lang, pattern, rulesList));
             }
@@ -388,6 +388,10 @@ public class SRX implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Get default SRX.
+     * @return srx.
+     */
     public static SRX getDefault() {
         SRX srx = new SRX();
         srx.init();

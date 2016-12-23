@@ -121,6 +121,10 @@ public class MapRule implements Serializable, Cloneable {
         this.pattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
     }
 
+    /**
+     * Clone object.
+     * @return MapRule cloned object.
+     */
     public MapRule clone() {
         MapRule result;
         try {
@@ -173,7 +177,8 @@ public class MapRule implements Serializable, Cloneable {
      * Returns a hash code value for the object.
      */
     public int hashCode() {
-        return this.getPattern().hashCode() + this.getLanguage().hashCode() + this.getRules().hashCode();
+        return this.getPattern().hashCode() + this.getLanguage().hashCode()
+                + this.getRules().hashCode();
     }
 
     /**

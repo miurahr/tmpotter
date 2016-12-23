@@ -35,7 +35,7 @@ public final class Localization {
     //  Init the bundle
     private static Control control = new Utf8ResourceBundleControl();
     private static ResourceBundle _bundle = ResourceBundle
-        .getBundle("org/tmpotter/Bundle", control);
+            .getBundle("org/tmpotter/Bundle", control);
 
     private static final ArrayList<String> languageList = new ArrayList<>();
     private static final ArrayList<String> langId = new ArrayList<>();

@@ -122,7 +122,7 @@ public class SegmentChanges {
     /**
      * Accessor for num eliminada.
      *
-	 * @param index index to get line number.
+     * @param index index to get line number.
      * @return numEliminada
      */
     public int getNumEliminada(final int index) {
@@ -195,8 +195,10 @@ public class SegmentChanges {
      */
     public void setNumEliminada(int[] keliminadas, int tam) {
         numEliminada = new int[tam];
-		System.arraycopy(keliminadas, 0, numEliminada, 0, tam);
+        System.arraycopy(keliminadas, 0, numEliminada, 0, tam);
     }
 
-    public enum OperationKind {JOIN, SPLIT, DELETE, REMOVE, TUSPLIT}
+    public enum OperationKind {
+        JOIN, SPLIT, DELETE, REMOVE, TUSPLIT
+    }
 }

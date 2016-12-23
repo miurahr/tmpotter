@@ -23,10 +23,7 @@
 
 package org.tmpotter.core;
 
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
-
-import org.tmpotter.util.AppConstants;
 
 import java.io.File;
 
@@ -35,15 +32,15 @@ import java.io.File;
  *
  * @author miurahr
  */
-public class TmxWriterTest extends TmxTestBase {
+public class TmxpWriterTest extends TmxTestBase {
 
   /**
-   * Test of writeTmx method, of class TmxWriter.
+   * Test of writeTmxp method, of class TmxWriter.
    * @throws java.lang.Exception
    */
   @Test
   public void testWriteTmx() throws Exception {
-    System.out.println("writeTmx");
+    System.out.println("writeTmxp");
     File outputFile = File.createTempFile("test_write_tmx", "tmx");
     File expectedFile = new File(this.getClass().getResource("/tmx/expected_write_tmx.tmx").getFile());
     Document originalDocument = new Document();
@@ -54,7 +51,7 @@ public class TmxWriterTest extends TmxTestBase {
     translationDocument.add("Sentense one in Japanese.");
     translationDocument.add("Sentense two in Japanese.");
     String langTranslation = "JA";
-    TmxWriter.writeTmx(outputFile, originalDocument, langOriginal,
+    TmxpWriter.writeTmxp(outputFile, originalDocument, langOriginal,
             translationDocument, langTranslation);
     compareTmx(outputFile, expectedFile, 4);
     outputFile.delete();

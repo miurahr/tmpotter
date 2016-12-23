@@ -24,13 +24,16 @@
 package org.tmpotter.filters.tmx;
 
 import org.tmpotter.core.Document;
-import org.tmpotter.core.TmxWriter;
+import org.tmpotter.core.TmxEntry;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
 import org.tmpotter.filters.IParseCallback;
+import org.tmpotter.util.Language;
 import org.tmpotter.util.TmxReader2;
+import org.tmpotter.util.TmxWriter2;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -66,7 +69,7 @@ public class TmxFilter implements IFilter {
 
     /**
      * TMX filter read UTF-8 file and not encoding variable.
-     * @return false.
+     * @return false because UTF-8 encoding fixed.
      */
     public boolean isSourceEncodingVariable() {
         return false;
@@ -74,7 +77,7 @@ public class TmxFilter implements IFilter {
 
     /**
      * TMX filter read UTF-8 file and not encoding variable.
-     * @return
+     * @return false because UTF-8 encoding fixed.
      */
     public boolean isTargetEncodingVariable() {
         return false;
@@ -101,7 +104,7 @@ public class TmxFilter implements IFilter {
      * @param inFile  Source file.
      * @param config  filter's configuration options
      * @param context processing context
-     * @return
+     * @return true if supported, otherwise false.
      */
     public boolean isFileSupported(File inFile, Map<String, String> config, FilterContext context) {
         if (inFile.getName().endsWith(".tmx")) {
@@ -156,13 +159,13 @@ public class TmxFilter implements IFilter {
         */
 
                 callback.addEntry(null, tuvSource.text, tuvTranslation.text, false,
-                    tu.note, null, self);
+                        tu.note, null, self);
             }
         };
 
         TmxReader2 reader = new TmxReader2();
         reader.readTmx(inFile, fc.getSourceLang(),
-            fc.getTargetLang(), false, false, callbackLoader);
+                fc.getTargetLang(), false, false, callbackLoader);
 
     }
 
@@ -189,9 +192,23 @@ public class TmxFilter implements IFilter {
     @Override
     public void saveFile(File outFile, Document docOriginal, Document docTranslation,
                          FilterContext fc) {
+        Language sourceLanguage = new Language(fc.getSourceLang().toString());
+        Language targetLanguage = new Language(fc.getTargetLang().toString());
+
         try {
-            TmxWriter.writeTmx(outFile, docOriginal,
-                    fc.getSourceLang().toString(), docTranslation, fc.getTargetLang().toString());
+            TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
+                    targetLanguage, true, false, false);
+            try {
+                HashMap<String, String> prop = new HashMap<>();
+                for (int i = 0; i < docOriginal.size(); i++) {
+                    TmxEntry te = new TmxEntry();
+                    te.source = docOriginal.get(i);
+                    te.translation = docTranslation.get(i);
+                    wr.writeEntry(te.source, te.translation, te, prop);
+                }
+            } finally {
+                wr.close();
+            }
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }

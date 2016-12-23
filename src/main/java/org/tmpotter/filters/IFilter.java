@@ -27,9 +27,10 @@
 
 package org.tmpotter.filters;
 
+import org.tmpotter.core.Document;
+
 import java.io.File;
 import java.util.Map;
-import org.tmpotter.core.Document;
 
 
 /**

@@ -40,13 +40,13 @@ import java.util.regex.PatternSyntaxException;
 public class Rule implements Serializable, Cloneable {
 
     /**
-     * Creates a new empty instance of segmentation rule
+     * Creates a new empty instance of segmentation rule.
      */
     public Rule() {
     }
 
     /**
-     * Creates an initialized instance of segmentation rule
+     * Creates an initialized instance of segmentation rule.
      */
     public Rule(boolean breakRule, String beforebreak, String afterbreak) {
         setBreakRule(breakRule);
@@ -54,6 +54,10 @@ public class Rule implements Serializable, Cloneable {
         setAfterbreak(afterbreak);
     }
 
+    /**
+     * Clone object.
+     * @return Rule object.
+     */
     public Rule clone() {
         Rule result;
         try {
@@ -187,10 +191,8 @@ public class Rule implements Serializable, Cloneable {
      */
     private Pattern compilePattern(String pattern) {
         Pattern testFlags = Pattern.compile(pattern);
-        if ((testFlags.flags()
-            & Pattern.CASE_INSENSITIVE) == Pattern.CASE_INSENSITIVE) {
-            return Pattern.compile(pattern, Pattern.UNICODE_CASE
-                | Pattern.DOTALL);
+        if ((testFlags.flags() & Pattern.CASE_INSENSITIVE) == Pattern.CASE_INSENSITIVE) {
+            return Pattern.compile(pattern, Pattern.UNICODE_CASE | Pattern.DOTALL);
         } else {
             return Pattern.compile(pattern, Pattern.DOTALL);
         }

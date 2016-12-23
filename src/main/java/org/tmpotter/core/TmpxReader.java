@@ -31,11 +31,11 @@ import java.util.List;
 
 
 /**
- * TMX read class.
+ * Tmpotter Project file(tmpx) reader class.
  *
  * @author Hiroshi Miura
  */
-public class TmxReader {
+public class TmpxReader {
 
     private final String name;
     private final List<TmxEntry> entries;
@@ -46,7 +46,7 @@ public class TmxReader {
      * @param prop property.
      * @throws Exception when read I/O error.
      */
-    public TmxReader(ProjectProperties prop)
+    public TmpxReader(ProjectProperties prop)
         throws Exception {
         this.name = prop.getFilePathOriginal().getName();
         entries = new ArrayList<>();
@@ -94,7 +94,7 @@ public class TmxReader {
 
         TmxReader2 reader = new TmxReader2();
         reader.readTmx(prop.getFilePathOriginal(), prop.getSourceLanguage(),
-            prop.getTargetLanguage(), false, false, callbackLoader);
+                prop.getTargetLanguage(), false, false, callbackLoader);
     }
 
     public String getName() {

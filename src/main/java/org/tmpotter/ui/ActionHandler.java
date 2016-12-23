@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.SegmentChanges;
-import org.tmpotter.core.TmxReader;
-import org.tmpotter.core.TmxWriter;
+import org.tmpotter.core.TmpxReader;
+import org.tmpotter.core.TmxpWriter;
 import org.tmpotter.filters.FilterManager;
 import org.tmpotter.preferences.Preferences;
 import org.tmpotter.preferences.RuntimePreferences;
@@ -99,7 +99,7 @@ final class ActionHandler {
         modelMediator.setTargetLanguage(stringLangTranslation);
         modelMediator.buildDisplay();
         try {
-            TmxReader reader = new TmxReader(modelMediator.getProjectProperties());
+            TmpxReader reader = new TmpxReader(modelMediator.getProjectProperties());
             tmData.documentOriginal
                 = reader.getOriginalDocument(tmData.documentOriginal);
             tmData.documentTranslation
@@ -426,7 +426,7 @@ final class ActionHandler {
                     }
                 }
             }
-            TmxWriter.writeTmx(outFile, tmData.documentOriginal,
+            TmxpWriter.writeTmxp(outFile, tmData.documentOriginal,
                     tmData.stringLangOriginal, tmData.documentTranslation,
                     tmData.stringLangTranslation);
         } catch (Exception ex) {

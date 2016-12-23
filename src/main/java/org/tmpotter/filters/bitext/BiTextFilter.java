@@ -23,6 +23,7 @@
 
 package org.tmpotter.filters.bitext;
 
+import org.tmpotter.core.Document;
 import org.tmpotter.exceptions.TranslationException;
 import org.tmpotter.filters.AbstractFilter;
 import org.tmpotter.filters.FilterContext;
@@ -38,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.tmpotter.core.Document;
 
 
 /**
@@ -147,7 +147,7 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
         }
         if (entryParseCallback != null) {
             entryParseCallback.addEntry(null, source, translation, false, comments, path,
-                this);
+                    this);
         } else {
             System.out.println("WARN: not parse callback defined!");
         }
@@ -169,11 +169,11 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
 
     @Override
     public boolean isSaveSupported() {
-	    return false;
+        return false;
     }
 
     @Override
     public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
-
+        // fixme.
     }
 }

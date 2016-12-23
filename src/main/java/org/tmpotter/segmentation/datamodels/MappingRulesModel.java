@@ -101,20 +101,20 @@ public class MappingRulesModel extends AbstractTableModel {
     /**
      * Set value at (row, column).
      *
-     * @param aValue      value to set
+     * @param val      value to set
      * @param rowIndex    where to set in row
      * @param columnIndex where to set in column
      */
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+    public void setValueAt(Object val, int rowIndex, int columnIndex) {
         MapRule maprule = srx.getMappingRules().get(rowIndex);
         switch (columnIndex) {
             case 0:
-                maprule.setLanguage((String) aValue);
+                maprule.setLanguage((String) val);
                 break;
             case 1:
                 try {
-                    maprule.setPattern((String) aValue);
+                    maprule.setPattern((String) val);
                 } catch (PatternSyntaxException pse) {
                     fireException(pse);
                 }
@@ -185,20 +185,24 @@ public class MappingRulesModel extends AbstractTableModel {
     /**
      * List of listeners.
      */
-    protected List<ExceptionListener> listeners = new ArrayList<ExceptionListener>();
+    protected List<ExceptionListener> listeners = new ArrayList<>();
 
-    public void addExceptionListener(ExceptionListener l) {
-        listeners.add(l);
+    public void addExceptionListener(ExceptionListener listener) {
+        listeners.add(listener);
     }
 
-    public void removeTableModelListener(ExceptionListener l) {
-        listeners.remove(l);
+    public void removeTableModelListener(ExceptionListener listener) {
+        listeners.remove(listener);
     }
 
-    public void fireException(Exception e) {
+    /**
+     * Exception for model.
+     * @param ex exception.
+     */
+    public void fireException(Exception ex) {
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            ExceptionListener l = listeners.get(i);
-            l.exceptionThrown(e);
+            ExceptionListener listener = listeners.get(i);
+            listener.exceptionThrown(ex);
         }
     }
 

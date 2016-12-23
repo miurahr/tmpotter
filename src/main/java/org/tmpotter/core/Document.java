@@ -185,8 +185,7 @@ public class Document {
     public void split(final int index, final int position) {
         int length = documentSegments.size() - 1;
         assert length >= index;
-        if (length == index
-            || !documentSegments.get(length).equals("")) {
+        if (length == index || !documentSegments.get(length).equals("")) {
             documentSegments.add(length + 1, documentSegments.get(length));
             length++;
         }

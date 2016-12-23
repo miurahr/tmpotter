@@ -81,7 +81,8 @@ public class FilterManager {
         this.documentOriginal = docOriginal;
         this.documentTranslation = docTranslation;
 
-        FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(), true);
+        FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(),
+                true);
         File inFile = prop.getFilePathOriginal();
         File outFile = prop.getFilePathTranslation();
         if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
@@ -103,6 +104,15 @@ public class FilterManager {
         }
     }
 
+    /**
+     * Call saveFile interface of filter.
+     * @param prop property.
+     * @param outFile output filename.
+     * @param docOriginal original document
+     * @param docTranslation translation document.
+     * @param filterName filter name.
+     * @throws Exception throw when error happened.
+     */
     public void saveFile(ProjectProperties prop, String outFile, Document docOriginal,
             Document docTranslation, String filterName) throws Exception {
         IFilter filter = null;
@@ -110,7 +120,7 @@ public class FilterManager {
         this.documentTranslation = docTranslation;
         FilterContext fc = new FilterContext(prop.getSourceLanguage(),
                 prop.getTargetLanguage(), true);
-	File outF = new File(outFile);
+        File outF = new File(outFile);
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
