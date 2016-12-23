@@ -36,6 +36,7 @@ import java.io.File;
 public final class ProjectProperties {
     private File filePathOriginal;
     private File filePathTranslation;
+    private File filePathProject;
     private String targetEncoding;
     private String originalEncoding;
     private Language sourceLanguage;
@@ -81,6 +82,22 @@ public final class ProjectProperties {
         return filePathTranslation;
     }
 
+    public File getFilePathProject() {
+        return filePathProject;
+    }
+
+    public void setFilePathProject(File filePathProject) {
+        this.filePathProject = filePathProject;
+    }
+
+    public String getTargetEncoding() {
+        return targetEncoding;
+    }
+
+    public void setTargetEncoding(String targetEncoding) {
+        this.targetEncoding = targetEncoding;
+    }
+
     public void setOriginalEncoding(String encoding) {
         originalEncoding = encoding;
     }
@@ -91,10 +108,6 @@ public final class ProjectProperties {
 
     public void setTranslationEncoding(String encoding) {
         targetEncoding = encoding;
-    }
-
-    public String getTranslationEncoding() {
-        return targetEncoding;
     }
 
     public Language getSourceLanguage() {

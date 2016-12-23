@@ -23,7 +23,6 @@
 
 package org.tmpotter.core;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmpotter.util.Language;
@@ -43,20 +42,18 @@ public class TmxpWriter {
     /**
      * Write TMX file.
      *
-     * @param outFile             filename for output
+     * @param pprop Project properties.
      * @param originalDocument    original document object
-     * @param langOriginal        original document language
      * @param translationDocument translation document object
-     * @param langTranslation     translation language
      * @throws Exception when file write error
      */
-    public static void writeTmxp(final File outFile,
-                                 Document originalDocument, String langOriginal,
-                                 Document translationDocument, String langTranslation
+    public static void writeTmxp(final ProjectProperties pprop,
+                                 Document originalDocument,
+                                 Document translationDocument
     ) throws Exception {
-        Language sourceLanguage = new Language(langOriginal);
-        Language targetLanguage = new Language(langTranslation);
-
+        File outFile = pprop.getFilePathProject();
+        Language sourceLanguage = pprop.getSourceLanguage();
+        Language targetLanguage = pprop.getTargetLanguage();
         TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
                 targetLanguage, true, false, false);
         try {

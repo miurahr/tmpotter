@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.tmpotter.core.Document;
+import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.SegmentChanges;
 import org.tmpotter.core.TmpxReader;
 import org.tmpotter.core.TmxpWriter;
@@ -379,14 +380,16 @@ final class ActionHandler {
      * Save project.
      */
     private void saveProject() {
-        File outFile = new File(FilenameUtils.removeExtension(modelMediator.getFileNameOriginal()).concat(".tmpx"));
-        cleanTmData();
+        ProjectProperties prop = modelMediator.getProjectProperties();
+        if (prop.getFilePathProject() == null) {
+            saveProjectAs();
+            return;
+        }
         try {
-            TmxpWriter.writeTmxp(outFile,
+            cleanTmData();
+            TmxpWriter.writeTmxp(prop,
                 tmData.documentOriginal,
-                modelMediator.getProjectProperties().getSourceLanguage().toString(),
-                tmData.documentTranslation,
-                modelMediator.getProjectProperties().getTargetLanguage().toString());
+                tmData.documentTranslation);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
         }
@@ -397,7 +400,6 @@ final class ActionHandler {
      */
     private void saveProjectAs() {
         File outFile = new File(FilenameUtils.removeExtension(modelMediator.getFileNameOriginal()).concat(".tmpx"));
-        cleanTmData();
         try {
             boolean save = false;
             boolean cancel = false;
@@ -445,12 +447,13 @@ final class ActionHandler {
                 }
             }
             if (save) {
-                TmxpWriter.writeTmxp(outFile,
+                cleanTmData();
+                ProjectProperties prop = modelMediator.getProjectProperties();
+                prop.setFilePathProject(outFile);
+                TmxpWriter.writeTmxp(prop,
                         tmData.documentOriginal,
-                        modelMediator.getProjectProperties().getSourceLanguage().toString(),
-                        tmData.documentTranslation,
-                        modelMediator.getProjectProperties().getTargetLanguage().toString());
-            } 
+                        tmData.documentTranslation);
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
         }
