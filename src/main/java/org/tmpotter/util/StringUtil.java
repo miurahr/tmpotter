@@ -139,9 +139,9 @@ public class StringUtil {
     }
 
     /**
-     * Returns first not null object from list, or null if all values is null.
+     * Returns first not null String object from String list, or null if all values is null.
      */
-    public static <T> T nvl(T... values) {
+    public static String nvl(String... values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] != null) {
                 return values[i];
