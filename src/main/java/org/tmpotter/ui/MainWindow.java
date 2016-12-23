@@ -726,8 +726,8 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
-    protected javax.swing.JMenu menuEdit;
-    protected javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuEdit;
+    private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuItemCopy;
     private javax.swing.JMenuItem menuItemCut;
@@ -751,7 +751,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     private javax.swing.JMenuItem menuItemTranslationSplit;
     private javax.swing.JMenuItem menuItemTuSplit;
     private javax.swing.JMenuItem menuItemUndo;
-    protected javax.swing.JMenu menuOptions;
+    private javax.swing.JMenu menuOptions;
     private javax.swing.JMenu menuTranslation;
     private javax.swing.JMenu menuTu;
     private javax.swing.JMenu sourceMenu;

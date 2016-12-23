@@ -10,7 +10,6 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="setLocalizedText(menuFile, getString(&quot;MNU.FILE&quot;));"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
           </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemFileImport">
@@ -94,9 +93,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Edit" postCode="setLocalizedText(menuEdit, getString(&quot;MNU.EDIT&quot;));"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
-          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemUndo">
               <Properties>
@@ -234,9 +230,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Options" postCode="setLocalizedText(menuOptions, getString(&quot;MNU.OPTIONS&quot;));"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
-          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemSettings">
               <Properties>
