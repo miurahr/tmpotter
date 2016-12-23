@@ -192,10 +192,10 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     }
 
 	/**
-	 *
-	 * @param evt
-	 */
-	@Override
+     * Action handler for events.
+     * @param evt event.
+     */
+    @Override
     public void actionPerformed(ActionEvent evt) {
         // Get item name from actionCommand.
         String action = evt.getActionCommand();
@@ -229,37 +229,37 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         }
     }
 
-	/**
-	 *
-	 * @return
-	 */
-	@Override
-	public final ProjectProperties getProjectProperties() {
+    /**
+     * Return project properties.
+     * @return project properties.
+     */
+    @Override
+    public final ProjectProperties getProjectProperties() {
         return prop;
     }
 
-	/**
-	 *
-	 */
-	@Override
+    /**
+     * Clear project properties.
+     */
+    @Override
     public void clearProjectProperties() {
         prop.clear();
     }
 
-	/**
-	 *
-	 * @param val
-	 */
-	@Override
+    /**
+     * Enables align tool bar.
+     * @param val true if enable, otherwise false.
+     */
+    @Override
     public final void enableAlignToolBar(final boolean val) {
         alignToolBar.enableButtons(val);
     }
 
-	/**
-	 *
-	 * @param val
-	 */
-	@Override
+    /**
+     * Enable save menu.
+     * @param val true if enable, otherwise false.
+     */
+    @Override
     public final void enableMenuItemFileSave(final boolean val) {
         menuItemFileSave.setEnabled(val);
     }
@@ -275,11 +275,11 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuItemTranslationSplit.setEnabled(enabled);
     }
 
-	/**
-	 *
-	 * @param enabled
-	 */
-	@Override
+    /**
+     * Undo button enables.
+     * @param enabled true if enable, otherwise false.
+     */
+    @Override
     public final void setUndoEnabled(boolean enabled) {
         menuItemUndo.setEnabled(enabled);
     }
@@ -324,7 +324,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
             frameSize.width = screenSize.width;
         }
         this.setLocation((screenSize.width - frameSize.width) / 2,
-            (screenSize.height - frameSize.height) / 2);
+                (screenSize.height - frameSize.height) / 2);
     }
 
     public void setFilePathOriginal(File filePath) {
