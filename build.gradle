@@ -79,6 +79,7 @@ dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
           'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
           'org.slf4j:slf4j-api:1.7.21',
+          'commons-io:commons-io:2.5',
           'com.google.code.findbugs:annotations:3.0.1',
           'org.omegat:lib-mnemonics:1.0',
           project(':segmentation')

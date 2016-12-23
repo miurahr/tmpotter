@@ -32,6 +32,7 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.formatText;
 import static org.tmpotter.util.StringUtil.restoreText;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -365,10 +366,7 @@ final class ActionHandler {
         }
     }
 
-    /**
-     * Necessary capabilities to store the bitext.
-     */
-    private void saveProject() {
+    private void cleanTmData() {
         for (int cont = 0; cont < (tmData.documentOriginal.size() - 1); cont++) {
             if (tmData.documentOriginal.get(cont).equals("")
                     && tmData.documentTranslation.get(cont).equals("")) {
@@ -376,12 +374,33 @@ final class ActionHandler {
                 tmData.documentTranslation.remove(cont);
             }
         }
+    }
+    /**
+     * Save project.
+     */
+    private void saveProject() {
+        File outFile = new File(FilenameUtils.removeExtension(modelMediator.getFileNameOriginal()).concat(".tmpx"));
+        cleanTmData();
         try {
-            String outFileName = modelMediator.getFileNameOriginal();
-            String outFileNameBase = outFileName.substring(0, outFileName.length() - 4);
+            TmxpWriter.writeTmxp(outFile,
+                tmData.documentOriginal,
+                modelMediator.getProjectProperties().getSourceLanguage().toString(),
+                tmData.documentTranslation,
+                modelMediator.getProjectProperties().getTargetLanguage().toString());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Save project as specified filename.
+     */
+    private void saveProjectAs() {
+        File outFile = new File(FilenameUtils.removeExtension(modelMediator.getFileNameOriginal()).concat(".tmpx"));
+        cleanTmData();
+        try {
             boolean save = false;
             boolean cancel = false;
-            File outFile = new File(outFileNameBase.concat(".tmpx"));
             while (!save && !cancel) {
                 final JFileChooser fc = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("TMX File", "tmpx");
@@ -400,8 +419,7 @@ final class ActionHandler {
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         outFile = fc.getSelectedFile();
                         if (!outFile.getName().endsWith(".tmpx")) {
-                            outFileName = outFile.getName().concat(".tmpx");
-                            outFile = new File(outFileName);
+                            outFile = new File(outFile.getName().concat(".tmpx"));
                         }
                         nameOfUser = true;
                     } else {
@@ -426,13 +444,15 @@ final class ActionHandler {
                     }
                 }
             }
-            TmxpWriter.writeTmxp(outFile, tmData.documentOriginal,
-                    modelMediator.getProjectProperties().getSourceLanguage().toString(),
-                    tmData.documentTranslation,
-                    modelMediator.getProjectProperties().getTargetLanguage().toString());
+            if (save) {
+                TmxpWriter.writeTmxp(outFile,
+                        tmData.documentOriginal,
+                        modelMediator.getProjectProperties().getSourceLanguage().toString(),
+                        tmData.documentTranslation,
+                        modelMediator.getProjectProperties().getTargetLanguage().toString());
+            } 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
-            parent.dispose();
         }
     }
 
@@ -505,11 +525,11 @@ final class ActionHandler {
     }
 
     public void buttonSaveAsActionPerformed() {
-        saveProject();
+        saveProjectAs();
     }
 
     public void menuItemFileSaveAsActionPerformed() {
-        saveProject();
+        saveProjectAs();
     }
 
     //  ToDo: implement proper functionality; not used currently
