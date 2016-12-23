@@ -381,7 +381,7 @@ final class ActionHandler {
             String outFileNameBase = outFileName.substring(0, outFileName.length() - 4);
             boolean save = false;
             boolean cancel = false;
-            File outFile = new File(outFileNameBase.concat(tmData.stringLangTranslation + ".tmpx"));
+            File outFile = new File(outFileNameBase.concat(".tmpx"));
             while (!save && !cancel) {
                 final JFileChooser fc = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("TMX File", "tmpx");
@@ -427,12 +427,11 @@ final class ActionHandler {
                 }
             }
             TmxpWriter.writeTmxp(outFile, tmData.documentOriginal,
-                    tmData.stringLangOriginal, tmData.documentTranslation,
-                    tmData.stringLangTranslation);
+                    modelMediator.getProjectProperties().getSourceLanguage().toString(),
+                    tmData.documentTranslation,
+                    modelMediator.getProjectProperties().getTargetLanguage().toString());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parent,
-                    tmData.stringLangOriginal, tmData.stringLangTranslation,
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, JOptionPane.ERROR_MESSAGE);
             parent.dispose();
         }
     }

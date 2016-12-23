@@ -354,13 +354,13 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     public void setOriginalProperties(File filePath, String lang, String encoding) {
         prop.setOriginalEncoding(encoding);
         prop.setFilePathOriginal(filePath);
-        tmData.stringLangOriginal = lang;
+        prop.setSourceLanguage(lang);
     }
 
     public void setTargetProperties(File filePath, String lang, String encoding) {
         prop.setTranslationEncoding(encoding);
         prop.setFilePathTranslation(filePath);
-        tmData.stringLangTranslation = lang;
+        prop.setTargetLanguage(lang);
     }
 
     /**

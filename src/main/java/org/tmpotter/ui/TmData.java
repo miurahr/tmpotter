@@ -43,8 +43,6 @@ public class TmData {
     protected int positionTextArea; //  =  0;
     protected Document documentOriginal;
     protected Document documentTranslation;
-    protected String stringLangOriginal = "en";
-    protected String stringLangTranslation = "en";
 
     /**
      * Updates the changes adding a "join" change in the "undo" array and performs the "join". (not
