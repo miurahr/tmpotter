@@ -64,6 +64,9 @@ public final class ProjectProperties {
 
     }
 
+    /**
+     * Clear properties in init state.
+     */
     public void clear() {
         filePathProject = null;
         projectName = null;

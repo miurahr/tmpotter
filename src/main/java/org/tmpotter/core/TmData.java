@@ -42,7 +42,7 @@ public class TmData {
     private Document documentOriginal;
     private Document documentTranslation;
 
-    public void newDocuments(){
+    public void newDocuments() {
         this.documentTranslation = new Document();
         this.documentOriginal = new Document();
     }
@@ -240,6 +240,10 @@ public class TmData {
         return documentTranslation.size();
     }
 
+    public Document getDocumentOriginal() {
+        return documentOriginal;
+    }
+
     public String getDocumentOriginal(int cont) {
         return documentOriginal.get(cont);
     }
@@ -254,10 +258,6 @@ public class TmData {
 
     public int getDocumentOriginalSize() {
         return documentOriginal.size();
-    }
-
-    public Document getDocumentOriginal() {
-        return documentOriginal;
     }
 
     public boolean isDocumentOriginalEmpty(int cont) {
@@ -333,7 +333,9 @@ public class TmData {
         this.positionTextArea = positionTextArea;
     }
 
-
+    /**
+     * Clear object.
+     */
     public void clear() {
         documentOriginal.clean();
         documentTranslation.clean();
@@ -347,6 +349,9 @@ public class TmData {
         topArrays = 0;
     }
 
+    /**
+     * Undo join operation.
+     */
     public void undoJoin() {
         String cad;
         AlignmentChanges ultChanges;
@@ -394,6 +399,9 @@ public class TmData {
         }
     }
 
+    /**
+     * Undo last split operation.
+     */
     public void undoSplit() {
         // The complement of Split is Join
         String cad;
@@ -419,6 +427,9 @@ public class TmData {
         }
     }
 
+    /**
+     * Undo last remove operation.
+     */
     public void undoRemove() {
         AlignmentChanges ultChanges = arrayListChanges.get(getIdentChanges());
         int tam = ultChanges.getTam();
@@ -443,20 +454,25 @@ public class TmData {
         }
     }
 
+    /**
+     * Undo last split operation.
+     * @param izq operation side.
+     */
     public void undoTuSplit(Side izq) {
         if (izq == Side.ORIGINAL) {
-            documentTranslation.set(indexCurrent,
-                documentTranslation.get(indexCurrent + 1));
+            documentTranslation.set(indexCurrent, documentTranslation.get(indexCurrent + 1));
             documentOriginal.remove(indexCurrent + 1);
             documentTranslation.remove(indexCurrent + 1);
         } else {
-            documentOriginal.set(indexCurrent,
-                documentOriginal.get(indexCurrent + 1));
+            documentOriginal.set(indexCurrent, documentOriginal.get(indexCurrent + 1));
             documentOriginal.remove(indexCurrent + 1);
             documentTranslation.remove(indexCurrent + 1);
         }
     }
 
+    /**
+     * Side enum.
+     */
     public enum Side {
         ORIGINAL, TRANSLATION
     }

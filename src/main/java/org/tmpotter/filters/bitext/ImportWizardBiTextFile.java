@@ -130,7 +130,6 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
 
     /**
      * Return source language.
-     * Retrun source language.
      * @return source locale.
      */
     public final String getSourceLocale() {

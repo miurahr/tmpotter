@@ -26,7 +26,6 @@ package org.tmpotter.filters;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.ui.wizard.ImportPreference;
-import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
 import org.tmpotter.util.PluginUtils;
 
