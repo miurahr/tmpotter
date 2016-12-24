@@ -70,7 +70,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 final class ActionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionHandler.class);
     private final javax.swing.JFrame parent;
     private ModelMediator modelMediator;
     private final TmData tmData;

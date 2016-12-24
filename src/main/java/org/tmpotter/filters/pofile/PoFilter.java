@@ -320,7 +320,7 @@ public class PoFilter extends AbstractFilter {
 
     @Override
     public void processFile(File inFile, FilterContext fc) throws IOException {
-        inEncodingLastParsedFile = getInputEncoding(fc, inFile);
+        inEncodingLastParsedFile = getSourceEncoding(fc, inFile);
         try (BufferedReader reader = createReader(inFile, inEncodingLastParsedFile)) {
             processFile(reader, fc);
         }

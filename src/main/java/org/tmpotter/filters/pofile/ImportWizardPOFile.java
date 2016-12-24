@@ -156,7 +156,7 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
         pref.setFilter(id);
         pref.setOriginalFilePath(new File(getOriginalFile()));
         pref.setTranslationFilePath(new File(getOriginalFile()));
-        pref.setEncoding(getOriginalEncoding());
+        pref.setSourceEncoding(getOriginalEncoding());
         pref.setOriginalLang(getSourceLocale());
         pref.setTranslationLang(getTargetLocale());
     }

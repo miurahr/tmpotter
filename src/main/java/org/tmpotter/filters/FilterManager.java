@@ -23,6 +23,8 @@
 
 package org.tmpotter.filters;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.ui.wizard.ImportPreference;
@@ -88,22 +90,29 @@ public class FilterManager {
         FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(),
                 true);
 
-        if (pref.getEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
-            fc.setInEncoding(null);
+        if (pref.getSourceEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+            fc.setSourceEncoding(null);
         } else {
-            fc.setInEncoding(pref.getEncoding());
+            fc.setSourceEncoding(pref.getSourceEncoding());
+        }
+        if (pref.getTranslationEncoding() == null
+                || pref.getTranslationEncoding().equals(Localization
+                .getString("ENCODING.DEFAULT"))) {
+            fc.setTranslationEncoding(null);
+        } else {
+            fc.setTranslationEncoding(pref.getTranslationEncoding());
         }
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
-            System.out.println(ex);
+            LOGGER.info("Filter error", ex);
         }
         if (filter != null) {
             try {
                 filter.parseFile(pref.getOriginalFilePath(), pref.getTranslationFilePath(),
                         null, fc, new ParseCb());
             } catch (Exception ex) {
-                System.out.println(ex);
+                LOGGER.info("Filter error", ex);
             }
         }
     }
@@ -129,13 +138,13 @@ public class FilterManager {
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
-            System.out.println(ex);
+            LOGGER.info("Filter error", ex);
         }
         if (filter != null) {
             try {
                 filter.saveFile(outFile, docOriginal, docTranslation, fc);
             } catch (Exception ex) {
-                System.out.println(ex);
+                LOGGER.info("Filter error", ex);
             }
         }
     }
@@ -154,4 +163,5 @@ public class FilterManager {
         }
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilterManager.class);
 }

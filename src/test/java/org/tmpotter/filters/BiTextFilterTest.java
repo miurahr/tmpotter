@@ -49,6 +49,8 @@ public class BiTextFilterTest extends TestFilterBase {
     public void testLoad() throws Exception {
         Map<String, String> options = new TreeMap<>();
         context = new FilterContext(new Language("en"), new Language("ja"), true);
+        context.setSourceEncoding("UTF-8");
+        context.setTranslationEncoding("UTF-8");
         List<ParsedEntry> result = parse3(new BiTextFilter(),
                 this.getClass().getResource("/text/src.txt").getFile(),
                 this.getClass().getResource("/text/trans.txt").getFile(),

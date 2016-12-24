@@ -152,7 +152,7 @@ public abstract class AbstractFilter implements IFilter {
     public boolean isFileSupported(File inFile, Map<String, String> config, FilterContext fc) {
         BufferedReader reader = null;
         try {
-            reader = createReader(inFile, fc.getInEncoding());
+            reader = createReader(inFile, fc.getSourceEncoding());
             return isFileSupported(reader);
         } catch (IOException e) {
             return false;
@@ -260,7 +260,7 @@ public abstract class AbstractFilter implements IFilter {
      */
     protected void processFile(File inFile, FilterContext fc) throws IOException,
             TranslationException {
-        String encoding = getInputEncoding(fc, inFile);
+        String encoding = getSourceEncoding(fc, inFile);
         BufferedReader reader = createReader(inFile, encoding);
         inEncodingLastParsedFile = encoding == null ? Charset.defaultCharset().name() : encoding;
 
@@ -289,11 +289,11 @@ public abstract class AbstractFilter implements IFilter {
      */
     protected void processFile(File sourceFile, File translateFile, FilterContext fc)
             throws IOException, TranslationException {
-        String sourceEncoding = getInputEncoding(fc, sourceFile);
+        String sourceEncoding = getSourceEncoding(fc, sourceFile);
         BufferedReader sourceReader = createReader(sourceFile, sourceEncoding);
         inEncodingLastParsedFile = sourceEncoding == null ? Charset.defaultCharset().name()
             : sourceEncoding;
-        String translateEncoding = getInputEncoding(fc, translateFile);
+        String translateEncoding = getTranslateEncoding(fc, translateFile);
         BufferedReader translateReader = createReader(translateFile, translateEncoding);
 
         try {
@@ -314,9 +314,17 @@ public abstract class AbstractFilter implements IFilter {
      * @return Encoding name
      * @throws IOException throw when Encoding detection fails
      */
-    protected String getInputEncoding(FilterContext fc, File inFile) throws IOException {
-        String encoding = fc.getInEncoding();
+    protected String getSourceEncoding(FilterContext fc, File inFile) throws IOException {
+        String encoding = fc.getSourceEncoding();
         if (encoding == null && isSourceEncodingVariable()) {
+            encoding = EncodingDetector.detectEncoding(inFile);
+        }
+        return encoding;
+    }
+
+    protected String getTranslateEncoding(FilterContext fc, File inFile) throws IOException {
+        String encoding = fc.getTranslationEncoding();
+        if (encoding == null && isTargetEncodingVariable()) {
             encoding = EncodingDetector.detectEncoding(inFile);
         }
         return encoding;

@@ -36,7 +36,8 @@ public class ImportPreference {
     private File translationFilePath;
     private String originalLang;
     private String translationLang;
-    private String encoding;
+    private String sourceEncoding;
+    private String translationEncoding;
     private String filter;
     private File currentPath;
 
@@ -72,12 +73,20 @@ public class ImportPreference {
         this.translationLang = translationLang;
     }
 
-    public String getEncoding() {
-        return encoding;
+    public String getSourceEncoding() {
+        return sourceEncoding;
     }
 
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
+    public void setSourceEncoding(String encoding) {
+        this.sourceEncoding = encoding;
+    }
+
+    public String getTranslationEncoding() {
+        return translationEncoding;
+    }
+
+    public void setTranslationEncoding(String translationEncoding) {
+        this.translationEncoding = translationEncoding;
     }
 
     public String getFilter() {

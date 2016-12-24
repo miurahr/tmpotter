@@ -63,18 +63,23 @@ public class FilterManagerTest {
   @Test
   public void testLoadFile() {
     System.out.println("loadFile");
-    ProjectProperties prop = new ProjectProperties();
+
     ImportPreference pref = new ImportPreference();
-    prop.setSourceLanguage("en");
-    prop.setTargetLanguage("ja");
+    pref.setOriginalLang("en");
+    pref.setTranslationLang("ja");
     pref.setOriginalFilePath(new File(this.getClass().getResource("/text/src.txt").getFile()));
     pref.setTranslationFilePath(new File(this.getClass().getResource("/text/trans.txt").getFile()));
-    pref.setEncoding("UTF-8");
+    pref.setSourceEncoding("UTF-8");
+    pref.setTranslationEncoding("UTF-8");
+
     Document docOriginal = new Document();
     Document docTranslation = new Document();
+
     String filterName = "BiTextFilter";
     FilterManager instance = new FilterManager();
+    ProjectProperties prop = new ProjectProperties();
     instance.loadFile(pref, prop, docOriginal, docTranslation, filterName);
+
     assertEquals(docOriginal.size(), 2);
     assertEquals(docTranslation.size(), 2);
   }

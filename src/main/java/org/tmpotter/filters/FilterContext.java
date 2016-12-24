@@ -36,14 +36,10 @@ import org.tmpotter.util.Language;
 public class FilterContext {
 
     private final ProjectProperties props;
-
     private final Language sourceLang;
-
     private final Language targetLang;
-
-    private String inEncoding;
-
-    private String outEncoding;
+    private String sourceEncoding;
+    private String translateEncoding;
 
     /**
      * Constructor from existent procps.
@@ -93,8 +89,8 @@ public class FilterContext {
      *
      * @return encoding for file input
      */
-    public String getInEncoding() {
-        return inEncoding;
+    public String getSourceEncoding() {
+        return sourceEncoding;
     }
 
     /**
@@ -102,26 +98,26 @@ public class FilterContext {
      *
      * @param inEncoding set character encoding for file input.
      */
-    public void setInEncoding(String inEncoding) {
-        this.inEncoding = inEncoding;
+    public void setSourceEncoding(String inEncoding) {
+        this.sourceEncoding = inEncoding;
     }
 
     /**
-     * get Target file encoding, but can be 'null'.
+     * Get Translation file encoding, but can be 'null'.
      *
      * @return charactor encoding for file output.
      */
-    public String getOutEncoding() {
-        return outEncoding;
+    public String getTranslationEncoding() {
+        return translateEncoding;
     }
 
     /**
-     * Set file encoding for output.
+     * Set file encoding for translation file.
      *
      * @param outEncoding encoding name
      */
-    public void setOutEncoding(String outEncoding) {
-        this.outEncoding = outEncoding;
+    public void setTranslationEncoding(String outEncoding) {
+        this.translateEncoding = outEncoding;
     }
 
     /**
