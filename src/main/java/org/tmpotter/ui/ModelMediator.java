@@ -34,6 +34,11 @@ import java.io.File;
  * @author Hiroshi Miura
  */
 public interface ModelMediator {
+
+    void setProjectName(String name);
+
+    String getProjectName();
+
     // Open/Import
     void setFilePathOriginal(File filePath);
 
@@ -41,15 +46,12 @@ public interface ModelMediator {
 
     void setFilePathTranslation(File filePath);
 
-    String getFileNameTranslation();
-
     void setSourceLanguage(String lang);
 
     void setTargetLanguage(String lang);
 
-    void setOriginalProperties(File filePath, String lang, String encoding);
-
-    void setTargetProperties(File filePath, String lang, String encoding);
+    void setProperties(File sourceFile, File targetFile, String srcLang, String tarLang,
+                       String encoding);
 
     // Props
     ProjectProperties getProjectProperties();

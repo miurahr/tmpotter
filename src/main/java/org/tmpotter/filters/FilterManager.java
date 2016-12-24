@@ -85,10 +85,10 @@ public class FilterManager {
                 true);
         File inFile = prop.getFilePathOriginal();
         File outFile = prop.getFilePathTranslation();
-        if (prop.getOriginalEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+        if (prop.getEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
             fc.setInEncoding(null);
         } else {
-            fc.setInEncoding(prop.getOriginalEncoding());
+            fc.setInEncoding(prop.getEncoding());
         }
         try {
             filter = getFilterInstance(filterName);

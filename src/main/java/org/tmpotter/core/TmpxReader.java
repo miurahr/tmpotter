@@ -23,6 +23,7 @@
 
 package org.tmpotter.core;
 
+import org.tmpotter.util.Language;
 import org.tmpotter.util.StringUtil;
 import org.tmpotter.util.TmxReader2;
 
@@ -36,8 +37,7 @@ import java.util.List;
  * @author Hiroshi Miura
  */
 public class TmpxReader {
-
-    private final String name;
+    private TmxReader2.ParsedHeader header;
     private final List<TmxEntry> entries;
 
     /**
@@ -48,7 +48,6 @@ public class TmpxReader {
      */
     public TmpxReader(ProjectProperties prop)
         throws Exception {
-        this.name = prop.getFilePathOriginal().getName();
         entries = new ArrayList<>();
 
         TmxReader2.LoadCallback callbackLoader = new TmxReader2.LoadCallback() {
@@ -92,17 +91,21 @@ public class TmpxReader {
             }
         };
 
+        Language defaultSource = new Language("EN-US");
+        Language defaultTarget = new Language("EN-GB");
+
         TmxReader2 reader = new TmxReader2();
-        reader.readTmx(prop.getFilePathOriginal(), prop.getSourceLanguage(),
-                prop.getTargetLanguage(), false, false, callbackLoader);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<TmxEntry> getEntries() {
-        return entries;
+        reader.readTmx(prop.getFilePathOriginal(), defaultSource, defaultTarget,
+                false, false, callbackLoader);
+        this.header = reader.getParsedHeader();
+        // TODO: sanity check for security.
+        // Don't respect a TMX srclang property but accept a custom property.
+        // see TmxpWriter class.
+        prop.setSourceLanguage(header.props.get("sourceLang"));
+        prop.setTargetLanguage(header.props.get("targetLang"));
+        // Always UTF-8
+        prop.setEncoding("UTF-8");
+        prop.setTargetEncoding("UTF-8");
     }
 
     public void loadDocument(TmData tmData) {
@@ -116,7 +119,7 @@ public class TmpxReader {
      * @param doc Document to be stored
      * @return document
      */
-    public Document getOriginalDocument(Document doc) {
+    private Document getOriginalDocument(Document doc) {
         if (doc == null) {
             doc = new Document();
         } else {
@@ -134,14 +137,13 @@ public class TmpxReader {
      * @param doc Document to be stored.
      * @return document
      */
-    public Document getTranslationDocument(Document doc) {
+    private Document getTranslationDocument(Document doc) {
         if (doc == null) {
             doc = new Document();
         } else {
             doc.clean();
         }
         for (TmxEntry te : entries) {
-            // TODO only when te language is as same as target
             doc.add(te.translation);
         }
         return doc;

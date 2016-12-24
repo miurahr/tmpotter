@@ -37,10 +37,10 @@ public final class ProjectProperties {
     private File filePathOriginal;
     private File filePathTranslation;
     private File filePathProject;
-    private String targetEncoding;
-    private String originalEncoding;
+    private String encoding;
     private Language sourceLanguage;
     private Language targetLanguage;
+    private String projectName;
 
     /**
      * Default constructor to initialize fields.
@@ -59,6 +59,14 @@ public final class ProjectProperties {
         } else {
             setTargetLanguage("EN-GB");
         }
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public void clear() {
@@ -90,24 +98,12 @@ public final class ProjectProperties {
         this.filePathProject = filePathProject;
     }
 
-    public String getTargetEncoding() {
-        return targetEncoding;
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
-    public void setTargetEncoding(String targetEncoding) {
-        this.targetEncoding = targetEncoding;
-    }
-
-    public void setOriginalEncoding(String encoding) {
-        originalEncoding = encoding;
-    }
-
-    public String getOriginalEncoding() {
-        return originalEncoding;
-    }
-
-    public void setTranslationEncoding(String encoding) {
-        targetEncoding = encoding;
+    public String getEncoding() {
+        return encoding;
     }
 
     public Language getSourceLanguage() {

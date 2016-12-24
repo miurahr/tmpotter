@@ -109,15 +109,16 @@ final class ActionHandler {
         modelMediator.initializeTmView();
         modelMediator.updateTmView();
         modelMediator.enableButtonsOnOpenFile(true);
+
+        // TODO: should set by project reader.
+        modelMediator.setProjectName(FilenameUtils.removeExtension(filePathOriginal.getName()));
     }
 
     private void doImport(ImportPreference pref) {
         String filter = pref.getFilter(); // Now support "BiTextFilter" and "PoFilter"
         RuntimePreferences.setUserHome(pref.getOriginalFilePath());
-        modelMediator.setOriginalProperties(pref.getOriginalFilePath(), pref.getOriginalLang(),
-                pref.getEncoding());
-        modelMediator.setTargetProperties(pref.getTranslationFilePath(), pref.getTranslationLang(),
-                pref.getEncoding());
+        modelMediator.setProperties(pref.getOriginalFilePath(),  pref.getTranslationFilePath(),
+                pref.getOriginalLang(), pref.getTranslationLang(), pref.getEncoding());
         modelMediator.buildDisplay();
         Segmenter.setSrx(Preferences.getSrx());
         try {
@@ -133,6 +134,9 @@ final class ActionHandler {
             JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),
                     getString("MSG.ERROR.FILE_READ"), JOptionPane.ERROR_MESSAGE);
         }
+
+        modelMediator.setProjectName(FilenameUtils.removeExtension(pref.getOriginalFilePath()
+                .getName()));
     }
 
     public void doExport(ExportPreference pref) {
@@ -393,7 +397,7 @@ final class ActionHandler {
      * Save project as specified filename.
      */
     private void saveProjectAs() {
-        File outFile = new File(FilenameUtils.removeExtension(modelMediator.getFileNameOriginal()).concat(".tmpx"));
+        File outFile = new File(modelMediator.getProjectName().concat(".tmpx"));
         try {
             boolean save = false;
             boolean cancel = false;

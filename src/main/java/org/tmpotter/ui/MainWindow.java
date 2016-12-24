@@ -331,16 +331,20 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         prop.setFilePathOriginal(filePath);
     }
 
+    public void setProjectName(final String name) {
+        prop.setProjectName(name);
+    }
+
+    public String getProjectName() {
+        return prop.getProjectName();
+    }
+
     public String getFileNameOriginal() {
         return prop.getFilePathOriginal().getName();
     }
 
     public void setFilePathTranslation(File filePath) {
         prop.setFilePathTranslation(filePath);
-    }
-
-    public String getFileNameTranslation() {
-        return prop.getFilePathTranslation().getName();
     }
 
     public void setSourceLanguage(String lang) {
@@ -351,16 +355,13 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         prop.setTargetLanguage(lang);
     }
 
-    public void setOriginalProperties(File filePath, String lang, String encoding) {
-        prop.setOriginalEncoding(encoding);
-        prop.setFilePathOriginal(filePath);
-        prop.setSourceLanguage(lang);
-    }
-
-    public void setTargetProperties(File filePath, String lang, String encoding) {
-        prop.setTranslationEncoding(encoding);
-        prop.setFilePathTranslation(filePath);
-        prop.setTargetLanguage(lang);
+    public void setProperties(File srcFile, File tarFile, String srcLang, String tarLang,
+                              String encoding) {
+        prop.setEncoding(encoding);
+        prop.setFilePathOriginal(srcFile);
+        prop.setSourceLanguage(srcLang);
+        prop.setFilePathTranslation(tarFile);
+        prop.setTargetLanguage(tarLang);
     }
 
     /**

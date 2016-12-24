@@ -63,7 +63,7 @@ public class FilterManagerTest {
   public void testLoadFile() {
     System.out.println("loadFile");
     ProjectProperties prop = new ProjectProperties();
-    prop.setOriginalEncoding("UTF-8");
+    prop.setEncoding("UTF-8");
     prop.setTranslationEncoding("UTF-8");
     prop.setSourceLanguage("en");
     prop.setTargetLanguage("ja");

@@ -102,15 +102,15 @@ public class TmxReader2 {
     private boolean useSlash;
     private static final Logger LOGGER = LoggerFactory.getLogger(TmxReader2.class);
 
-    ParsedTu currentTu = new ParsedTu();
-    ParsedHeader header = new ParsedHeader();
+    private ParsedTu currentTu = new ParsedTu();
+    private ParsedHeader header = new ParsedHeader();
 
     // buffers for parse texts
-    StringBuilder propContent = new StringBuilder();
-    StringBuilder noteContent = new StringBuilder();
-    StringBuilder segContent = new StringBuilder();
-    StringBuilder segInlineTag = new StringBuilder();
-    InlineTagHandler inlineTagHandler = new InlineTagHandler();
+    private StringBuilder propContent = new StringBuilder();
+    private StringBuilder noteContent = new StringBuilder();
+    private StringBuilder segContent = new StringBuilder();
+    private StringBuilder segInlineTag = new StringBuilder();
+    private InlineTagHandler inlineTagHandler = new InlineTagHandler();
 
     private Language sourceLanguage;
     private Language targetLanguage;
@@ -296,8 +296,10 @@ public class TmxReader2 {
         }
     }
 
+    public ParsedHeader getParsedHeader() {
+        return header;
+    }
 
- 
     protected void parseTu(StartElement element) throws Exception {
         currentTu.clear();
 

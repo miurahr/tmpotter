@@ -87,6 +87,7 @@ public class TmxWriter2 {
      * SimpleDateFormat IS NOT THREAD SAFE !!!
      */
     private final SimpleDateFormat tmxDateFormat;
+    private Map<String, String> headerProp;
 
     static {
         FACTORY = XMLOutputFactory.newInstance();
@@ -108,41 +109,46 @@ public class TmxWriter2 {
                       final Language targetLanguage, boolean sentenceSegmentingEnabled,
                       boolean levelTwo, boolean forceValidTmx)
             throws XMLStreamException, FileNotFoundException {
+        this(file, sourceLanguage, targetLanguage, sentenceSegmentingEnabled, levelTwo,
+                forceValidTmx, new TreeMap<>());
+    }
+
+     /**
+     * TmxWriter2 write TMX file.
+     *
+     * @param file                      to be written
+     * @param sourceLanguage            of data
+     * @param targetLanguage            of data, only one target allowed
+     * @param sentenceSegmentingEnabled is sentence segmentaion or paragraph.
+     * @param levelTwo                  When true, the tmx is made compatible with level 2 (TMX
+     *                                  version 1.4)
+     * @param forceValidTmx             force to remove tags from element text
+     * @param customHeaderProperty      Header custom property
+     * @throws Exception when file write error.
+     */
+    public TmxWriter2(File file, final Language sourceLanguage,
+                      final Language targetLanguage, boolean sentenceSegmentingEnabled,
+                      boolean levelTwo, boolean forceValidTmx,
+                      Map<String, String> customHeaderProperty)
+            throws XMLStreamException, FileNotFoundException {
         this.levelTwo = levelTwo;
         this.forceValidTmx = forceValidTmx;
+        this.headerProp = customHeaderProperty;
 
         out = new BufferedOutputStream(new FileOutputStream(file));
         xml = FACTORY.createXMLStreamWriter(out, AppConstants.ENCODINGS_UTF8);
-
-        xml.writeStartDocument(AppConstants.ENCODINGS_UTF8, "1.0");
-        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
-
-        if (levelTwo) {
-            xml.writeDTD("<!DOCTYPE tmx SYSTEM \"tmx14.dtd\">");
-            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
-            xml.writeStartElement("tmx");
-            xml.writeAttribute("version", "1.4");
-        } else {
-            xml.writeDTD("<!DOCTYPE tmx SYSTEM \"tmx11.dtd\">");
-            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
-            xml.writeStartElement("tmx");
-            xml.writeAttribute("version", "1.1");
-        }
-        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
-
-        Map<String, String> headerProp = new TreeMap<>();
-        headerProp.put("targetLang", targetLanguage.toString());
-        writeHeader(sourceLanguage, headerProp, sentenceSegmentingEnabled);
-
-        xml.writeCharacters("  ");
-        xml.writeStartElement("body");
-        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
 
         langSrc = sourceLanguage.toString();
         langTar = targetLanguage.toString();
 
         tmxDateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'", Locale.ENGLISH);
         tmxDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        writeHeader(sentenceSegmentingEnabled);
+
+        xml.writeCharacters("  ");
+        xml.writeStartElement("body");
+        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
     }
 
     /**
@@ -280,8 +286,24 @@ public class TmxWriter2 {
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
     }
 
-    private void writeHeader(final Language sourceLanguage, final Map<String, String> prop,
-                             boolean sentenceSegmentingEnabled) throws XMLStreamException {
+    private void writeHeader(boolean sentenceSegmentingEnabled) throws XMLStreamException {
+
+        xml.writeStartDocument(AppConstants.ENCODINGS_UTF8, "1.0");
+        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+
+        if (levelTwo) {
+            xml.writeDTD("<!DOCTYPE tmx SYSTEM \"tmx14.dtd\">");
+            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+            xml.writeStartElement("tmx");
+            xml.writeAttribute("version", "1.4");
+        } else {
+            xml.writeDTD("<!DOCTYPE tmx SYSTEM \"tmx11.dtd\">");
+            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+            xml.writeStartElement("tmx");
+            xml.writeAttribute("version", "1.1");
+        }
+        xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+
         xml.writeCharacters("  ");
         xml.writeStartElement("header");
 
@@ -295,19 +317,20 @@ public class TmxWriter2 {
         xml.writeAttribute("segtype", sentenceSegmentingEnabled ? SEG_SENTENCE
                 : SEG_PARAGRAPH);
 
-        xml.writeAttribute("srclang", sourceLanguage.toString());
+        xml.writeAttribute("srclang", langSrc);
 
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
 
-        for (Map.Entry<String, String> ent : prop.entrySet()) {
-            xml.writeCharacters("      ");
-            xml.writeStartElement("prop");
-            xml.writeAttribute("type", ent.getKey());
-            xml.writeCharacters(ent.getValue());
-            xml.writeEndElement();
-            xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+        if (headerProp != null) {
+            for (Map.Entry<String, String> ent : headerProp.entrySet()) {
+                xml.writeCharacters("      ");
+                xml.writeStartElement("prop");
+                xml.writeAttribute("type", ent.getKey());
+                xml.writeCharacters(ent.getValue());
+                xml.writeEndElement();
+                xml.writeCharacters(FileUtil.LINE_SEPARATOR);
+            }
         }
-
         xml.writeEndElement(); // header
         xml.writeCharacters(FileUtil.LINE_SEPARATOR);
     }

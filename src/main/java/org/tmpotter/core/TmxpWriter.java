@@ -30,6 +30,8 @@ import org.tmpotter.util.TmxWriter2;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -54,8 +56,14 @@ public class TmxpWriter {
         File outFile = pprop.getFilePathProject();
         Language sourceLanguage = pprop.getSourceLanguage();
         Language targetLanguage = pprop.getTargetLanguage();
+
+        Map<String, String> headerProp = new TreeMap<>();
+        headerProp.put("sourceLang", sourceLanguage.toString());
+        headerProp.put("targetLang", targetLanguage.toString());
+
         TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
-                targetLanguage, true, false, false);
+                targetLanguage, true, false, false,
+                headerProp);
         try {
             HashMap<String, String> prop = new HashMap<>();
             for (int i = 0; i < originalDocument.size(); i++) {
