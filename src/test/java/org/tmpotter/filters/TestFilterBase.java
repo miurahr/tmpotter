@@ -25,6 +25,7 @@
 
 package org.tmpotter.filters;
 
+import org.tmpotter.core.Alignment;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.TmxReader2;
 
@@ -113,6 +114,27 @@ public abstract class TestFilterBase {
     return result;
   }
 
+  protected List<Alignment> parse(AbstractFilter filter, String filename1, String filename2,
+                                  Map<String, String> options) throws Exception {
+    final List<Alignment> result = new ArrayList<>();
+    filter.parseFile(new File(filename1), new File(filename2), options, context, new IParseCallback() {
+      public void addEntry(String id, String source, String translation, boolean isFuzzy,
+          String comment, IFilter filter) {
+        addEntry(id, source, translation, isFuzzy, comment, null, filter);
+      }
+
+      @Override
+      public void addEntry(String id, String source, String translation, boolean isFuzzy,
+          String comment, String path, IFilter filter) {
+        if (!source.isEmpty()) {
+          result.add(new Alignment(id, source, translation));
+        }
+      }
+    });
+
+    return result;
+  }
+
   protected void parse2(final AbstractFilter filter, final String filename,
       final Map<String, String> result, final Map<String, String> legacyTMX) throws Exception {
 
@@ -146,6 +168,37 @@ public abstract class TestFilterBase {
     final List<ParsedEntry> result = new ArrayList<>();
 
     filter.parseFile(new File(filename), options, context, new IParseCallback() {
+      public void addEntry(String id, String source, String translation, boolean isFuzzy,
+          String comment, IFilter filter) {
+        addEntry(id, source, translation, isFuzzy, comment, null, filter);
+      }
+
+      @Override
+      public void addEntry(String id, String source, String translation, boolean isFuzzy,
+          String comment, String path, IFilter filter) {
+        if (source.isEmpty()) {
+          return;
+        }
+        ParsedEntry e = new ParsedEntry();
+        e.id = id;
+        e.source = source;
+        e.translation = translation;
+        e.isFuzzy = isFuzzy;
+        e.comment = comment;
+        e.path = path;
+        result.add(e);
+      }
+    });
+
+    return result;
+  }
+
+  protected List<ParsedEntry> parse3(AbstractFilter filter, String srcFile, String transFile,
+      Map<String, String> options)
+      throws Exception {
+    final List<ParsedEntry> result = new ArrayList<>();
+
+    filter.parseFile(new File(srcFile), new File(transFile), options, context, new IParseCallback() {
       public void addEntry(String id, String source, String translation, boolean isFuzzy,
           String comment, IFilter filter) {
         addEntry(id, source, translation, isFuzzy, comment, null, filter);

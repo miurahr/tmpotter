@@ -65,7 +65,6 @@ public class FilterManagerTest {
     System.out.println("loadFile");
     ProjectProperties prop = new ProjectProperties();
     ImportPreference pref = new ImportPreference();
-    prop.setEncoding("UTF-8");
     prop.setSourceLanguage("en");
     prop.setTargetLanguage("ja");
     pref.setOriginalFilePath(new File(this.getClass().getResource("/text/src.txt").getFile()));
