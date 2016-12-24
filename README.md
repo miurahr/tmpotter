@@ -1,5 +1,5 @@
 # tmpotter
-TMPotter -  Bi-text aligner/TMX converter for Computer Aided Translation
+TMPotter - source/translation text aligner/TMX converter for Computer Aided Translation
 
 ## Introduction
 
@@ -14,6 +14,15 @@ TMPotter uses OmegaT segmentation engine. It results an output TMX file is suita
 ## Dependency
 
 TMPotter run on Java 8 and later. It is tested on OpenJDK 8u111 b14 on Mint Linux (x86-64).
+
+## Project file
+
+TMPotter saves project progress as a .tmpx file.
+It also read it from open menu.
+
+## Export
+
+TMPotter currently export result as TMX level1 file.
 
 ## License
 
