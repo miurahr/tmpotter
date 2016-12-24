@@ -20,10 +20,8 @@
  *  along with TMPotter.  If not, see http://www.gnu.org/licenses/.
  *
  * ************************************************************************/
-package org.tmpotter.core;
 
-import org.tmpotter.core.AlignmentChanges;
-import org.tmpotter.core.Document;
+package org.tmpotter.core;
 
 import java.util.ArrayList;
 
@@ -43,6 +41,11 @@ public class TmData {
     private int positionTextArea; //  =  0;
     private Document documentOriginal;
     private Document documentTranslation;
+
+    public void newDocuments(){
+        this.documentTranslation = new Document();
+        this.documentOriginal = new Document();
+    }
 
     /**
      * Updates the changes adding a "join" change in the "undo" array and performs the "join". (not
@@ -79,7 +82,7 @@ public class TmData {
      */
     public void delete(Side textAreaIzq) {
         final AlignmentChanges Changes = new AlignmentChanges(AlignmentChanges.OperationKind.DELETE,
-            positionTextArea, textAreaIzq, "", indexCurrent);
+                positionTextArea, textAreaIzq, "", indexCurrent);
         arrayListChanges.add(indexChanges, Changes);
         if (textAreaIzq == Side.ORIGINAL) {
             Changes.setFrase(documentOriginal.get(indexCurrent));
@@ -110,7 +113,7 @@ public class TmData {
             positionTextArea = 0;
         }
         final AlignmentChanges Changes = new AlignmentChanges(AlignmentChanges.OperationKind.SPLIT,
-            positionTextArea, textAreaIzq, "", indexCurrent);
+                positionTextArea, textAreaIzq, "", indexCurrent);
         arrayListChanges.add(indexChanges, Changes);
         if (textAreaIzq == Side.ORIGINAL) {
             Changes.setFrase(documentOriginal.get(indexCurrent));
@@ -124,6 +127,10 @@ public class TmData {
         }
     }
 
+    /**
+     * Split Translation-Unit for specified side.
+     * @param side side to be split.
+     */
     public void tuSplit(Side side) {
         int cont;
         AlignmentChanges changes;
@@ -204,7 +211,9 @@ public class TmData {
         return indexChanges--;
     }
 
-
+    public Document getDocumentTranslation() {
+        return documentTranslation;
+    }
 
     public String getDocumentTranslation(int cont) {
         return documentTranslation.get(cont);
@@ -216,6 +225,11 @@ public class TmData {
 
     public void setDocumentTranslation(int cont, String text) {
         documentTranslation.set(cont, text);
+    }
+
+    public void loadDocument(Document documentOriginal, Document documentTranslation) {
+        this.documentOriginal = documentOriginal;
+        this.documentTranslation = documentTranslation;
     }
 
     public boolean isDocumentTranslationEmpty(int cont) {
@@ -240,6 +254,10 @@ public class TmData {
 
     public int getDocumentOriginalSize() {
         return documentOriginal.size();
+    }
+
+    public Document getDocumentOriginal() {
+        return documentOriginal;
     }
 
     public boolean isDocumentOriginalEmpty(int cont) {
@@ -313,22 +331,6 @@ public class TmData {
 
     public void setPositionTextArea(int positionTextArea) {
         this.positionTextArea = positionTextArea;
-    }
-
-    public Document getDocumentOriginal() {
-        return documentOriginal;
-    }
-
-    public void setDocumentOriginal(Document documentOriginal) {
-        this.documentOriginal = documentOriginal;
-    }
-
-    public Document getDocumentTranslation() {
-        return documentTranslation;
-    }
-
-    public void setDocumentTranslation(Document documentTranslation) {
-        this.documentTranslation = documentTranslation;
     }
 
 

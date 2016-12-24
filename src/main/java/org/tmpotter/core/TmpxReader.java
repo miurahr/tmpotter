@@ -105,6 +105,11 @@ public class TmpxReader {
         return entries;
     }
 
+    public void loadDocument(TmData tmData) {
+        tmData.loadDocument(getOriginalDocument(tmData.getDocumentOriginal()),
+                getTranslationDocument(tmData.getDocumentTranslation()));
+    }
+
     /**
      * Return original as document.
      *

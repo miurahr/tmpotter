@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.tmpotter.core.AlignmentChanges;
-import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.TmData;
 import org.tmpotter.core.TmpxReader;
@@ -103,10 +102,7 @@ final class ActionHandler {
         modelMediator.buildDisplay();
         try {
             TmpxReader reader = new TmpxReader(modelMediator.getProjectProperties());
-            tmData.setDocumentOriginal(
-                reader.getOriginalDocument(tmData.getDocumentOriginal()));
-            tmData.setDocumentTranslation(
-                reader.getTranslationDocument(tmData.getDocumentTranslation()));
+            reader.loadDocument(tmData);
         } catch (Exception ex) {
             LOGGER.info(ex.getMessage());
         }
@@ -125,8 +121,7 @@ final class ActionHandler {
         modelMediator.buildDisplay();
         Segmenter.setSrx(Preferences.getSrx());
         try {
-            tmData.setDocumentOriginal(new Document());
-            tmData.setDocumentTranslation(new Document());
+            tmData.newDocuments();
             filterManager.loadFile(modelMediator.getProjectProperties(),
                     tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
             tmData.matchArrays();
