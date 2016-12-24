@@ -499,6 +499,7 @@ final class ActionHandler {
         dlg.setVisible(true);
         dlg.dispose();
         if (dlg.isFinished()) {
+            dlg.updatePref();
             doImport(dlg.getPref());
         }
     }

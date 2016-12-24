@@ -124,6 +124,10 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
      */
     public void updatePref() {
         pref.setCurrentPath(new File(getOriginalFile()));
+        pref.setOriginalFilePath(new File(getOriginalFile()));
+        pref.setTranslationFilePath(new File(getTranslationFile()));
+        pref.setOriginalLang(getSourceLocale());
+        pref.setTranslationLang(getTargetLocale());
         pref.setEncoding(getOriginalEncoding());
         pref.setFilter(id);
     }

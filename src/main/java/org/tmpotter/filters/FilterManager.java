@@ -93,8 +93,6 @@ public class FilterManager {
         } else {
             fc.setInEncoding(pref.getEncoding());
         }
-        prop.setEncoding(pref.getEncoding());
-
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
