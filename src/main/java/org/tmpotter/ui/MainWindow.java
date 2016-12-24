@@ -186,7 +186,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
     /**
      * Updates status labels.
      */
-	@Override
     public void updateStatusBar() {
         tableRows.setText("" + tmView.getRowCount());
     }
@@ -202,7 +201,7 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
 
         // Find method by item name.
         String methodName = action + "ActionPerformed";
-        Method method = null;
+        Method method;
         try {
             method = actionHandler.getClass().getMethod(methodName);
         } catch (NoSuchMethodException ignore) {
@@ -215,8 +214,12 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
                         + methodName);
             }
         }
-        // Call ...MenuItemActionPerformed method.
-        Object[] args = method.getParameterTypes().length == 0 ? null : new Object[]{evt.getModifiers()};
+
+        /* Call MenuItemActionPerformed method. */
+        Object[] args = null;
+        if (method.getParameterTypes().length != 0) {
+            args = new Object[]{evt.getModifiers()};
+        }
         try {
             method.invoke(actionHandler, args);
         } catch (IllegalAccessException ex) {
@@ -284,6 +287,10 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         menuItemUndo.setEnabled(enabled);
     }
 
+    /**
+     * Enables edit buttons when open file.
+     * @param val true when open file, false when close file.
+     */
     public void enableButtonsOnOpenFile(boolean val) {
         alignToolBar.enableButtons(val);
         editToolBar.setUndoEnabled(false);
@@ -298,8 +305,8 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         try {
             AquaAdapter.connect(actionHandler, "displayAbout", AquaAdapter.AquaEvent.ABOUT);
             AquaAdapter.connect(actionHandler, "quit", AquaAdapter.AquaEvent.QUIT);
-        } catch (final NoClassDefFoundError e) {
-            System.out.println(e);
+        } catch (final NoClassDefFoundError ex) {
+            System.out.println(ex);
         }
     }
 
@@ -327,8 +334,8 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
                 (screenSize.height - frameSize.height) / 2);
     }
 
-    public void setFilePathOriginal(File filePath) {
-        prop.setFilePathOriginal(filePath);
+    public void setFilePathProject(File filePath) {
+        prop.setFilePathProject(filePath);
     }
 
     public void setProjectName(final String name) {
@@ -339,14 +346,6 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         return prop.getProjectName();
     }
 
-    public String getFileNameOriginal() {
-        return prop.getFilePathOriginal().getName();
-    }
-
-    public void setFilePathTranslation(File filePath) {
-        prop.setFilePathTranslation(filePath);
-    }
-
     public void setSourceLanguage(String lang) {
         prop.setSourceLanguage(lang);
     }
@@ -355,32 +354,15 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
         prop.setTargetLanguage(lang);
     }
 
-    public void setProperties(File srcFile, File tarFile, String srcLang, String tarLang,
-                              String encoding) {
-        prop.setEncoding(encoding);
-        prop.setFilePathOriginal(srcFile);
-        prop.setSourceLanguage(srcLang);
-        prop.setFilePathTranslation(tarFile);
-        prop.setTargetLanguage(tarLang);
-    }
-
     /**
      * Initialize alignment view.
-     * <p>
-     * <p>
-     * Extracts from the TMX those lines having information which is useful for alignment, and puts
-     * them in the corresponding ArrayList's The left part in _alstOriginal corresponds to source text
-     * lines and the right part in _alstTranslation corresponds to the target text lines. Initialize
-     * the table with one line for each left and right line
      */
     public void initializeTmView() {
         TableColumn col;
         col = tmView.getColumnModel().getColumn(1);
-        col.setHeaderValue(getString("TBL.HDR.COL.SOURCE")
-                + prop.getFilePathOriginal().getName());
+        col.setHeaderValue(getString("TBL.HDR.COL.SOURCE"));
         col = tmView.getColumnModel().getColumn(2);
-        col.setHeaderValue(getString("TBL.HDR.COL.TARGET")
-                + prop.getFilePathTranslation().getName());
+        col.setHeaderValue(getString("TBL.HDR.COL.TARGET"));
         tmView.setColumnHeaderView();
         updateTmView();
         tmData.setTopArrays(tmData.getDocumentOriginalSize() - 1);

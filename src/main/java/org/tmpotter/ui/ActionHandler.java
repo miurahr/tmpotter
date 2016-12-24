@@ -93,10 +93,9 @@ final class ActionHandler {
         return true;
     }
 
-    private void onOpenFile(File filePathOriginal, String stringLangOriginal,
+    private void onOpenFile(File file, String stringLangOriginal,
                             String stringLangTranslation) {
-        modelMediator.setFilePathOriginal(filePathOriginal);
-        modelMediator.setFilePathTranslation(filePathOriginal);
+        modelMediator.setFilePathProject(file);
         modelMediator.setSourceLanguage(stringLangOriginal);
         modelMediator.setTargetLanguage(stringLangTranslation);
         modelMediator.buildDisplay();
@@ -109,21 +108,16 @@ final class ActionHandler {
         modelMediator.initializeTmView();
         modelMediator.updateTmView();
         modelMediator.enableButtonsOnOpenFile(true);
-
-        // TODO: should set by project reader.
-        modelMediator.setProjectName(FilenameUtils.removeExtension(filePathOriginal.getName()));
     }
 
     private void doImport(ImportPreference pref) {
         String filter = pref.getFilter(); // Now support "BiTextFilter" and "PoFilter"
         RuntimePreferences.setUserHome(pref.getOriginalFilePath());
-        modelMediator.setProperties(pref.getOriginalFilePath(),  pref.getTranslationFilePath(),
-                pref.getOriginalLang(), pref.getTranslationLang(), pref.getEncoding());
         modelMediator.buildDisplay();
         Segmenter.setSrx(Preferences.getSrx());
         try {
             tmData.newDocuments();
-            filterManager.loadFile(modelMediator.getProjectProperties(),
+            filterManager.loadFile(pref, modelMediator.getProjectProperties(),
                     tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
             tmData.matchArrays();
 
@@ -141,10 +135,10 @@ final class ActionHandler {
 
     public void doExport(ExportPreference pref) {
         String filter = pref.getFilter(); // Now support "TmxFilter"
-        String outFile = pref.getFilePath();
+        File outFile = new File(pref.getFilePath());
         System.out.println(filter);
         try {
-            filterManager.saveFile(modelMediator.getProjectProperties(), outFile,
+            filterManager.saveFile(outFile, modelMediator.getProjectProperties(),
                     tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),

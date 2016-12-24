@@ -23,6 +23,7 @@
 
 package org.tmpotter.core;
 
+import org.apache.commons.io.FilenameUtils;
 import org.tmpotter.util.Language;
 import org.tmpotter.util.StringUtil;
 import org.tmpotter.util.TmxReader2;
@@ -95,7 +96,7 @@ public class TmpxReader {
         Language defaultTarget = new Language("EN-GB");
 
         TmxReader2 reader = new TmxReader2();
-        reader.readTmx(prop.getFilePathOriginal(), defaultSource, defaultTarget,
+        reader.readTmx(prop.getFilePathProject(), defaultSource, defaultTarget,
                 false, false, callbackLoader);
         this.header = reader.getParsedHeader();
         // TODO: sanity check for security.
@@ -105,7 +106,8 @@ public class TmpxReader {
         prop.setTargetLanguage(header.props.get("targetLang"));
         // Always UTF-8
         prop.setEncoding("UTF-8");
-        prop.setTargetEncoding("UTF-8");
+        // Project Name.
+        prop.setProjectName(FilenameUtils.removeExtension(prop.getFilePathProject().getName()));
     }
 
     public void loadDocument(TmData tmData) {

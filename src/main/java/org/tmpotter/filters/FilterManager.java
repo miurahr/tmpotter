@@ -25,6 +25,8 @@ package org.tmpotter.filters;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.ui.wizard.ImportPreference;
+import org.tmpotter.util.Language;
 import org.tmpotter.util.Localization;
 import org.tmpotter.util.PluginUtils;
 
@@ -59,8 +61,8 @@ public class FilterManager {
      */
     public IFilter getFilterInstance(String name) throws FilterNotFoundException {
         for (IFilter filter : filterList) {
-            String fileterName = filter.getClass().getSimpleName();
-            if (fileterName.equals(name)) {
+            String filterName = filter.getClass().getSimpleName();
+            if (filterName.equals(name)) {
                 return filter;
             }
         }
@@ -75,21 +77,25 @@ public class FilterManager {
      * @param docTranslation document to return
      * @param filterName     filter to use
      */
-    public void loadFile(ProjectProperties prop, Document docOriginal, Document docTranslation,
+    public void loadFile(ImportPreference pref, ProjectProperties prop,
+                         Document docOriginal, Document docTranslation,
                          String filterName) {
         IFilter filter = null;
         this.documentOriginal = docOriginal;
         this.documentTranslation = docTranslation;
 
+        prop.setSourceLanguage(pref.getOriginalLang());
+        prop.setTargetLanguage(pref.getTranslationLang());
         FilterContext fc = new FilterContext(prop.getSourceLanguage(), prop.getTargetLanguage(),
                 true);
-        File inFile = prop.getFilePathOriginal();
-        File outFile = prop.getFilePathTranslation();
-        if (prop.getEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
+
+        if (pref.getEncoding().equals(Localization.getString("ENCODING.DEFAULT"))) {
             fc.setInEncoding(null);
         } else {
-            fc.setInEncoding(prop.getEncoding());
+            fc.setInEncoding(pref.getEncoding());
         }
+        prop.setEncoding(pref.getEncoding());
+
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
@@ -97,7 +103,8 @@ public class FilterManager {
         }
         if (filter != null) {
             try {
-                filter.parseFile(inFile, outFile, null, fc, new ParseCb());
+                filter.parseFile(pref.getOriginalFilePath(), pref.getTranslationFilePath(),
+                        null, fc, new ParseCb());
             } catch (Exception ex) {
                 System.out.println(ex);
             }
@@ -106,21 +113,22 @@ public class FilterManager {
 
     /**
      * Call saveFile interface of filter.
-     * @param prop property.
+     *
      * @param outFile output filename.
+     * @param prop property.
      * @param docOriginal original document
      * @param docTranslation translation document.
      * @param filterName filter name.
      * @throws Exception throw when error happened.
      */
-    public void saveFile(ProjectProperties prop, String outFile, Document docOriginal,
-            Document docTranslation, String filterName) throws Exception {
+    public void saveFile(File outFile, ProjectProperties prop,
+                Document docOriginal, Document docTranslation, String filterName)
+            throws Exception {
         IFilter filter = null;
         this.documentOriginal = docOriginal;
         this.documentTranslation = docTranslation;
         FilterContext fc = new FilterContext(prop.getSourceLanguage(),
                 prop.getTargetLanguage(), true);
-        File outF = new File(outFile);
         try {
             filter = getFilterInstance(filterName);
         } catch (Exception ex) {
@@ -128,7 +136,7 @@ public class FilterManager {
         }
         if (filter != null) {
             try {
-                filter.saveFile(outF, docOriginal, docTranslation, fc);
+                filter.saveFile(outFile, docOriginal, docTranslation, fc);
             } catch (Exception ex) {
                 System.out.println(ex);
             }

@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2015 Hiroshi Miura
+ *  Copyright (C) 2015-2016 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
@@ -34,18 +34,21 @@ import java.io.File;
  * Storage for project properties.
  */
 public final class ProjectProperties {
-    private File filePathOriginal;
-    private File filePathTranslation;
+
+    private String projectName;
     private File filePathProject;
     private String encoding;
     private Language sourceLanguage;
     private Language targetLanguage;
-    private String projectName;
 
     /**
      * Default constructor to initialize fields.
      */
     public ProjectProperties() {
+        initLocales();
+    }
+
+    private void initLocales() {
         String sourceLocale = Preferences.getPreference(Preferences.SOURCE_LOCALE);
         if (!StringUtil.isEmpty(sourceLocale)) {
             setSourceLanguage(sourceLocale);
@@ -59,6 +62,13 @@ public final class ProjectProperties {
         } else {
             setTargetLanguage("EN-GB");
         }
+
+    }
+
+    public void clear() {
+        filePathProject = null;
+        projectName = null;
+        initLocales();
     }
 
     public String getProjectName() {
@@ -67,27 +77,6 @@ public final class ProjectProperties {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
-    }
-
-    public void clear() {
-        filePathOriginal = null;
-        filePathTranslation = null;
-    }
-
-    public void setFilePathOriginal(File filePath) {
-        filePathOriginal = filePath;
-    }
-
-    public File getFilePathOriginal() {
-        return filePathOriginal;
-    }
-
-    public void setFilePathTranslation(File filePath) {
-        filePathTranslation = filePath;
-    }
-
-    public File getFilePathTranslation() {
-        return filePathTranslation;
     }
 
     public File getFilePathProject() {

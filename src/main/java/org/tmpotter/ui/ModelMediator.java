@@ -39,19 +39,11 @@ public interface ModelMediator {
 
     String getProjectName();
 
-    // Open/Import
-    void setFilePathOriginal(File filePath);
-
-    String getFileNameOriginal();
-
-    void setFilePathTranslation(File filePath);
+    void setFilePathProject(File filePath);
 
     void setSourceLanguage(String lang);
 
     void setTargetLanguage(String lang);
-
-    void setProperties(File sourceFile, File targetFile, String srcLang, String tarLang,
-                       String encoding);
 
     // Props
     ProjectProperties getProjectProperties();
