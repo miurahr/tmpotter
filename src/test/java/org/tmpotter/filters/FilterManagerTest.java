@@ -30,6 +30,7 @@ import java.io.File;
 
 import org.tmpotter.core.Document;
 import org.tmpotter.core.ProjectProperties;
+import org.tmpotter.ui.wizard.ImportPreference;
 
 
 /**
@@ -63,18 +64,19 @@ public class FilterManagerTest {
   public void testLoadFile() {
     System.out.println("loadFile");
     ProjectProperties prop = new ProjectProperties();
+    ImportPreference pref = new ImportPreference();
     prop.setEncoding("UTF-8");
-    prop.setTranslationEncoding("UTF-8");
     prop.setSourceLanguage("en");
     prop.setTargetLanguage("ja");
-    prop.setFilePathOriginal(new File(this.getClass().getResource("/text/src.txt").getFile()));
-    prop.setFilePathTranslation(new File(this.getClass().getResource("/text/trans.txt").getFile()));
+    pref.setOriginalFilePath(new File(this.getClass().getResource("/text/src.txt").getFile()));
+    pref.setTranslationFilePath(new File(this.getClass().getResource("/text/trans.txt").getFile()));
+    pref.setEncoding("UTF-8");
     Document docOriginal = new Document();
     Document docTranslation = new Document();
     String filterName = "BiTextFilter";
     FilterManager instance = new FilterManager();
-    instance.loadFile(prop, docOriginal, docTranslation, filterName);
-    assertEquals(2, docOriginal.size());
-    assertEquals(2, docTranslation.size());
+    instance.loadFile(pref, prop, docOriginal, docTranslation, filterName);
+    assertEquals(docOriginal.size(), 2);
+    assertEquals(docTranslation.size(), 2);
   }
 }

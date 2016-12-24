@@ -37,7 +37,6 @@ public final class ProjectProperties {
 
     private String projectName;
     private File filePathProject;
-    private String encoding;
     private Language sourceLanguage;
     private Language targetLanguage;
 
@@ -85,14 +84,6 @@ public final class ProjectProperties {
 
     public void setFilePathProject(File filePathProject) {
         this.filePathProject = filePathProject;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public String getEncoding() {
-        return encoding;
     }
 
     public Language getSourceLanguage() {

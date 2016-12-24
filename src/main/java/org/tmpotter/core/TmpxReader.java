@@ -104,8 +104,6 @@ public class TmpxReader {
         // see TmxpWriter class.
         prop.setSourceLanguage(header.props.get("sourceLang"));
         prop.setTargetLanguage(header.props.get("targetLang"));
-        // Always UTF-8
-        prop.setEncoding("UTF-8");
         // Project Name.
         prop.setProjectName(FilenameUtils.removeExtension(prop.getFilePathProject().getName()));
     }

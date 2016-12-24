@@ -51,8 +51,11 @@ public class TmxpWriterTest extends TmxTestBase {
     translationDocument.add("Sentense one in Japanese.");
     translationDocument.add("Sentense two in Japanese.");
     String langTranslation = "JA";
-    TmxpWriter.writeTmxp(outputFile, originalDocument, langOriginal,
-            translationDocument, langTranslation);
+    ProjectProperties prop = new ProjectProperties();
+    prop.setFilePathProject(outputFile);
+    prop.setSourceLanguage(langOriginal);
+    prop.setTargetLanguage(langTranslation);
+    TmxpWriter.writeTmxp(prop, originalDocument,  translationDocument);
     compareTmx(outputFile, expectedFile, 4);
     outputFile.delete();
   }
