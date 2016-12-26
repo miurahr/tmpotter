@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,7 +78,13 @@ public class Preferences {
     public static final String PROXY_PASS = "proxy_pass";
 
     //Singleton
-    static {
+    private static Preferences self = new Preferences();
+
+    public static Preferences getPreferences() {
+        return self;
+    }
+
+    private Preferences() {
         loaded = false;
         preferenceMap = new HashMap<>(64);
         nameList = new ArrayList<>(32);
@@ -96,7 +101,7 @@ public class Preferences {
      * @param key key of the key to look up, usually OConsts.PREF_...
      * @return preference defaultValue as a string
      */
-    public static String getPreference(String key) {
+    public String getPreference(String key) {
         if (key == null || key.equals("")) {
             return "";
         }
@@ -120,7 +125,7 @@ public class Preferences {
      * @param key key of the key to look up, usually OConsts.PREF_...
      * @return true if preferences exists
      */
-    public static boolean existsPreference(String key) {
+    public boolean existsPreference(String key) {
         boolean exists = false;
         if (key == null) {
             exists = false;
@@ -144,7 +149,7 @@ public class Preferences {
      * @param key preference key, usually OConsts.PREF_...
      * @return preference defaultValue as a boolean
      */
-    public static boolean isPreference(String key) {
+    public boolean isPreference(String key) {
         return "true".equals(getPreference(key));
     }
 
@@ -158,7 +163,7 @@ public class Preferences {
      * @param defaultValue default value for the key
      * @return preference value as an boolean
      */
-    public static boolean isPreferenceDefault(String key, boolean defaultValue) {
+    public boolean isPreferenceDefault(String key, boolean defaultValue) {
         String val = getPreference(key);
         if (StringUtil.isEmpty(val)) {
             setPreference(key, defaultValue);
@@ -178,7 +183,7 @@ public class Preferences {
      * @param defaultValue default value for the key
      * @return preference value as a string
      */
-    public static String getPreferenceDefault(String key, String defaultValue) {
+    public String getPreferenceDefault(String key, String defaultValue) {
         String val = getPreference(key);
         if (val.equals("")) {
             val = defaultValue;
@@ -194,7 +199,7 @@ public class Preferences {
      * @param defaultValue defualt value
      * @return preference value
      */
-    public static int getPreferenceDefault(String key, int defaultValue) {
+    public int getPreferenceDefault(String key, int defaultValue) {
         String val = getPreferenceDefault(key, Integer.toString(defaultValue));
         int res = defaultValue;
         try {
@@ -211,7 +216,7 @@ public class Preferences {
      * @param name  preference key name, usually Preferences.PREF_...
      * @param value preference value as a string
      */
-    public static void setPreference(String name, String value) {
+    public void setPreference(String name, String value) {
         changed = true;
         if (!StringUtil.isEmpty(name) && value != null) {
             if (!loaded) {
@@ -237,7 +242,7 @@ public class Preferences {
      * @param name  preference key name, usually Preferences.PREF_...
      * @param value preference value as enum
      */
-    public static void setPreference(String name, Enum<?> value) {
+    public void setPreference(String name, Enum<?> value) {
         changed = true;
         if (!StringUtil.isEmpty(name) && value != null) {
             if (!loaded) {
@@ -263,7 +268,7 @@ public class Preferences {
      * @param name      preference key name, usually Preferences.PREF_...
      * @param boolvalue preference defaultValue as a boolean
      */
-    public static void setPreference(String name, boolean boolvalue) {
+    public void setPreference(String name, boolean boolvalue) {
         setPreference(name, String.valueOf(boolvalue));
     }
 
@@ -273,14 +278,14 @@ public class Preferences {
      * @param name     preference key name, usually Preferences.PREF_...
      * @param intvalue preference value as an integer
      */
-    public static void setPreference(String name, int intvalue) {
+    public void setPreference(String name, int intvalue) {
         setPreference(name, String.valueOf(intvalue));
     }
 
     /**
      * Save preference.
      */
-    public static void save() {
+    public void save() {
         try {
             if (changed) {
                 doSave();
@@ -296,12 +301,12 @@ public class Preferences {
      * called from the static initializer in this class. DO NOT CALL IT UNLESS YOU KNOW WHAT YOU'RE
      * DOING.
      */
-    static void doLoad() {
+    void doLoad() {
         File prefsFile = getPreferencesFile();
         doLoadReal(prefsFile);
     }
 
-    protected static void doLoadReal(File prefsFile) {
+    protected void doLoadReal(File prefsFile) {
         // mark as loaded - if the load fails, there's no use
         // trying again later
         loaded = true;
@@ -322,21 +327,10 @@ public class Preferences {
                 xml.setStream(prefsFile);
                 readXmlPrefs(xml);
             }
-        } catch (TranslationException te) {
+        } catch (TranslationException | IndexOutOfBoundsException | IOException te) {
             // error loading preference file - keep whatever was
             // loaded then return gracefully to calling function
             // print an error to the console as an FYI
-            makeBackup(prefsFile);
-        } catch (IndexOutOfBoundsException e3) {
-            // error loading preference file - keep whatever was
-            // loaded then return gracefully to calling function
-            // print an error to the console as an FYI
-            makeBackup(prefsFile);
-        } catch (UnsupportedEncodingException e3) {
-            // unsupported encoding - forget about it
-            makeBackup(prefsFile);
-        } catch (IOException e4) {
-            // can't read file - forget about it and move on
             makeBackup(prefsFile);
         } finally {
             try {
@@ -354,7 +348,7 @@ public class Preferences {
      * <li>omegat.prefs in install dir (defaults supplied with local install)
      * </ol>
      */
-    private static File getPreferencesFile() {
+    private File getPreferencesFile() {
         File prefsFile = new File(Utilities.getConfigDir(), FILE_PREFERENCES);
         if (prefsFile.exists()) {
             return prefsFile;
@@ -367,7 +361,7 @@ public class Preferences {
         return null;
     }
 
-    private static void readXmlPrefs(XMLStreamReader xml) throws TranslationException {
+    private void readXmlPrefs(XMLStreamReader xml) throws TranslationException {
         String pref;
         String val;
 
@@ -415,7 +409,7 @@ public class Preferences {
         }
     }
 
-    private static void makeBackup(File file) {
+    private void makeBackup(File file) {
         if (file == null || !file.isFile()) {
             return;
         }
@@ -428,7 +422,7 @@ public class Preferences {
         }
     }
 
-    private static void doSave() throws IOException {
+    private void doSave() throws IOException {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
                 Utilities.getConfigDir() + FILE_PREFERENCES), "UTF-8"));
         try {

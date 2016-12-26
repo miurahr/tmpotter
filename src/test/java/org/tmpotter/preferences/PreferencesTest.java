@@ -63,7 +63,8 @@ public class PreferencesTest {
       out.println("</preference>");
       out.println("</tmpotter>");
       out.close();
-      Preferences.doLoad();
+      Preferences pref = Preferences.getPreferences();
+      pref.doLoad();
     } catch (Exception ex) {
       // FIXME
     }
@@ -84,7 +85,8 @@ public class PreferencesTest {
     System.out.println("getPreference");
     String key = "source_lang";
     String expResult = "EN-US";
-    String result = Preferences.getPreference(key);
+    Preferences pref = Preferences.getPreferences();
+    String result = pref.getPreference(key);
     assertEquals(expResult, result);
   }
 
@@ -96,7 +98,8 @@ public class PreferencesTest {
     System.out.println("existsPreference");
     String key = "hoge";
     boolean expResult = false;
-    boolean result = Preferences.existsPreference(key);
+    Preferences pref = Preferences.getPreferences();
+    boolean result = pref.existsPreference(key);
     assertEquals(expResult, result);
   }
 
@@ -108,7 +111,8 @@ public class PreferencesTest {
     System.out.println("existsPreference");
     String key = "source_lang";
     boolean expResult = true;
-    boolean result = Preferences.existsPreference(key);
+    Preferences pref = Preferences.getPreferences();
+    boolean result = pref.existsPreference(key);
     assertEquals(expResult, result);
   }
   /**
@@ -118,7 +122,8 @@ public class PreferencesTest {
   public void testIsPreference() {
     System.out.println("isPreference");
     String key = "success";
-    boolean result = Preferences.isPreference(key);
+    Preferences pref = Preferences.getPreferences();
+    boolean result = pref.isPreference(key);
     assertTrue(result);
   }
 
@@ -130,7 +135,8 @@ public class PreferencesTest {
     System.out.println("isPreferenceDefault");
     String key = "fuga";
     boolean defaultValue = false;
-    boolean result = Preferences.isPreferenceDefault(key, defaultValue);
+    Preferences pref = Preferences.getPreferences();
+    boolean result = pref.isPreferenceDefault(key, defaultValue);
     assertFalse(result);
   }
 
@@ -143,7 +149,8 @@ public class PreferencesTest {
     String key = "foo";
     String defaultValue = "boo";
     String expResult = "boo";
-    String result = Preferences.getPreferenceDefault(key, defaultValue);
+    Preferences pref = Preferences.getPreferences();
+    String result = pref.getPreferenceDefault(key, defaultValue);
     assertEquals(expResult, result);
   }
 
@@ -156,7 +163,8 @@ public class PreferencesTest {
     String key = "screen_size";
     int defaultValue = 1024;
     int expResult = 640;
-    int result = Preferences.getPreferenceDefault(key, defaultValue);
+    Preferences pref = Preferences.getPreferences();
+    int result = pref.getPreferenceDefault(key, defaultValue);
     assertEquals(expResult, result);
   }
 
@@ -168,8 +176,9 @@ public class PreferencesTest {
     System.out.println("setPreference");
     String name = "new";
     String value = "one";
-    Preferences.setPreference(name, value);
-    String result = Preferences.getPreference(name);
+    Preferences pref = Preferences.getPreferences();
+    pref.setPreference(name, value);
+    String result = pref.getPreference(name);
     assertEquals(value, result);
   }
 
@@ -211,7 +220,8 @@ public class PreferencesTest {
       assertFalse(out.checkError());
 
       // Load bad prefs file.
-      Preferences.doLoad();
+      Preferences pref = Preferences.getPreferences();
+      pref.doLoad();
 
             // The actual backup file will have a timestamp in the filename,
       // so we have to loop through looking for it.

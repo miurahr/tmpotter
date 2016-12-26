@@ -48,14 +48,15 @@ public final class ProjectProperties {
     }
 
     private void initLocales() {
-        String sourceLocale = Preferences.getPreference(Preferences.SOURCE_LOCALE);
+        Preferences pref = Preferences.getPreferences();
+        String sourceLocale = pref.getPreference(Preferences.SOURCE_LOCALE);
         if (!StringUtil.isEmpty(sourceLocale)) {
             setSourceLanguage(sourceLocale);
         } else {
             setSourceLanguage("EN-US");
         }
 
-        String targetLocale = Preferences.getPreference(Preferences.TARGET_LOCALE);
+        String targetLocale = pref.getPreference(Preferences.TARGET_LOCALE);
         if (!StringUtil.isEmpty(targetLocale)) {
             setTargetLanguage(targetLocale);
         } else {
@@ -99,6 +100,8 @@ public final class ProjectProperties {
      */
     public void setSourceLanguage(Language sourceLanguage) {
         this.sourceLanguage = sourceLanguage;
+        Preferences pref = Preferences.getPreferences();
+        pref.setPreference(Preferences.SOURCE_LOCALE, sourceLanguage.toString());
     }
 
     /**
@@ -107,6 +110,8 @@ public final class ProjectProperties {
      */
     public void setSourceLanguage(String sourceLanguage) {
         this.sourceLanguage = new Language(sourceLanguage);
+        Preferences pref = Preferences.getPreferences();
+        pref.setPreference(Preferences.SOURCE_LOCALE, sourceLanguage);
     }
 
     /**
@@ -124,6 +129,8 @@ public final class ProjectProperties {
      */
     public void setTargetLanguage(Language targetLanguage) {
         this.targetLanguage = targetLanguage;
+        Preferences pref = Preferences.getPreferences();
+        pref.setPreference(Preferences.TARGET_LOCALE, targetLanguage.toString());
     }
 
     /**
@@ -132,6 +139,8 @@ public final class ProjectProperties {
      */
     public void setTargetLanguage(String targetLanguage) {
         this.targetLanguage = new Language(targetLanguage);
+        Preferences pref = Preferences.getPreferences();
+        pref.setPreference(Preferences.TARGET_LOCALE, targetLanguage);
     }
 
     /**

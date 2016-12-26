@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.tmpotter.core.ProjectProperties;
 import org.tmpotter.core.TmData;
 import org.tmpotter.filters.FilterManager;
+import org.tmpotter.preferences.Preferences;
 import org.tmpotter.util.AppConstants;
 import org.tmpotter.util.Platform;
 import org.tmpotter.util.gui.AquaAdapter;
