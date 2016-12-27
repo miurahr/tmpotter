@@ -53,6 +53,10 @@ public class ImportWizardController {
         }
     }
 
+    public final void registerPanel(final String id, final IImportWizardPanel panel) {
+	    wizard.registerWizardPanel(id, panel);
+    }
+
     public final void onStartup() {
         wizard.setButtonBackEnabled(false);
         wizard.setButtonNextEnabled(true);
@@ -75,11 +79,6 @@ public class ImportWizardController {
         return pref.getTranslationFilePath();
     }
 
-    public final void finish() {
-        finished = true;
-        wizard.updatePref();
-    }
-
     public final void setButtonNextEnabled(boolean b) {
         wizard.setButtonNextEnabled(b);
     }
@@ -98,8 +97,9 @@ public class ImportWizardController {
 
     public void onNextFinish() {
         String command = wizard.getButtonNextCommand();
+        wizard.updatePref();
         if ("finish".equals(command)) {
-            finish();
+            finished = true;
             wizard.dispose();
         } else {
             wizard.showPanel(command);
