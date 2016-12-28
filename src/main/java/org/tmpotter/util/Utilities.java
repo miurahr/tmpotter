@@ -104,11 +104,20 @@ public class Utilities {
      * @param output   UTF-8 format text to write
      */
     public static void saveUtf8(String dir, String filename, String output) {
+        // Page name can contain invalid characters, see [1878113]
+        // Contributed by Anatoly Techtonik
+        filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
+        File path = new File(dir, filename);
+        saveUtf8(path, output);
+    }
+
+    /**
+     * Save UTF-8 format data to file.
+     * @param path file to write to.
+     * @param output UTF-8 format text to write.
+     */
+    public static void saveUtf8(File path, String output) {
         try {
-            // Page name can contain invalid characters, see [1878113]
-            // Contributed by Anatoly Techtonik
-            filename = filename.replaceAll("[\\\\/:\\*\\?\\\"\\|\\<\\>]", "_");
-            File path = new File(dir, filename);
             FileOutputStream fos = new FileOutputStream(path);
             BufferedWriter out = utf8WriterBuilder(fos);
             out.write(output);
