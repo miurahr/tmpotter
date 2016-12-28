@@ -24,7 +24,8 @@
 package org.tmpotter.ui.wizard;
 
 import java.io.File;
-
+import java.net.URL;
+import java.net.URI;
 
 /**
  * Preference get by import wizard.
@@ -32,8 +33,8 @@ import java.io.File;
  * @author Hiroshi Miura
  */
 public class ImportPreference {
-    private File originalFilePath;
-    private File translationFilePath;
+    private URI originalFileUri;
+    private URI translationFileUri;
     private String originalLang;
     private String translationLang;
     private String sourceEncoding;
@@ -42,19 +43,35 @@ public class ImportPreference {
     private File currentPath;
 
     public File getOriginalFilePath() {
-        return originalFilePath;
+        return new File(originalFileUri);
+    }
+
+    public URI getOriginalFileUri() {
+        return originalFileUri;
     }
 
     public void setOriginalFilePath(File originalFilePath) {
-        this.originalFilePath = originalFilePath;
+        originalFileUri = originalFilePath.toURI();
+    }
+
+    public void setOriginalFilePath(URI uri) {
+        originalFileUri = uri;
     }
 
     public File getTranslationFilePath() {
-        return translationFilePath;
+        return new File(translationFileUri);
+    }
+
+    public URI getTranslationFileUri() {
+        return translationFileUri;
     }
 
     public void setTranslationFilePath(File translationFilePath) {
-        this.translationFilePath = translationFilePath;
+        translationFileUri = translationFilePath.toURI();
+    }
+
+    public void setTranslationFilePath(URI uri) {
+        translationFileUri = uri;
     }
 
     public String getOriginalLang() {
@@ -101,7 +118,7 @@ public class ImportPreference {
         if (currentPath != null) {
             return currentPath;
         } else {
-            return originalFilePath;
+            return new File(originalFileUri);
         }
     }
 
