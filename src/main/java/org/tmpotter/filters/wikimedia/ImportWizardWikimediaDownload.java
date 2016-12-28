@@ -104,8 +104,52 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
     }
 
     public void updatePref() {
-	pref.setOriginalFilePath(originalFilePath);
-	pref.setTranslationFilePath(translationFilePath);
+        pref.setFilter("BiTextFilter");
+        pref.setOriginalFilePath(originalFilePath);
+        pref.setTranslationFilePath(translationFilePath);
+    }
+
+    /**
+     * Does wikiread.
+     */
+    public void doWikiDownload() {
+        File tempDirectory;
+        wizardController.setButtonBackEnabled(false);
+        downloadButton.setEnabled(false);
+        try {
+            tempDirectory = createTempDirectory();
+            tempDirectory.deleteOnExit();
+            sourceProgressBar.setMinimum(0);
+            sourceProgressBar.setMaximum(100);
+            File sourceFile = MediaWikiDownloader.download(sourceUri, tempDirectory,
+                    percent -> sourceProgressBar.setValue(percent));
+            if (sourceFile != null) {
+                originalFilePath = sourceFile;
+            }
+            translationProgressBar.setMinimum(0);
+            translationProgressBar.setMaximum(100);
+            File translationFile = MediaWikiDownloader.download(translationUri, tempDirectory,
+                    percent -> translationProgressBar.setValue(percent));
+            if (translationFile != null) {
+                translationFilePath = translationFile;
+            }
+        } catch (Exception ex) {
+            LOGGER.info("Mediawiki downloader:", ex);
+        }
+        wizardController.setButtonNextEnabled(true);
+        wizardController.setButtonBackEnabled(true);
+    }
+
+    private static File createTempDirectory() throws IOException {
+        final File temp;
+        temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+        return (temp);
     }
 
     /**
@@ -184,7 +228,7 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         }// </editor-fold>//GEN-END:initComponents
 
         private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadButtonActionPerformed
-                // TODO add your handling code here:
+            doWikiDownload();
         }//GEN-LAST:event_downloadButtonActionPerformed
 
 

@@ -92,6 +92,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="textFieldTranslationUrl">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldTranslationUrlActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
