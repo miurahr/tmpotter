@@ -56,14 +56,10 @@ public class MediaWikiDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaWikiDownloader.class
             .getName());
 
-    public interface IDownloadCallback {
-        void reportProgress(final int percent);
-    }
-
-    public static File download(URI remoteUri, File projectdir, IDownloadCallback callback)
+    public static File download(URI remoteUri, File projectdir)
             throws IOException {
         String remoteUrl = remoteUri.toString();
-        return download(remoteUrl, projectdir, callback);
+        return download(remoteUrl, projectdir);
     }
 
     /**
@@ -76,7 +72,7 @@ public class MediaWikiDownloader {
      *                   file should be saved.
      */
 
-    public static File download(String remoteUrl, File projectdir, IDownloadCallback callback)
+    public static File download(String remoteUrl, File projectdir)
             throws IOException {
         File outFile = null;
         String joined = null; // contains edited url
@@ -108,7 +104,7 @@ public class MediaWikiDownloader {
                 joined = joined + "?action=raw";
             }
 
-            String page = getTextFromUrl(joined, callback);
+            String page = getTextFromUrl(joined);
             outFile = new File(projectdir, name + ".UTF8");
             Utilities.saveUtf8(outFile, page);
         } catch (Exception ex) {
@@ -125,20 +121,15 @@ public class MediaWikiDownloader {
      * @param target String representation of well-formed URL.
      * @throws IOException when connection error.
      */
-    public static String getTextFromUrl(String target, IDownloadCallback callback)
+    public static String getTextFromUrl(String target)
             throws IOException {
-        int readLen = 0;
         StringBuilder page = new StringBuilder();
         URL url = new URL(target);
         URLConnection conn = url.openConnection();
-        int total = conn.getContentLength();
         InputStream in = conn.getInputStream();
         byte[] readByte = new byte[4096];
         for (int n; (n = in.read(readByte)) != -1; ) {
-            readLen += n;
             page.append(new String(readByte, 0, n, "UTF-8"));
-            int percent = 100 * readLen / total;
-            callback.reportProgress(percent);
         }
         return page.toString();
     }
