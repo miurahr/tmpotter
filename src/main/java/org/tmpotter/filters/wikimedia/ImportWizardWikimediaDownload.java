@@ -34,7 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * Wikimedia download progress pane.
@@ -135,9 +135,13 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
             }
         } catch (Exception ex) {
             LOGGER.info("Mediawiki downloader:", ex);
+            JOptionPane.showMessageDialog(null, "Mediawiki download error.");
+            wizardController.setButtonNextEnabled(false);
+            wizardController.setButtonBackEnabled(true);
+            return;
         }
-        wizardController.setButtonNextEnabled(true);
         wizardController.setButtonBackEnabled(true);
+        wizardController.setButtonNextEnabled(true);
     }
 
     private static File createTempDirectory() throws IOException {

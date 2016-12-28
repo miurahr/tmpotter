@@ -60,7 +60,8 @@ public class MediaWikiDownloader {
         void reportProgress(final int percent);
     }
 
-    public static File download(URI remoteUri, File projectdir, IDownloadCallback callback) {
+    public static File download(URI remoteUri, File projectdir, IDownloadCallback callback)
+            throws IOException {
         String remoteUrl = remoteUri.toString();
         return download(remoteUrl, projectdir, callback);
     }
@@ -75,7 +76,8 @@ public class MediaWikiDownloader {
      *                   file should be saved.
      */
 
-    public static File download(String remoteUrl, File projectdir, IDownloadCallback callback) {
+    public static File download(String remoteUrl, File projectdir, IDownloadCallback callback)
+            throws IOException {
         File outFile = null;
         String joined = null; // contains edited url
         // contains a useful page name which we can use  as our filename
@@ -109,8 +111,9 @@ public class MediaWikiDownloader {
             String page = getTextFromUrl(joined, callback);
             outFile = new File(projectdir, name + ".UTF8");
             Utilities.saveUtf8(outFile, page);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.info("Wiki download error:", ex);
+            throw new IOException("Wikidownload error.");
         }
 
         return outFile;
