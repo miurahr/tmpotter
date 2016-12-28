@@ -61,7 +61,9 @@ public class ImportWizardTmxFile extends javax.swing.JPanel implements IImportWi
         wizardController = controller;
         this.pref = pref;
         initComponents();
-        wizardController.setButtonNextEnabled(false);
+    }
+
+    public void onShow() {
     }
 
     public String getId() {

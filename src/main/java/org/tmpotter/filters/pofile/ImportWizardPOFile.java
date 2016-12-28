@@ -63,7 +63,9 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
         wizardController = controller;
         this.pref = pref;
         initComponents();
-        wizardController.setButtonNextEnabled(false);
+    }
+
+    public void onShow() {
     }
 
     public String getId() {

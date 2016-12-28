@@ -73,14 +73,15 @@ public class ImportWizard extends javax.swing.JDialog {
         CardLayout cl = (CardLayout) (panelCard.getLayout());
         cl.show(panelCard, id);
         currentPanel = id;
+        wizardPanels.get(id).onShow();
         setButtonNextLabel();
-    }
+   }
 
     /**
      * Enable/disable back button.
      * @param b true when enable back button, otherwise false.
      */
-    void setButtonBackEnabled(boolean b) {
+    public void setButtonBackEnabled(boolean b) {
         buttonBack.setEnabled(b);
     }
 

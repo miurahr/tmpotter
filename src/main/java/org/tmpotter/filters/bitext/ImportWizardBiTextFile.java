@@ -71,7 +71,9 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
         wizardController = controller;
         pref = preference;
         initComponents();
-        wizardController.setButtonNextEnabled(false);
+    }
+
+    public void onShow() {
     }
 
     /**

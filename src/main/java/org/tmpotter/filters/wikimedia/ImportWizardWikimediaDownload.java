@@ -23,14 +23,18 @@
 
 package org.tmpotter.filters.wikimedia;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmpotter.ui.wizard.IImportWizardPanel;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizardController;
+import org.tmpotter.util.MediaWikiDownloader;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 import javax.swing.JPanel;
-
 
 /**
  * Wikimedia download progress pane.
@@ -39,12 +43,16 @@ import javax.swing.JPanel;
  */
 public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements IImportWizardPanel {
 
-    public static final String id = "WikimediaDownload";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImportWizardWikimediaDownload.class
+            .getName());
     private ImportWizardController wizardController;
     private ImportPreference pref;
-
+    private URI sourceUri;
+    private URI translationUri;
     private File originalFilePath;
     private File translationFilePath;
+
+    public static final String id = "WikimediaDownload";
 
     /**
      * Creates new form ImportWizardWikimediaDownload
@@ -56,7 +64,15 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         wizardController = controller;
         this.pref = pref;
         initComponents();
+    }
+
+    public void onShow() {
         wizardController.setButtonNextEnabled(false);
+        downloadButton.setEnabled(true);
+        sourceUri = pref.getOriginalFileUri();
+        sourceUrlLabel.setText(sourceUri.toString());
+        translationUri = pref.getTranslationFileUri();
+        translationUrlLabel.setText(translationUri.toString());
     }
 
     public String getId() {

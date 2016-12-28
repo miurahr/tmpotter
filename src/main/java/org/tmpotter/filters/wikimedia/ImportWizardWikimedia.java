@@ -28,6 +28,7 @@ import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizardController;
 import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
 import org.tmpotter.util.Localization;
+import org.tmpotter.util.gui.GuiUtils;
 
 import javax.swing.JPanel;
 
@@ -43,6 +44,8 @@ public class ImportWizardWikimedia extends javax.swing.JPanel implements IImport
     private final String[] idiom = Localization.getLanguageList();
     private ImportWizardController wizardController;
     private ImportPreference pref;
+    private IImportWizardPanel panel;
+    private boolean canDownload = false;
 
     /**
      * Creates new form ImportWizardWikimedia
@@ -54,10 +57,14 @@ public class ImportWizardWikimedia extends javax.swing.JPanel implements IImport
         wizardController = controller;
         this.pref = pref;
         initComponents();
-        wizardController.setButtonNextEnabled(false);
-	IImportWizardPanel panel = new ImportWizardWikimediaDownload();
-	panel.init(wizardController, pref);
+        panel = new ImportWizardWikimediaDownload();
+        panel.init(wizardController, pref);
         wizardController.registerPanel(panel.getId(), panel);
+    }
+
+    public void onShow() {
+        GuiUtils.addChangeListener(textFieldSourceUrl, e -> onInputUrl());
+        GuiUtils.addChangeListener(textFieldTranslationUrl, e -> onInputUrl());
     }
 
     public String getId() {
@@ -68,7 +75,7 @@ public class ImportWizardWikimedia extends javax.swing.JPanel implements IImport
         return false;
     }
 
-    public JPanel getPanel() {
+    public javax.swing.JPanel getPanel() {
         return this;
     }
 

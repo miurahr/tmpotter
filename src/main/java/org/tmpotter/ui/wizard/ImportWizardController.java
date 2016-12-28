@@ -83,6 +83,10 @@ public class ImportWizardController {
         wizard.setButtonNextEnabled(b);
     }
 
+    public final void setButtonBackEnabled(boolean b) {
+        wizard.setButtonBackEnabled(b);
+    }
+
     public final boolean isFinished() {
         return finished;
     }
@@ -104,6 +108,7 @@ public class ImportWizardController {
         } else {
             wizard.showPanel(command);
             wizard.setButtonBackEnabled(true);
+            wizard.setButtonNextEnabled(false);
         }
     }
 

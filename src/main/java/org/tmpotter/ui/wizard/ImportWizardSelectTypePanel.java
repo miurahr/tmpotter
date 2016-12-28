@@ -50,10 +50,11 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
         setOptions();
     }
 
-    public void init(final ImportWizardController controller, ImportPreference pref) {
-    }
-
     // dummy methods.
+    public void init(final ImportWizardController controller, ImportPreference pref) {}
+
+    public void onShow() {}
+
     public String getId() {
         return id;
     }

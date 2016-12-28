@@ -32,7 +32,17 @@ import javax.swing.JPanel;
  * @author Hiroshi Miura
  */
 public interface IImportWizardPanel {
+    /**
+     * Initialize panel when registered.
+     * @param controller controller reference.
+     * @param pref key-value preference.
+     */
     void init(ImportWizardController controller, ImportPreference pref);
+
+    /**
+     * Call when show the panel.
+     */
+    void onShow();
 
     String getId();
 
