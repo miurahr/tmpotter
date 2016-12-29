@@ -330,6 +330,20 @@ public class Utilities {
         return (num1 < num2) ? num2 : num1;
     }
 
+    /**
+     * Return human readable byte count string.
+     * @param bytes value to show.
+     * @param si unit rule, true is SI unit, others binary unit.
+     * @return human readable string.
+     */
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
     private Utilities() {
         // static utility constructer
     }

@@ -29,13 +29,12 @@ import org.slf4j.LoggerFactory;
 import org.tmpotter.ui.wizard.IImportWizardPanel;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizardController;
-import org.tmpotter.util.MediaWikiDownloader;
+import org.tmpotter.util.DownloadWorker;
+import org.tmpotter.util.Utilities;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-
-import javax.swing.JPanel;
 
 
 /**
@@ -85,7 +84,7 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         return false;
     }
 
-    public JPanel getPanel() {
+    public javax.swing.JPanel getPanel() {
         return this;
     }
 
@@ -118,31 +117,47 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         File tempDirectory;
         wizardController.setButtonBackEnabled(false);
         downloadButton.setEnabled(false);
-        translationProgressBar.setMinimum(0);
-        translationProgressBar.setMaximum(100);
+        originalFilePath = null;
+        translationFilePath = null;
         try {
             tempDirectory = createTempDirectory();
             tempDirectory.deleteOnExit();
-            translationProgressBar.setValue(30);
-            File sourceFile = MediaWikiDownloader.download(sourceUri, tempDirectory);
-            translationProgressBar.setValue(50);
-            if (sourceFile != null) {
-                originalFilePath = sourceFile;
-            }
-            File translationFile = MediaWikiDownloader.download(translationUri, tempDirectory);
-            translationProgressBar.setValue(90);
-            if (translationFile != null) {
-                translationFilePath = translationFile;
-            }
-        } catch (Exception ex) {
-            LOGGER.info("Mediawiki downloader:", ex);
-            wizardController.setButtonNextEnabled(false);
-            wizardController.setButtonBackEnabled(true);
-            return;
+            DownloadWorker wk = new DownloadWorker(tempDirectory, sourceUri,
+                    new DownloadWorker.IDownloadCallback() {
+                        @Override
+                        public synchronized void getResult(final File result) {
+                            originalFilePath = result;
+                            if (translationFilePath != null) {
+                                wizardController.setButtonNextEnabled(true);
+                                wizardController.setButtonBackEnabled(true);
+                            }
+                        }
+                        @Override
+                        public void progress(final Long len) {
+                            sourceProgressLabel.setText(Utilities.humanReadableByteCount(len, true));
+                        }
+                    });
+            wk.execute();
+            DownloadWorker wk2 = new DownloadWorker(tempDirectory, translationUri,
+                     new DownloadWorker.IDownloadCallback() {
+                        @Override
+                        public synchronized void getResult(final File result) {
+                            translationFilePath = result;
+                            if (originalFilePath != null) {
+                                wizardController.setButtonNextEnabled(true);
+                                wizardController.setButtonBackEnabled(true);
+                            }
+                        }
+                        @Override
+                        public void progress(final Long len) {
+                            translationProgressLabel.setText(Utilities.humanReadableByteCount(len,
+                                    true));
+                        }
+                    });
+            wk2.execute();
+        } catch (IOException ex) {
+            LOGGER.info("File I/O error.", ex);
         }
-        wizardController.setButtonBackEnabled(true);
-        wizardController.setButtonNextEnabled(true);
-        translationProgressBar.setValue(100);
     }
 
     private static File createTempDirectory() throws IOException {
@@ -165,14 +180,17 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                translationProgressBar = new javax.swing.JProgressBar();
                 jLabel1 = new javax.swing.JLabel();
                 sourceUrlLabel = new javax.swing.JLabel();
                 translationUrlLabel = new javax.swing.JLabel();
                 downloadButton = new javax.swing.JButton();
+                jLabel2 = new javax.swing.JLabel();
+                sourceProgressLabel = new javax.swing.JLabel();
+                translationProgressLabel = new javax.swing.JLabel();
 
-                jLabel1.setText("Source and Translation download");
+                jLabel1.setText("Source:");
 
+                sourceUrlLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 sourceUrlLabel.setText("Source URL");
 
                 translationUrlLabel.setText("Translation URL");
@@ -184,6 +202,12 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
                         }
                 });
 
+                jLabel2.setText("Translation:");
+
+                sourceProgressLabel.setText("0.0kB");
+
+                translationProgressLabel.setText("0.0kB");
+
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
@@ -191,33 +215,44 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(84, 84, 84)
+                                                .addGap(35, 35, 35)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(translationProgressLabel)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(translationUrlLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(sourceProgressLabel)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addComponent(sourceUrlLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(134, 134, 134)
+                                                .addComponent(downloadButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(22, 22, 22)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(translationUrlLabel)
-                                                        .addComponent(sourceUrlLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel1)))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(65, 65, 65)
-                                                .addComponent(translationProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(114, 114, 114)
-                                                .addComponent(downloadButton)))
-                                .addContainerGap(75, Short.MAX_VALUE))
+                                                        .addComponent(jLabel1)
+                                                        .addComponent(jLabel2))))
+                                .addContainerGap(65, Short.MAX_VALUE))
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
+                                .addGap(52, 52, 52)
                                 .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(sourceUrlLabel)
-                                .addGap(18, 18, 18)
-                                .addComponent(translationUrlLabel)
-                                .addGap(43, 43, 43)
-                                .addComponent(translationProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
+                                .addGap(17, 17, 17)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(sourceUrlLabel)
+                                        .addComponent(sourceProgressLabel))
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel2)
+                                .addGap(28, 28, 28)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(translationUrlLabel)
+                                        .addComponent(translationProgressLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                                 .addComponent(downloadButton)
-                                .addContainerGap(61, Short.MAX_VALUE))
+                                .addGap(32, 32, 32))
                 );
         }// </editor-fold>//GEN-END:initComponents
 
@@ -229,8 +264,10 @@ public class ImportWizardWikimediaDownload extends javax.swing.JPanel implements
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton downloadButton;
         private javax.swing.JLabel jLabel1;
+        private javax.swing.JLabel jLabel2;
+        private javax.swing.JLabel sourceProgressLabel;
         private javax.swing.JLabel sourceUrlLabel;
-        private javax.swing.JProgressBar translationProgressBar;
+        private javax.swing.JLabel translationProgressLabel;
         private javax.swing.JLabel translationUrlLabel;
         // End of variables declaration//GEN-END:variables
 }
