@@ -7,6 +7,15 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### FIxed
+
+
+## [0.8.3] - 2018-12-29
+### Add
+- Wiki download and import feature
+
+### Changed
+
+### FIxed
 - Update gradle properties template for using Java8
 
 
@@ -28,5 +37,6 @@ All notable changes to this project will be documented in this file.
 ## 0.8.0 - 2016-12-7
 - Integrate bitext2tmx and OmegaT code base.
 
-[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.3...HEAD
+[0.8.3]: https://github.com/miurahr/tmpotter/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/miurahr/tmpotter/compare/v0.8.0...v0.8.2
