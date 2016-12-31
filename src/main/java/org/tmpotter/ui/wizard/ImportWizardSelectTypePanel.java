@@ -143,7 +143,7 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         panelBiText.setBorder(javax.swing.BorderFactory.createTitledBorder("Bi-Text imports"));
-        panelBiText.setLayout(new java.awt.GridLayout(1, 0));
+        panelBiText.setLayout(new java.awt.GridLayout(2, 2));
 
         panelSingle.setBorder(javax.swing.BorderFactory.createTitledBorder("Single file import"));
         panelSingle.setLayout(new java.awt.GridLayout(2, 2));

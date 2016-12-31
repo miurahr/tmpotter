@@ -30,6 +30,9 @@ import net.sf.okapi.lib.xliff2.reader.Event;
 import net.sf.okapi.lib.xliff2.reader.XLIFFReader;
 import net.sf.okapi.lib.xliff2.writer.XLIFFWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.tmpotter.core.Document;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
@@ -45,6 +48,8 @@ import java.util.Map;
  */
 public class Xliff2Filter implements IFilter {
     private Xliff2Filter self;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Xliff2Filter.class);
 
     /**
      * Constructor.
@@ -139,6 +144,8 @@ public class Xliff2Filter implements IFilter {
                     }
                 }
             }
+        } catch (Exception ex) {
+            LOGGER.info("Exception", ex);
         }
 
     }
