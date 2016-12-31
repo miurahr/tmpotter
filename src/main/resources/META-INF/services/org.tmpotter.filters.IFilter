@@ -1,3 +1,4 @@
 org.tmpotter.filters.pofile.PoFilter
 org.tmpotter.filters.bitext.BiTextFilter
 org.tmpotter.filters.tmx.TmxFilter
+org.tmpotter.filters.xliff.Xliff2Filter
