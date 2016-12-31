@@ -103,6 +103,9 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
      */
     public MainWindow() {
         initComponents();
+        menuItemCopy.addActionListener(new DefaultEditorKit.CopyAction());
+        menuItemCut.addActionListener(new DefaultEditorKit.CutAction());
+        menuItemPaste.addActionListener(new DefaultEditorKit.PasteAction());
         setActionCommands();
         filterManager = new FilterManager();
         actionHandler = new ActionHandler(this, tmData, filterManager);
