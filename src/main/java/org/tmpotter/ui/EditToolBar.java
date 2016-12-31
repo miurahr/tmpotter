@@ -62,6 +62,9 @@ public class EditToolBar extends javax.swing.JPanel implements ActionListener {
         buttonUndo.setEnabled(enabled);
     }
 
+    public final void setRedoEnabled(boolean enabled) {
+        buttonRedo.setEnabled(enabled);
+    }
 
     /**
      * Set 'actionCommand' for all menu items.

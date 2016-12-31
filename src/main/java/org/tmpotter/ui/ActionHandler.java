@@ -358,14 +358,13 @@ final class ActionHandler {
                 break;
         }
         modelMediator.updateTmView();
-    }
-
-    public void onUndo() {
         tmData.removeArrayListChanges(tmData.getIdentChanges());
         int currentChange = tmData.decrementChanges();
 
         if (currentChange == -1) {
             modelMediator.setUndoEnabled(false);
+        } else {
+            modelMediator.setUndoEnabled(true);
         }
     }
 
@@ -585,12 +584,10 @@ final class ActionHandler {
 
     public void buttonUndoActionPerformed() {
         undoChanges();
-        onUndo();
     }
 
     public void menuItemUndoActionPerformed() {
         undoChanges();
-        onUndo();
     }
 
     public void buttonRedoActionPerformed() {
