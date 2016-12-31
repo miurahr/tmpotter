@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -173,7 +174,8 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
     }
 
     @Override
-    public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
+    public void saveFile(File outFile, Document original, Document translation,
+                         Map<String, String> config, FilterContext fc) {
         // fixme.
     }
 }

@@ -33,6 +33,7 @@ import org.tmpotter.util.PluginUtils;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -128,7 +129,8 @@ public class FilterManager {
      * @throws Exception throw when error happened.
      */
     public void saveFile(File outFile, ProjectProperties prop,
-                Document docOriginal, Document docTranslation, String filterName)
+                Document docOriginal, Document docTranslation, Map<String, String> config,
+                         String filterName)
             throws Exception {
         IFilter filter = null;
         this.documentOriginal = docOriginal;
@@ -142,7 +144,7 @@ public class FilterManager {
         }
         if (filter != null) {
             try {
-                filter.saveFile(outFile, docOriginal, docTranslation, fc);
+                filter.saveFile(outFile, docOriginal, docTranslation, config, fc);
             } catch (Exception ex) {
                 LOGGER.info("Filter error", ex);
             }

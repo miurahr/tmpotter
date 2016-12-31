@@ -35,11 +35,11 @@ import org.tmpotter.util.Language;
  */
 public class FilterContext {
 
-    private final ProjectProperties props;
     private final Language sourceLang;
     private final Language targetLang;
     private String sourceEncoding;
     private String translateEncoding;
+    private boolean segmentation;
 
     /**
      * Constructor from existent procps.
@@ -47,9 +47,9 @@ public class FilterContext {
      * @param props Project Properties
      */
     public FilterContext(ProjectProperties props) {
-        this.props = props;
         this.sourceLang = props.getSourceLanguage();
         this.targetLang = props.getTargetLanguage();
+        this.segmentation = false;
     }
 
     /**
@@ -61,9 +61,9 @@ public class FilterContext {
      */
     public FilterContext(Language sourceLang, Language targetLang,
                          boolean sentenceSegmentingEnabled) {
-        this.props = null;
         this.sourceLang = sourceLang;
         this.targetLang = targetLang;
+        this.segmentation = sentenceSegmentingEnabled;
     }
 
     /**
@@ -120,12 +120,7 @@ public class FilterContext {
         this.translateEncoding = outEncoding;
     }
 
-    /**
-     * get project properties.
-     *
-     * @return project properties
-     */
-    public ProjectProperties getProjectProperties() {
-        return props;
+    public boolean getSegmentation() {
+        return segmentation;
     }
 }

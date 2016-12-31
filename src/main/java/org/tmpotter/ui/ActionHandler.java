@@ -58,6 +58,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -134,11 +136,14 @@ final class ActionHandler {
 
     public void doExport(ExportPreference pref) {
         String filter = pref.getFilter(); // Now support "TmxFilter"
+        int level = pref.getLevel();
         File outFile = new File(pref.getFilePath());
-        System.out.println(filter);
+        Map<String, String> options = new HashMap<>();
+        options.put("level", String.valueOf(level));
         try {
             filterManager.saveFile(outFile, modelMediator.getProjectProperties(),
-                    tmData.getDocumentOriginal(), tmData.getDocumentTranslation(), filter);
+                    tmData.getDocumentOriginal(), tmData.getDocumentTranslation(),
+                    options, filter);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parent, getString("MSG.ERROR"),
                     getString("MSG.ERROR.FILE_WRITE"), JOptionPane.ERROR_MESSAGE);
@@ -539,6 +544,12 @@ final class ActionHandler {
         if (dlg.isFinished()) {
             ExportPreference pref = new ExportPreference();
             pref.setFilePath(dlg.getFilePath());
+            String sel = dlg.getSelection();
+            if ("Level2".equals(sel)) {
+                pref.setLevel(2);
+            } else {
+                pref.setLevel(1);
+            }
             pref.setFilter("TmxFilter");
             doExport(pref);
         }

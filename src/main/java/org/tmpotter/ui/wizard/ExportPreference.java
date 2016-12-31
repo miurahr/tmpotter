@@ -25,27 +25,36 @@ package org.tmpotter.ui.wizard;
 
 /**
  * Export preference.
+ *
  * @author Hiroshi Miura
  */
 public class ExportPreference {
-	private String filePath;
-	private String filter;
 
-	public String getFilePath() {
-		return filePath;
-	}
+    private String filePath;
+    private String filter;
+    private int level;
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
+    public String getFilePath() {
+        return filePath;
+    }
 
-	public String getFilter() {
-		return filter;
-	}
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
-	
-	
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 }

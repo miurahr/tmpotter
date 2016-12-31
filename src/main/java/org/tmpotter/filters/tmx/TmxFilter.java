@@ -191,13 +191,20 @@ public class TmxFilter implements IFilter {
     
     @Override
     public void saveFile(File outFile, Document docOriginal, Document docTranslation,
-                         FilterContext fc) {
+                         Map<String, String> config, FilterContext fc) {
+        boolean level = false;
         Language sourceLanguage = new Language(fc.getSourceLang().toString());
         Language targetLanguage = new Language(fc.getTargetLang().toString());
+        boolean segment = fc.getSegmentation();
+        if (config.containsKey("level")) {
+            if (config.get("level").equals("2")) {
+                level = true;
+            }
+        }
 
         try {
             TmxWriter2 wr = new TmxWriter2(outFile, sourceLanguage,
-                    targetLanguage, true, false, false);
+                    targetLanguage, segment, level, false);
             try {
                 HashMap<String, String> prop = new HashMap<>();
                 for (int i = 0; i < docOriginal.size(); i++) {

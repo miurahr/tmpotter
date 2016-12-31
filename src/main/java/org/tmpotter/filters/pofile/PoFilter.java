@@ -629,7 +629,8 @@ public class PoFilter extends AbstractFilter {
     }
 
     @Override
-    public void saveFile(File outFile, Document original, Document translation, FilterContext fc) {
+    public void saveFile(File outFile, Document original, Document translation,
+                         Map<String, String> config, FilterContext fc) {
 
     }
 }

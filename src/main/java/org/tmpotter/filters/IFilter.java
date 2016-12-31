@@ -150,5 +150,6 @@ public interface IFilter {
      * @param docTranslation document of translate texts.
      * @param fc processing context
      */
-    void saveFile(File outFile, Document docOriginal, Document docTranslation, FilterContext fc);
+    void saveFile(File outFile, Document docOriginal, Document docTranslation,
+                  Map<String, String> config, FilterContext fc);
 }
