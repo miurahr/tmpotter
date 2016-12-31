@@ -24,6 +24,7 @@
 package org.tmpotter.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 public class TmData {
 
     private int topArrays; //  =  0;
-    private final ArrayList<AlignmentChanges> arrayListChanges = new ArrayList<>();
+    private final List<AlignmentChanges> arrayListChanges = new ArrayList<>();
     private int indexChanges = -1;
     private int indexCurrent; //  =  0;
     private int indexPrevious; //  =  0;
@@ -176,7 +177,7 @@ public class TmData {
     }
 
     /**
-     * Function IgualarArrays: adds rows to the smallest array and deletes blank rows.
+     * Adds rows to the smallest array and deletes blank rows.
      */
     public void matchArrays() {
         int origLen = documentOriginal.size();
