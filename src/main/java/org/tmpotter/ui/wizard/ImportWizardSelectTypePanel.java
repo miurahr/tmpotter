@@ -38,7 +38,6 @@ import javax.swing.JRadioButton;
  */
 public class ImportWizardSelectTypePanel extends JPanel implements IImportWizardPanel {
     public static final String id = "selecttype";
-    private ImportWizardController wizardController;
     private List<JRadioButton> buttons = new ArrayList<>();
     private List<JLabel> labels = new ArrayList<>();
 
