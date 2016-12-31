@@ -54,7 +54,9 @@ import org.tmpotter.ui.wizard.ImportWizard;
 import org.tmpotter.util.Utilities;
 import org.tmpotter.util.gui.NegativeDefaultButtonJOptionPane;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -146,7 +148,15 @@ final class ActionHandler {
         }
     }
 
-    public void onTableClicked() {
+    public void onTableClicked(MouseEvent evt) {
+        javax.swing.JTable table = (javax.swing.JTable) evt.getSource();
+        Point point = evt.getPoint();
+        int row = table.rowAtPoint(point);
+        int col = table.columnAtPoint(point);
+
+        table.setRowSelectionInterval(row, row);
+        table.setColumnSelectionInterval(col, col);
+
         tmData.setPositionTextArea(0);
         if (tmData.getIndexPrevious() < tmData.getDocumentOriginalSize()) {
             tmData.setOriginalDocumentAnt(restoreText(modelMediator.getLeftEdit()));

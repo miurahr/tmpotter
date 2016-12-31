@@ -66,16 +66,16 @@ public class TmView extends javax.swing.JPanel {
         initComponents();
         table.setEnabled(false);
         table.addKeyListener(new KeyAdapter() {
-			@Override
+            @Override
             public final void keyPressed(final KeyEvent event) {
                 actionHandler.onTablePressed(event);
             }
         });
 
         table.addMouseListener(new MouseAdapter() {
-			@Override
+            @Override
             public final void mouseClicked(final MouseEvent event) {
-                actionHandler.onTableClicked();
+                actionHandler.onTableClicked(event);
             }
         });
         scrollPane.setColumnHeader(null);

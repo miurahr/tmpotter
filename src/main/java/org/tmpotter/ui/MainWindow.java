@@ -294,11 +294,14 @@ public class MainWindow extends javax.swing.JFrame implements ModelMediator, Act
      */
     public void enableButtonsOnOpenFile(boolean val) {
         alignToolBar.enableButtons(val);
-        editToolBar.setUndoEnabled(false);
         menuItemFileSave.setEnabled(val);
         menuItemFileSaveAs.setEnabled(val);
         menuItemFileClose.setEnabled(val);
         enableEditMenus(val);
+        editToolBar.setUndoEnabled(false);
+        editToolBar.setRedoEnabled(false);
+        menuItemUndo.setEnabled(false);
+        menuItemRedo.setEnabled(false);
     }
 
     private void setMacProxy() {
