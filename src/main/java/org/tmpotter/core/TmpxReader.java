@@ -102,8 +102,18 @@ public class TmpxReader {
         // TODO: sanity check for security.
         // Don't respect a TMX srclang property but accept a custom property.
         // see TmxpWriter class.
-        prop.setSourceLanguage(header.props.get("sourceLang"));
-        prop.setTargetLanguage(header.props.get("targetLang"));
+        String headerSource = header.props.get("sourceLang");
+        if (headerSource != null && !headerSource.equals("")) {
+            prop.setSourceLanguage(headerSource);
+        } else {
+            prop.setSourceLanguage(defaultSource);
+        }
+        String headerTarget = header.props.get("targetLang");
+        if (headerTarget != null && !headerTarget.equals("")) {
+            prop.setTargetLanguage(headerTarget);
+        } else {
+            prop.setTargetLanguage(defaultTarget);
+        }
         // Project Name.
         prop.setProjectName(FilenameUtils.removeExtension(prop.getFilePathProject().getName()));
     }

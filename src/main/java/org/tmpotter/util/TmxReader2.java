@@ -255,7 +255,7 @@ public class TmxReader2 {
      */
     protected void parseHeaderProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
-        propContent.setLength(0);
+        StringBuilder headerPropContent = new StringBuilder();
 
         while (true) {
             XMLEvent evt = xml.nextEvent();
@@ -263,9 +263,13 @@ public class TmxReader2 {
                 case XMLEvent.END_ELEMENT:
                     EndElement eleEnd = (EndElement) evt;
                     if ("prop".equals(eleEnd.getName().getLocalPart())) {
-                        header.props.put(propType, propContent.toString());
+                        header.props.put(propType, headerPropContent.toString());
                         return;
                     }
+                    break;
+                case XMLEvent.CHARACTERS:
+                    Characters ch = (Characters) evt;
+                    headerPropContent.append(ch.getData());
                     break;
                 default:
                     break;

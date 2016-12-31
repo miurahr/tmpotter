@@ -46,7 +46,6 @@ import org.tmpotter.preferences.Preferences;
 import org.tmpotter.preferences.RuntimePreferences;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
-import org.tmpotter.ui.dialogs.OpenProject;
 import org.tmpotter.ui.wizard.ExportPreference;
 import org.tmpotter.ui.wizard.ExportWizard;
 import org.tmpotter.ui.wizard.ImportPreference;
@@ -58,6 +57,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -95,11 +95,8 @@ final class ActionHandler {
         return true;
     }
 
-    private void onOpenFile(File file, String stringLangOriginal,
-                            String stringLangTranslation) {
+    private void onOpenFile(File file) {
         modelMediator.setFilePathProject(file);
-        modelMediator.setSourceLanguage(stringLangOriginal);
-        modelMediator.setTargetLanguage(stringLangTranslation);
         modelMediator.buildDisplay();
         try {
             TmpxReader reader = new TmpxReader(modelMediator.getProjectProperties());
@@ -490,14 +487,36 @@ final class ActionHandler {
      * All action entry points named with +ActionPerformed().
      */
     public void onFileOpen() {
-        final OpenProject dlg = new OpenProject(parent, true);
-        dlg.setFilePath(RuntimePreferences.getUserHome());
-        dlg.setModal(true);
-        dlg.setVisible(true);
-        if (!dlg.isClosed()) {
-            RuntimePreferences.setUserHome(dlg.getFilePath());
-            onOpenFile(dlg.getFilePath(), dlg.getSourceLocale(), dlg.getTargetLocale());
-            dlg.dispose();
+        final JFileChooser fc = new JFileChooser();
+        File filePath = RuntimePreferences.getUserHome();
+        fc.setCurrentDirectory(filePath);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Project File(.tmpx)", "tmpx");
+        fc.setFileFilter(filter);
+        fc.setMultiSelectionEnabled(false);
+        final int returnVal = fc.showOpenDialog(parent);
+        filePath = fc.getCurrentDirectory();
+        RuntimePreferences.setUserHome(filePath);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            filePath = fc.getSelectedFile();
+
+            if (filePath.getName().endsWith(".tmpx")
+                    && filePath.exists()) {
+                try {
+                    final FileInputStream fr = new FileInputStream(filePath);
+                    fr.close();
+                    onOpenFile(filePath);
+                } catch (Exception ex) {
+                 JOptionPane.showMessageDialog(parent,
+                        getString("MSG.ERROR.FILE_NOTFOUND"),
+                        getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(parent,
+                        getString("MSG.ERROR.FILE_NOTFOUND"),
+                        getString("MSG.ERROR"), JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
