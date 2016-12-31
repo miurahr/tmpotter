@@ -3,10 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+- Level2 TMX export support.
+- Highlight a clicked table row.
 
 ### Changed
+- Undo menu/buttons enable/disable support(imcomplete).
+- Open project file without language selection.
 
-### FIxed
+### Fixed
 
 
 ## [0.8.3] - 2018-12-29
