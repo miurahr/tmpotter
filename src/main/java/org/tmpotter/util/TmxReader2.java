@@ -84,15 +84,15 @@ public class TmxReader2 {
     /**
      * Segment Type attribute value: "paragraph".
      */
-    public static final String SEG_PARAGRAPH = "paragraph";
+    private static final String SEG_PARAGRAPH = "paragraph";
     /**
      * Segment Type attribute value: "sentence".
      */
-    public static final String SEG_SENTENCE = "sentence";
+    private static final String SEG_SENTENCE = "sentence";
     /**
      * Creation Tool attribute value.
      */
-    public static final String CT_APP = "tmpotter";
+    private static final String CT_APP = "tmpotter";
 
     private XMLEventReader xml;
 
@@ -199,7 +199,7 @@ public class TmxReader2 {
                   "TMXR.INFO.READING_COMPLETE"));
     }
 
-    protected void parseHeader(StartElement element) throws Exception {
+    private void parseHeader(StartElement element) throws Exception {
         isParagraphSegtype = SEG_PARAGRAPH.equals(getAttributeValue(element, "segtype"));
         isTmPotter = CT_APP.equals(getAttributeValue(element, "creationtool"));
 
@@ -253,7 +253,7 @@ public class TmxReader2 {
      * @param element XML element.
      * @throws Exception when error happend.
      */
-    protected void parseHeaderProp(StartElement element) throws Exception {
+    private void parseHeaderProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
         StringBuilder headerPropContent = new StringBuilder();
 
@@ -277,7 +277,7 @@ public class TmxReader2 {
         }
     }
 
-    protected void parseHeaderNote(StartElement element) throws Exception {
+    private void parseHeaderNote(StartElement element) throws Exception {
         noteContent.setLength(0);
 
         while (true) {
@@ -304,7 +304,7 @@ public class TmxReader2 {
         return header;
     }
 
-    protected void parseTu(StartElement element) throws Exception {
+    private void parseTu(StartElement element) throws Exception {
         currentTu.clear();
 
         currentTu.changeid = getAttributeValue(element, "changeid");
@@ -338,7 +338,7 @@ public class TmxReader2 {
     }
 
     @SuppressWarnings("unchecked")
-    protected void parseTuv(StartElement element) throws Exception {
+    private void parseTuv(StartElement element) throws Exception {
         ParsedTuv tuv = new ParsedTuv();
         currentTu.tuvs.add(tuv);
 
@@ -384,7 +384,7 @@ public class TmxReader2 {
         }
     }
 
-    protected void parseTuNote(StartElement element) throws Exception {
+    private void parseTuNote(StartElement element) throws Exception {
         noteContent.setLength(0);
 
         while (true) {
@@ -413,7 +413,7 @@ public class TmxReader2 {
      * @param element XML element.
      * @throws Exception when error happened.
      */
-    protected void parseTuProp(StartElement element) throws Exception {
+    private void parseTuProp(StartElement element) throws Exception {
         String propType = getAttributeValue(element, "type");
         propContent.setLength(0);
 
@@ -440,7 +440,7 @@ public class TmxReader2 {
     /**
      * OmegaT TMX - just read full text.
      */
-    protected void parseSegOmegaT() throws Exception {
+    private void parseSegOmegaT() throws Exception {
         segContent.setLength(0);
 
         while (true) {
@@ -465,7 +465,7 @@ public class TmxReader2 {
     /**
      * External TMX - level 1. Skip text inside inline tags.
      */
-    protected void parseSegExtLevel1() throws Exception {
+    private void parseSegExtLevel1() throws Exception {
         segContent.setLength(0);
 
         int inlineLevel = 0;
@@ -498,7 +498,7 @@ public class TmxReader2 {
     /**
      * External TMX - level 2. Replace all tags into shortcuts.
      */
-    protected void parseSegExtLevel2() throws Exception {
+    private void parseSegExtLevel2() throws Exception {
         segContent.setLength(0);
         segInlineTag.setLength(0);
         inlineTagHandler.reset();
@@ -645,7 +645,7 @@ public class TmxReader2 {
      * - if not exist, then with the same language but without country<br>
      * - if not exist, then with the same language with whatever country<br>
      */
-    protected ParsedTuv getTuvByLang(Language lang) {
+    private ParsedTuv getTuvByLang(Language lang) {
         String langLanguage = lang.getLanguageCode();
         String langCountry = lang.getCountryCode();
         ParsedTuv tuvLc = null; // Tuv with the same language+country
@@ -686,7 +686,7 @@ public class TmxReader2 {
      * @param str date format
      * @return date number from epoch
      */
-    public long parseIso8601date(String str) {
+    private long parseIso8601date(String str) {
         if (str == null) {
             return 0;
         }
@@ -799,17 +799,13 @@ public class TmxReader2 {
         }
     };
 
-    public static final XMLResolver TMX_DTD_RESOLVER_2 = new XMLResolver() {
-        @Override
-        public Object resolveEntity(String publicId, String systemId,
-                                    String baseUri, String namespace) throws XMLStreamException {
-            if (systemId.endsWith("tmx11.dtd")) {
-                return TmxReader2.class.getResourceAsStream("/schemas/tmx11.dtd");
-            } else if (systemId.endsWith("tmx14.dtd")) {
-                return TmxReader2.class.getResourceAsStream("/schemas/tmx14.dtd");
-            } else {
-                return null;
-            }
+    private static final XMLResolver TMX_DTD_RESOLVER_2 = (publicId, systemId, baseUri, namespace) -> {
+        if (systemId.endsWith("tmx11.dtd")) {
+            return TmxReader2.class.getResourceAsStream("/schemas/tmx11.dtd");
+        } else if (systemId.endsWith("tmx14.dtd")) {
+            return TmxReader2.class.getResourceAsStream("/schemas/tmx14.dtd");
+        } else {
+            return null;
         }
     };
 }

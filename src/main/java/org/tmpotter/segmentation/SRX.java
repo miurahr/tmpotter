@@ -62,7 +62,7 @@ import javax.xml.bind.JAXBException;
  *
  * @author Maxym Mykhalchuk
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","linelength"})
 public class SRX implements Serializable, Cloneable {
 
     public static final String CONF_SENTSEG = "segmentation.conf";

@@ -148,7 +148,7 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
      * @param locale source language.
      */
     public final void setSourceLocale(String locale) {
-        String[] codes = Localization.getLanguageList();
+        //String[] codes = Localization.getLanguageList();
         comboOriginalLang.setSelectedItem(locale);
         // FIXME
     }
@@ -166,7 +166,7 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
      * @param locale target language.
      */
     public final void setTargetLocale(String locale) {
-        String[] codes = Localization.getLanguageList();
+        //String[] codes = Localization.getLanguageList();
         comboTranslationLang.setSelectedItem(locale);
         // FIXME
     }

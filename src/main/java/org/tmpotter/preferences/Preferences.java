@@ -470,14 +470,14 @@ public class Preferences {
         }
     }
 
-    private static boolean loaded;
-    private static boolean changed;
+    private boolean loaded;
+    private boolean changed;
 
     // use a hash map for fast lookup of data
     // use array lists for orderly recovery of it for saving to disk
-    private static List<String> nameList;
-    private static List<String> valList;
-    private static Map<String, Integer> preferenceMap;
+    private List<String> nameList;
+    private List<String> valList;
+    private Map<String, Integer> preferenceMap;
 
     private static volatile SRX srx;
 }

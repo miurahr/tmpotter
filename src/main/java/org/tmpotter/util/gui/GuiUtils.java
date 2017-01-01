@@ -64,20 +64,22 @@ public class GuiUtils {
         Objects.requireNonNull(text);
         Objects.requireNonNull(changeListener);
         DocumentListener dl = new DocumentListener() {
-            private int lastChange = 0, lastNotifiedChange = 0;
+
+            private int lastChange = 0;
+            private int lastNotifiedChange = 0;
 
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                changedUpdate(e);
+            public void insertUpdate(DocumentEvent evt) {
+                changedUpdate(evt);
             }
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                changedUpdate(e);
+            public void removeUpdate(DocumentEvent evt) {
+                changedUpdate(evt);
             }
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent evt) {
                 lastChange++;
                 SwingUtilities.invokeLater(() -> {
                     if (lastNotifiedChange != lastChange) {
@@ -87,14 +89,21 @@ public class GuiUtils {
                 });
             }
         };
-        text.addPropertyChangeListener("document", (PropertyChangeEvent e) -> {
-            Document d1 = (Document) e.getOldValue();
-            Document d2 = (Document) e.getNewValue();
-            if (d1 != null) d1.removeDocumentListener(dl);
-            if (d2 != null) d2.addDocumentListener(dl);
+
+        text.addPropertyChangeListener("document", (PropertyChangeEvent evt) -> {
+            Document d1 = (Document) evt.getOldValue();
+            Document d2 = (Document) evt.getNewValue();
+            if (d1 != null) {
+                d1.removeDocumentListener(dl);
+            }
+            if (d2 != null) {
+                d2.addDocumentListener(dl);
+            }
             dl.changedUpdate(null);
         });
-        Document d = text.getDocument();
-        if (d != null) d.addDocumentListener(dl);
+        Document doc = text.getDocument();
+        if (doc != null) {
+            doc.addDocumentListener(dl);
+        }
     }
 }

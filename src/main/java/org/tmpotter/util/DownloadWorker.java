@@ -44,16 +44,35 @@ public class DownloadWorker extends javax.swing.SwingWorker<File, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadWorker.class.getName());
 
     public interface IDownloadCallback {
+        /**
+         * Report download progress.
+         * @param progress bytes downloaded.
+         */
         void progress(final Long progress);
+
+        /**
+         * Get download result.
+          * @param result resulted file.
+         */
         void getResult(final File result);
     }
 
+    /**
+     * Constructor.
+     * @param tempDirectory directory to place downloaded files.
+     * @param target target URI.
+     * @param cb callback.
+     */
     public DownloadWorker(final File tempDirectory, final URI target, IDownloadCallback cb) {
         this.tempDirectory = tempDirectory;
         this.target = target;
         this.cb = cb;
     }
 
+    /**
+     * Swing worker background executor.
+     * @return File downloaded.
+     */
     @Override
     public File doInBackground() {
         try {
@@ -68,6 +87,10 @@ public class DownloadWorker extends javax.swing.SwingWorker<File, Long> {
         return null;
     }
 
+    /**
+     * Swing worker process callback.
+     * @param chunks bytes to downloaded.
+     */
     @Override
     protected void process(List<Long> chunks) {
         for (Long len : chunks) {
@@ -76,6 +99,9 @@ public class DownloadWorker extends javax.swing.SwingWorker<File, Long> {
         cb.progress(total);
     }
 
+    /**
+     * Swing worker done callback.
+     */
     @Override
     protected void done() {
         try {
@@ -83,6 +109,7 @@ public class DownloadWorker extends javax.swing.SwingWorker<File, Long> {
             if (downloaded != null) {
                 cb.getResult(downloaded);
             } else {
+                // FIXME.
                 //ShowEoor();
             }
         } catch (InterruptedException iex) {

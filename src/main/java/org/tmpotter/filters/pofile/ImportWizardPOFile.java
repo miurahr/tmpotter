@@ -101,7 +101,7 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
     }
 
     public final void setSourceLocale(String locale) {
-        String[] codes = Localization.getLanguageList();
+        //String[] codes = Localization.getLanguageList();
         comboSourceLang.setSelectedItem(locale);
         // FIXME
     }
@@ -111,7 +111,7 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
     }
 
     public final void setTargetLocale(String locale) {
-        String[] codes = Localization.getLanguageList();
+        //String[] codes = Localization.getLanguageList();
         comboTranslationLang.setSelectedItem(locale);
         // FIXME
     }

@@ -288,7 +288,6 @@ public class PoFilter extends AbstractFilter {
     private StringBuilder extractedComments;
     private StringBuilder references;
     private int plurals = 2;
-    private String expression = "";
     private String path;
     private boolean fuzzy;
 
@@ -554,7 +553,6 @@ public class PoFilter extends AbstractFilter {
                     PluralInfo pluralInfo = pluralInfos.get(lang);
                     if (pluralInfo != null) {
                         plurals = pluralInfo.plurals;
-                        expression = pluralInfo.expression;
                     }
                 }
                 //update the number of targets according to new plural number
