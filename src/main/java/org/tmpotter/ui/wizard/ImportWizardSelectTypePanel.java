@@ -111,8 +111,8 @@ public class ImportWizardSelectTypePanel extends JPanel implements IImportWizard
             }
         }
         // set place holder size.
-        panelBiText.setLayout(new java.awt.GridLayout(2, bitext));
-        panelSingle.setLayout(new java.awt.GridLayout(2, combined));
+        panelBiText.setLayout(new java.awt.GridLayout(bitext, 2));
+        panelSingle.setLayout(new java.awt.GridLayout(combined, 2));
         // create radioButtons and labels.
         for (IImportWizardPanel panel : panels) {
             JLabel label = new JLabel();
