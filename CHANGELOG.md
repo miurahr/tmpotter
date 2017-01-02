@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Add
 - Introduce Debian package.(#7)
+- TmxReader2 test added.(but some still fails)
 
 ### Changed
 

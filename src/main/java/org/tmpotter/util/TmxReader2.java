@@ -102,7 +102,7 @@ public class TmxReader2 {
     private boolean useSlash;
     private static final Logger LOGGER = LoggerFactory.getLogger(TmxReader2.class);
 
-    private ParsedTu currentTu = new ParsedTu();
+    protected ParsedTu currentTu = new ParsedTu();
     private ParsedHeader header = new ParsedHeader();
 
     // buffers for parse texts
@@ -219,7 +219,7 @@ public class TmxReader2 {
         // different from the project source language
         String tmxSourceLanguage = getAttributeValue(element, "srclang");
         if (!tmxSourceLanguage.equalsIgnoreCase(sourceLanguage.getLanguage())) {
-            LOGGER.info(String.format("%s %s %s",
+            LOGGER.info(String.format("%s: actual: %s expected: %s",
                     getString("TMXR.WARNING.INCORRECT_SOURCE_LANG"), tmxSourceLanguage,
                     sourceLanguage));
             sourceLanguage = new Language(tmxSourceLanguage);
@@ -646,7 +646,7 @@ public class TmxReader2 {
      * - if not exist, then with the same language but without country<br>
      * - if not exist, then with the same language with whatever country<br>
      */
-    private ParsedTuv getTuvByLang(Language lang) {
+    protected ParsedTuv getTuvByLang(Language lang) {
         String langLanguage = lang.getLanguageCode();
         String langCountry = lang.getCountryCode();
         ParsedTuv tuvLc = null; // Tuv with the same language+country
