@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - SLF4J multiple binding warning.(#52)
 - File not found tmx11.dtd error.(#51)
 - First new import cause NPE.
+- Fix NPE on importing TMX 1.4 file.(#53)
 
 
 ## [0.8.4] - 2017-01-02

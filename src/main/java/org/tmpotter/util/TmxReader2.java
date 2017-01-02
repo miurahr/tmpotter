@@ -32,6 +32,7 @@ import static org.tmpotter.util.Localization.getString;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -56,7 +57,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLResolver;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
@@ -350,7 +350,8 @@ public class TmxReader2 {
         // find 'lang' or 'xml:lang' attribute
         for (Iterator<Attribute> it = element.getAttributes(); it.hasNext(); ) {
             Attribute att = it.next();
-            if ("lang".equals(att.getName().getLocalPart())) {
+            String key = att.getName().getLocalPart(); // Some StAX version returns 'xml:lang'
+            if (key.length() >= 4 && "lang".regionMatches(0, key, key.length() - 4, 4)) {
                 tuv.lang = att.getValue();
                 break;
             }
@@ -640,7 +641,7 @@ public class TmxReader2 {
     /**
      * Get ParsedTuv from list of Tuv for specific language.
      * <p>
-     * Language choosed by:<br>
+     * Language chosen by:<br>
      * - with the same language+country<br>
      * - if not exist, then with the same language but without country<br>
      * - if not exist, then with the same language with whatever country<br>
@@ -654,6 +655,10 @@ public class TmxReader2 {
         for (int i = 0; i < currentTu.tuvs.size(); i++) {
             ParsedTuv tuv = currentTu.tuvs.get(i);
             String tuvLang = tuv.lang;
+            if (tuvLang == null) {
+                // problematic TMX file?
+                continue;
+            }
             if (!langLanguage.regionMatches(true, 0, tuvLang, 0, 2)) {
                 // language not equals - there is no sense to processing
                 continue;
