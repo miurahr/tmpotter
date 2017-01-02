@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+- XLIFF v2.0 and XLIFF v1.1/v1.4 import feature
 
 ### Changed
 
