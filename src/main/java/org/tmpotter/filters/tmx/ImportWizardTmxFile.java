@@ -163,7 +163,10 @@ public class ImportWizardTmxFile extends javax.swing.JPanel implements IImportWi
 
     public void onImportFile(final IImportWizardPanel panel) {
         final JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(pref.getCurrentPath());
+        File current = pref.getCurrentPath();
+        if (current != null) {
+            fc.setCurrentDirectory(current);
+        }
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
             "TMX File", "tmx");
         fc.setFileFilter(filter);

@@ -257,7 +257,10 @@ public class ImportWizardBiTextFile extends javax.swing.JPanel implements IImpor
      */
     public void onOriginal(final IImportWizardPanel panel) {
         final JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(pref.getCurrentPath());
+        File current = pref.getCurrentPath();
+        if (current != null) {
+            fc.setCurrentDirectory(current);
+        }
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Text File", "txt", "utf8");
         fc.setFileFilter(filter);

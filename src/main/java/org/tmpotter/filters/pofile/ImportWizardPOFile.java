@@ -165,7 +165,10 @@ public class ImportWizardPOFile extends javax.swing.JPanel implements IImportWiz
 
     public void onImportFile(final IImportWizardPanel panel) {
         final JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(pref.getCurrentPath());
+        File current = pref.getCurrentPath();
+        if (current != null) {
+            fc.setCurrentDirectory(current);
+        }
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
             "PO File", "po");
         fc.setFileFilter(filter);

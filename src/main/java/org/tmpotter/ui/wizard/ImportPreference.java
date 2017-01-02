@@ -120,9 +120,10 @@ public class ImportPreference {
     public File getCurrentPath() {
         if (currentPath != null) {
             return currentPath;
-        } else {
+        } else if (originalFileUri != null) {
             return new File(originalFileUri);
         }
+        return null;
     }
 
     public void setCurrentPath(File path) {
