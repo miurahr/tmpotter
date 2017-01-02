@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Fixed
+- SLF4J multiple binding warning.
 
 ## [0.8.4] - 2017-01-02
 ### Add
