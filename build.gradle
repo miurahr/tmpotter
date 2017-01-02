@@ -32,9 +32,16 @@
  *
  **************************************************************************/
 
+buildscript { repositories { jcenter() } }
 plugins {
+  id 'nebula.lint' version '6.1.4'
   id "nebula.ospackage" version "4.3.0"
   id "nebula.ospackage-application" version "4.3.0"
+}
+
+allprojects {
+  apply plugin: 'nebula.lint'
+  gradleLint.rules = ['all-dependency']
 }
 
 apply plugin: 'java'
@@ -90,17 +97,18 @@ repositories {
 dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
           'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
+          'javax.xml.stream:stax-api:1.0-2',
           'org.slf4j:slf4j-api:1.7.21',
           'commons-io:commons-io:2.5',
           'com.google.code.findbugs:annotations:3.0.1',
           'org.omegat:lib-mnemonics:1.0',
+          'net.sf.okapi:okapi-core:0.31',
           'net.sf.okapi.lib:okapi-lib-xliff2:1.1.4',
           'net.sf.okapi.filters:okapi-filter-xliff:0.31',
           project(':segmentation')
   runtime 'org.slf4j:slf4j-simple:1.7.21'
   testCompile 'org.testng:testng:6.9.10',
-          'org.xmlunit:xmlunit-core:2.1.1',
-          'org.slf4j:slf4j-nop:1.7.21'
+          'org.xmlunit:xmlunit-core:2.1.1'
 }
 
 test {
