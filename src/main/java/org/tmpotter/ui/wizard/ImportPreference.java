@@ -26,6 +26,8 @@ package org.tmpotter.ui.wizard;
 import java.io.File;
 import java.net.URL;
 import java.net.URI;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Preference get by import wizard.
@@ -41,6 +43,7 @@ public class ImportPreference {
     private String translationEncoding;
     private String filter;
     private File currentPath;
+    private Map<String, String> config = new TreeMap<>();
 
     public File getOriginalFilePath() {
         return new File(originalFileUri);
@@ -124,5 +127,20 @@ public class ImportPreference {
 
     public void setCurrentPath(File path) {
         currentPath = path;
+    }
+
+    public String getConfigValue(final String key) {
+        return config.get(key);
+    }
+
+    public String getConfigValueOrDefault(final String key, final String defaultValue) {
+        if (config.containsKey(key)) {
+            return config.get(key);
+        }
+        return defaultValue;
+    }
+
+    public void setConfigValue(final String key, final String value) {
+        config.put(key, value);
     }
 }

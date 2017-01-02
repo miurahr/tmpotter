@@ -2,3 +2,4 @@ org.tmpotter.filters.pofile.ImportWizardPOFile
 org.tmpotter.filters.bitext.ImportWizardBiTextFile
 org.tmpotter.filters.tmx.ImportWizardTmxFile
 org.tmpotter.filters.wikimedia.ImportWizardWikimedia
+org.tmpotter.filters.xliff.ImportWizardXliff2Filter

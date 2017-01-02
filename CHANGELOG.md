@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Add
 - Level2 TMX export support.
 - Highlight a clicked table row.
+- XLIFF v2.0 and XLIFF v1.1/v1.4 import feature
 
 ### Changed
 - Undo menu/buttons enable/disable support(imcomplete).
