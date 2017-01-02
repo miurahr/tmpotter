@@ -26,8 +26,7 @@ package org.tmpotter.filters.xliff;
 import net.sf.okapi.lib.xliff2.core.Fragment;
 import net.sf.okapi.lib.xliff2.core.Segment;
 import net.sf.okapi.lib.xliff2.core.Unit;
-import net.sf.okapi.lib.xliff2.reader.Event;
-import net.sf.okapi.lib.xliff2.reader.XLIFFReader;
+import net.sf.okapi.lib.xliff2.reader.XLIFFReaderException;
 import net.sf.okapi.lib.xliff2.writer.XLIFFWriter;
 
 import org.slf4j.Logger;
@@ -37,9 +36,11 @@ import org.tmpotter.core.Document;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
 import org.tmpotter.filters.IParseCallback;
+import org.tmpotter.util.OkapiXliffReader;
 
 import java.io.File;
 import java.util.Map;
+
 
 
 /**
@@ -131,24 +132,47 @@ public class Xliff2Filter implements IFilter {
      */
     public void parseFile(File inFile, Map<String, String> config, FilterContext fc,
                           IParseCallback callback) throws Exception {
-        try (XLIFFReader reader = new XLIFFReader()) {
-            reader.open(inFile);
-            while (reader.hasNext()) {
-                Event event = reader.next();
-                if (event.isUnit()) {
-                    Unit unit = event.getUnit();
-                    for (Segment segment : unit.getSegments()) {
-                        callback.addEntry(null, segment.getSource().getPlainText(),
-                                segment.getTarget().getPlainText(), false,
-                                "",null, self);
-                    }
-                }
-            }
+        if (config != null && config.containsKey(ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG) &&
+                ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG_VERSION2.equals(
+                        config.get(ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG))) {
+                parseFile2(inFile, config, fc, callback);
+        } else {
+                parseFile1(inFile, config, fc, callback);
+        }
+    }
+
+    /**
+     * Parse XLIFF ver2 file.
+     * @param inFile   file to parse
+     * @param config   filter's configuration options
+     * @param fc filter context.
+     * @param callback callback for parsed data
+     * @throws Exception when error is happened.
+     */
+    public void parseFile2(File inFile, Map<String, String> config, FilterContext fc,
+                          IParseCallback callback) throws Exception {
+        try {
+            OkapiXliffReader.readXliff2(inFile, callback, self);
+        } catch (XLIFFReaderException ex) {
+            LOGGER.info("Invalid XLIFF2 format", ex);
         } catch (Exception ex) {
             LOGGER.info("Exception", ex);
         }
-
     }
+
+    /**
+     * Parse XLIFF ver1.1, 1.4 file.
+     * @param inFile   file to parse
+     * @param config   filter's configuration options
+     * @param fc filter context.
+     * @param callback callback for parsed data
+     * @throws Exception when error is happened.
+     */
+    public void parseFile1(File inFile, Map<String, String> config, FilterContext fc,
+                          IParseCallback callback) throws Exception {
+        OkapiXliffReader.readXliff1(inFile, fc.getSourceLang().toString(), fc.getTargetLang().toString(),
+                callback, self);
+   }
 
     /**
      * Parse file.

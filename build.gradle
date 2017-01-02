@@ -76,6 +76,9 @@ repositories {
   maven {
     url 'http://repository-okapi-xliff.forge.cloudbees.com/release'
   }
+  maven {
+    url 'http://repository-okapi.forge.cloudbees.com/release'
+  }
 }
 
 dependencies {
@@ -86,12 +89,12 @@ dependencies {
           'com.google.code.findbugs:annotations:3.0.1',
           'org.omegat:lib-mnemonics:1.0',
           'net.sf.okapi.lib:okapi-lib-xliff2:1.1.4',
+          'net.sf.okapi.filters:okapi-filter-xliff:0.31',
           project(':segmentation')
   runtime 'org.slf4j:slf4j-jdk14:1.7.21'
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1',
           'org.slf4j:slf4j-nop:1.7.21'
-
 }
 
 test {
@@ -101,3 +104,4 @@ test {
 project(':segmentation') {
   apply plugin: 'java'
 }
+

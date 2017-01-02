@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.okapi:okapi-core:0.31">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.okapi/okapi-core/0.31/864c0420e98645402b61cd148fd4a75be0b6d201/okapi-core-0.31.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.okapi/okapi-core/0.31/a6c2fb9c408d0ea512c0b67932915b37a77713da/okapi-core-0.31-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

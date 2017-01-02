@@ -32,6 +32,7 @@ import org.tmpotter.ui.wizard.IImportWizardPanel;
 import org.tmpotter.ui.wizard.ImportPreference;
 import org.tmpotter.ui.wizard.ImportWizardController;
 import org.tmpotter.ui.wizard.ImportWizardSelectTypePanel;
+import org.tmpotter.util.Localization;
 
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -48,10 +49,14 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportWizardXliff2Filter.class
             .getName());
     public static final String id = "Xliff2Filter";
+    static final String XLIFF_VERSION_CONFIG = "Version";
+    static final String XLIFF_VERSION_CONFIG_VERSION2 = "2";
+    static final String XLIFF_VERSION_CONFIG_VERSION1 = "1";
     private ImportWizardController wizardController;
     private ImportPreference pref;
     private File originalFile;
-
+    private final String[] idiom = Localization.getLanguageList();
+  
     /**
      * Creates new form ImportWizardXliff2Filter.
      */
@@ -62,6 +67,8 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
         wizardController = controller;
         this.pref = pref;
         initComponents();
+        jRadioButton1.setActionCommand(XLIFF_VERSION_CONFIG_VERSION1);
+        jRadioButton2.setActionCommand(XLIFF_VERSION_CONFIG_VERSION2);
     }
 
     public void onShow() {
@@ -80,11 +87,11 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
     }
 
     public String getName() {
-        return "XLIFF2";
+        return "XLIFF";
     }
 
     public String getDesc() {
-        return "XLIFF2 import.";
+        return "XLIFF import.";
     }
 
     public String getBackCommand() {
@@ -95,20 +102,36 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
         return "finish";
     }
 
+    public String getSelection() {
+        if (buttonGroup.getSelection() != null) {
+            return buttonGroup.getSelection().getActionCommand();
+        }
+        return XLIFF_VERSION_CONFIG_VERSION1; // Default version 1.1,1.4
+    }
+    
+    public final String getSourceLocale() {
+        return Localization.getLanguageCode(comboSourceLang.getSelectedIndex());
+    }
+
+    public final String getTargetLocale() {
+        return Localization.getLanguageCode(comboTranslationLang.getSelectedIndex());
+    }
+
     public void updatePref() {
-        pref.setFilter(id);
+        pref.setFilter("Xliff2Filter");
         pref.setSourceEncoding("UTF-8");
         pref.setTranslationEncoding("UTF-8");
         pref.setOriginalFilePath(originalFile);
         pref.setTranslationFilePath(originalFile);
-        pref.setOriginalLang("");
-        pref.setTranslationLang("");
+        pref.setOriginalLang(getSourceLocale());
+        pref.setTranslationLang(getTargetLocale());
+        pref.setConfigValue(XLIFF_VERSION_CONFIG, getSelection());
     }
 
     public void onImportFile(final IImportWizardPanel panel) {
         final JFileChooser fc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "XLIFF2 File", "xlf");
+            "XLIFF File", "xlf", "xliff");
         fc.setFileFilter(filter);
         fc.setMultiSelectionEnabled(false);
         final int returnVal = fc.showOpenDialog(this);
@@ -116,7 +139,8 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File filePath = fc.getSelectedFile();
-            if (fc.getName(filePath).endsWith(".xlf") && filePath.exists()) {
+            if ((fc.getName(filePath).endsWith(".xlf") || fc.getName(filePath).endsWith(".xliff"))
+                    && filePath.exists()) {
                 originalFile = filePath;
                 jTextField1.setText(filePath.getPath());
                 wizardController.setButtonNextEnabled(true);
@@ -137,11 +161,19 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
+                buttonGroup = new javax.swing.ButtonGroup();
                 jLabel1 = new javax.swing.JLabel();
                 jTextField1 = new javax.swing.JTextField();
                 jButton1 = new javax.swing.JButton();
+                jRadioButton1 = new javax.swing.JRadioButton();
+                jRadioButton2 = new javax.swing.JRadioButton();
+                jLabel2 = new javax.swing.JLabel();
+                comboSourceLang = new javax.swing.JComboBox<>();
+                comboTranslationLang = new javax.swing.JComboBox<>();
+                jLabel3 = new javax.swing.JLabel();
+                jLabel4 = new javax.swing.JLabel();
 
-                jLabel1.setText("XLIFF2 file import...");
+                jLabel1.setText("XLIFF file import...");
 
                 jTextField1.setText("Select file...");
 
@@ -152,18 +184,51 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
                         }
                 });
 
+                buttonGroup.add(jRadioButton1);
+                jRadioButton1.setSelected(true);
+                jRadioButton1.setText("XLIFF Version2");
+
+                buttonGroup.add(jRadioButton2);
+                jRadioButton2.setText("XLIFF Version1.1,1.4");
+
+                jLabel2.setText("XLIFF version 1.x need to specify locales");
+
+                comboSourceLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
+
+                comboTranslationLang.setModel(new javax.swing.DefaultComboBoxModel<>(idiom));
+
+                jLabel3.setText("Source language");
+
+                jLabel4.setText("Translation language");
+
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(42, 42, 42)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jRadioButton2)
+                                        .addComponent(jRadioButton1)
                                         .addComponent(jLabel1)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton1)))
+                                                .addComponent(jButton1))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                        .addGap(29, 29, 29)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addComponent(jLabel2)
+                                                                .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                        .addGap(69, 69, 69)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addComponent(jLabel4)
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addComponent(jLabel3)
+                                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                                 .addContainerGap(24, Short.MAX_VALUE))
                 );
                 layout.setVerticalGroup(
@@ -175,7 +240,21 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton1))
-                                .addContainerGap(200, Short.MAX_VALUE))
+                                .addGap(26, 26, 26)
+                                .addComponent(jRadioButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(comboSourceLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(comboTranslationLang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel4))
+                                .addContainerGap(23, Short.MAX_VALUE))
                 );
         }// </editor-fold>//GEN-END:initComponents
 
@@ -185,8 +264,16 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
 
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.ButtonGroup buttonGroup;
+        private javax.swing.JComboBox<String> comboSourceLang;
+        private javax.swing.JComboBox<String> comboTranslationLang;
         private javax.swing.JButton jButton1;
         private javax.swing.JLabel jLabel1;
+        private javax.swing.JLabel jLabel2;
+        private javax.swing.JLabel jLabel3;
+        private javax.swing.JLabel jLabel4;
+        private javax.swing.JRadioButton jRadioButton1;
+        private javax.swing.JRadioButton jRadioButton2;
         private javax.swing.JTextField jTextField1;
         // End of variables declaration//GEN-END:variables
 }
