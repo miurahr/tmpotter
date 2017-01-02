@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+
+### Changed
+
+### Fixed
+
+## [0.8.4] - 2017-01-02
+### Add
 - Level2 TMX export support.
 - Highlight a clicked table row.
 - XLIFF v2.0 and XLIFF v1.1/v1.4 import feature
@@ -11,16 +18,12 @@ All notable changes to this project will be documented in this file.
 - Undo menu/buttons enable/disable support(imcomplete).
 - Open project file without language selection.
 
-### Fixed
 
-
-## [0.8.3] - 2018-12-29
+## [0.8.3] - 2016-12-29
 ### Add
 - Wiki download and import feature
 
-### Changed
-
-### FIxed
+### Fixed
 - Update gradle properties template for using Java8
 
 
@@ -42,6 +45,7 @@ All notable changes to this project will be documented in this file.
 ## 0.8.0 - 2016-12-7
 - Integrate bitext2tmx and OmegaT code base.
 
-[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.3...HEAD
+[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.4...HEAD
+[0.8.4]: https://github.com/miurahr/tmpotter/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/miurahr/tmpotter/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/miurahr/tmpotter/compare/v0.8.0...v0.8.2

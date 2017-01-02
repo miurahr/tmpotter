@@ -799,7 +799,8 @@ public class TmxReader2 {
         }
     };
 
-    private static final XMLResolver TMX_DTD_RESOLVER_2 = (publicId, systemId, baseUri, namespace) -> {
+    private static final XMLResolver TMX_DTD_RESOLVER_2 = (publicId, systemId, baseUri,
+                                                           namespace) -> {
         if (systemId.endsWith("tmx11.dtd")) {
             return TmxReader2.class.getResourceAsStream("/schemas/tmx11.dtd");
         } else if (systemId.endsWith("tmx14.dtd")) {

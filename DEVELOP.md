@@ -1,17 +1,23 @@
 TMPotter Developers guide
-==========================
+===========================
 
 Sending patches
-----------------
+---------------------------
 
-Contributions are welcome. You can PR on github.
+Contributions are welcome. You can Pull Request on github.
 
 Before sending PR, please check again with
-`gradle check`.
+`./gradlew check`.
+
+Build System
+---------------------------
+
+TMPotter use Gradle build system.
+It also depends on jFrog's jcenter central maven repository.
 
 
 Coding style
---------------
+---------------------------
 
 TMPotter has a coding style rule that is modified version
 of Google Java coding rule.
@@ -37,7 +43,7 @@ $ ./gradlew check
 ```
 
 Internationalization(i18n) and Localization(l10n)
-------------------------------------
+--------------------------------------------------
 
 TM Potter is i18n-ed using resource bundle.
 Properties files are stored in UTF-8 encoding.
@@ -48,7 +54,7 @@ in UTF-8 encoding by "Right-click" on properties file ->"Property"
 -> check on "Open with project encoding".
 
 Bundle key naming rule
-------------------------------------
+----------------------------
 
 Bundle key should have 3 parts at least.
 
@@ -62,7 +68,7 @@ XSR.ERROR.BAD_XML_TAG
 ```
 
 Import/Export Filter
-------------------------------------
+----------------------------
 
 Import/Export Filter should be registered as service.
 Your filter implement IFilter can be registered with putting class name on resource
@@ -77,9 +83,31 @@ class which implements IImportWizardPanel interface on
 `META-INF/services/org.tmpotter.ui.wizard.IImportWizardPanel`:w
 
 
-
-Document versions
+GUI parts
 ----------------------------
 
-Last Update: 28, Dec. 2016
+GUI parts are designed using NetBeans IDE's Matisse SWING gui editor.
+You should use Mattisse GUI Editor for dialog/wizard panel design.
+
+
+Integrated Development Environment
+----------------------------
+
+Some developers use JetBrains IntelliJ IDEA for the project.
+We use Gradle build system for most interoperability and flexibility between
+development environmental diversity.
+
+
+Merging
+----------------------------
+
+Developers may not use Github's merge button for its project.
+They use `hub` command line utility instead of web interface and
+may modify your PR patches on his/her repository and merge.
+
+
+Document revision
+----------------------------
+
+Last Update: 2, Jan. 2017
 Initial version: Jan. 2016

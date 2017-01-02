@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bi-text Aligner/TMX Editor
  *
- *  Copyright (C) 2016 Hiroshi Miura
+ *  Copyright (C) 2016-2017 Hiroshi Miura
  *
  *  This file is part of TMPotter.
  *
