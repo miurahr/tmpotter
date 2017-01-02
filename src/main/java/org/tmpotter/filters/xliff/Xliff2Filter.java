@@ -61,11 +61,11 @@ public class Xliff2Filter implements IFilter {
 
 
     /**
-     * Return file format name 'XLIFF2'.
-     * @return format name  'XLIFF2'.
+     * Return file format name 'XLIFF'.
+     * @return format name  'XLIFF'.
      */
     public String getFileFormatName() {
-        return "XLIFF2";
+        return "XLIFF";
     }
 
     /**
@@ -73,7 +73,7 @@ public class Xliff2Filter implements IFilter {
      * @return hint string.
      */
     public String getHint() {
-        return "XLIFF version 2 file.";
+        return "XLIFF file.";
     }
 
     /**
@@ -116,10 +116,25 @@ public class Xliff2Filter implements IFilter {
      * @return true if supported, otherwise false.
      */
     public boolean isFileSupported(File inFile, Map<String, String> config, FilterContext context) {
-        if (inFile.getName().endsWith(".xlf")) {
+        if (inFile.getName().endsWith(".xlf") || inFile.getName().endsWith(".xliff")) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Parse file.
+     * @param sourceFile    source file
+     * @param translateFile translated file
+     * @param config        filter's configuration options
+     * @param fc    filter context.
+     * @param callback      callback for store aligned data
+     * @throws Exception when error is happened.
+     */
+    @Override
+    public void parseFile(File sourceFile, File translateFile, Map<String, String> config,
+                          FilterContext fc, IParseCallback callback) throws Exception {
+        parseFile(sourceFile, config, fc, callback);
     }
 
     /**
@@ -132,12 +147,12 @@ public class Xliff2Filter implements IFilter {
      */
     public void parseFile(File inFile, Map<String, String> config, FilterContext fc,
                           IParseCallback callback) throws Exception {
-        if (config != null && config.containsKey(ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG) &&
-                ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG_VERSION2.equals(
+        if (config != null && config.containsKey(ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG)
+                && ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG_VERSION2.equals(
                         config.get(ImportWizardXliff2Filter.XLIFF_VERSION_CONFIG))) {
-                parseFile2(inFile, config, fc, callback);
+            parseFile2(inFile, config, fc, callback);
         } else {
-                parseFile1(inFile, config, fc, callback);
+            parseFile1(inFile, config, fc, callback);
         }
     }
 
@@ -170,23 +185,8 @@ public class Xliff2Filter implements IFilter {
      */
     public void parseFile1(File inFile, Map<String, String> config, FilterContext fc,
                           IParseCallback callback) throws Exception {
-        OkapiXliffReader.readXliff1(inFile, fc.getSourceLang().toString(), fc.getTargetLang().toString(),
-                callback, self);
-   }
-
-    /**
-     * Parse file.
-     * @param sourceFile    source file
-     * @param translateFile translated file
-     * @param config        filter's configuration options
-     * @param fc    filter context.
-     * @param callback      callback for store aligned data
-     * @throws Exception when error is happened.
-     */
-    @Override
-    public void parseFile(File sourceFile, File translateFile, Map<String, String> config,
-                          FilterContext fc, IParseCallback callback) throws Exception {
-        parseFile(sourceFile, config, fc, callback);
+        OkapiXliffReader.readXliff1(inFile, fc.getSourceLang().toString(),
+                fc.getTargetLang().toString(), callback, self);
     }
 
     @Override

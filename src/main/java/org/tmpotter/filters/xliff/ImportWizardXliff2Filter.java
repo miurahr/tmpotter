@@ -79,7 +79,7 @@ public class ImportWizardXliff2Filter extends javax.swing.JPanel implements IImp
     }
 
     public boolean isCombinedFormat() {
-        return false;
+        return true;
     }
 
     public javax.swing.JPanel getPanel() {

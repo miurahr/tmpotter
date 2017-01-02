@@ -35,10 +35,7 @@ import net.sf.okapi.lib.xliff2.core.Segment;
 import net.sf.okapi.lib.xliff2.core.Unit;
 //import net.sf.okapi.lib.xliff2.reader.Event;
 import net.sf.okapi.lib.xliff2.reader.XLIFFReader;
-import net.sf.okapi.lib.xliff2.reader.XLIFFReaderException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -47,6 +44,13 @@ import java.io.File;
  * @author Hiroshi Miura
  */
 public class OkapiXliffReader {
+    /**
+     * Read XLIFF version 2.0 file.
+     * @param inFile input file.
+     * @param callback callback for each entry.
+     * @param parent parent object for callback.
+     * @throws Exception when I/O error happened or XLIFF format error.
+     */
     public static void readXliff2(File inFile, org.tmpotter.filters.IParseCallback callback,
             org.tmpotter.filters.IFilter parent) throws Exception {
         try (XLIFFReader reader = new XLIFFReader()) {
@@ -67,6 +71,14 @@ public class OkapiXliffReader {
         }
     }
 
+    /**
+     * Read XLIFF version 1.1/1.4 file.
+     * @param inFile input file.
+     * @param sourceLang source langauage.
+     * @param targetLang target translation language.
+     * @param callback callback for entry.
+     * @param parent parent object for callback.
+     */
     public static void readXliff1(File inFile, String sourceLang, String targetLang,
                                   org.tmpotter.filters.IParseCallback callback,
                                   org.tmpotter.filters.IFilter parent) {
@@ -98,5 +110,5 @@ public class OkapiXliffReader {
                 }
             }
         }
-   }
+    }
 }
