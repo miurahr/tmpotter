@@ -3,16 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+- Introduce Debian package.(#7)
 
 ### Changed
 
 ### Fixed
-- SLF4J multiple binding warning.
+- SLF4J multiple binding warning.(#52)
 
 ## [0.8.4] - 2017-01-02
 ### Add
 - Level2 TMX export support.
-- Highlight a clicked table row.
+- Highlight a clicked table row.(#8)
 - XLIFF v2.0 and XLIFF v1.1/v1.4 import feature
 
 ### Changed
@@ -22,7 +23,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.8.3] - 2016-12-29
 ### Add
-- Wiki download and import feature
+- Wiki download and import feature.(#49)
 
 ### Fixed
 - Update gradle properties template for using Java8

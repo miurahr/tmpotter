@@ -2,7 +2,7 @@
  *
  *  TMPotter - Bitext Aligner/TMX Editor (ant build script)
  *
- *  Copyright (C) 2015,2016 Hiroshi Miura
+ *  Copyright (C) 2015-2017 Hiroshi Miura
  *
  *  This file is part of tmpotter.
  *
@@ -31,6 +31,12 @@
  *  along with tmpotter.  If not, see http://www.gnu.org/licenses/.
  *
  **************************************************************************/
+
+plugins {
+  id "nebula.ospackage" version "4.3.0"
+  id "nebula.ospackage-application" version "4.3.0"
+}
+
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle'
@@ -105,3 +111,22 @@ project(':segmentation') {
   apply plugin: 'java'
 }
 
+ospackage {
+  packageName = 'tmpotter'
+  version = '0.8.3'
+  release = '1'
+  packageDescription = "TMPotter is a bi-text aligner and TMX exporter."
+}
+
+buildDeb {
+  arch 'all'
+  requires('openjdk-8-jre')
+  link('/usr/local/bin/tmpotter', '/opt/tmpotter/bin/tmpotter')
+}
+build.dependsOn buildDeb
+
+buildRpm {
+  requires('jre', '8u111', GREATER | EQUAL)
+  link('/usr/local/bin/tmpotter', '/opt/tmpotter/bin/tmpotter')
+}
+build.dependsOn buildRpm
