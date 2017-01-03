@@ -28,17 +28,21 @@
 
 package org.tmpotter.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.tmpotter.util.Platform.OsType;
 
 import java.awt.GraphicsEnvironment;
-
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.URL;
 
 
 /**
@@ -54,7 +58,7 @@ public class Utilities {
     private static final String OSX_CONFIG_DIR = "/Library/Preferences/TMPotter/";
     private static final String OTHER_CONFIG_DIR = "TMPOTTER/";
 
-    private static final Logger LOG = Logger.getLogger(Utilities.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Utilities.class.getName());
 
     /**
      * Return names of all font families available.
@@ -79,8 +83,8 @@ public class Utilities {
             out.write(output);
 
             out.flush();
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Error", e);
+        } catch (Exception ex) {
+            LOG.warn("Error", ex);
         }
     }
 
@@ -122,8 +126,8 @@ public class Utilities {
             BufferedWriter out = utf8WriterBuilder(fos);
             out.write(output);
             out.close();
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "utf8 save exception", e);
+        } catch (Exception ex) {
+            LOG.warn("utf8 save exception", ex);
         }
     }
 
@@ -344,6 +348,21 @@ public class Utilities {
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    /**
+     * Load icon.
+     *
+     * @param resourceName resource name
+     * @return Image An image retrieved by resource name
+     * @throws FileNotFoundException when icon file not found
+     */
+    public static Image getImage(final String resourceName) throws FileNotFoundException {
+        URL resourceUrl = Utilities.class.getResource(resourceName);
+        if (resourceUrl == null) {
+            throw new FileNotFoundException(resourceName);
+        }
+        return Toolkit.getDefaultToolkit().getImage(resourceUrl);
     }
 
     private Utilities() {

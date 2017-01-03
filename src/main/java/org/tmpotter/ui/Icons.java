@@ -24,7 +24,7 @@
 package org.tmpotter.ui;
 
 import org.tmpotter.util.Platform;
-import org.tmpotter.util.ResourceUtil;
+import org.tmpotter.util.Utilities;
 
 import java.awt.Image;
 import java.io.FileNotFoundException;
@@ -46,11 +46,11 @@ public class Icons {
 
     static {
         try {
-            ICONS.put("icon-small.png", ResourceUtil.getImage(RESOURCES + "icon-small.png"));
-            ICONS.put("icon-medium.png", ResourceUtil.getImage(RESOURCES + "icon-medium.png"));
-            ICONS.put("icon-large.png", ResourceUtil.getImage(RESOURCES + "icon-large.png"));
-            ICONS.put("splash.png", ResourceUtil.getImage(RESOURCES + "splash.png"));
-            ICONS.put("icon-broken.png", ResourceUtil.getImage(RESOURCES + "icon-broken.png"));
+            ICONS.put("icon-small.png", Utilities.getImage(RESOURCES + "icon-small.png"));
+            ICONS.put("icon-medium.png", Utilities.getImage(RESOURCES + "icon-medium.png"));
+            ICONS.put("icon-large.png", Utilities.getImage(RESOURCES + "icon-large.png"));
+            ICONS.put("splash.png", Utilities.getImage(RESOURCES + "splash.png"));
+            ICONS.put("icon-broken.png", Utilities.getImage(RESOURCES + "icon-broken.png"));
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
@@ -66,7 +66,7 @@ public class Icons {
         if (!ICONS.containsKey(iconName)) {
             Image image;
             try {
-                image = ResourceUtil.getImage(RESOURCES + iconName);
+                image = Utilities.getImage(RESOURCES + iconName);
             } catch (FileNotFoundException ex) {
                 image = ICONS.get("icon-broken.png");
             }

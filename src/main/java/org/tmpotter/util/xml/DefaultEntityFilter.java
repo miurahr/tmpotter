@@ -26,7 +26,7 @@
  *
  * *************************************************************************/
 
-package org.tmpotter.util;
+package org.tmpotter.util.xml;
 
 import java.util.HashMap;
 

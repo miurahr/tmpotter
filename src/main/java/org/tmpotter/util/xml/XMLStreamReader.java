@@ -31,7 +31,6 @@ import static org.tmpotter.util.Localization.getString;
 import static org.tmpotter.util.StringUtil.format;
 
 import org.tmpotter.exceptions.TranslationException;
-import org.tmpotter.util.DefaultEntityFilter;
 
 import java.io.BufferedReader;
 import java.io.File;
