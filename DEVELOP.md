@@ -15,6 +15,7 @@ Build System
 TMPotter use Gradle build system.
 It also depends on jFrog's jcenter central maven repository.
 
+Build results are placed at `build/distribution/` directory.
 
 Coding style
 ---------------------------

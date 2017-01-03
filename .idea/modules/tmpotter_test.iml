@@ -12,25 +12,24 @@
     <orderEntry type="module" module-name="tmpotter_main" />
     <orderEntry type="library" name="Gradle: org.swinglabs.swingx:swingx-all:1.6.5-1" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:annotations:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.omegat:lib-mnemonics:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.okapi:okapi-core:0.31" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.okapi.lib:okapi-lib-xliff2:1.1.4" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.okapi.filters:okapi-filter-xliff:0.31" level="project" />
     <orderEntry type="module" module-name="segmentation_main" />
     <orderEntry type="library" name="Gradle: org.testng:testng:6.9.10" level="project" />
     <orderEntry type="library" name="Gradle: org.xmlunit:xmlunit-core:2.1.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-jdk14:1.7.21" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-nop:1.7.21" level="project" />
     <orderEntry type="library" name="Gradle: net.jcip:jcip-annotations:1.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-simple:1.7.21" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: net.sf.okapi:okapi-core:0.31" level="project" />
-    <orderEntry type="library" name="Gradle: org.codehaus.woodstox:woodstox-core-lgpl:4.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.13" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.woodstox:woodstox-core-lgpl:4.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.beanshell:bsh:2.0b4" level="project" />
     <orderEntry type="library" name="Gradle: com.beust:jcommander:1.48" level="project" />
-    <orderEntry type="library" name="Gradle: javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="tmpotter_main" />

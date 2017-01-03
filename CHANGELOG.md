@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - TmxReader2 test added.(but some still fails)
 
 ### Changed
+- Drop JDK8_HOME property from build.gradle and simplify
 
 ### Fixed
 - SLF4J multiple binding warning.(#52)

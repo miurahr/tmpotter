@@ -54,9 +54,11 @@ mainClassName = 'org.tmpotter.Main'
 applicationName = 'tmpotter'
 
 sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+
+// TMPotter uses UTF8 encoded resources bundle
+// @see  org.tmpotter.util.Utf8ResourceBundleControl
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-[compileJava, compileTestJava]*.options*.bootClasspath = "$JDK8_HOME/jre/lib/rt.jar"
+// javac lint
 compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 checkstyle {
   config = resources.text.fromFile("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
@@ -64,7 +66,7 @@ checkstyle {
   toolVersion = '6.16.1'
 }
 
-// Force prevent checkstyle/findbugs on Test.
+// Force prevent checkstyle/findbugs on Test and generated codes.
 task checkstyleTest(overwrite: true) << {}
 task findbugsTest(overwrite: true) << {}
 tasks.withType(Checkstyle) {

@@ -1,2 +1,0 @@
-# place ${project.home}/gradle.properties to set JDK7_HOME
-JDK8_HOME=/usr/lib/jvm/java-8-openjdk-amd64
