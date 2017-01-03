@@ -24,6 +24,9 @@
 package org.tmpotter.core;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.tmpotter.util.Language;
 import org.tmpotter.util.StringUtil;
 import org.tmpotter.util.TmxReader2;
@@ -158,5 +161,7 @@ public class TmpxReader {
         }
         return doc;
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TmpxReader.class.getName());
 
 }
