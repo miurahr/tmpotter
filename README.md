@@ -6,8 +6,8 @@ TMPotter - source/translation text aligner/TMX converter for Computer Aided Tran
 
 TMPotter produces TMX(Translation Memory eXchange) files for OmegaT translation process from your
 existent translation assets.
-It accepts Bi-Text(Two text file - one is source language and another is translated),
-PO catalog file and TMX file.
+It accepts Two text file - one is source language and another is translated, and
+PO catalog file and TMX/XLIFF file.
 You can edit alignment of two sentences or clauses on the TMPotter GUI pane.
 
 

@@ -123,9 +123,9 @@ project(':segmentation') {
 
 ospackage {
   packageName = 'tmpotter'
-  version = '0.8.3'
+  version = '0.8.5'
   release = '1'
-  packageDescription = "TMPotter is a bi-text aligner and TMX exporter."
+  packageDescription = "TMPotter is a sentences aligner and TMX exporter from two text files. It also help segmenting and aligning for a message catalog file and a TMX/XLIFF file."
 }
 
 buildDeb {

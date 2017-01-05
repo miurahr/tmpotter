@@ -3,11 +3,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+
+### Changed
+
+### Fixed
+
+
+## [0.8.5]
+### Add
 - Introduce Debian package.(#7)
 - TmxReader2 test added.(but some still fails)
 
 ### Changed
 - Drop JDK8_HOME property from build.gradle and simplify
+- Document: use 'bitext' only for single file with source/translation texts.
 
 ### Fixed
 - SLF4J multiple binding warning.(#52)
@@ -53,7 +62,8 @@ All notable changes to this project will be documented in this file.
 ## 0.8.0 - 2016-12-7
 - Integrate bitext2tmx and OmegaT code base.
 
-[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.4...HEAD
+[Unreleased]: https://github.com/miurahr/tmpotter/compare/v0.8.5...HEAD
+[0.8.5]: https://github.com/miurahr/tmpotter/compare/v0.8.5...v0.8.4
 [0.8.4]: https://github.com/miurahr/tmpotter/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/miurahr/tmpotter/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/miurahr/tmpotter/compare/v0.8.0...v0.8.2
