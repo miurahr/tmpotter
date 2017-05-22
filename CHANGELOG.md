@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Fixed
+- Fix OutOfIndex error when exporting.
 
 
 ## [0.8.5]
