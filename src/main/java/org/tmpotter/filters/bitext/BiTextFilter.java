@@ -94,14 +94,14 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
 
         source = processTextFile(sourceFile, fc.getSourceLang());
         translated = processTextFile(translatedFile, fc.getTargetLang());
-        int maxLen = max(source.size(), translated.size());
+        int maxLen = min(source.size(), translated.size());
         for (int i = 0; i < maxLen; i++) {
             align(source.get(i), translated.get(i), null, null);
         }
     }
 
-    private int max(int na, int nb) {
-        if (na > nb) {
+    private int min(int na, int nb) {
+        if (na < nb) {
             return na;
         } else {
             return nb;
