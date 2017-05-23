@@ -83,6 +83,10 @@ tasks.withType(FindBugs) {
   ignoreFailures = true
 }
 
+configurations {
+    provided
+}
+
 repositories {
   jcenter()
   maven {
@@ -95,6 +99,13 @@ repositories {
     url 'http://repository-okapi.forge.cloudbees.com/release'
   }
 }
+sourceSets {
+  main {
+    compileClasspath += configurations.provided
+    test.compileClasspath += configurations.provided
+    test.runtimeClasspath += configurations.provided
+  }
+}
 
 dependencies {
   compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
@@ -102,12 +113,14 @@ dependencies {
           'javax.xml.stream:stax-api:1.0-2',
           'org.slf4j:slf4j-api:1.7.21',
           'commons-io:commons-io:2.5',
-          'com.google.code.findbugs:annotations:3.0.1',
           'org.omegat:lib-mnemonics:1.0',
           'net.sf.okapi:okapi-core:0.31',
           'net.sf.okapi.lib:okapi-lib-xliff2:1.1.4',
           'net.sf.okapi.filters:okapi-filter-xliff:0.31',
           project(':segmentation')
+  provided ('com.google.code.findbugs:annotations:3.0.1') {
+          transitive = false
+  }
   runtime 'org.slf4j:slf4j-simple:1.7.21'
   testCompile 'org.testng:testng:6.9.10',
           'org.xmlunit:xmlunit-core:2.1.1'
@@ -140,3 +153,8 @@ buildRpm {
   link('/usr/local/bin/tmpotter', '/opt/tmpotter/bin/tmpotter')
 }
 build.dependsOn buildRpm
+
+javadoc {
+    classpath += configurations.provided
+    options.locale = 'en_US'
+}
