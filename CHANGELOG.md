@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Add
+- NetBeans project files. It uses for editing UI forms.
 
 ### Changed
 
