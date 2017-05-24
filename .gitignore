@@ -1,5 +1,5 @@
 /build/
-/nbproject/
+/nbproject/private
 /dist/
 /.jacocoverage/
 MANIFEST.MF
