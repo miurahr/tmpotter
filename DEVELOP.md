@@ -95,9 +95,15 @@ Integrated Development Environment
 ----------------------------
 
 Some developers use JetBrains IntelliJ IDEA for the project.
+The project includes IDEA project files.
+
+We use NetBeans Matisse GUI designer for UI design.
+It is because Matisse is a de-facto tool for Java UI design and
+it does not require additional library.
+You are encouraged to install Gradle Plugin for NetBeans.
+
 We use Gradle build system for most interoperability and flexibility between
 development environmental diversity.
-
 
 Merging
 ----------------------------
@@ -110,5 +116,5 @@ may modify your PR patches on his/her repository and merge.
 Document revision
 ----------------------------
 
-Last Update: 2, Jan. 2017
+Last Update: 4, Jun. 2017
 Initial version: Jan. 2016
