@@ -34,14 +34,8 @@
 
 buildscript { repositories { jcenter() } }
 plugins {
-  id 'nebula.lint' version '6.1.4'
   id "nebula.ospackage" version "4.3.0"
   id "nebula.ospackage-application" version "4.3.0"
-}
-
-allprojects {
-  apply plugin: 'nebula.lint'
-  gradleLint.rules = ['all-dependency']
 }
 
 apply plugin: 'java'
@@ -69,19 +63,19 @@ checkstyle {
 // Force prevent checkstyle/findbugs on Test and generated codes.
 task checkstyleTest(overwrite: true) << {}
 task findbugsTest(overwrite: true) << {}
-tasks.withType(Checkstyle) {
-  exclude '**/gen/core/**'
-  exclude '**/org/tmpotter/filters/*/ImportWizard*/'
-  exclude '**/org/tmpotter/ui/**'
-  exclude '**/org/tmpotter/util/xml/**'
-}
-tasks.withType(FindBugs) {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
-  ignoreFailures = true
-}
+//tasks.withType(Checkstyle) {
+//  exclude '**/gen/core/**'
+//  exclude '**/org/tmpotter/filters/*/ImportWizard*/'
+//  exclude '**/org/tmpotter/ui/**'
+//  exclude '**/org/tmpotter/util/xml/**'
+//}
+//tasks.withType(FindBugs) {
+//  reports {
+//    xml.enabled = false
+//    html.enabled = true
+//  }
+//  ignoreFailures = true
+//}
 
 configurations {
     provided
