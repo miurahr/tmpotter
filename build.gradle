@@ -1,49 +1,10 @@
-/**************************************************************************
- *
- *  TMPotter - Bitext Aligner/TMX Editor (ant build script)
- *
- *  Copyright (C) 2015-2017 Hiroshi Miura
- *
- *  This file is part of tmpotter.
- *
- *  Some portion are derived from OmegaT and bitext2tmx
- *
- *  Copyright (C) 2000-2007 Keith Godfrey and Maxym Mykhalchuk
- *                2008-2010 Didier Briel, Alex Buloichik
- *                2012 Didier Briel
- *                2013 Didier Briel, Aaron Madlon-Kay
- *                2014 Didier Briel
- *                2015 Aaron Madlon-Kay, Didier Briel
- *
- *  Copyright (C) 2006-2009 Raymond: Martin et al.
- *
- *  tmpotter is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  tmpotter is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with tmpotter.  If not, see http://www.gnu.org/licenses/.
- *
- **************************************************************************/
-
-buildscript { repositories { jcenter() } }
 plugins {
-  id "nebula.ospackage" version "4.3.0"
-  id "nebula.ospackage-application" version "4.3.0"
+    id 'java'
+    id 'checkstyle'
+    id 'distribution'
+    id 'application'
 }
 
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-
-apply plugin: 'application'
 mainClassName = 'org.tmpotter.Main'
 applicationName = 'tmpotter'
 
@@ -52,33 +13,11 @@ sourceCompatibility = '1.8'
 // TMPotter uses UTF8 encoded resources bundle
 // @see  org.tmpotter.util.Utf8ResourceBundleControl
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-// javac lint
-compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+
 checkstyle {
   config = resources.text.fromFile("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
   ignoreFailures = true
   toolVersion = '6.16.1'
-}
-
-// Force prevent checkstyle/findbugs on Test and generated codes.
-task checkstyleTest(overwrite: true) << {}
-task findbugsTest(overwrite: true) << {}
-//tasks.withType(Checkstyle) {
-//  exclude '**/gen/core/**'
-//  exclude '**/org/tmpotter/filters/*/ImportWizard*/'
-//  exclude '**/org/tmpotter/ui/**'
-//  exclude '**/org/tmpotter/util/xml/**'
-//}
-//tasks.withType(FindBugs) {
-//  reports {
-//    xml.enabled = false
-//    html.enabled = true
-//  }
-//  ignoreFailures = true
-//}
-
-configurations {
-    provided
 }
 
 repositories {
@@ -86,38 +25,21 @@ repositories {
   maven {
     url 'http://dl.bintray.com/omegat-org/maven'
   }
-  maven {
-    url 'http://repository-okapi-xliff.forge.cloudbees.com/release'
-  }
-  maven {
-    url 'http://repository-okapi.forge.cloudbees.com/release'
-  }
-}
-sourceSets {
-  main {
-    compileClasspath += configurations.provided
-    test.compileClasspath += configurations.provided
-    test.runtimeClasspath += configurations.provided
-  }
 }
 
 dependencies {
-  compile 'org.swinglabs.swingx:swingx-all:1.6.5-1',
-          'com.googlecode.juniversalchardet:juniversalchardet:1.0.3',
-          'javax.xml.stream:stax-api:1.0-2',
-          'org.slf4j:slf4j-api:1.7.21',
-          'commons-io:commons-io:2.5',
-          'org.omegat:lib-mnemonics:1.0',
-          'net.sf.okapi:okapi-core:0.31',
-          'net.sf.okapi.lib:okapi-lib-xliff2:1.1.4',
-          'net.sf.okapi.filters:okapi-filter-xliff:0.31',
-          project(':segmentation')
-  provided ('com.google.code.findbugs:annotations:3.0.1') {
-          transitive = false
-  }
-  runtime 'org.slf4j:slf4j-simple:1.7.21'
-  testCompile 'org.testng:testng:6.9.10',
-          'org.xmlunit:xmlunit-core:2.1.1'
+    compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
+    compile 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.omegat:lib-mnemonics:1.0'
+    compile 'net.sf.okapi:okapi-core:1.40.0'
+    compile 'net.sf.okapi.lib:okapi-lib-xliff2:1.40.0'
+    compile 'net.sf.okapi.filters:okapi-filter-xliff:1.40.0'
+    compile project(':segmentation')
+    runtime 'org.slf4j:slf4j-simple:1.7.21'
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile 'org.xmlunit:xmlunit-core:2.1.1'
 }
 
 test {
@@ -125,30 +47,16 @@ test {
 }
 
 project(':segmentation') {
-  apply plugin: 'java'
-}
-
-ospackage {
-  packageName = 'tmpotter'
-  version = '0.8.5'
-  release = '1'
-  packageDescription = "TMPotter is a sentences aligner and TMX exporter from two text files. It also help segmenting and aligning for a message catalog file and a TMX/XLIFF file."
-}
-
-buildDeb {
-  arch 'all'
-  requires('openjdk-8-jre')
-  link('/usr/local/bin/tmpotter', '/opt/tmpotter/bin/tmpotter')
-}
-build.dependsOn buildDeb
-
-buildRpm {
-  requires('jre', '8u111', GREATER | EQUAL)
-  link('/usr/local/bin/tmpotter', '/opt/tmpotter/bin/tmpotter')
-}
-build.dependsOn buildRpm
-
-javadoc {
-    classpath += configurations.provided
-    options.locale = 'en_US'
+    apply plugin: 'java'
+    sourceCompatibility = '1.8'
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+        compile group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+        // https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+        compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.3'
+        compile 'com.sun.xml.bind:jaxb-impl:2.3.3'
+    }
 }
