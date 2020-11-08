@@ -14,13 +14,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 /**
- * Java class for anonymous complex type.
- *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
- *
+ * <p>Java class for anonymous complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -46,57 +45,65 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "formathandle")
 public class Formathandle {
 
-  @XmlAttribute(required = true)
-  protected String include;
-  @XmlAttribute(required = true)
-  protected String type;
+    @XmlAttribute(required = true)
+    protected String include;
+    @XmlAttribute(required = true)
+    protected String type;
 
-  /**
-   * Gets the value of the include property.
-   *
-   * @return possible object is {@link String }
-   *
-   */
-  public String getInclude() {
-    return include;
-  }
+    /**
+     * Gets the value of the include property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getInclude() {
+        return include;
+    }
 
-  /**
-   * Sets the value of the include property.
-   *
-   * @param value allowed object is {@link String }
-   *
-   */
-  public void setInclude(String value) {
-    this.include = value;
-  }
+    /**
+     * Sets the value of the include property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setInclude(String value) {
+        this.include = value;
+    }
 
-  /**
-   * Gets the value of the type property.
-   *
-   * @return possible object is {@link String }
-   *
-   */
-  public String getType() {
-    return type;
-  }
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getType() {
+        return type;
+    }
 
-  /**
-   * Sets the value of the type property.
-   *
-   * @param value allowed object is {@link String }
-   *
-   */
-  public void setType(String value) {
-    this.type = value;
-  }
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
 }

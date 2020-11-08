@@ -59,79 +59,87 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "header")
 public class Header {
 
-  protected List<Formathandle> formathandle;
-  @XmlAttribute(required = true)
-  protected String segmentsubflows;
-  @XmlAttribute(required = true)
-  protected String cascade;
+    protected List<Formathandle> formathandle;
+    @XmlAttribute(required = true)
+    protected String segmentsubflows;
+    @XmlAttribute(required = true)
+    protected String cascade;
 
-  /**
-   * Gets the value of the formathandle property.
-   *
-   * <p>
-   * This accessor method returns a reference to the live list, not a snapshot.
-   * Therefore any modification you make to the returned list will be present
-   * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-   * for the formathandle property.
-   *
-   * <p>
-   * For example, to add a new item, do as follows:
-   * <pre>
-   *    getFormathandle().add(newItem);
-   * </pre>
-   *
-   *
-   * <p>
-   * Objects of the following type(s) are allowed in the list
+    /**
+     * Gets the value of the formathandle property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the formathandle property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getFormathandle().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
      * {@link Formathandle }
-   *
-   *
-   */
-  public List<Formathandle> getFormathandle() {
-    if (formathandle == null) {
-      formathandle = new ArrayList<Formathandle>();
+     * 
+     * 
+     */
+    public List<Formathandle> getFormathandle() {
+        if (formathandle == null) {
+            formathandle = new ArrayList<Formathandle>();
+        }
+        return this.formathandle;
     }
-    return this.formathandle;
-  }
 
-  /**
-   * Gets the value of the segmentsubflows property.
-   *
-   * @return possible object is {@link String }
-   *
-   */
-  public String getSegmentsubflows() {
-    return segmentsubflows;
-  }
+    /**
+     * Gets the value of the segmentsubflows property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSegmentsubflows() {
+        return segmentsubflows;
+    }
 
-  /**
-   * Sets the value of the segmentsubflows property.
-   *
-   * @param value allowed object is {@link String }
-   *
-   */
-  public void setSegmentsubflows(String value) {
-    this.segmentsubflows = value;
-  }
+    /**
+     * Sets the value of the segmentsubflows property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSegmentsubflows(String value) {
+        this.segmentsubflows = value;
+    }
 
-  /**
-   * Gets the value of the cascade property.
-   *
-   * @return possible object is {@link String }
-   *
-   */
-  public String getCascade() {
-    return cascade;
-  }
+    /**
+     * Gets the value of the cascade property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCascade() {
+        return cascade;
+    }
 
-  /**
-   * Sets the value of the cascade property.
-   *
-   * @param value allowed object is {@link String }
-   *
-   */
-  public void setCascade(String value) {
-    this.cascade = value;
-  }
+    /**
+     * Sets the value of the cascade property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCascade(String value) {
+        this.cascade = value;
+    }
 
 }

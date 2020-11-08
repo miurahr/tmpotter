@@ -43,49 +43,57 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "body")
 public class Body {
 
-  @XmlElement(required = true)
-  protected Languagerules languagerules;
-  @XmlElement(required = true)
-  protected Maprules maprules;
+    @XmlElement(required = true)
+    protected Languagerules languagerules;
+    @XmlElement(required = true)
+    protected Maprules maprules;
 
-  /**
-   * Gets the value of the languagerules property.
-   *
-   * @return possible object is {@link Languagerules }
-   *
-   */
-  public Languagerules getLanguagerules() {
-    return languagerules;
-  }
+    /**
+     * Gets the value of the languagerules property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Languagerules }
+     *     
+     */
+    public Languagerules getLanguagerules() {
+        return languagerules;
+    }
 
-  /**
-   * Sets the value of the languagerules property.
-   *
-   * @param value allowed object is {@link Languagerules }
-   *
-   */
-  public void setLanguagerules(Languagerules value) {
-    this.languagerules = value;
-  }
+    /**
+     * Sets the value of the languagerules property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Languagerules }
+     *     
+     */
+    public void setLanguagerules(Languagerules value) {
+        this.languagerules = value;
+    }
 
-  /**
-   * Gets the value of the maprules property.
-   *
-   * @return possible object is {@link Maprules }
-   *
-   */
-  public Maprules getMaprules() {
-    return maprules;
-  }
+    /**
+     * Gets the value of the maprules property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Maprules }
+     *     
+     */
+    public Maprules getMaprules() {
+        return maprules;
+    }
 
-  /**
-   * Sets the value of the maprules property.
-   *
-   * @param value allowed object is {@link Maprules }
-   *
-   */
-  public void setMaprules(Maprules value) {
-    this.maprules = value;
-  }
+    /**
+     * Sets the value of the maprules property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Maprules }
+     *     
+     */
+    public void setMaprules(Maprules value) {
+        this.maprules = value;
+    }
 
 }
