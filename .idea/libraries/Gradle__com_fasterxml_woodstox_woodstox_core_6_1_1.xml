@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.fasterxml.woodstox:woodstox-core:6.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.woodstox/woodstox-core/6.1.1/989bb31963ed1758b95c7c4381a91592a9a8df61/woodstox-core-6.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.woodstox/woodstox-core/6.1.1/22a5c66147ba96ec7fead589cb64764e4852237d/woodstox-core-6.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

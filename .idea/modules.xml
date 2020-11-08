@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/segmentation.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/segmentation.iml" group="segmentation" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/segmentation_main.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/segmentation_main.iml" group="segmentation" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/segmentation_test.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/segmentation_test.iml" group="segmentation" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/tmpotter.iml" filepath="$PROJECT_DIR$/.idea/modules/tmpotter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tmpotter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/tmpotter_main.iml" group="tmpotter" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tmpotter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/tmpotter_test.iml" group="tmpotter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tmpotter.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tmpotter.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.main.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.test.iml" filepath="$PROJECT_DIR$/.idea/modules/segmentation/tmpotter.segmentation.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tmpotter.test.iml" filepath="$PROJECT_DIR$/.idea/modules/tmpotter.test.iml" />
     </modules>
   </component>
 </project>
