@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.okapi.lib:okapi-lib-segmentation:1.40.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.okapi.lib/okapi-lib-segmentation/1.40.0/d8bf5c073354b7a1ab963d3c425a85df1058c02/okapi-lib-segmentation-1.40.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.okapi.lib/okapi-lib-segmentation/1.40.0/37066520c6f4df55f2e9e07dec7a066779873fa8/okapi-lib-segmentation-1.40.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

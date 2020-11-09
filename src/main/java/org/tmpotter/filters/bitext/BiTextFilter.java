@@ -23,16 +23,18 @@
 
 package org.tmpotter.filters.bitext;
 
+import net.sf.okapi.common.LocaleId;
+import net.sf.okapi.common.Range;
 import org.tmpotter.core.Document;
 import org.tmpotter.exceptions.TranslationException;
 import org.tmpotter.filters.AbstractFilter;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
-import org.tmpotter.preferences.Preferences;
-import org.tmpotter.segmentation.Rule;
-import org.tmpotter.segmentation.SRX;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
+
+import net.sf.okapi.common.ISegmenter;
+import net.sf.okapi.lib.segmentation.SRXSegmenter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -118,20 +120,16 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
      */
     public final List<String> processTextFile(BufferedReader br, Language lang)
         throws TranslationException {
-        String result;
-
-        Segmenter.setSrx(Preferences.getSrx());
-        if (Segmenter.srx == null) {
-            Segmenter.setSrx(SRX.getDefault());
-        }
+        String content;
+        List<String> result;
+        Segmenter segmenter = new Segmenter(lang);
         try {
-            result = copyCleanString(br);
+            content = copyCleanString(br);
         } catch (Exception ex) {
             throw (new TranslationException("Error in copyCleanString()"));
         }
-        ArrayList<StringBuilder> spaces = new ArrayList<>();
-        ArrayList<Rule> listRules = new ArrayList<>();
-        return Segmenter.segment(lang, result, spaces, listRules);
+        result = segmenter.segment(content);
+        return result;
     }
 
     /**

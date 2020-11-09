@@ -16,23 +16,16 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: org.swinglabs.swingx:swingx-all:1.6.5-1" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.okapi.lib:okapi-lib-segmentation:1.40.0" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.okapi.filters:okapi-filter-xliff:1.40.0" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.okapi:okapi-core:1.40.0" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.okapi.lib:okapi-lib-xliff2:1.40.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="Gradle: org.omegat:lib-mnemonics:1.0" level="project" />
-    <orderEntry type="module" module-name="tmpotter.segmentation.main" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.woodstox:woodstox-core:6.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.ibm.icu:icu4j:66.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.glassfish.jaxb:jaxb-runtime:2.3.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.sun.xml.bind:jaxb-impl:2.3.3" level="project" />
-    <orderEntry type="library" name="Gradle: jakarta.xml.bind:jakarta.xml.bind-api:2.3.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.woodstox:woodstox-core:6.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.woodstox:stax2-api:4.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.glassfish.jaxb:txw2:2.3.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.sun.istack:istack-commons-runtime:3.0.11" level="project" />
-    <orderEntry type="library" name="Gradle: jakarta.activation:jakarta.activation-api:1.2.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-simple:1.7.21" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.sun.activation:jakarta.activation:1.2.2" level="project" />
   </component>
 </module>

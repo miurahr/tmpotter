@@ -38,7 +38,6 @@
 package org.tmpotter.preferences;
 
 import org.tmpotter.exceptions.TranslationException;
-import org.tmpotter.segmentation.SRX;
 import org.tmpotter.util.LFileCopy;
 import org.tmpotter.util.StringUtil;
 import org.tmpotter.util.Utilities;
@@ -445,31 +444,6 @@ public class Preferences {
         changed = false;
     }
 
-    /**
-     * Get SRX object.
-     *
-     * @return SRX object.
-     */
-    public static SRX getSrx() {
-        return srx;
-    }
-
-    /**
-     * Set SRX object.
-     *
-     * @param newSrx to set
-     */
-    public static void setSrx(SRX newSrx) {
-        srx = newSrx;
-
-        File srxFile = new File(Utilities.getConfigDir() + SRX.CONF_SENTSEG);
-        try {
-            SRX.saveTo(srx, srxFile);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private boolean loaded;
     private boolean changed;
 
@@ -478,6 +452,4 @@ public class Preferences {
     private List<String> nameList;
     private List<String> valList;
     private Map<String, Integer> preferenceMap;
-
-    private static volatile SRX srx;
 }

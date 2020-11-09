@@ -40,9 +40,9 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'org.omegat:lib-mnemonics:1.0'
     compile 'net.sf.okapi:okapi-core:1.40.0'
+    compile 'net.sf.okapi.lib:okapi-lib-segmentation:1.40.0'
     compile 'net.sf.okapi.lib:okapi-lib-xliff2:1.40.0'
     compile 'net.sf.okapi.filters:okapi-filter-xliff:1.40.0'
-    compile project(':segmentation')
     runtime 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'org.testng:testng:6.9.10'
     testCompile 'org.xmlunit:xmlunit-core:2.1.1'
@@ -50,19 +50,4 @@ dependencies {
 
 test {
   useTestNG()
-}
-
-project(':segmentation') {
-    apply plugin: 'java'
-    sourceCompatibility = '1.8'
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-        compile group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
-        // https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-        compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.3'
-        compile 'com.sun.xml.bind:jaxb-impl:2.3.3'
-    }
 }

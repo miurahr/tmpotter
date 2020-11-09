@@ -23,9 +23,6 @@
 
 package org.tmpotter.preferences;
 
-import org.tmpotter.preferences.Preferences;
-import org.tmpotter.segmentation.SRX;
-
 import java.io.File;
 import java.io.PrintWriter;
 
@@ -182,16 +179,6 @@ public class PreferencesTest {
     assertEquals(value, result);
   }
 
-  /**
-   * Test of setSRX method, of class Preferences.
-   */
-  @Test
-  public void testSetSRX() {
-    System.out.println("setSRX");
-    SRX newSrx = SRX.getDefault();
-    Preferences.setSrx(newSrx);
-  }
-  
   
    /**
    * Test that if an error is encountered when loading the preferences file, the

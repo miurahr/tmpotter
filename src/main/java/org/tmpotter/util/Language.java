@@ -30,6 +30,7 @@
 
 package org.tmpotter.util;
 
+import net.sf.okapi.common.LocaleId;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -117,6 +118,10 @@ public class Language implements Comparable<Object> {
     @Override
     public String toString() {
         return getLanguage();
+    }
+
+    public LocaleId getLocaleId() {
+        return LocaleId.fromBCP47(getLanguage());
     }
 
     /**

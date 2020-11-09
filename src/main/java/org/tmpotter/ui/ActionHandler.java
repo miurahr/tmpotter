@@ -44,7 +44,6 @@ import org.tmpotter.core.TmxpWriter;
 import org.tmpotter.filters.FilterManager;
 import org.tmpotter.preferences.Preferences;
 import org.tmpotter.preferences.RuntimePreferences;
-import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.ui.dialogs.About;
 import org.tmpotter.ui.wizard.ExportPreference;
 import org.tmpotter.ui.wizard.ExportWizard;
@@ -115,7 +114,6 @@ final class ActionHandler {
         String filter = pref.getFilter(); // Now support "BiTextFilter" and "PoFilter"
         RuntimePreferences.setUserHome(pref.getOriginalFilePath());
         modelMediator.buildDisplay();
-        Segmenter.setSrx(Preferences.getSrx());
         try {
             tmData.newDocuments();
             filterManager.loadFile(pref, modelMediator.getProjectProperties(),
