@@ -20,6 +20,12 @@ checkstyle {
   toolVersion = '6.16.1'
 }
 
+checkstyleMain
+    .exclude('**/gen/core/**')
+    .exclude('**/org/tmpotter/filters/*/ImportWizard*/')
+    .exclude('**/org/tmpotter/ui/**')
+    .exclude('**/org/tmpotter/util/xml/**')
+
 repositories {
   jcenter()
   maven {
