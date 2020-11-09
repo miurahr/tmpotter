@@ -23,9 +23,15 @@
 
 package org.tmpotter.filters.xliff;
 
+import net.sf.okapi.common.LocaleId;
+import net.sf.okapi.common.resource.ITextUnit;
+import net.sf.okapi.common.resource.RawDocument;
+import net.sf.okapi.common.resource.TextContainer;
+import net.sf.okapi.filters.xliff.XLIFFFilter;
 import net.sf.okapi.lib.xliff2.core.Fragment;
 import net.sf.okapi.lib.xliff2.core.Segment;
 import net.sf.okapi.lib.xliff2.core.Unit;
+import net.sf.okapi.lib.xliff2.reader.XLIFFReader;
 import net.sf.okapi.lib.xliff2.reader.XLIFFReaderException;
 import net.sf.okapi.lib.xliff2.writer.XLIFFWriter;
 
@@ -36,7 +42,6 @@ import org.tmpotter.core.Document;
 import org.tmpotter.filters.FilterContext;
 import org.tmpotter.filters.IFilter;
 import org.tmpotter.filters.IParseCallback;
-import org.tmpotter.util.OkapiXliffReader;
 
 import java.io.File;
 import java.util.Map;
@@ -166,8 +171,19 @@ public class Xliff2Filter implements IFilter {
      */
     public void parseFile2(File inFile, Map<String, String> config, FilterContext fc,
                           IParseCallback callback) throws Exception {
-        try {
-            OkapiXliffReader.readXliff2(inFile, callback, self);
+        try (XLIFFReader reader = new XLIFFReader()) {
+            reader.open(inFile);
+            while (reader.hasNext()) {
+                net.sf.okapi.lib.xliff2.reader.Event event = reader.next();
+                if (event.isUnit()) {
+                    Unit unit = event.getUnit();
+                    for (Segment segment : unit.getSegments()) {
+                        callback.addEntry(null, segment.getSource().getPlainText(),
+                                segment.getTarget().getPlainText(), false,
+                                "", null, self);
+                    }
+                }
+            }
         } catch (XLIFFReaderException ex) {
             LOGGER.info("Invalid XLIFF2 format", ex);
         } catch (Exception ex) {
@@ -185,8 +201,23 @@ public class Xliff2Filter implements IFilter {
      */
     public void parseFile1(File inFile, Map<String, String> config, FilterContext fc,
                           IParseCallback callback) throws Exception {
-        OkapiXliffReader.readXliff1(inFile, fc.getSourceLang().toString(),
-                fc.getTargetLang().toString(), callback, self);
+        net.sf.okapi.common.filters.IFilter filter = new XLIFFFilter();
+        LocaleId sourceId = new LocaleId(fc.getSourceLang().toString());
+        LocaleId targetId = new LocaleId(fc.getTargetLang().toString());
+        filter.open(new RawDocument(inFile.toURI(), "UTF-8", sourceId, targetId));
+        while (filter.hasNext()) {
+            net.sf.okapi.common.Event event = filter.next();
+            if (event.isTextUnit()) {
+                ITextUnit unit = event.getTextUnit();
+                TextContainer source = unit.getSource();
+                if (unit.hasTarget(targetId)) {
+                    TextContainer target = unit.getTarget(targetId);
+                    callback.addEntry(null, source.getCodedText(),
+                            target.getCodedText(), false,
+                            "", null, self);
+                }
+            }
+        }
     }
 
     @Override
