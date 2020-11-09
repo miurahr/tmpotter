@@ -24,7 +24,6 @@
 package org.tmpotter.segmentation;
 
 import net.sf.okapi.common.ISegmenter;
-import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.common.Range;
 import net.sf.okapi.lib.segmentation.SRXDocument;
 import org.tmpotter.util.Language;
@@ -38,8 +37,10 @@ public class Segmenter {
 
         public Segmenter(Language lang) {
                 SRXDocument doc = new SRXDocument();
+                doc.setCascade(true);
                 doc.loadRules(getClass().getResourceAsStream("defaultRules.srx"));
                 segmenter = doc.compileLanguageRules(lang.getLocaleId(), null);
+                segmenter.setOptions(false, false, true, false, false, true, true);
         }
 
         public List<String> segment(String content) {

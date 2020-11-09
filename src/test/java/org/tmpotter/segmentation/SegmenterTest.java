@@ -28,8 +28,10 @@ import static org.testng.Assert.*;
 import net.sf.okapi.common.ISegmenter;
 import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.common.Range;
+import net.sf.okapi.lib.segmentation.LanguageMap;
+import net.sf.okapi.lib.segmentation.Rule;
 import net.sf.okapi.lib.segmentation.SRXDocument;
-import net.sf.okapi.lib.segmentation.SRXSegmenter;
+
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -37,7 +39,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.tmpotter.util.Language;
-import org.tmpotter.segmentation.Segmenter;
 
 
 /**
@@ -67,6 +68,7 @@ public class SegmenterTest {
             + "or [https://android.com/ android.com].");
     List<String> result = segmenter.segment(paragraph);
     assertEquals(result.get(0), expResult.get(0));
+    assertEquals(result.get(1), expResult.get(1));
   }
 
   /**
@@ -77,7 +79,7 @@ public class SegmenterTest {
     System.out.println("segment");
     Language lang = new Language("ja");
     Segmenter segmenter = new Segmenter(lang);
-    String paragraph = "'''Android'''は、携帯電話やモバイル機器の[[Linux]]ベースの操作環境です。" +
+    String paragraph = "'''Android'''は、携帯電話やモバイル機器の[[Linux]]ベースの操作環境です。\n" +
             "全般的な情報については、 " +
             "[[Wikipedia:Android_(operating_system)|WikipediaのAndroidの項]] や" +
             " [https://android.com/ android.com]を参照してください。";
