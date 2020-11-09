@@ -41,7 +41,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="IntelliJ IDEA IU-193.5662.53" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="IntelliJ IDEA IU-193.5662.53" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
 </project>

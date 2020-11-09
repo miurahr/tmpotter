@@ -33,21 +33,21 @@ import java.util.List;
 
 
 public class Segmenter {
-        private final ISegmenter segmenter;
+    private final ISegmenter segmenter;
 
-        public Segmenter(Language lang) {
-                SRXDocument doc = new SRXDocument();
-                doc.setCascade(true);
-                doc.loadRules(getClass().getResourceAsStream("defaultRules.srx"));
-                segmenter = doc.compileLanguageRules(lang.getLocaleId(), null);
-                segmenter.setOptions(false, false, true, false, false, true, true);
-        }
+    public Segmenter(Language lang) {
+        SRXDocument doc = new SRXDocument();
+        doc.setCascade(true);
+        doc.loadRules(getClass().getResourceAsStream("defaultRules.srx"));
+        segmenter = doc.compileLanguageRules(lang.getLocaleId(), null);
+        segmenter.setOptions(false, false, true, false, false, true, true);
+    }
 
-        public List<String> segment(String content) {
-                segmenter.computeSegments(content);
-                List<Range> ranges = segmenter.getRanges();
-                List<String> result = new ArrayList<>();
-                ranges.forEach(elem -> result.add(content.substring(elem.start, elem.end)));
-                return result;
-        }
+    public List<String> segment(String content) {
+        segmenter.computeSegments(content);
+        List<Range> ranges = segmenter.getRanges();
+        List<String> result = new ArrayList<>();
+        ranges.forEach(elem -> result.add(content.substring(elem.start, elem.end)));
+        return result;
+    }
 }

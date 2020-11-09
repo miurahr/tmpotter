@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -351,15 +352,6 @@ public abstract class AbstractFilter implements IFilter {
             entryParseCallback = null;
             processOptions = null;
         }
-    }
-
-    /**
-     * Set both callbacks. Used for child XML filters only.
-     *
-     * @param parseCallback to be set.
-     */
-    public void setCallback(IParseCallback parseCallback) {
-        this.entryParseCallback = parseCallback;
     }
 
 }

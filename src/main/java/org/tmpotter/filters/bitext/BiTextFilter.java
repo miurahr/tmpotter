@@ -23,8 +23,6 @@
 
 package org.tmpotter.filters.bitext;
 
-import net.sf.okapi.common.LocaleId;
-import net.sf.okapi.common.Range;
 import org.tmpotter.core.Document;
 import org.tmpotter.exceptions.TranslationException;
 import org.tmpotter.filters.AbstractFilter;
@@ -33,13 +31,9 @@ import org.tmpotter.filters.IFilter;
 import org.tmpotter.segmentation.Segmenter;
 import org.tmpotter.util.Language;
 
-import net.sf.okapi.common.ISegmenter;
-import net.sf.okapi.lib.segmentation.SRXSegmenter;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,14 +77,13 @@ public class BiTextFilter extends AbstractFilter implements IFilter {
     }
 
     @Override
-    public void processFile(BufferedReader br, FilterContext fc) throws IOException,
-        TranslationException {
+    public void processFile(BufferedReader br, FilterContext fc) throws TranslationException {
         processFile(br, null, fc);
     }
 
     @Override
     public void processFile(BufferedReader sourceFile, BufferedReader translatedFile,
-                            FilterContext fc) throws IOException, TranslationException {
+                            FilterContext fc) throws TranslationException {
         List<String> source;
         List<String> translated;
 
